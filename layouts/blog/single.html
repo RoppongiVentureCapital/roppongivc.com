@@ -1,7 +1,7 @@
 {{ define "main" }}
 <article class="blog-single">
   {{ with .Params.hero_style }}
-  <div class="blog-hero" style="{{ . }}">
+  <div class="blog-hero" style="{{ . | safeCSS }}">
     <div class="blog-hero-inner">
       {{ with $.Params.hero_label }}<span class="blog-hero-label">{{ . }}</span>{{ end }}
       <h1 class="blog-hero-title">{{ $.Title }}</h1>
