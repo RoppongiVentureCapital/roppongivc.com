@@ -85,7 +85,7 @@ img{max-width:100%;height:auto;display:block}
 .home-latest{padding:4rem 2.5rem;border-bottom:1px solid var(--gray-200)}
 .home-latest-header{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:3rem}
 .home-latest-header h2{font-family:var(--sans);font-size:20px;font-weight:600;letter-spacing:-0.01em}
-.home-latest-desc{font-family:var(--sans);font-size:15px;color:var(--gray-500);margin-top:0.4rem;font-weight:400}
+.home-latest-desc{font-family:var(--sans);font-size:15px;color:var(--black);margin-top:0.4rem;font-weight:400}
 .home-latest-header a{font-family:var(--sans);font-size:14px;color:var(--gray-500)}
 .home-latest-header a:hover{color:var(--black)}
 .articles-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--gray-200);border:1px solid var(--gray-200)}
@@ -106,19 +106,19 @@ img{max-width:100%;height:auto;display:block}
 }
 .member-photo img{width:100%;aspect-ratio:3/4;object-fit:cover;object-position:center top;filter:grayscale(20%)}
 .member-name{font-family:var(--sans);font-size:20px;font-weight:600;margin-bottom:0.25rem}
-.member-title{font-family:var(--sans);font-size:12px;color:var(--gray-500);font-weight:400;letter-spacing:0.05em;margin-bottom:2rem}
-.member-bio{font-family:var(--sans);font-size:14px;line-height:1.8;color:var(--gray-600);font-weight:400}
+.member-title{font-family:var(--sans);font-size:14px;color:var(--gray-500);font-weight:400;letter-spacing:0.02em;margin-bottom:2rem}
+.member-bio{font-family:var(--sans);font-size:15px;line-height:1.9;color:var(--black);font-weight:400}
 .member-bio p{margin-bottom:1rem}
 .member-bio a{color:var(--black);text-decoration:underline;text-underline-offset:2px}
 .member-bio a:hover{color:var(--gray-500)}
 .member-links{margin-top:1.5rem}
-.member-social{font-family:var(--sans);font-size:13px;font-weight:500;color:var(--black);text-decoration:underline;text-underline-offset:2px}
+.member-social{display:inline-flex;align-items:center;color:var(--black);transition:color 0.15s}
 .member-social:hover{color:var(--gray-500)}
 
 /* ============ BLOG (JIWA) ============ */
 .blog-header{padding:4rem 2.5rem;border-bottom:4px solid var(--black)}
 .blog-header h1{font-family:var(--serif);font-size:clamp(2rem,4vw,2.5rem);font-weight:300}
-.blog-header p{font-family:var(--sans);font-size:14px;color:var(--gray-500);margin-top:0.5rem;font-weight:400}
+.blog-header p{font-family:var(--sans);font-size:15px;color:var(--black);margin-top:0.5rem;font-weight:400}
 .blog-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--gray-200);border-bottom:1px solid var(--gray-200)}
 .blog-item{background:var(--white);padding:2.5rem;transition:background 0.2s}
 .blog-item:hover{background:var(--gray-100)}
