@@ -1,0 +1,33 @@
+{{ define "main" }}
+<section class="blog-list">
+  <div class="page-header">
+    <h1>Media</h1>
+    <p class="page-intro">経済・金融・テクノロジーの最前線を、データと物語で伝える。</p>
+  </div>
+
+  <!-- Pillar Filter -->
+  <div class="pillar-filter">
+    <a href="/blog/" class="filter-btn active">All</a>
+    {{ range .Site.Taxonomies.pillars }}
+    <a href="{{ .Page.RelPermalink }}" class="filter-btn">{{ .Page.Title }}</a>
+    {{ end }}
+  </div>
+
+  <div class="articles-grid">
+    {{ range .Paginator.Pages }}
+    <article class="article-card">
+      <a href="{{ .RelPermalink }}">
+        {{ with .Params.pillars }}
+        <span class="article-pillar">{{ index . 0 }}</span>
+        {{ end }}
+        <time>{{ .Date.Format "2006.01.02" }}</time>
+        <h3>{{ .Title }}</h3>
+        {{ with .Params.description }}<p>{{ . }}</p>{{ end }}
+      </a>
+    </article>
+    {{ end }}
+  </div>
+
+  {{ template "_internal/pagination.html" . }}
+</section>
+{{ end }}
