@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>a16z Style Test</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600;700&family=Source+Serif+4:wght@200;300;400;500;600;700&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ============================================
+   a16z EXACT REPLICA — standalone styles
+   ============================================ */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --body-bg: #f6f4ee;
+  --body-color: #000;
+  --eyebrow: #727069;
+  --border: #e7e1d2;
+  --accent: #336D5D;
+  --accent-hover: #134F47;
+  --muted: #727069;
+  --navbar-bg: #212020;
+  --navbar-color: #fff;
+  --navbar-hover: #c69344;
+
+  /* a16z heading sizes (exact clamp values from their CSS) */
+  --heading-lg: clamp(3.75rem, 3.27rem + 1.93vw, 5rem);
+  --heading-1: clamp(2rem, 1.76rem + 0.96vw, 2.625rem);
+  --heading-2: clamp(1.5rem, 1.4rem + 0.39vw, 1.75rem);
+  --heading-3: clamp(1.125rem, 1.03rem + 0.39vw, 1.375rem);
+  --heading-4: clamp(0.875rem, 0.84rem + 0.18vw, 1rem);
+
+  /* Font stack (Google Fonts equivalents of a16z's Adobe Fonts) */
+  --font-display: 'Cormorant Garamond', serif;    /* ≈ orpheus-pro */
+  --font-body: 'Source Serif 4', serif;            /* ≈ domaine-text */
+  --font-ui: 'DM Sans', sans-serif;               /* ≈ domaine-sans-text */
+}
+
+html { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+
+body {
+  background: var(--body-bg);
+  color: var(--body-color);
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 300;
+  line-height: 1.538;
+}
+
+a { color: var(--accent); text-decoration: none; transition: color 0.15s; }
+a:hover { color: var(--accent-hover); }
+
+/* ---- NAVBAR (a16z dark style) ---- */
+.navbar {
+  background: var(--navbar-bg);
+  color: var(--navbar-color);
+  padding: 0 clamp(1.5rem, 4vw, 3rem);
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+.navbar-logo {
+  font-family: var(--font-ui);
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--navbar-color);
+  letter-spacing: -0.02em;
+}
+.navbar-links {
+  display: flex;
+  gap: 2rem;
+  list-style: none;
+}
+.navbar-links a {
+  font-family: var(--font-ui);
+  font-size: var(--heading-4);
+  font-weight: 300;
+  color: var(--navbar-color);
+  text-decoration: none;
+  transition: color 0.15s;
+}
+.navbar-links a:hover { color: var(--navbar-hover); }
+
+/* ---- HERO ---- */
+.hero {
+  padding: 6rem clamp(1.5rem, 4vw, 3rem) 5rem;
+  max-width: 960px;
+}
+.hero h1 {
+  font-family: var(--font-display);
+  font-size: var(--heading-lg);
+  font-weight: 300;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  margin-bottom: 2.5rem;
+}
+
+/* ---- CONTENT SECTION ---- */
+.content-section {
+  max-width: 960px;
+  padding: 0 clamp(1.5rem, 4vw, 3rem) 4rem;
+}
+.content-section p {
+  font-family: var(--font-body);
+  font-size: var(--heading-3);
+  font-weight: 300;
+  line-height: 1.6;
+  margin-bottom: 1.5rem;
+}
+.content-section p a {
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.footnote {
+  font-size: 11px;
+  color: var(--muted);
+  margin-top: 1rem;
+}
+
+/* ---- EXPLORE LINKS ---- */
+.explore {
+  max-width: 960px;
+  padding: 3rem clamp(1.5rem, 4vw, 3rem);
+  border-top: 1px solid var(--border);
+}
+.explore h2 {
+  font-family: var(--font-ui);
+  font-size: var(--heading-2);
+  font-weight: 300;
+  margin-bottom: 2rem;
+}
+.explore-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1px;
+  background: var(--border);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+}
+.explore-item {
+  background: var(--body-bg);
+  padding: 1.5rem 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-family: var(--font-ui);
+  font-size: var(--heading-4);
+  font-weight: 300;
+  color: var(--body-color);
+  text-decoration: none;
+  transition: background 0.15s;
+}
+.explore-item:hover { background: #ece8de; }
+.explore-item::after {
+  content: '→';
+  font-size: 14px;
+  color: var(--muted);
+  transition: transform 0.15s;
+}
+.explore-item:hover::after { transform: translateX(4px); }
+
+/* ---- QUOTE ---- */
+.quote-section {
+  max-width: 960px;
+  padding: 4rem clamp(1.5rem, 4vw, 3rem);
+  border-top: 1px solid var(--border);
+}
+.quote-section blockquote {
+  font-family: var(--font-display);
+  font-size: var(--heading-1);
+  font-weight: 400;
+  font-style: italic;
+  line-height: 1.5;
+  margin-bottom: 1rem;
+}
+.quote-section cite {
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: 300;
+  font-style: normal;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--muted);
+}
+
+/* ---- CULTURE / ACCORDION ---- */
+.culture-section {
+  max-width: 960px;
+  padding: 2rem clamp(1.5rem, 4vw, 3rem) 4rem;
+}
+.culture-intro {
+  font-family: var(--font-body);
+  font-size: var(--heading-3);
+  font-weight: 300;
+  line-height: 1.6;
+  margin-bottom: 3rem;
+}
+.accordion-item {
+  border-top: 1px solid var(--border);
+}
+.accordion-header {
+  display: flex;
+  align-items: baseline;
+  gap: 1.5rem;
+  padding: 2rem 0;
+  cursor: pointer;
+  width: 100%;
+  background: none;
+  border: none;
+  text-align: left;
+  font-family: var(--font-ui);
+  color: var(--body-color);
+}
+.accordion-num {
+  font-size: var(--heading-1);
+  font-weight: 300;
+  line-height: 1;
+  min-width: 2.5rem;
+}
+.accordion-title {
+  font-size: var(--heading-3);
+  font-weight: 300;
+  flex: 1;
+}
+.accordion-toggle {
+  font-size: 20px;
+  color: var(--muted);
+  transition: transform 0.3s;
+}
+.accordion-item.open .accordion-toggle { transform: rotate(45deg); }
+.accordion-body {
+  display: none;
+  padding: 0 0 2rem 4rem;
+}
+.accordion-item.open .accordion-body { display: block; }
+.accordion-body p {
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 300;
+  line-height: 1.538;
+  color: var(--body-color);
+  margin-bottom: 1rem;
+}
+
+/* ---- RESPONSIVE ---- */
+@media (max-width: 768px) {
+  .explore-grid { grid-template-columns: 1fr; }
+  .navbar-links { display: none; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+  <span class="navbar-logo">Roppongi VC</span>
+  <ul class="navbar-links">
+    <li><a href="#">Portfolio</a></li>
+    <li><a href="#">Team</a></li>
+    <li><a href="#">About</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <h1>Who We Are</h1>
+</section>
+
+<!-- CONTENT -->
+<section class="content-section">
+  <p>In 2026, Roppongi Venture Capital was founded on a single conviction: Japan's brightest STEM minds deserve world-class entrepreneurial experiences. We identify Math and Science Olympiad medalists, nurture them through a 6-month incubation program, and send the top performers to the World Economic Forum in Davos.</p>
+  <p>We pioneered the upstream model — rather than sourcing deal flow from existing founders, we create the founders ourselves. From <a href="#">incubation</a> to <a href="#">venture investment</a>, from <a href="#">deep tech decoded</a> to <a href="#">data journalism</a>, our flywheel turns talent into companies and companies into returns.</p>
+  <p>We invest in deep tech companies across quantum computing, <a href="#">nuclear fusion</a>, synthetic biology, advanced materials, and AI/robotics. We believe the future belongs to builders, and our job is to make sure they have what they need to build it.</p>
+  <p class="footnote">¹ as of March 2026</p>
+</section>
+
+<!-- EXPLORE -->
+<section class="explore">
+  <h2>Explore More</h2>
+  <div class="explore-grid">
+    <a href="#" class="explore-item">Incubation Program</a>
+    <a href="#" class="explore-item">Media & Content</a>
+    <a href="#" class="explore-item">Investment Thesis</a>
+    <a href="#" class="explore-item">Contact</a>
+  </div>
+</section>
+
+<!-- QUOTE -->
+<section class="quote-section">
+  <blockquote>A culture is not a set of beliefs, it's a set of actions.</blockquote>
+  <cite>— Bushido</cite>
+</section>
+
+<!-- CULTURE / ACCORDION -->
+<section class="culture-section">
+  <p class="culture-intro">Our culture is our way of doing things, not just reading about them. We are clear about our beliefs and what we stand for.</p>
+
+  <div class="accordion-item open">
+    <button class="accordion-header" onclick="this.parentElement.classList.toggle('open')">
+      <span class="accordion-num">1</span>
+      <span class="accordion-title">We create founders, not just fund them.</span>
+      <span class="accordion-toggle">+</span>
+    </button>
+    <div class="accordion-body">
+      <p>Traditional VCs wait for founders to come to them. We go upstream. We identify Japan's most gifted STEM students — Math Olympiad medalists, Science Olympiad finalists — and give them the experiences, mentorship, and global exposure that transforms raw talent into entrepreneurial ambition.</p>
+      <p>Our 6-month incubation program culminates in a trip to Davos, where participants meet heads of state, Nobel laureates, and global CEOs. The scale of that experience, at that age, is transformative.</p>
+    </div>
+  </div>
+
+  <div class="accordion-item">
+    <button class="accordion-header" onclick="this.parentElement.classList.toggle('open')">
+      <span class="accordion-num">2</span>
+      <span class="accordion-title">We take a long view of relationships.</span>
+      <span class="accordion-toggle">+</span>
+    </button>
+    <div class="accordion-body">
+      <p>Our relationship with founders begins years before they start a company. We build trust through education, mentorship, and genuine investment in their growth as people — not just as potential portfolio companies.</p>
+    </div>
+  </div>
+
+  <div class="accordion-item">
+    <button class="accordion-header" onclick="this.parentElement.classList.toggle('open')">
+      <span class="accordion-num">3</span>
+      <span class="accordion-title">We believe in the future and bet accordingly.</span>
+      <span class="accordion-toggle">+</span>
+    </button>
+    <div class="accordion-body">
+      <p>Japan has 16 unicorns. The US has 780. The gap is not about technology — it's about the ecosystem that turns technology into businesses. We exist to close that gap, starting from the very top of the talent pipeline.</p>
+    </div>
+  </div>
+</section>
+
+</body>
+</html>
