@@ -3,339 +3,304 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>a16z Style Test</title>
+<title>Roppongi VC — About</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600;700&family=Source+Serif+4:wght@200;300;400;500;600;700&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Noto+Sans+JP:wght@300;400;500;700;900&display=swap" rel="stylesheet">
 <style>
-/* ============================================
-   a16z EXACT REPLICA — standalone styles
-   ============================================ */
-*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#09090b;
+  --surface:#18181b;
+  --surface-2:#27272a;
+  --border:#27272a;
+  --text:#fafafa;
+  --text-muted:#a1a1aa;
+  --text-dim:#52525b;
+  --accent:#6366f1;
+  --accent-2:#8b5cf6;
+  --gradient:linear-gradient(135deg,#6366f1,#8b5cf6,#a78bfa);
+  --font:'Inter','Noto Sans JP',system-ui,sans-serif;
+}
+html{-webkit-font-smoothing:antialiased;scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:var(--font);font-size:15px;line-height:1.7;overflow-x:hidden}
+a{color:inherit;text-decoration:none}
+::selection{background:var(--accent);color:#fff}
 
-:root {
-  --body-bg: #f6f4ee;
-  --body-color: #000;
-  --eyebrow: #727069;
-  --border: #e7e1d2;
-  --accent: #336D5D;
-  --accent-hover: #134F47;
-  --muted: #727069;
-  --navbar-bg: #212020;
-  --navbar-color: #fff;
-  --navbar-hover: #c69344;
-
-  /* a16z heading sizes (exact clamp values from their CSS) */
-  --heading-lg: clamp(3.75rem, 3.27rem + 1.93vw, 5rem);
-  --heading-1: clamp(2rem, 1.76rem + 0.96vw, 2.625rem);
-  --heading-2: clamp(1.5rem, 1.4rem + 0.39vw, 1.75rem);
-  --heading-3: clamp(1.125rem, 1.03rem + 0.39vw, 1.375rem);
-  --heading-4: clamp(0.875rem, 0.84rem + 0.18vw, 1rem);
-
-  /* Font stack (Google Fonts equivalents of a16z's Adobe Fonts) */
-  --font-display: 'Cormorant Garamond', serif;    /* ≈ orpheus-pro */
-  --font-body: 'Source Serif 4', serif;            /* ≈ domaine-text */
-  --font-ui: 'DM Sans', sans-serif;               /* ≈ domaine-sans-text */
+/* GRAIN OVERLAY */
+body::before{
+  content:'';position:fixed;inset:0;z-index:9999;pointer-events:none;
+  opacity:0.03;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 
-html { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+/* NAV */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  padding:0 3rem;height:64px;
+  display:flex;align-items:center;justify-content:space-between;
+  background:rgba(9,9,11,0.8);backdrop-filter:blur(16px);
+  border-bottom:1px solid var(--border);
+}
+.nav-logo{font-weight:700;font-size:14px;letter-spacing:-0.02em}
+.nav-links{display:flex;gap:2rem;list-style:none}
+.nav-links a{font-size:13px;color:var(--text-muted);transition:color 0.2s}
+.nav-links a:hover{color:var(--text)}
 
-body {
-  background: var(--body-bg);
-  color: var(--body-color);
-  font-family: var(--font-body);
-  font-size: 13px;
-  font-weight: 300;
-  line-height: 1.538;
+/* HERO */
+.hero{
+  min-height:100vh;display:flex;flex-direction:column;justify-content:center;
+  padding:0 3rem;position:relative;overflow:hidden;
 }
+.hero-glow{
+  position:absolute;top:20%;left:50%;transform:translate(-50%,-50%);
+  width:800px;height:800px;border-radius:50%;
+  background:radial-gradient(circle,rgba(99,102,241,0.15) 0%,rgba(139,92,246,0.08) 40%,transparent 70%);
+  filter:blur(60px);pointer-events:none;
+}
+.hero-content{position:relative;max-width:900px}
+.hero-badge{
+  display:inline-flex;align-items:center;gap:0.5rem;
+  padding:0.4rem 1rem;border-radius:100px;
+  background:var(--surface);border:1px solid var(--border);
+  font-size:12px;color:var(--text-muted);margin-bottom:2.5rem;
+}
+.hero-badge-dot{width:6px;height:6px;border-radius:50%;background:var(--accent);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
+.hero h1{
+  font-size:clamp(2.5rem,6vw,4.5rem);font-weight:800;
+  line-height:1.15;letter-spacing:-0.04em;
+  background:linear-gradient(180deg,#fff 0%,#a1a1aa 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  background-clip:text;
+  margin-bottom:1.5rem;
+}
+.hero p{
+  font-size:clamp(1rem,1.5vw,1.2rem);color:var(--text-muted);
+  max-width:560px;line-height:1.8;font-weight:300;
+}
+.hero-cta{display:flex;gap:1rem;margin-top:2.5rem}
+.btn-primary{
+  padding:0.7rem 1.8rem;border-radius:8px;font-size:14px;font-weight:500;
+  background:var(--text);color:var(--bg);transition:all 0.2s;
+}
+.btn-primary:hover{opacity:0.9;transform:translateY(-1px)}
+.btn-ghost{
+  padding:0.7rem 1.8rem;border-radius:8px;font-size:14px;font-weight:500;
+  border:1px solid var(--border);color:var(--text-muted);transition:all 0.2s;
+}
+.btn-ghost:hover{border-color:var(--text-muted);color:var(--text)}
 
-a { color: var(--accent); text-decoration: none; transition: color 0.15s; }
-a:hover { color: var(--accent-hover); }
+/* SECTION */
+.section{padding:8rem 3rem}
+.section-label{
+  font-size:12px;font-weight:600;letter-spacing:0.15em;text-transform:uppercase;
+  color:var(--accent);margin-bottom:1rem;
+}
+.section-title{
+  font-size:clamp(1.5rem,3vw,2.5rem);font-weight:700;
+  letter-spacing:-0.03em;margin-bottom:1rem;
+}
+.section-desc{font-size:15px;color:var(--text-muted);max-width:560px;line-height:1.8;font-weight:300}
 
-/* ---- NAVBAR (a16z dark style) ---- */
-.navbar {
-  background: var(--navbar-bg);
-  color: var(--navbar-color);
-  padding: 0 clamp(1.5rem, 4vw, 3rem);
-  height: 56px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  position: sticky;
-  top: 0;
-  z-index: 100;
+/* STATS */
+.stats{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:1px;
+  background:var(--border);border:1px solid var(--border);border-radius:16px;
+  overflow:hidden;margin-top:4rem;
 }
-.navbar-logo {
-  font-family: var(--font-ui);
-  font-size: 16px;
-  font-weight: 700;
-  color: var(--navbar-color);
-  letter-spacing: -0.02em;
+.stat{background:var(--bg);padding:3rem 2rem;text-align:center}
+.stat-num{
+  font-size:clamp(2.5rem,5vw,3.5rem);font-weight:800;
+  letter-spacing:-0.04em;
+  background:var(--gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
 }
-.navbar-links {
-  display: flex;
-  gap: 2rem;
-  list-style: none;
-}
-.navbar-links a {
-  font-family: var(--font-ui);
-  font-size: var(--heading-4);
-  font-weight: 300;
-  color: var(--navbar-color);
-  text-decoration: none;
-  transition: color 0.15s;
-}
-.navbar-links a:hover { color: var(--navbar-hover); }
+.stat-label{font-size:12px;color:var(--text-dim);margin-top:0.5rem;letter-spacing:0.05em}
 
-/* ---- HERO ---- */
-.hero {
-  padding: 6rem clamp(1.5rem, 4vw, 3rem) 5rem;
-  max-width: 960px;
+/* BENTO GRID */
+.bento{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:1px;
+  background:var(--border);border:1px solid var(--border);border-radius:16px;
+  overflow:hidden;margin-top:4rem;
 }
-.hero h1 {
-  font-family: var(--font-display);
-  font-size: var(--heading-lg);
-  font-weight: 300;
-  line-height: 1.15;
-  letter-spacing: -0.02em;
-  margin-bottom: 2.5rem;
+.bento-card{
+  background:var(--bg);padding:2.5rem;
+  transition:background 0.3s;position:relative;overflow:hidden;
 }
+.bento-card:hover{background:var(--surface)}
+.bento-card::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:1px;
+  background:var(--gradient);opacity:0;transition:opacity 0.3s;
+}
+.bento-card:hover::before{opacity:1}
+.bento-icon{
+  width:40px;height:40px;border-radius:10px;
+  background:var(--surface);border:1px solid var(--border);
+  display:flex;align-items:center;justify-content:center;
+  font-size:18px;margin-bottom:1.5rem;
+}
+.bento-card h3{font-size:16px;font-weight:600;margin-bottom:0.5rem;letter-spacing:-0.01em}
+.bento-card p{font-size:13px;color:var(--text-muted);line-height:1.7;font-weight:300}
 
-/* ---- CONTENT SECTION ---- */
-.content-section {
-  max-width: 960px;
-  padding: 0 clamp(1.5rem, 4vw, 3rem) 4rem;
+/* QUOTE */
+.quote-section{
+  padding:6rem 3rem;text-align:center;
+  border-top:1px solid var(--border);border-bottom:1px solid var(--border);
 }
-.content-section p {
-  font-family: var(--font-body);
-  font-size: var(--heading-3);
-  font-weight: 300;
-  line-height: 1.6;
-  margin-bottom: 1.5rem;
+.quote{
+  font-size:clamp(1.3rem,2.5vw,2rem);font-weight:300;
+  line-height:1.7;max-width:700px;margin:0 auto 1.5rem;
+  font-style:italic;color:var(--text-muted);
 }
-.content-section p a {
-  text-decoration: underline;
-  text-underline-offset: 2px;
-}
-.footnote {
-  font-size: 11px;
-  color: var(--muted);
-  margin-top: 1rem;
-}
+.quote-cite{font-size:12px;color:var(--text-dim);letter-spacing:0.1em;text-transform:uppercase}
 
-/* ---- EXPLORE LINKS ---- */
-.explore {
-  max-width: 960px;
-  padding: 3rem clamp(1.5rem, 4vw, 3rem);
-  border-top: 1px solid var(--border);
+/* FLYWHEEL */
+.flywheel{
+  display:grid;grid-template-columns:repeat(6,1fr);gap:1rem;margin-top:4rem;
 }
-.explore h2 {
-  font-family: var(--font-ui);
-  font-size: var(--heading-2);
-  font-weight: 300;
-  margin-bottom: 2rem;
+.fw-step{
+  padding:2rem 1.2rem;border-radius:12px;
+  background:var(--surface);border:1px solid var(--border);
+  text-align:center;transition:all 0.3s;position:relative;
 }
-.explore-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 1px;
-  background: var(--border);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  overflow: hidden;
+.fw-step:hover{border-color:var(--accent);transform:translateY(-4px)}
+.fw-num{
+  font-size:11px;font-weight:700;color:var(--accent);
+  letter-spacing:0.1em;margin-bottom:1rem;
 }
-.explore-item {
-  background: var(--body-bg);
-  padding: 1.5rem 2rem;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  font-family: var(--font-ui);
-  font-size: var(--heading-4);
-  font-weight: 300;
-  color: var(--body-color);
-  text-decoration: none;
-  transition: background 0.15s;
-}
-.explore-item:hover { background: #ece8de; }
-.explore-item::after {
-  content: '→';
-  font-size: 14px;
-  color: var(--muted);
-  transition: transform 0.15s;
-}
-.explore-item:hover::after { transform: translateX(4px); }
-
-/* ---- QUOTE ---- */
-.quote-section {
-  max-width: 960px;
-  padding: 4rem clamp(1.5rem, 4vw, 3rem);
-  border-top: 1px solid var(--border);
-}
-.quote-section blockquote {
-  font-family: var(--font-display);
-  font-size: var(--heading-1);
-  font-weight: 400;
-  font-style: italic;
-  line-height: 1.5;
-  margin-bottom: 1rem;
-}
-.quote-section cite {
-  font-family: var(--font-body);
-  font-size: 11px;
-  font-weight: 300;
-  font-style: normal;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  color: var(--muted);
+.fw-step h4{font-size:13px;font-weight:600;margin-bottom:0.4rem}
+.fw-step p{font-size:11px;color:var(--text-dim);line-height:1.5}
+.fw-loop{
+  text-align:center;margin-top:2rem;
+  font-size:11px;font-weight:600;letter-spacing:0.3em;
+  color:var(--text-dim);
 }
 
-/* ---- CULTURE / ACCORDION ---- */
-.culture-section {
-  max-width: 960px;
-  padding: 2rem clamp(1.5rem, 4vw, 3rem) 4rem;
+/* CTA */
+.cta{
+  text-align:center;padding:8rem 3rem;position:relative;
 }
-.culture-intro {
-  font-family: var(--font-body);
-  font-size: var(--heading-3);
-  font-weight: 300;
-  line-height: 1.6;
-  margin-bottom: 3rem;
+.cta-glow{
+  position:absolute;bottom:0;left:50%;transform:translateX(-50%);
+  width:600px;height:400px;
+  background:radial-gradient(circle,rgba(99,102,241,0.1) 0%,transparent 70%);
+  filter:blur(80px);pointer-events:none;
 }
-.accordion-item {
-  border-top: 1px solid var(--border);
+.cta h2{
+  font-size:clamp(2rem,4vw,3.5rem);font-weight:800;
+  letter-spacing:-0.04em;margin-bottom:1rem;position:relative;
 }
-.accordion-header {
-  display: flex;
-  align-items: baseline;
-  gap: 1.5rem;
-  padding: 2rem 0;
-  cursor: pointer;
-  width: 100%;
-  background: none;
-  border: none;
-  text-align: left;
-  font-family: var(--font-ui);
-  color: var(--body-color);
-}
-.accordion-num {
-  font-size: var(--heading-1);
-  font-weight: 300;
-  line-height: 1;
-  min-width: 2.5rem;
-}
-.accordion-title {
-  font-size: var(--heading-3);
-  font-weight: 300;
-  flex: 1;
-}
-.accordion-toggle {
-  font-size: 20px;
-  color: var(--muted);
-  transition: transform 0.3s;
-}
-.accordion-item.open .accordion-toggle { transform: rotate(45deg); }
-.accordion-body {
-  display: none;
-  padding: 0 0 2rem 4rem;
-}
-.accordion-item.open .accordion-body { display: block; }
-.accordion-body p {
-  font-family: var(--font-body);
-  font-size: 13px;
-  font-weight: 300;
-  line-height: 1.538;
-  color: var(--body-color);
-  margin-bottom: 1rem;
-}
+.cta p{font-size:15px;color:var(--text-muted);margin-bottom:2.5rem;position:relative}
 
-/* ---- RESPONSIVE ---- */
-@media (max-width: 768px) {
-  .explore-grid { grid-template-columns: 1fr; }
-  .navbar-links { display: none; }
+/* FOOTER */
+footer{
+  padding:3rem;border-top:1px solid var(--border);
+  display:flex;justify-content:space-between;align-items:center;
+}
+footer p{font-size:12px;color:var(--text-dim)}
+footer a{font-size:12px;color:var(--text-muted)}
+
+/* RESPONSIVE */
+@media(max-width:768px){
+  nav,.hero,.section,.quote-section,.cta{padding-left:1.5rem;padding-right:1.5rem}
+  footer{padding:2rem 1.5rem;flex-direction:column;gap:1rem}
+  .stats{grid-template-columns:repeat(2,1fr)}
+  .bento{grid-template-columns:1fr}
+  .flywheel{grid-template-columns:repeat(2,1fr)}
+  .nav-links{display:none}
 }
 </style>
 </head>
 <body>
 
-<!-- NAVBAR -->
-<nav class="navbar">
-  <span class="navbar-logo">Roppongi VC</span>
-  <ul class="navbar-links">
-    <li><a href="#">Portfolio</a></li>
-    <li><a href="#">Team</a></li>
+<nav>
+  <span class="nav-logo">Roppongi VC</span>
+  <ul class="nav-links">
     <li><a href="#">About</a></li>
+    <li><a href="#">Incubation</a></li>
+    <li><a href="#">Media</a></li>
+    <li><a href="#">Contact</a></li>
   </ul>
 </nav>
 
-<!-- HERO -->
 <section class="hero">
-  <h1>Who We Are</h1>
-</section>
-
-<!-- CONTENT -->
-<section class="content-section">
-  <p>In 2026, Roppongi Venture Capital was founded on a single conviction: Japan's brightest STEM minds deserve world-class entrepreneurial experiences. We identify Math and Science Olympiad medalists, nurture them through a 6-month incubation program, and send the top performers to the World Economic Forum in Davos.</p>
-  <p>We pioneered the upstream model — rather than sourcing deal flow from existing founders, we create the founders ourselves. From <a href="#">incubation</a> to <a href="#">venture investment</a>, from <a href="#">deep tech decoded</a> to <a href="#">data journalism</a>, our flywheel turns talent into companies and companies into returns.</p>
-  <p>We invest in deep tech companies across quantum computing, <a href="#">nuclear fusion</a>, synthetic biology, advanced materials, and AI/robotics. We believe the future belongs to builders, and our job is to make sure they have what they need to build it.</p>
-  <p class="footnote">¹ as of March 2026</p>
-</section>
-
-<!-- EXPLORE -->
-<section class="explore">
-  <h2>Explore More</h2>
-  <div class="explore-grid">
-    <a href="#" class="explore-item">Incubation Program</a>
-    <a href="#" class="explore-item">Media & Content</a>
-    <a href="#" class="explore-item">Investment Thesis</a>
-    <a href="#" class="explore-item">Contact</a>
+  <div class="hero-glow"></div>
+  <div class="hero-content">
+    <div class="hero-badge"><span class="hero-badge-dot"></span>Now accepting applications</div>
+    <h1>日本最高峰のSTEM頭脳に、世界最高峰の起業家体験を。</h1>
+    <p>数学オリンピック・科学オリンピックメダリスト級の中高生を育成し、将来のディープテック起業家を生み出す。</p>
+    <div class="hero-cta">
+      <a href="#" class="btn-primary">プログラム詳細</a>
+      <a href="#" class="btn-ghost">About Us</a>
+    </div>
   </div>
 </section>
 
-<!-- QUOTE -->
+<section class="section">
+  <div class="section-label">The Problem</div>
+  <h2 class="section-title">技術力の差ではない。人材の差だ。</h2>
+  <p class="section-desc">GDP世界4位の日本が、人口970万人のイスラエルにすらユニコーン数で後れを取る。問題は技術力ではない。技術を事業化する人材とエコシステムの不在だ。</p>
+  <div class="stats">
+    <div class="stat"><div class="stat-num">780</div><div class="stat-label">US Unicorns</div></div>
+    <div class="stat"><div class="stat-num">16</div><div class="stat-label">Japan Unicorns</div></div>
+    <div class="stat"><div class="stat-num">48×</div><div class="stat-label">The Gap</div></div>
+    <div class="stat"><div class="stat-num">#4</div><div class="stat-label">Japan GDP Rank</div></div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="section-label">What We Do</div>
+  <h2 class="section-title">Three Pillars</h2>
+  <p class="section-desc">パイプラインの源泉を自ら生み出す。a16zより上流を押さえた構造。</p>
+  <div class="bento">
+    <div class="bento-card">
+      <div class="bento-icon">🎓</div>
+      <h3>Incubation</h3>
+      <p>数オリメダリスト級の中高生を選抜・育成。ダボス会議への派遣を通じて、世界レベルの視座を獲得させる。</p>
+    </div>
+    <div class="bento-card">
+      <div class="bento-icon">💰</div>
+      <h3>Venture Investment</h3>
+      <p>育成した人材が起業した際にファンドを組成して出資。起業家を自分で作る。</p>
+    </div>
+    <div class="bento-card">
+      <div class="bento-icon">📡</div>
+      <h3>Media</h3>
+      <p>経済・金融・テクノロジーに関する日英コンテンツを発信。データジャーナリズムからノンフィクションまで。</p>
+    </div>
+  </div>
+</section>
+
 <section class="quote-section">
-  <blockquote>A culture is not a set of beliefs, it's a set of actions.</blockquote>
-  <cite>— Bushido</cite>
+  <p class="quote">a16zは既存の起業家からディールフローを獲得する。<br>私たちは起業家を自分で作る。</p>
+  <p class="quote-cite">— Upstream Model</p>
 </section>
 
-<!-- CULTURE / ACCORDION -->
-<section class="culture-section">
-  <p class="culture-intro">Our culture is our way of doing things, not just reading about them. We are clear about our beliefs and what we stand for.</p>
-
-  <div class="accordion-item open">
-    <button class="accordion-header" onclick="this.parentElement.classList.toggle('open')">
-      <span class="accordion-num">1</span>
-      <span class="accordion-title">We create founders, not just fund them.</span>
-      <span class="accordion-toggle">+</span>
-    </button>
-    <div class="accordion-body">
-      <p>Traditional VCs wait for founders to come to them. We go upstream. We identify Japan's most gifted STEM students — Math Olympiad medalists, Science Olympiad finalists — and give them the experiences, mentorship, and global exposure that transforms raw talent into entrepreneurial ambition.</p>
-      <p>Our 6-month incubation program culminates in a trip to Davos, where participants meet heads of state, Nobel laureates, and global CEOs. The scale of that experience, at that age, is transformative.</p>
-    </div>
+<section class="section">
+  <div class="section-label">Our Flywheel</div>
+  <h2 class="section-title">自己強化ループ</h2>
+  <div class="flywheel">
+    <div class="fw-step"><div class="fw-num">01</div><h4>発掘・育成</h4><p>STEM天才中高生を選抜</p></div>
+    <div class="fw-step"><div class="fw-num">02</div><h4>ダボス派遣</h4><p>世界レベルの視座を獲得</p></div>
+    <div class="fw-step"><div class="fw-num">03</div><h4>起業</h4><p>ディープテック領域で創業</p></div>
+    <div class="fw-step"><div class="fw-num">04</div><h4>投資</h4><p>ファンド組成・出資</p></div>
+    <div class="fw-step"><div class="fw-num">05</div><h4>発信</h4><p>メディアで全過程を公開</p></div>
+    <div class="fw-step"><div class="fw-num">06</div><h4>循環</h4><p>信頼が人材を呼ぶ</p></div>
   </div>
-
-  <div class="accordion-item">
-    <button class="accordion-header" onclick="this.parentElement.classList.toggle('open')">
-      <span class="accordion-num">2</span>
-      <span class="accordion-title">We take a long view of relationships.</span>
-      <span class="accordion-toggle">+</span>
-    </button>
-    <div class="accordion-body">
-      <p>Our relationship with founders begins years before they start a company. We build trust through education, mentorship, and genuine investment in their growth as people — not just as potential portfolio companies.</p>
-    </div>
-  </div>
-
-  <div class="accordion-item">
-    <button class="accordion-header" onclick="this.parentElement.classList.toggle('open')">
-      <span class="accordion-num">3</span>
-      <span class="accordion-title">We believe in the future and bet accordingly.</span>
-      <span class="accordion-toggle">+</span>
-    </button>
-    <div class="accordion-body">
-      <p>Japan has 16 unicorns. The US has 780. The gap is not about technology — it's about the ecosystem that turns technology into businesses. We exist to close that gap, starting from the very top of the talent pipeline.</p>
-    </div>
-  </div>
+  <div class="fw-loop">∞ INFINITE LOOP</div>
 </section>
+
+<section class="cta">
+  <div class="cta-glow"></div>
+  <h2>Join Us</h2>
+  <p>インキュベーションプログラムへの応募、投資のご相談。</p>
+  <a href="#" class="btn-primary" style="position:relative">Contact →</a>
+</section>
+
+<footer>
+  <p>&copy; 2026 Roppongi Venture Capital</p>
+  <a href="#">roppongivc.com</a>
+</footer>
 
 </body>
 </html>
