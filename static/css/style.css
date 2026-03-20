@@ -63,7 +63,7 @@ img{max-width:100%;height:auto;display:block}
 .two-col-left{padding:4rem 2.5rem;border-right:1px solid var(--gray-200)}
 .two-col-right{padding:4rem 2.5rem}
 .col-heading{font-family:var(--serif);font-size:1.75rem;font-weight:300;line-height:1.35;margin-bottom:1.5rem}
-.col-body{font-size:16px;line-height:1.7;color:var(--gray-600);font-weight:400}
+.col-body{font-family:var(--sans);font-size:15px;line-height:1.9;color:var(--black);font-weight:400}
 .col-body p{margin-bottom:1.2rem}
 .col-body strong{font-weight:600;color:var(--black)}
 
@@ -103,7 +103,7 @@ img{max-width:100%;height:auto;display:block}
   display:grid;grid-template-columns:280px 1fr;gap:4rem;
   padding:4rem 2.5rem;border-bottom:1px solid var(--gray-200);
 }
-.member-photo img{width:100%;aspect-ratio:1;object-fit:cover;filter:grayscale(20%)}
+.member-photo img{width:100%;aspect-ratio:3/4;object-fit:cover;object-position:center top;filter:grayscale(20%)}
 .member-name{font-family:var(--sans);font-size:20px;font-weight:600;margin-bottom:0.25rem}
 .member-title{font-family:var(--sans);font-size:12px;color:var(--gray-500);font-weight:400;letter-spacing:0.05em;margin-bottom:2rem}
 .member-bio{font-size:14px;line-height:1.8;color:var(--gray-600);font-weight:300}
