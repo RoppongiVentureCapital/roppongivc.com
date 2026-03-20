@@ -1,9 +1,19 @@
 {{ define "main" }}
 <section class="members-header">
-  <p class="eyebrow">Team</p>
   <h1>Members</h1>
 </section>
-<div class="members-grid">
-  <div class="member"><div class="member-name">山田 圭司</div><div class="member-role">Founder</div></div>
+<div class="member-profile">
+  <div class="member-photo">
+    <img src="{{ "img/kojiyamada20240516.jpg" | relURL }}" alt="山田 航司">
+  </div>
+  <div class="member-info">
+    <h2 class="member-name">山田 航司</h2>
+    <p class="member-title">Founding Partner</p>
+    <div class="member-bio">
+      <p>東京工業大学大学院修了。Harvard Medical School Executive Education AI in Health Care Program 修了。外資テック企業勤務。</p>
+      <p>経済産業省主催の次世代イノベータ育成プログラム「始動 Next Innovator」第9期採択。University of California, Berkeley のアクセラレータプログラム「SkyDeck Bootcamp in Tokyo」第1期採択。Venture Café Tokyo「COMMUNITY CAMPUS」第1期採択、最優秀チーム賞・MVP受賞。</p>
+      <p>NPO法人 <a href="https://sites.google.com/view/minatokuwellness" target="_blank" rel="noopener">港区ウェルネス推進研究所</a> 代表・研究所長。日米協会会員。自民党政経塾18期生。</p>
+    </div>
+  </div>
 </div>
 {{ end }}
