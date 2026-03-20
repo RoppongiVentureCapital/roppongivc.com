@@ -6,8 +6,8 @@
     <h1 class="hero-title">日本最高峰のSTEM頭脳に、<br>世界最高峰の起業家体験を。</h1>
     <p class="hero-sub">数学オリンピック・科学オリンピックメダリスト級の中高生を育成し、<br class="hide-sp">将来のディープテック起業家を生み出す。</p>
     <div class="hero-cta">
-      <a href="/incubation/" class="btn btn-primary">プログラム詳細</a>
-      <a href="/about/" class="btn btn-outline">About Us</a>
+      <a href="{{ "incubation/" | relURL }}" class="btn btn-primary">プログラム詳細</a>
+      <a href="{{ "about/" | relURL }}" class="btn btn-outline">About Us</a>
     </div>
   </div>
 </section>
@@ -21,19 +21,19 @@
         <span class="pillar-num">01</span>
         <h3>Incubation</h3>
         <p>数オリメダリスト級の中高生を選抜・育成。ダボス会議への派遣を通じて、世界レベルの視座を獲得させる。</p>
-        <a href="/incubation/" class="pillar-link">詳しく見る →</a>
+        <a href="{{ "incubation/" | relURL }}" class="pillar-link">詳しく見る →</a>
       </div>
       <div class="pillar-card">
         <span class="pillar-num">02</span>
         <h3>Venture Investment</h3>
         <p>育成した人材が起業した際にファンドを組成して出資。パイプラインの源泉を自ら生み出す構造。</p>
-        <a href="/investment/" class="pillar-link">詳しく見る →</a>
+        <a href="{{ "investment/" | relURL }}" class="pillar-link">詳しく見る →</a>
       </div>
       <div class="pillar-card">
         <span class="pillar-num">03</span>
         <h3>Media</h3>
         <p>経済・金融・テクノロジーに関する日英コンテンツを発信。データジャーナリズムからノンフィクションまで。</p>
-        <a href="/blog/" class="pillar-link">詳しく見る →</a>
+        <a href="{{ "blog/" | relURL }}" class="pillar-link">詳しく見る →</a>
       </div>
     </div>
   </div>
@@ -73,7 +73,7 @@
   <div class="section-inner">
     <div class="section-header">
       <h2 class="section-title">Latest</h2>
-      <a href="/blog/" class="section-more">すべての記事 →</a>
+      <a href="{{ "blog/" | relURL }}" class="section-more">すべての記事 →</a>
     </div>
     <div class="articles-grid">
       {{ range first 6 (where .Site.RegularPages "Section" "blog") }}

@@ -21,7 +21,7 @@
       {{ range . }}<a href="/tags/{{ . | urlize }}/" class="tag">#{{ . }}</a>{{ end }}
     </div>
     {{ end }}
-    <a href="/blog/" class="back-link">← 記事一覧に戻る</a>
+    <a href="{{ "blog/" | relURL }}" class="back-link">← 記事一覧に戻る</a>
   </footer>
 </article>
 {{ end }}

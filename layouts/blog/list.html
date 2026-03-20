@@ -7,7 +7,7 @@
 
   <!-- Pillar Filter -->
   <div class="pillar-filter">
-    <a href="/blog/" class="filter-btn active">All</a>
+    <a href="{{ "blog/" | relURL }}" class="filter-btn active">All</a>
     {{ range .Site.Taxonomies.pillars }}
     <a href="{{ .Page.RelPermalink }}" class="filter-btn">{{ .Page.Title }}</a>
     {{ end }}
