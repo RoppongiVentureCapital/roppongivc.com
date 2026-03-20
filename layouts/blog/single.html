@@ -5,6 +5,7 @@
     <div class="blog-hero-inner">
       {{ with $.Params.hero_label }}<span class="blog-hero-label">{{ . }}</span>{{ end }}
       <h1 class="blog-hero-title">{{ $.Title }}</h1>
+      <div class="blog-hero-meta">{{ $.Date.Format "2006年1月2日" }}</div>
     </div>
   </div>
   {{ else }}
