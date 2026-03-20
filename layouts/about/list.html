@@ -1,116 +1,174 @@
 {{ define "main" }}
 <!-- HERO -->
-<section class="about-hero">
-  <div class="about-hero-inner">
-    <p class="about-label">About Us</p>
-    <h1 class="about-mission">日本最高峰のSTEM頭脳に、<br>世界最高峰の起業家体験を。</h1>
-    <div class="about-mission-sub">
-      <p>数学オリンピック・科学オリンピックメダリスト級の中高生を育成し、将来のディープテック起業家を生み出す。育成した人材が起業した際にファンドを組成して出資する。その全過程をWebメディアで発信する。</p>
+<section class="ab-hero">
+  <div class="ab-hero-inner">
+    <div class="ab-hero-label">About</div>
+    <h1 class="ab-hero-title">日本最高峰の<br>STEM頭脳に、<br>世界最高峰の<br>起業家体験を。</h1>
+  </div>
+  <div class="ab-hero-scroll">
+    <span>Scroll</span>
+    <div class="ab-hero-line"></div>
+  </div>
+</section>
+
+<!-- INTRO -->
+<section class="ab-intro">
+  <div class="ab-container">
+    <div class="ab-intro-grid">
+      <div class="ab-intro-left">
+        <span class="ab-eyebrow">Our Mission</span>
+      </div>
+      <div class="ab-intro-right">
+        <p class="ab-intro-lead">数学オリンピック・科学オリンピックメダリスト級の中高生を育成し、将来のディープテック起業家を生み出す。</p>
+        <p class="ab-intro-body">育成した人材が起業した際にファンドを組成して出資する。その全過程をWebメディアで発信する。私たちは、日本のスタートアップエコシステムの「上流」に介入する。</p>
+      </div>
     </div>
   </div>
 </section>
 
-<!-- THREE PILLARS -->
-<section class="about-pillars">
-  <div class="about-section-inner">
-    <p class="about-section-label">Business Structure</p>
-    <h2 class="about-section-title">3つの柱</h2>
-    <div class="about-pillars-grid">
-      <div class="about-pillar">
-        <div class="about-pillar-icon">
-          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+<!-- STATS BAND -->
+<section class="ab-stats">
+  <div class="ab-container">
+    <div class="ab-stats-grid">
+      <div class="ab-stat-item">
+        <span class="ab-stat-number">780</span>
+        <span class="ab-stat-desc">米国のユニコーン企業数</span>
+      </div>
+      <div class="ab-stat-item">
+        <span class="ab-stat-number">16</span>
+        <span class="ab-stat-desc">日本のユニコーン企業数</span>
+      </div>
+      <div class="ab-stat-item">
+        <span class="ab-stat-number">48<span class="ab-stat-unit">×</span></span>
+        <span class="ab-stat-desc">その差</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WHY -->
+<section class="ab-why">
+  <div class="ab-container">
+    <div class="ab-why-grid">
+      <div class="ab-why-left">
+        <span class="ab-eyebrow">The Problem</span>
+        <h2 class="ab-heading-lg">技術力の差ではない。<br>人材の差だ。</h2>
+      </div>
+      <div class="ab-why-right">
+        <div class="ab-prose">
+          <p>GDP世界4位の日本が、人口970万人のイスラエルにすらユニコーン数で後れを取る。</p>
+          <p>数オリメダリスト級の頭脳が「東大理三→臨床医」という単一パスに収束する日本。同レベルの人材がSpaceX、OpenAI、Anthropicを創るアメリカ。</p>
+          <p>問題は技術力ではない。<strong>技術を事業化する人材とエコシステムの不在</strong>だ。</p>
         </div>
-        <span class="about-pillar-num">01</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PILLARS -->
+<section class="ab-pillars">
+  <div class="ab-container">
+    <span class="ab-eyebrow">What We Do</span>
+    <h2 class="ab-heading-lg">Three Pillars</h2>
+    <div class="ab-pillars-grid">
+
+      <a href="{{ "incubation/" | relURL }}" class="ab-pillar-card">
+        <div class="ab-pillar-top">
+          <span class="ab-pillar-idx">01</span>
+          <span class="ab-pillar-arrow">→</span>
+        </div>
         <h3>Incubation</h3>
-        <p>数オリメダリスト級の中高生を選抜・育成し、ダボス会議への派遣を通じて世界レベルの視座を獲得させる。アルムナイネットワークを形成し、大学進学後の起業支援へ接続。</p>
-      </div>
-      <div class="about-pillar">
-        <div class="about-pillar-icon">
-          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
+        <p>数オリメダリスト級の中高生を選抜・育成。ダボス会議への派遣を通じて、世界レベルの視座を獲得させる。</p>
+        <ul class="ab-pillar-tags">
+          <li>選抜育成</li><li>ダボス派遣</li><li>アルムナイ</li>
+        </ul>
+      </a>
+
+      <a href="{{ "investment/" | relURL }}" class="ab-pillar-card">
+        <div class="ab-pillar-top">
+          <span class="ab-pillar-idx">02</span>
+          <span class="ab-pillar-arrow">→</span>
         </div>
-        <span class="about-pillar-num">02</span>
         <h3>Venture Investment</h3>
-        <p>育成した人材が起業した際にファンドを組成して出資。パイプラインの源泉を自ら生み出す構造 — a16zより上流を押さえる。</p>
-      </div>
-      <div class="about-pillar">
-        <div class="about-pillar-icon">
-          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 22h16a2 2 0 002-2V4a2 2 0 00-2-2H8a2 2 0 00-2 2v16a2 2 0 01-2 2zm0 0a2 2 0 01-2-2v-9c0-1.1.9-2 2-2h2M14 2v8l-2-2-2 2V2"/></svg>
+        <p>育成した人材が起業した際にファンドを組成して出資。パイプラインの源泉を自ら生み出す。</p>
+        <ul class="ab-pillar-tags">
+          <li>ディープテック</li><li>ファンド組成</li><li>エンジェル投資</li>
+        </ul>
+      </a>
+
+      <a href="{{ "blog/" | relURL }}" class="ab-pillar-card">
+        <div class="ab-pillar-top">
+          <span class="ab-pillar-idx">03</span>
+          <span class="ab-pillar-arrow">→</span>
         </div>
-        <span class="about-pillar-num">03</span>
         <h3>Media</h3>
-        <p>経済・金融・テクノロジーに関する日英コンテンツを発信。データジャーナリズムからノンフィクションまで、5つの柱で構成。</p>
-      </div>
+        <p>経済・金融・テクノロジーに関する日英コンテンツを発信。データジャーナリズムからノンフィクションまで。</p>
+        <ul class="ab-pillar-tags">
+          <li>データジャーナリズム</li><li>日英発信</li><li>ノンフィクション</li>
+        </ul>
+      </a>
+
     </div>
   </div>
 </section>
 
-<!-- WHY NOW -->
-<section class="about-why">
-  <div class="about-section-inner">
-    <div class="about-why-layout">
-      <div class="about-why-left">
-        <p class="about-section-label">Why Now</p>
-        <h2 class="about-section-title">なぜ今、<br>これが必要なのか</h2>
-      </div>
-      <div class="about-why-right">
-        <p class="about-why-lead">GDP世界4位の日本のユニコーン企業数はわずか16社。人口970万人のイスラエルにすら後れを取る。</p>
-        <p>差は「技術力の差」ではない。<strong>「技術を事業化する人材・エコシステムの差」</strong>だ。</p>
-        <p>数オリメダリスト級の頭脳が「東大理三→臨床医」という単一パスに収束する日本。同レベルの人材がSpaceX、OpenAI、Anthropicを創るアメリカ。</p>
-        <p class="about-why-conclusion">この構造を変える。上流から。</p>
-      </div>
-    </div>
-    <div class="about-stats-bar">
-      <div class="about-stat">
-        <span class="about-stat-num">780</span>
-        <span class="about-stat-label">米国ユニコーン</span>
-      </div>
-      <div class="about-stat-divider"></div>
-      <div class="about-stat">
-        <span class="about-stat-num">16</span>
-        <span class="about-stat-label">日本ユニコーン</span>
-      </div>
-      <div class="about-stat-divider"></div>
-      <div class="about-stat">
-        <span class="about-stat-num">48×</span>
-        <span class="about-stat-label">差</span>
-      </div>
-      <div class="about-stat-divider"></div>
-      <div class="about-stat">
-        <span class="about-stat-num">4位</span>
-        <span class="about-stat-label">日本のGDP順位</span>
-      </div>
-    </div>
+<!-- QUOTE -->
+<section class="ab-quote">
+  <div class="ab-container">
+    <blockquote>
+      <p>a16zは既存の起業家からディールフローを獲得する。<br>私たちは起業家を自分で作る。</p>
+      <cite>— a16zより上流を押さえる構造</cite>
+    </blockquote>
   </div>
 </section>
 
 <!-- FLYWHEEL -->
-<section class="about-flywheel">
-  <div class="about-section-inner">
-    <p class="about-section-label">Flywheel</p>
-    <h2 class="about-section-title">自己強化ループ</h2>
-    <div class="flywheel-ring">
-      <div class="flywheel-step"><span class="flywheel-num">1</span><span class="flywheel-text">STEM天才中高生を<br>発掘・育成</span></div>
-      <div class="flywheel-arrow">→</div>
-      <div class="flywheel-step"><span class="flywheel-num">2</span><span class="flywheel-text">ダボス派遣で<br>世界レベルの視座</span></div>
-      <div class="flywheel-arrow">→</div>
-      <div class="flywheel-step"><span class="flywheel-num">3</span><span class="flywheel-text">大学進学後に<br>ディープテック起業</span></div>
-      <div class="flywheel-arrow">→</div>
-      <div class="flywheel-step"><span class="flywheel-num">4</span><span class="flywheel-text">六本木VCが<br>ファンド組成・出資</span></div>
-      <div class="flywheel-arrow">→</div>
-      <div class="flywheel-step"><span class="flywheel-num">5</span><span class="flywheel-text">メディアで<br>全過程を発信</span></div>
-      <div class="flywheel-arrow">→</div>
-      <div class="flywheel-step"><span class="flywheel-num">6</span><span class="flywheel-text">ブランド構築で<br>より優秀な人材が集まる</span></div>
-      <div class="flywheel-arrow flywheel-loop">↻</div>
+<section class="ab-flywheel">
+  <div class="ab-container">
+    <span class="ab-eyebrow">Our Flywheel</span>
+    <h2 class="ab-heading-lg">自己強化ループ</h2>
+    <div class="ab-fw-steps">
+      <div class="ab-fw-step">
+        <div class="ab-fw-num">01</div>
+        <h4>発掘・育成</h4>
+        <p>STEM天才中高生を選抜し、6ヶ月間のインキュベーション</p>
+      </div>
+      <div class="ab-fw-step">
+        <div class="ab-fw-num">02</div>
+        <h4>世界への派遣</h4>
+        <p>ダボス会議で世界レベルの視座を獲得</p>
+      </div>
+      <div class="ab-fw-step">
+        <div class="ab-fw-num">03</div>
+        <h4>起業</h4>
+        <p>大学進学後にディープテック領域で起業</p>
+      </div>
+      <div class="ab-fw-step">
+        <div class="ab-fw-num">04</div>
+        <h4>投資</h4>
+        <p>六本木VCがファンドを組成し出資</p>
+      </div>
+      <div class="ab-fw-step">
+        <div class="ab-fw-num">05</div>
+        <h4>発信</h4>
+        <p>メディアで全過程を発信しブランドを構築</p>
+      </div>
+      <div class="ab-fw-step">
+        <div class="ab-fw-num">06</div>
+        <h4>循環</h4>
+        <p>信頼が集まり、より優秀な人材が参加する</p>
+      </div>
     </div>
+    <div class="ab-fw-loop-label">∞ LOOP</div>
   </div>
 </section>
 
 <!-- CTA -->
-<section class="about-cta">
-  <div class="about-section-inner">
-    <h2>参加する</h2>
-    <p>インキュベーションプログラムへの応募、投資のご相談、メディアに関するお問い合わせ。</p>
-    <a href="{{ "contact/" | relURL }}" class="btn btn-primary btn-dark">Contact Us</a>
+<section class="ab-cta">
+  <div class="ab-container">
+    <h2 class="ab-cta-title">Join Us</h2>
+    <p class="ab-cta-sub">インキュベーションプログラムへの応募、投資のご相談、メディアに関するお問い合わせ。</p>
+    <a href="{{ "contact/" | relURL }}" class="ab-cta-btn">Contact →</a>
   </div>
 </section>
 {{ end }}
