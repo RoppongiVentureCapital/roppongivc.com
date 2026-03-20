@@ -3,218 +3,231 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Roppongi VC — About</title>
+<title>Roppongi Venture Capital</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Noto+Sans+JP:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400&family=Inter:wght@300;400;500;600;700&family=Noto+Serif+JP:wght@300;400;600;700&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
 :root{
-  --bg:#09090b;
-  --surface:#18181b;
-  --surface-2:#27272a;
-  --border:#27272a;
-  --text:#fafafa;
-  --text-muted:#a1a1aa;
-  --text-dim:#52525b;
-  --accent:#6366f1;
-  --accent-2:#8b5cf6;
-  --gradient:linear-gradient(135deg,#6366f1,#8b5cf6,#a78bfa);
-  --font:'Inter','Noto Sans JP',system-ui,sans-serif;
+  --white:#fff;
+  --black:#000;
+  --bg:#fff;
+  --gray-100:#f9f9f9;
+  --gray-200:#d9d9d9;
+  --gray-500:#6e6e6e;
+  --gray-600:#3f3f3f;
+  --gray-900:#000;
+  --accent:#019949;
+  --serif:'Source Serif 4','Noto Serif JP',Georgia,serif;
+  --sans:'Inter',system-ui,sans-serif;
+  --content-w:52.625rem;
+  --wide-w:72rem;
 }
-html{-webkit-font-smoothing:antialiased;scroll-behavior:smooth}
-body{background:var(--bg);color:var(--text);font-family:var(--font);font-size:15px;line-height:1.7;overflow-x:hidden}
+html{-webkit-font-smoothing:antialiased}
+body{background:var(--bg);color:var(--black);font-family:var(--serif);font-size:18px;font-weight:300;line-height:1.444}
 a{color:inherit;text-decoration:none}
-::selection{background:var(--accent);color:#fff}
-
-/* GRAIN OVERLAY */
-body::before{
-  content:'';position:fixed;inset:0;z-index:9999;pointer-events:none;
-  opacity:0.03;
-  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-}
+::selection{background:var(--black);color:var(--white)}
 
 /* NAV */
-nav{
-  position:fixed;top:0;left:0;right:0;z-index:100;
-  padding:0 3rem;height:64px;
+.nav{
   display:flex;align-items:center;justify-content:space-between;
-  background:rgba(9,9,11,0.8);backdrop-filter:blur(16px);
-  border-bottom:1px solid var(--border);
+  padding:0 2.5rem;height:56px;
+  border-bottom:1px solid var(--black);
+  position:sticky;top:0;z-index:100;background:var(--bg);
 }
-.nav-logo{font-weight:700;font-size:14px;letter-spacing:-0.02em}
-.nav-links{display:flex;gap:2rem;list-style:none}
-.nav-links a{font-size:13px;color:var(--text-muted);transition:color 0.2s}
-.nav-links a:hover{color:var(--text)}
+.nav-logo{
+  font-family:var(--sans);font-size:11px;font-weight:700;
+  letter-spacing:0.2em;text-transform:uppercase;
+}
+.nav-links{display:flex;gap:1.5rem;list-style:none}
+.nav-links a{
+  font-family:var(--sans);font-size:11px;font-weight:400;
+  letter-spacing:0.08em;text-transform:uppercase;color:var(--gray-500);
+  transition:color 0.15s;
+}
+.nav-links a:hover{color:var(--black)}
 
 /* HERO */
 .hero{
-  min-height:100vh;display:flex;flex-direction:column;justify-content:center;
-  padding:0 3rem;position:relative;overflow:hidden;
+  padding:6rem 2.5rem 5rem;
+  border-bottom:4px solid var(--black);
 }
-.hero-glow{
-  position:absolute;top:20%;left:50%;transform:translate(-50%,-50%);
-  width:800px;height:800px;border-radius:50%;
-  background:radial-gradient(circle,rgba(99,102,241,0.15) 0%,rgba(139,92,246,0.08) 40%,transparent 70%);
-  filter:blur(60px);pointer-events:none;
+.hero-inner{max-width:var(--wide-w)}
+.hero-eyebrow{
+  font-family:var(--sans);font-size:11px;font-weight:500;
+  letter-spacing:0.15em;text-transform:uppercase;color:var(--gray-500);
+  margin-bottom:2rem;
 }
-.hero-content{position:relative;max-width:900px}
-.hero-badge{
-  display:inline-flex;align-items:center;gap:0.5rem;
-  padding:0.4rem 1rem;border-radius:100px;
-  background:var(--surface);border:1px solid var(--border);
-  font-size:12px;color:var(--text-muted);margin-bottom:2.5rem;
-}
-.hero-badge-dot{width:6px;height:6px;border-radius:50%;background:var(--accent);animation:pulse 2s infinite}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
 .hero h1{
-  font-size:clamp(2.5rem,6vw,4.5rem);font-weight:800;
-  line-height:1.15;letter-spacing:-0.04em;
-  background:linear-gradient(180deg,#fff 0%,#a1a1aa 100%);
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
-  background-clip:text;
+  font-family:var(--serif);font-size:clamp(2.5rem,5vw,3.375rem);
+  font-weight:300;line-height:1.2;letter-spacing:-0.01em;
+  max-width:18em;
+}
+
+/* TWO COL */
+.two-col{
+  display:grid;grid-template-columns:1fr 1fr;
+  border-bottom:1px solid var(--gray-200);
+}
+.two-col-left{
+  padding:4rem 2.5rem;
+  border-right:1px solid var(--gray-200);
+}
+.two-col-right{padding:4rem 2.5rem}
+.col-eyebrow{
+  font-family:var(--sans);font-size:11px;font-weight:500;
+  letter-spacing:0.15em;text-transform:uppercase;color:var(--gray-500);
   margin-bottom:1.5rem;
 }
-.hero p{
-  font-size:clamp(1rem,1.5vw,1.2rem);color:var(--text-muted);
-  max-width:560px;line-height:1.8;font-weight:300;
+.col-heading{
+  font-family:var(--serif);font-size:1.75rem;font-weight:300;
+  line-height:1.35;margin-bottom:1.5rem;
 }
-.hero-cta{display:flex;gap:1rem;margin-top:2.5rem}
-.btn-primary{
-  padding:0.7rem 1.8rem;border-radius:8px;font-size:14px;font-weight:500;
-  background:var(--text);color:var(--bg);transition:all 0.2s;
-}
-.btn-primary:hover{opacity:0.9;transform:translateY(-1px)}
-.btn-ghost{
-  padding:0.7rem 1.8rem;border-radius:8px;font-size:14px;font-weight:500;
-  border:1px solid var(--border);color:var(--text-muted);transition:all 0.2s;
-}
-.btn-ghost:hover{border-color:var(--text-muted);color:var(--text)}
-
-/* SECTION */
-.section{padding:8rem 3rem}
-.section-label{
-  font-size:12px;font-weight:600;letter-spacing:0.15em;text-transform:uppercase;
-  color:var(--accent);margin-bottom:1rem;
-}
-.section-title{
-  font-size:clamp(1.5rem,3vw,2.5rem);font-weight:700;
-  letter-spacing:-0.03em;margin-bottom:1rem;
-}
-.section-desc{font-size:15px;color:var(--text-muted);max-width:560px;line-height:1.8;font-weight:300}
+.col-body{font-size:14px;line-height:1.6;color:var(--gray-600);font-weight:300}
+.col-body p{margin-bottom:1rem}
+.col-body strong{font-weight:600;color:var(--black)}
 
 /* STATS */
-.stats{
-  display:grid;grid-template-columns:repeat(4,1fr);gap:1px;
-  background:var(--border);border:1px solid var(--border);border-radius:16px;
-  overflow:hidden;margin-top:4rem;
+.stats-row{
+  display:grid;grid-template-columns:repeat(4,1fr);
+  border-bottom:4px solid var(--black);
 }
-.stat{background:var(--bg);padding:3rem 2rem;text-align:center}
+.stat-cell{
+  padding:3rem 2.5rem;
+  border-right:1px solid var(--gray-200);
+  text-align:center;
+}
+.stat-cell:last-child{border-right:none}
 .stat-num{
-  font-size:clamp(2.5rem,5vw,3.5rem);font-weight:800;
-  letter-spacing:-0.04em;
-  background:var(--gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  font-family:var(--serif);font-size:clamp(2rem,4vw,3rem);
+  font-weight:700;line-height:1;letter-spacing:-0.02em;
 }
-.stat-label{font-size:12px;color:var(--text-dim);margin-top:0.5rem;letter-spacing:0.05em}
+.stat-label{
+  font-family:var(--sans);font-size:10px;font-weight:500;
+  letter-spacing:0.15em;text-transform:uppercase;color:var(--gray-500);
+  margin-top:0.75rem;
+}
 
-/* BENTO GRID */
-.bento{
-  display:grid;grid-template-columns:repeat(3,1fr);gap:1px;
-  background:var(--border);border:1px solid var(--border);border-radius:16px;
-  overflow:hidden;margin-top:4rem;
+/* THREE CARDS */
+.cards{
+  display:grid;grid-template-columns:repeat(3,1fr);
+  border-bottom:1px solid var(--gray-200);
 }
-.bento-card{
-  background:var(--bg);padding:2.5rem;
-  transition:background 0.3s;position:relative;overflow:hidden;
+.card{
+  padding:3rem 2.5rem;
+  border-right:1px solid var(--gray-200);
+  transition:background 0.2s;
 }
-.bento-card:hover{background:var(--surface)}
-.bento-card::before{
-  content:'';position:absolute;top:0;left:0;right:0;height:1px;
-  background:var(--gradient);opacity:0;transition:opacity 0.3s;
+.card:last-child{border-right:none}
+.card:hover{background:var(--gray-100)}
+.card-num{
+  font-family:var(--sans);font-size:10px;font-weight:600;
+  letter-spacing:0.15em;color:var(--gray-500);margin-bottom:2rem;
 }
-.bento-card:hover::before{opacity:1}
-.bento-icon{
-  width:40px;height:40px;border-radius:10px;
-  background:var(--surface);border:1px solid var(--border);
-  display:flex;align-items:center;justify-content:center;
-  font-size:18px;margin-bottom:1.5rem;
+.card h3{
+  font-family:var(--sans);font-size:14px;font-weight:600;
+  letter-spacing:-0.01em;margin-bottom:0.75rem;
 }
-.bento-card h3{font-size:16px;font-weight:600;margin-bottom:0.5rem;letter-spacing:-0.01em}
-.bento-card p{font-size:13px;color:var(--text-muted);line-height:1.7;font-weight:300}
+.card p{font-size:14px;line-height:1.6;color:var(--gray-500);font-weight:300}
+.card-tags{display:flex;flex-wrap:wrap;gap:0.4rem;margin-top:1.5rem}
+.card-tag{
+  font-family:var(--sans);font-size:10px;font-weight:400;
+  padding:0.2rem 0.6rem;border:1px solid var(--gray-200);
+  color:var(--gray-500);
+}
 
 /* QUOTE */
-.quote-section{
-  padding:6rem 3rem;text-align:center;
-  border-top:1px solid var(--border);border-bottom:1px solid var(--border);
+.quote-block{
+  padding:5rem 2.5rem;
+  border-bottom:4px solid var(--black);
+  text-align:center;
 }
-.quote{
-  font-size:clamp(1.3rem,2.5vw,2rem);font-weight:300;
-  line-height:1.7;max-width:700px;margin:0 auto 1.5rem;
-  font-style:italic;color:var(--text-muted);
+.quote-text{
+  font-family:var(--serif);font-size:clamp(1.25rem,2.5vw,1.75rem);
+  font-weight:300;font-style:italic;line-height:1.6;
+  max-width:36em;margin:0 auto 1.5rem;
 }
-.quote-cite{font-size:12px;color:var(--text-dim);letter-spacing:0.1em;text-transform:uppercase}
+.quote-cite{
+  font-family:var(--sans);font-size:10px;font-weight:500;
+  letter-spacing:0.2em;text-transform:uppercase;color:var(--gray-500);
+}
 
 /* FLYWHEEL */
-.flywheel{
-  display:grid;grid-template-columns:repeat(6,1fr);gap:1rem;margin-top:4rem;
+.flywheel-section{padding:4rem 2.5rem;border-bottom:1px solid var(--gray-200)}
+.flywheel-section .col-eyebrow{margin-bottom:1rem}
+.flywheel-section .col-heading{margin-bottom:3rem}
+.fw-grid{
+  display:grid;grid-template-columns:repeat(6,1fr);
+  border:1px solid var(--gray-200);
 }
-.fw-step{
-  padding:2rem 1.2rem;border-radius:12px;
-  background:var(--surface);border:1px solid var(--border);
-  text-align:center;transition:all 0.3s;position:relative;
+.fw-cell{
+  padding:2rem 1.2rem;
+  border-right:1px solid var(--gray-200);
+  text-align:center;
 }
-.fw-step:hover{border-color:var(--accent);transform:translateY(-4px)}
-.fw-num{
-  font-size:11px;font-weight:700;color:var(--accent);
-  letter-spacing:0.1em;margin-bottom:1rem;
+.fw-cell:last-child{border-right:none}
+.fw-cell-num{
+  font-family:var(--sans);font-size:10px;font-weight:600;
+  letter-spacing:0.1em;color:var(--accent);margin-bottom:1rem;
 }
-.fw-step h4{font-size:13px;font-weight:600;margin-bottom:0.4rem}
-.fw-step p{font-size:11px;color:var(--text-dim);line-height:1.5}
-.fw-loop{
-  text-align:center;margin-top:2rem;
-  font-size:11px;font-weight:600;letter-spacing:0.3em;
-  color:var(--text-dim);
+.fw-cell h4{
+  font-family:var(--sans);font-size:12px;font-weight:600;
+  margin-bottom:0.4rem;
+}
+.fw-cell p{font-size:11px;line-height:1.5;color:var(--gray-500);font-weight:300}
+.fw-label{
+  text-align:center;margin-top:1.5rem;
+  font-family:var(--sans);font-size:10px;font-weight:600;
+  letter-spacing:0.4em;color:var(--gray-500);
 }
 
 /* CTA */
 .cta{
-  text-align:center;padding:8rem 3rem;position:relative;
-}
-.cta-glow{
-  position:absolute;bottom:0;left:50%;transform:translateX(-50%);
-  width:600px;height:400px;
-  background:radial-gradient(circle,rgba(99,102,241,0.1) 0%,transparent 70%);
-  filter:blur(80px);pointer-events:none;
+  padding:6rem 2.5rem;text-align:center;
+  border-bottom:4px solid var(--black);
 }
 .cta h2{
-  font-size:clamp(2rem,4vw,3.5rem);font-weight:800;
-  letter-spacing:-0.04em;margin-bottom:1rem;position:relative;
+  font-family:var(--serif);font-size:clamp(1.5rem,3vw,2.5rem);
+  font-weight:300;margin-bottom:1rem;
 }
-.cta p{font-size:15px;color:var(--text-muted);margin-bottom:2.5rem;position:relative}
+.cta p{font-size:14px;color:var(--gray-500);margin-bottom:2rem;font-weight:300}
+.cta-btn{
+  display:inline-block;padding:0.7rem 2.5rem;
+  font-family:var(--sans);font-size:11px;font-weight:600;
+  letter-spacing:0.1em;text-transform:uppercase;
+  background:var(--black);color:var(--white);
+  transition:background 0.2s;
+}
+.cta-btn:hover{background:var(--gray-600)}
 
 /* FOOTER */
-footer{
-  padding:3rem;border-top:1px solid var(--border);
+.footer{
   display:flex;justify-content:space-between;align-items:center;
+  padding:1.5rem 2.5rem;
+  font-family:var(--sans);font-size:10px;color:var(--gray-500);
+  letter-spacing:0.05em;
 }
-footer p{font-size:12px;color:var(--text-dim)}
-footer a{font-size:12px;color:var(--text-muted)}
 
 /* RESPONSIVE */
 @media(max-width:768px){
-  nav,.hero,.section,.quote-section,.cta{padding-left:1.5rem;padding-right:1.5rem}
-  footer{padding:2rem 1.5rem;flex-direction:column;gap:1rem}
-  .stats{grid-template-columns:repeat(2,1fr)}
-  .bento{grid-template-columns:1fr}
-  .flywheel{grid-template-columns:repeat(2,1fr)}
+  .two-col{grid-template-columns:1fr}
+  .two-col-left{border-right:none;border-bottom:1px solid var(--gray-200)}
+  .stats-row{grid-template-columns:repeat(2,1fr)}
+  .stat-cell:nth-child(2){border-right:none}
+  .cards{grid-template-columns:1fr}
+  .card{border-right:none;border-bottom:1px solid var(--gray-200)}
+  .fw-grid{grid-template-columns:repeat(2,1fr)}
+  .fw-cell:nth-child(2n){border-right:none}
+  .fw-cell{border-bottom:1px solid var(--gray-200)}
   .nav-links{display:none}
 }
 </style>
 </head>
 <body>
 
-<nav>
-  <span class="nav-logo">Roppongi VC</span>
+<nav class="nav">
+  <span class="nav-logo">Roppongi Venture Capital</span>
   <ul class="nav-links">
     <li><a href="#">About</a></li>
     <li><a href="#">Incubation</a></li>
@@ -224,82 +237,95 @@ footer a{font-size:12px;color:var(--text-muted)}
 </nav>
 
 <section class="hero">
-  <div class="hero-glow"></div>
-  <div class="hero-content">
-    <div class="hero-badge"><span class="hero-badge-dot"></span>Now accepting applications</div>
+  <div class="hero-inner">
+    <p class="hero-eyebrow">About</p>
     <h1>日本最高峰のSTEM頭脳に、世界最高峰の起業家体験を。</h1>
-    <p>数学オリンピック・科学オリンピックメダリスト級の中高生を育成し、将来のディープテック起業家を生み出す。</p>
-    <div class="hero-cta">
-      <a href="#" class="btn-primary">プログラム詳細</a>
-      <a href="#" class="btn-ghost">About Us</a>
+  </div>
+</section>
+
+<section class="two-col">
+  <div class="two-col-left">
+    <p class="col-eyebrow">Our Mission</p>
+    <h2 class="col-heading">パイプラインの源泉を、自ら生み出す。</h2>
+  </div>
+  <div class="two-col-right">
+    <div class="col-body">
+      <p>数学オリンピック・科学オリンピックメダリスト級の中高生を育成し、将来のディープテック起業家を生み出す。育成した人材が起業した際にファンドを組成して出資する。</p>
+      <p>従来のVCが既存の起業家からディールフローを獲得するのに対し、私たちは<strong>起業家を自分で作る</strong>。その全過程をWebメディアで発信する。</p>
     </div>
   </div>
 </section>
 
-<section class="section">
-  <div class="section-label">The Problem</div>
-  <h2 class="section-title">技術力の差ではない。人材の差だ。</h2>
-  <p class="section-desc">GDP世界4位の日本が、人口970万人のイスラエルにすらユニコーン数で後れを取る。問題は技術力ではない。技術を事業化する人材とエコシステムの不在だ。</p>
-  <div class="stats">
-    <div class="stat"><div class="stat-num">780</div><div class="stat-label">US Unicorns</div></div>
-    <div class="stat"><div class="stat-num">16</div><div class="stat-label">Japan Unicorns</div></div>
-    <div class="stat"><div class="stat-num">48×</div><div class="stat-label">The Gap</div></div>
-    <div class="stat"><div class="stat-num">#4</div><div class="stat-label">Japan GDP Rank</div></div>
-  </div>
+<section class="stats-row">
+  <div class="stat-cell"><div class="stat-num">780</div><div class="stat-label">US Unicorns</div></div>
+  <div class="stat-cell"><div class="stat-num">16</div><div class="stat-label">Japan Unicorns</div></div>
+  <div class="stat-cell"><div class="stat-num">48×</div><div class="stat-label">The Gap</div></div>
+  <div class="stat-cell"><div class="stat-num">#4</div><div class="stat-label">Japan GDP Rank</div></div>
 </section>
 
-<section class="section">
-  <div class="section-label">What We Do</div>
-  <h2 class="section-title">Three Pillars</h2>
-  <p class="section-desc">パイプラインの源泉を自ら生み出す。a16zより上流を押さえた構造。</p>
-  <div class="bento">
-    <div class="bento-card">
-      <div class="bento-icon">🎓</div>
-      <h3>Incubation</h3>
-      <p>数オリメダリスト級の中高生を選抜・育成。ダボス会議への派遣を通じて、世界レベルの視座を獲得させる。</p>
-    </div>
-    <div class="bento-card">
-      <div class="bento-icon">💰</div>
-      <h3>Venture Investment</h3>
-      <p>育成した人材が起業した際にファンドを組成して出資。起業家を自分で作る。</p>
-    </div>
-    <div class="bento-card">
-      <div class="bento-icon">📡</div>
-      <h3>Media</h3>
-      <p>経済・金融・テクノロジーに関する日英コンテンツを発信。データジャーナリズムからノンフィクションまで。</p>
+<section class="two-col">
+  <div class="two-col-left">
+    <p class="col-eyebrow">The Problem</p>
+    <h2 class="col-heading">技術力の差ではない。<br>人材の差だ。</h2>
+  </div>
+  <div class="two-col-right">
+    <div class="col-body">
+      <p>GDP世界4位の日本が、人口970万人のイスラエルにすらユニコーン数で後れを取る。</p>
+      <p>数オリメダリスト級の頭脳が「東大理三→臨床医」という単一パスに収束する日本。同レベルの人材がSpaceX、OpenAI、Anthropicを創るアメリカ。</p>
+      <p>問題は技術力ではない。<strong>技術を事業化する人材とエコシステムの不在</strong>だ。</p>
     </div>
   </div>
 </section>
 
-<section class="quote-section">
-  <p class="quote">a16zは既存の起業家からディールフローを獲得する。<br>私たちは起業家を自分で作る。</p>
-  <p class="quote-cite">— Upstream Model</p>
+<section class="cards">
+  <div class="card">
+    <div class="card-num">01</div>
+    <h3>Incubation</h3>
+    <p>数オリメダリスト級の中高生を選抜・育成。ダボス会議への派遣を通じて、世界レベルの視座を獲得させる。</p>
+    <div class="card-tags"><span class="card-tag">選抜育成</span><span class="card-tag">ダボス派遣</span><span class="card-tag">アルムナイ</span></div>
+  </div>
+  <div class="card">
+    <div class="card-num">02</div>
+    <h3>Venture Investment</h3>
+    <p>育成した人材が起業した際にファンドを組成して出資。パイプラインの源泉を自ら生み出す。</p>
+    <div class="card-tags"><span class="card-tag">ディープテック</span><span class="card-tag">ファンド組成</span><span class="card-tag">エンジェル投資</span></div>
+  </div>
+  <div class="card">
+    <div class="card-num">03</div>
+    <h3>Media</h3>
+    <p>経済・金融・テクノロジーに関する日英コンテンツを発信。データジャーナリズムからノンフィクションまで。</p>
+    <div class="card-tags"><span class="card-tag">データジャーナリズム</span><span class="card-tag">日英発信</span></div>
+  </div>
 </section>
 
-<section class="section">
-  <div class="section-label">Our Flywheel</div>
-  <h2 class="section-title">自己強化ループ</h2>
-  <div class="flywheel">
-    <div class="fw-step"><div class="fw-num">01</div><h4>発掘・育成</h4><p>STEM天才中高生を選抜</p></div>
-    <div class="fw-step"><div class="fw-num">02</div><h4>ダボス派遣</h4><p>世界レベルの視座を獲得</p></div>
-    <div class="fw-step"><div class="fw-num">03</div><h4>起業</h4><p>ディープテック領域で創業</p></div>
-    <div class="fw-step"><div class="fw-num">04</div><h4>投資</h4><p>ファンド組成・出資</p></div>
-    <div class="fw-step"><div class="fw-num">05</div><h4>発信</h4><p>メディアで全過程を公開</p></div>
-    <div class="fw-step"><div class="fw-num">06</div><h4>循環</h4><p>信頼が人材を呼ぶ</p></div>
+<section class="quote-block">
+  <p class="quote-text">a16zは既存の起業家からディールフローを獲得する。<br>私たちは起業家を自分で作る。</p>
+  <p class="quote-cite">Upstream Model</p>
+</section>
+
+<section class="flywheel-section">
+  <p class="col-eyebrow">Our Flywheel</p>
+  <h2 class="col-heading">自己強化ループ</h2>
+  <div class="fw-grid">
+    <div class="fw-cell"><div class="fw-cell-num">01</div><h4>発掘・育成</h4><p>STEM天才中高生を選抜</p></div>
+    <div class="fw-cell"><div class="fw-cell-num">02</div><h4>ダボス派遣</h4><p>世界レベルの視座を獲得</p></div>
+    <div class="fw-cell"><div class="fw-cell-num">03</div><h4>起業</h4><p>ディープテック領域で創業</p></div>
+    <div class="fw-cell"><div class="fw-cell-num">04</div><h4>投資</h4><p>ファンド組成・出資</p></div>
+    <div class="fw-cell"><div class="fw-cell-num">05</div><h4>発信</h4><p>メディアで全過程を公開</p></div>
+    <div class="fw-cell"><div class="fw-cell-num">06</div><h4>循環</h4><p>信頼が人材を呼ぶ</p></div>
   </div>
-  <div class="fw-loop">∞ INFINITE LOOP</div>
+  <div class="fw-label">∞ LOOP</div>
 </section>
 
 <section class="cta">
-  <div class="cta-glow"></div>
   <h2>Join Us</h2>
   <p>インキュベーションプログラムへの応募、投資のご相談。</p>
-  <a href="#" class="btn-primary" style="position:relative">Contact →</a>
+  <a href="#" class="cta-btn">Contact</a>
 </section>
 
-<footer>
-  <p>&copy; 2026 Roppongi Venture Capital</p>
-  <a href="#">roppongivc.com</a>
+<footer class="footer">
+  <span>© 2026 Roppongi Venture Capital</span>
+  <span>roppongivc.com</span>
 </footer>
 
 </body>
