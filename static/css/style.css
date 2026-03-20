@@ -149,8 +149,8 @@ img{max-width:100%;height:auto;display:block}
 .blog-single h1{font-family:var(--serif);font-size:clamp(1.5rem,3vw,2.25rem);font-weight:400;line-height:1.35;margin-bottom:1rem}
 .blog-single .meta{font-family:var(--sans);font-size:11px;color:var(--gray-500)}
 .blog-single .content{font-family:var(--sans);font-size:16px;line-height:1.9;font-weight:400}
-.blog-single .content h2{font-family:var(--serif);font-size:1.375rem;font-weight:600;margin:3rem 0 1rem;padding-bottom:0.5rem;border-bottom:1px solid var(--gray-200)}
-.blog-single .content h3{font-family:var(--serif);font-size:1.125rem;font-weight:600;margin:2rem 0 0.75rem}
+.blog-single .content h2{font-family:var(--sans);font-size:1.375rem;font-weight:600;margin:3rem 0 1rem;padding-bottom:0.5rem;border-bottom:1px solid var(--gray-200)}
+.blog-single .content h3{font-family:var(--sans);font-size:1.125rem;font-weight:600;margin:2rem 0 0.75rem}
 .blog-single .content p{margin-bottom:1.5rem}
 .blog-single .content ul,.blog-single .content ol{margin:1rem 0 1.5rem 1.5rem}
 .blog-single .content li{margin-bottom:0.5rem}
