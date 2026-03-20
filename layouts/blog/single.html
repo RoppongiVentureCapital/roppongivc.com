@@ -1,27 +1,11 @@
 {{ define "main" }}
 <article class="blog-single">
-  <header class="blog-header">
-    {{ with .Params.pillars }}
-    <span class="article-pillar">{{ index . 0 }}</span>
-    {{ end }}
+  <header>
+    {{ with .Params.pillars }}<div class="article-pillar">{{ index . 0 }}</div>{{ end }}
     <h1>{{ .Title }}</h1>
-    {{ with .Params.description }}<p class="blog-description">{{ . }}</p>{{ end }}
-    <div class="blog-meta">
-      <time>{{ .Date.Format "2006年1月2日" }}</time>
-      {{ with .Params.author }}<span class="author">{{ . }}</span>{{ end }}
-      <span class="reading-time">{{ math.Round (div (countwords .Content) 400.0) }}分で読める</span>
-    </div>
+    <div class="meta">{{ .Date.Format "2006年1月2日" }}{{ with .Params.author }} · {{ . }}{{ end }}</div>
   </header>
-  <div class="blog-content">
-    {{ .Content }}
-  </div>
-  <footer class="blog-footer">
-    {{ with .Params.tags }}
-    <div class="blog-tags">
-      {{ range . }}<a href="/tags/{{ . | urlize }}/" class="tag">#{{ . }}</a>{{ end }}
-    </div>
-    {{ end }}
-    <a href="{{ "blog/" | relURL }}" class="back-link">← 記事一覧に戻る</a>
-  </footer>
+  <div class="content">{{ .Content }}</div>
+  <a href="{{ "blog/" | relURL }}" class="back">← JIWA に戻る</a>
 </article>
 {{ end }}
