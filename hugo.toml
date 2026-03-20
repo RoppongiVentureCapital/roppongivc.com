@@ -5,49 +5,23 @@ defaultContentLanguage = "ja"
 enableRobotsTXT = true
 paginate = 12
 
-[languages]
-  [languages.ja]
-    languageName = "日本語"
-    weight = 1
-    title = "六本木ベンチャーキャピタル"
-    [languages.ja.params]
-      description = "日本最高峰のSTEM頭脳に、世界最高峰の起業家体験を。"
-  [languages.en]
-    languageName = "English"
-    weight = 2
-    title = "Roppongi Venture Capital"
-    [languages.en.params]
-      description = "World-class entrepreneurial experiences for Japan's brightest STEM minds."
-
 [params]
-  tagline = "日本最高峰のSTEM頭脳に、世界最高峰の起業家体験を。"
-  taglineEn = "World-class entrepreneurial experiences for Japan's brightest STEM minds."
-  ogImage = "/img/og-default.png"
+  description = "日本最高峰のSTEM頭脳に、世界最高峰の起業家体験を。"
 
 [menus]
   [[menus.main]]
-    name = "About"
-    url = "/about/"
+    name = "Members"
+    url = "/members/"
     weight = 1
   [[menus.main]]
-    name = "Incubation"
-    url = "/incubation/"
-    weight = 2
-  [[menus.main]]
-    name = "Media"
+    name = "JIWA"
     url = "/blog/"
-    weight = 3
-  [[menus.main]]
-    name = "Contact"
-    url = "/contact/"
-    weight = 4
+    weight = 2
 
 [markup]
   [markup.goldmark]
     [markup.goldmark.renderer]
       unsafe = true
-  [markup.highlight]
-    style = "monokai"
 
 [outputs]
   home = ["HTML", "RSS"]
@@ -55,5 +29,4 @@ paginate = 12
 
 [taxonomies]
   tag = "tags"
-  category = "categories"
   pillar = "pillars"
