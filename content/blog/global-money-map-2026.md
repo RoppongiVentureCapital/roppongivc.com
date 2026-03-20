@@ -4,6 +4,8 @@ date: 2026-03-08
 description: "世界の資産$600兆の構造を、データソース付きで完全解説。"
 pillars: ["Global Money Map"]
 tags: ["経済", "データ", "投資"]
+hero_style: "background:linear-gradient(135deg,#0a1628 0%,#1a2744 40%,#0d3655 100%)"
+hero_label: "Global Money Map"
 ---
 
 あなたの銀行口座にあるお金。投資している株。住んでいる家。毎日使っている道路。
