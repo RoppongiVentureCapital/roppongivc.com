@@ -2,7 +2,6 @@
 <section class="hero">
   <div class="hero-brand">
     <img src="{{ "img/logo-wide.png" | relURL }}" alt="Roppongi Venture Capital" class="hero-logo">
-    <p class="hero-name">六本木ベンチャーキャピタル</p>
   </div>
   <h1>日本最高峰のSTEM頭脳に、<br>世界最高峰の起業家体験を。</h1>
 </section>
@@ -27,7 +26,7 @@
       <h2>JIWA — Media</h2>
       <p class="home-latest-desc">経済・金融・テクノロジーの最前線を、データと物語で伝える。</p>
     </div>
-    <a href="{{ "blog/" | relURL }}">All articles →</a>
+    <a href="{{ "blog/" | relURL }}" class="home-latest-link">All articles →</a>
   </div>
   <div class="articles-grid">
     {{ range first 3 $articles }}
