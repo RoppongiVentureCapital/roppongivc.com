@@ -14,7 +14,7 @@ paginate = 12
     url = "/members/"
     weight = 1
   [[menus.main]]
-    name = "JIWA"
+    name = "Media"
     url = "/blog/"
     weight = 2
 
