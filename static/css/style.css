@@ -163,9 +163,17 @@ img{max-width:100%;height:auto;display:block}
 .blog-single .content pre code{background:none;padding:0}
 .blog-single .back{display:inline-block;margin-top:3rem;font-family:var(--sans);font-size:11px;color:var(--gray-500);letter-spacing:0.05em}
 
+/* HAMBURGER */
+.nav-hamburger{display:none;background:none;border:none;cursor:pointer;padding:8px}
+.nav-hamburger span{display:block;width:20px;height:2px;background:var(--black);margin:5px 0}
+
 /* RESPONSIVE */
 @media(max-width:768px){
   .nav{padding:0 1.5rem}
+  .nav-hamburger{display:block}
+  .nav-links{display:none;position:absolute;top:56px;left:0;right:0;background:var(--white);border-bottom:1px solid var(--gray-200);flex-direction:column;padding:1.5rem}
+  .nav-links.open{display:flex}
+  .nav-links a{font-size:16px;padding:0.5rem 0}
   .hero,.two-col-left,.two-col-right,.home-latest,.members-header,.blog-header{padding-left:1.5rem;padding-right:1.5rem}
   .two-col{grid-template-columns:1fr}
   .two-col-left{border-right:none;border-bottom:1px solid var(--gray-200)}
@@ -178,6 +186,5 @@ img{max-width:100%;height:auto;display:block}
   .member-profile{grid-template-columns:1fr;gap:2rem;padding:2.5rem 1.5rem}
   .member-photo img{max-width:200px}
   .member:nth-child(2n){border-right:none}
-  .nav-links{display:none}
   .footer{padding:1.5rem}
 }
