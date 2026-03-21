@@ -16,7 +16,7 @@
   </div>
 </section>
 
-{{ $articles := where .Site.RegularPages "Section" "blog" }}
+{{ $articles := where .Site.RegularPages "Section" "jiwa" }}
 {{ if $articles }}
 <section class="home-latest">
   <div class="home-latest-header">
@@ -24,7 +24,7 @@
       <h2>JIWA</h2>
       <p class="home-latest-desc">六本木ベンチャーキャピタルが運営するWebメディア。経済・金融・テクノロジーの最前線を、データと物語で伝える。</p>
     </div>
-    <a href="{{ "blog/" | relURL }}">All articles →</a>
+    <a href="{{ "jiwa/" | relURL }}">All articles →</a>
   </div>
   <div class="articles-grid">
     {{ range first 3 $articles }}
