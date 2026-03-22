@@ -29,6 +29,7 @@
     {{ range .Site.Menus.main }}
     <li><a href="{{ .URL | relURL }}">{{ .Name }}</a></li>
     {{ end }}
+    <li class="nav-lang">{{ if eq .Lang "ja" }}<a href="{{ replace .RelPermalink "/" "/en/" 1 }}">EN</a>{{ else }}<a href="{{ strings.TrimPrefix "/en" .RelPermalink }}">JP</a>{{ end }}</li>
   </ul>
   <button class="nav-hamburger" onclick="document.querySelector('.nav-links').classList.toggle('open')">
     <span></span><span></span>
@@ -37,7 +38,7 @@
 <main>{{ block "main" . }}{{ end }}</main>
 <footer class="footer">
   <span>© {{ now.Year }} Roppongi Venture Capital</span>
-  <span class="footer-note">当団体はファンド運用・投資勧誘を行っておりません。</span>
+  <span class="footer-note">{{ if eq .Lang "en" }}We do not operate funds or solicit investments.{{ else }}当団体はファンド運用・投資勧誘を行っておりません。{{ end }}</span>
   <span>roppongivc.com</span>
 </footer>
 </body>
