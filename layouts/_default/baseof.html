@@ -29,7 +29,7 @@
     {{ range .Site.Menus.main }}
     <li><a href="{{ .URL | relURL }}">{{ .Name }}</a></li>
     {{ end }}
-    <li class="nav-lang">{{ if eq .Lang "ja" }}<a href="{{ replace .RelPermalink "/" "/en/" 1 }}">EN</a>{{ else }}<a href="{{ strings.TrimPrefix "/en" .RelPermalink }}">JP</a>{{ end }}</li>
+    <li class="nav-lang">{{ if eq .Lang "ja" }}<a href="{{ replace .RelPermalink "/" "/en/" 1 }}">English</a>{{ else }}<a href="{{ strings.TrimPrefix "/en" .RelPermalink }}">Japanese</a>{{ end }}</li>
   </ul>
   <button class="nav-hamburger" onclick="document.querySelector('.nav-links').classList.toggle('open')">
     <span></span><span></span>
