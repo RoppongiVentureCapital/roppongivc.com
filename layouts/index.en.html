@@ -1,0 +1,43 @@
+{{ define "main" }}
+<section class="hero">
+  <h2 class="hero-brand-name">Roppongi Venture Capital</h2>
+  <h1>World-class entrepreneurial experiences<br>for Japan's brightest STEM minds.</h1>
+</section>
+
+<section class="two-col">
+  <div class="two-col-left">
+    <h2 class="col-heading">Building the next generation of deep tech founders.</h2>
+  </div>
+  <div class="two-col-right">
+    <div class="col-body">
+      <p>Roppongi Venture Capital is planning an incubation program for high school and university students who have demonstrated exceptional talent in STEM — Math Olympiad and Science Olympiad medalists and finalists.</p>
+      <p>We also publish JIWA, a web media covering the frontlines of economics, finance, and technology from a unique perspective.</p>
+    </div>
+  </div>
+</section>
+
+{{ $articles := where .Site.RegularPages "Section" "jiwa" }}
+{{ if $articles }}
+<section class="home-latest">
+  <div class="home-latest-header">
+    <div>
+      <h2>JIWA</h2>
+      <p class="home-latest-desc">A web media by Roppongi Venture Capital. Economics, finance, and technology — told through data and stories.</p>
+    </div>
+    <a href="{{ "jiwa/" | relURL }}">All articles →</a>
+  </div>
+  <div class="articles-grid">
+    {{ range first 3 $articles }}
+    <div class="article-item">
+      <a href="{{ .RelPermalink }}">
+        {{ with .Params.pillars }}<div class="article-pillar">{{ index . 0 }}</div>{{ end }}
+        <time>{{ .Date.Format "2006.01.02" }}</time>
+        <h3>{{ .Title }}</h3>
+        {{ with .Params.description }}<p>{{ . }}</p>{{ end }}
+      </a>
+    </div>
+    {{ end }}
+  </div>
+</section>
+{{ end }}
+{{ end }}
