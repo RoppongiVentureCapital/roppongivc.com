@@ -1,0 +1,18 @@
+{{ define "main" }}
+<section class="blog-header">
+  <h1>JIWA</h1>
+  <p>A web media by Roppongi Venture Capital. Economics, finance, and technology — told through data and stories.</p>
+</section>
+<div class="blog-grid">
+  {{ range .Paginator.Pages }}
+  <div class="blog-item">
+    <a href="{{ .RelPermalink }}">
+      {{ with .Params.pillars }}<div class="article-pillar">{{ index . 0 }}</div>{{ end }}
+      <time>{{ .Date.Format "2006.01.02" }}</time>
+      <h2>{{ .Title }}</h2>
+      {{ with .Params.description }}<p>{{ . }}</p>{{ end }}
+    </a>
+  </div>
+  {{ end }}
+</div>
+{{ end }}

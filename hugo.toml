@@ -1,22 +1,38 @@
 baseURL = "https://www.roppongivc.com/"
 title = "六本木ベンチャーキャピタル"
-languageCode = "ja"
 defaultContentLanguage = "ja"
 enableRobotsTXT = true
 paginate = 12
 
-[params]
-  description = "日本最高峰のSTEM頭脳に、世界最高峰の起業家体験を。"
-
-[menus]
-  [[menus.main]]
-    name = "Members"
-    url = "/members/"
+[languages]
+  [languages.ja]
+    languageName = "JP"
     weight = 1
-  [[menus.main]]
-    name = "Media"
-    url = "/jiwa/"
+    title = "六本木ベンチャーキャピタル"
+    [languages.ja.params]
+      description = "日本最高峰のSTEM頭脳に、世界最高峰の起業家体験を。"
+    [[languages.ja.menus.main]]
+      name = "Members"
+      url = "/members/"
+      weight = 1
+    [[languages.ja.menus.main]]
+      name = "Media"
+      url = "/jiwa/"
+      weight = 2
+  [languages.en]
+    languageName = "EN"
     weight = 2
+    title = "Roppongi Venture Capital"
+    [languages.en.params]
+      description = "World-class entrepreneurial experiences for Japan's brightest STEM minds."
+    [[languages.en.menus.main]]
+      name = "Members"
+      url = "/en/members/"
+      weight = 1
+    [[languages.en.menus.main]]
+      name = "Media"
+      url = "/en/jiwa/"
+      weight = 2
 
 [markup]
   [markup.goldmark]
