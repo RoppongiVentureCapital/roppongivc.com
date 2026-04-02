@@ -1,0 +1,21 @@
+{{ define "main" }}
+<article class="blog-single">
+  {{ with .Params.hero_style }}
+  <div class="blog-hero" style="{{ . | safeCSS }}">
+    <div class="blog-hero-inner">
+      {{ with $.Params.hero_label }}<span class="blog-hero-label">{{ . }}</span>{{ end }}
+      <h1 class="blog-hero-title">{{ $.Title }}</h1>
+      <div class="blog-hero-meta">{{ $.Date.Format "January 2, 2006" }}</div>
+    </div>
+  </div>
+  {{ else }}
+  <header>
+    {{ with .Params.pillars }}<div class="article-pillar">{{ index . 0 }}</div>{{ end }}
+    <h1>{{ .Title }}</h1>
+    <div class="meta">{{ .Date.Format "January 2, 2006" }}{{ with .Params.author }} · {{ . }}{{ end }}</div>
+  </header>
+  {{ end }}
+  <div class="content">{{ .Content }}</div>
+  <a href="{{ "en/jiwa/" | relURL }}" class="back">&larr; Back to JIWA</a>
+</article>
+{{ end }}
