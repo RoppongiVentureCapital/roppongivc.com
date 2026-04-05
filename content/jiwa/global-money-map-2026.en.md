@@ -1,5 +1,5 @@
 ---
-title: "How Much Money Is There in the World? — The $600 Trillion Big Picture [2026 Edition]"
+title: "How Much Money Is There in the World? — The $600 Trillion Big Picture"
 date: 2026-03-22
 description: "A complete, source-backed breakdown of the world's ≈$600 trillion in net worth."
 pillars: ["Global Money Map"]

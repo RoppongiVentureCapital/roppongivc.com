@@ -1,5 +1,5 @@
 ---
-title: "What Happens If the Strait of Hormuz Shuts Down — Japan's Energy Structure in One Article [2026 Edition]"
+title: "What Happens If the Strait of Hormuz Shuts Down — Japan's Energy Structure in One Article"
 date: 2026-04-02
 draft: false
 description: "The real risk of a Hormuz Strait blockade, explained in 8 charts."
