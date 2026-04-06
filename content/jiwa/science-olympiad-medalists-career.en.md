@@ -90,7 +90,7 @@ IMO gold medalist careers are the best documented, thanks to Neeloy Banerjee's t
 
 MIT is the #1 destination for IMO gold medalists by a wide margin, followed by Harvard, Peking University, and Cambridge.
 
-![IMO Gold Medalist University Destinations](/img/imo_university_ranking.png)
+![IMO Gold Medalist University Destinations](/img/imo_university_ranking_en.png)
 
 Country-specific patterns are notable. Most Chinese medalists enter Peking University but a significant number transfer to MIT after two years. Russian medalists tend to stay at Moscow State University or MIPT. Japan and Russia are cited as countries where medalists are most likely to remain domestic.
 
@@ -102,7 +102,7 @@ Country-specific patterns are notable. Most Chinese medalists enter Peking Unive
 
 The backdrop: rising compensation at tech companies (especially Google) and quant finance firms (Citadel, Jane Street, etc.). xquant's data shows that post-2010 medalists increasingly skip PhDs and go directly into quant finance. Academia's share is shrinking while quant finance's share is growing.
 
-![IMO Gold Medalist PhD Rate — Generational Trend](/img/imo_phd_rate_trend.png)
+![IMO Gold Medalist PhD Rate — Generational Trend](/img/imo_phd_rate_trend_en.png)
 
 ### Career Breakdown — Shifting by Generation
 
@@ -117,13 +117,13 @@ Data from pre-2010 medalists (all of whom have completed their PhDs):
 
 But newer generations show a clear shift — less academia, more quant finance.
 
-![IMO Gold Medalist Career Breakdown — By Generation](/img/imo_career_by_era.png)
+![IMO Gold Medalist Career Breakdown — By Generation](/img/imo_career_by_era_en.png)
 
 <small style="color:#999;font-size:12px">Source: xquant Substack (Neeloy Banerjee, 2024) — 700+ tracked individuals</small>
 
 Google is described as "the MIT of tech companies" — its share among tech-employed gold medalists is overwhelming. Among gold medalists specifically, Citadel surpasses Microsoft as the #2 employer after Google.
 
-![IMO Gold Medalist Employers — Tech & Finance](/img/imo_company_ranking.png)
+![IMO Gold Medalist Employers — Tech & Finance](/img/imo_company_ranking_en.png)
 
 Notably, **startup founders are almost invisible**. In xquant's analysis, careers are classified into "academia," "tech," "quant finance," and "other" — entrepreneurship doesn't exist as a standalone category.
 
@@ -208,7 +208,7 @@ For IBO medalists, not even comparable interview articles have been identified. 
 
 AI has caught up with the top tier of human problem-solvers in "solving given problems." So where does the value of human medalists lie?
 
-![AI IMO Score Progression](/img/ai_imo_timeline.png)
+![AI IMO Score Progression](/img/ai_imo_timeline_en.png)
 
 <small style="color:#999;font-size:12px">Sources: Google DeepMind official announcement, OpenAI official announcement (July 2025)</small>
 
