@@ -16,6 +16,7 @@
   </header>
   {{ end }}
   <div class="content">{{ .Content }}</div>
+  <script>document.querySelectorAll('.blog-single .content a[href^="http"]').forEach(a=>{a.target='_blank';a.rel='noopener'})</script>
   <a href="{{ "jiwa/" | relURL }}" class="back">← JIWA に戻る</a>
 </article>
 {{ end }}
