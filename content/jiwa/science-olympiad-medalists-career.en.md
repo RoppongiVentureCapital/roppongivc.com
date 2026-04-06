@@ -39,6 +39,8 @@ This is not an original tracking study. The main data sources are listed below, 
 
 "International Science Olympiads" is not a single organization. Each discipline has its own independent governing body and runs its own competition. "ISOs" is simply a collective term. Wikipedia currently lists 12 recognized competitions.
 
+The ISOs primarily target secondary school students (middle and high school). Age limits vary by discipline, and middle schoolers can and do compete — some win gold at 13 or 14.
+
 | # | Abbr. | Discipline | Since |
 |---|---|---|---|
 | 1 | IMO | Mathematics | 1959 |
@@ -69,16 +71,6 @@ Tracking medalist careers across all 12 disciplines is impractical — data simp
 | IChO (Chemistry) | Chemistry | 1968 | ~85 | Up to 4 | Top ~66% medal (G12%/S22%/B32%) |
 | IOI (Informatics) | Computer Science | 1989 | ~90 | Up to 4 | Top ~50% medal |
 | IBO (Biology) | Biology | 1990 | ~80 | Up to 4 | Top ~50% medal |
-
-### What About Younger and Older Students?
-
-The ISOs primarily target **secondary school students (middle and high school)**. Age limits vary by discipline, and middle schoolers can and do compete — some win gold at 13 or 14.
-
-**Junior competitions:** Among the official 12 ISOs, only IJSO (International Junior Science Olympiad, ages ≤15, physics/chemistry/biology, since 2004) explicitly targets younger students. However, regional junior competitions exist for math and informatics too — eJOI (European Junior Olympiad in Informatics, ≤15.5) and JBMO (Junior Balkan Mathematical Olympiad, ≤15.5), among others. Many countries also run national junior competitions, such as Japan's [JJMO](https://www.imojp.org/domestic/jjmo_overview.html) (since 2003, middle school and below, top performers advance to IMO team selection). IMO and IOI themselves have no minimum age requirement (IMO requires being under 20 and not yet enrolled in university).
-
-**University-level:** No ISO exists for university students. University-level international competitions exist in separate systems — ACM-ICPC (programming), Putnam Competition (math, North America), and IPhT (International Physicists' Tournament), among others.
-
-<small style="color:#999;font-size:12px">Sources: Official Olympiad websites, [Wikipedia - International Science Olympiad](https://en.wikipedia.org/wiki/International_Science_Olympiad), [Wikipedia - IJSO](https://en.wikipedia.org/wiki/International_Junior_Science_Olympiad)</small>
 
 ---
 

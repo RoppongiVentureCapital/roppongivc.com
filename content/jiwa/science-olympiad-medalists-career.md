@@ -39,6 +39,8 @@ hero_label: "Deep Tech Decoded"
 
 「国際科学オリンピック」は単一の組織が運営しているわけではない。各分野が独立した運営団体を持ち、それぞれ別の大会として開催されている。「国際科学オリンピック（ISOs）」はこれらの総称にすぎない。Wikipediaでは現在12の大会が一覧されている。
 
+国際科学オリンピックは基本的に中等教育課程の生徒（中学生・高校生）が対象だ。ただし年齢制限は分野によって異なり、中学生でも出場できる大会がある。実際に13〜14歳で金メダルを取る天才もいる。
+
 | # | 略称 | 分野 | 開始年 |
 |---|---|---|---|
 | 1 | IMO | 数学 | 1959年 |
@@ -69,16 +71,6 @@ hero_label: "Deep Tech Decoded"
 | IChO（化学） | 化学 | 1968年 | 約85カ国 | 各国最大4名 | 上位約66%にメダル（金12%/銀22%/銅32%） |
 | IOI（情報） | 情報科学 | 1989年 | 約90カ国 | 各国最大4名 | 上位約50%にメダル |
 | IBO（生物） | 生物学 | 1990年 | 約80カ国 | 各国最大4名 | 上位約50%にメダル |
-
-### 中学生・大学生の大会はどうなっているのか
-
-国際科学オリンピックは基本的に**中等教育課程の生徒（中学生・高校生）が対象**だ。ただし年齢制限は分野によって異なり、中学生でも出場できる大会がある。実際に13〜14歳で金メダルを取る天才もいる。
-
-**中学生向け：** ISOの公式12大会の中でジュニア層を対象としているのはIJSO（国際ジュニア科学オリンピック、15歳以下、物理・化学・生物の複合問題、2004年開始）のみ。ただし、地域レベルではジュニア版が数学・情報科学にも存在する。eJOI（European Junior Olympiad in Informatics、15.5歳以下）やJBMO（Junior Balkan Mathematical Olympiad、15.5歳以下）などだ。各国の国内大会としても、日本の[JJMO（日本ジュニア数学オリンピック）](https://www.imojp.org/domestic/jjmo_overview.html)（2003年〜、中学生以下、上位者はIMO代表選考合宿に進める）をはじめ、多くの国にジュニア大会がある。IMOやIOI自体にも最低年齢の制限はなく（IMOは20歳未満で大学未入学が条件）、13〜14歳で金メダルを取る中学生もいる。
-
-**大学生向け：** ISOの枠組みには大学生向けの大会は存在しない。ただし大学レベルの国際競技は別の体系として存在する。ACM-ICPC（プログラミング）、Putnam Competition（数学、北米）、IPhOの大学版にあたるIPhT（International Physicists' Tournament）などがあるが、ISOとは運営も歴史も別物だ。
-
-<small style="color:#999;font-size:12px">出典: 各オリンピック公式サイト、[Wikipedia - International Science Olympiad](https://en.wikipedia.org/wiki/International_Science_Olympiad)、[Wikipedia - IJSO](https://en.wikipedia.org/wiki/International_Junior_Science_Olympiad)</small>
 
 ---
 
