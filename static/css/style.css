@@ -15,6 +15,8 @@
 html{-webkit-font-smoothing:antialiased}
 body{background:var(--bg);color:var(--black);font-family:var(--serif);font-size:18px;font-weight:300;line-height:1.444}
 a{color:inherit;text-decoration:none}
+.blog-single .content a{color:#3498db;text-decoration:underline;text-underline-offset:2px}
+.blog-single .content a:hover{color:#2c3e50}
 ::selection{background:var(--black);color:var(--white)}
 img{max-width:100%;height:auto;display:block}
 
@@ -186,3 +188,20 @@ img{max-width:100%;height:auto;display:block}
   .member:nth-child(2n){border-right:none}
   .footer{padding:1.5rem}
 }
+
+/* PROGRAM PAGE */
+.program-info{padding:0;border-bottom:1px solid var(--gray-200)}
+.persona-card{margin-bottom:2rem;padding-bottom:2rem;border-bottom:1px solid var(--gray-100)}
+.persona-card:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0}
+.persona-card h3{font-family:var(--sans);font-size:15px;font-weight:600;margin-bottom:0.5rem}
+.persona-card p{font-size:14px;line-height:1.8;color:var(--gray-600)}
+.persona-card ul,.persona-card ol{font-size:14px;line-height:2;color:var(--gray-600)}
+.curriculum-item{margin-bottom:2.5rem;padding-bottom:2.5rem;border-bottom:1px solid var(--gray-100)}
+.curriculum-item:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0}
+.curriculum-day{font-family:var(--sans);font-size:12px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--accent);margin-bottom:0.5rem}
+.curriculum-date{margin-left:1rem;font-weight:400;color:var(--gray-500);text-transform:none;letter-spacing:0}
+.curriculum-item h3{font-family:var(--serif);font-size:1.25rem;font-weight:400;margin-bottom:0.75rem}
+.curriculum-item p{font-size:14px;line-height:1.8;color:var(--gray-600)}
+.curriculum-hw{margin-top:0.75rem;font-size:13px;color:var(--gray-500);font-style:italic}
+.apply-btn{display:inline-block;margin-top:2rem;padding:0.8rem 2rem;background:var(--black);color:var(--white);font-family:var(--sans);font-size:14px;font-weight:500;letter-spacing:0.05em;transition:opacity 0.15s}
+.apply-btn:hover{opacity:0.7}
