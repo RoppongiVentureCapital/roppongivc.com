@@ -1,5 +1,37 @@
+# ===========================================
+# ホワイトリスト方式: 全て除外し、Hugoサイトに
+# 必要なファイルのみ許可する
+# ===========================================
+
+# まず全て除外
+/*
+
+# Hugo サイト構成ファイルのみ許可
+!/hugo.toml
+!/content/
+!/layouts/
+!/static/
+!/archetypes/
+!/i18n/
+!/data/
+!/assets/
+!/themes/
+!/.github/
+!/.gitignore
+
+# Hugo ビルド成果物は除外
 /public/
 /resources/_gen/
 .hugo_build.lock
+
+# OS / エディタ
 .DS_Store
+Thumbs.db
+*.swp
+*~
+
+# 機密ファイル（明示的に除外）
 SESSION_HANDOFF.md
+*.env
+*.key
+*.pem
