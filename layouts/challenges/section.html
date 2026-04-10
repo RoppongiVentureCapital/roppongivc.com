@@ -1,28 +1,49 @@
 {{ define "main" }}
-<section class="hero" style="padding:4rem 2.5rem 3rem">
-  <h1 style="font-size:clamp(1.8rem,3.5vw,2.5rem)">あなたの才能はどこで輝く？</h1>
-  <p style="font-family:var(--sans);font-size:15px;color:var(--gray-500);margin-top:0.75rem">STEM人材向け思考スタイル診断</p>
+<section class="hero">
+  <p class="eyebrow">Edgeプログラムの入口</p>
+  <h1 style="font-size:4.5rem;letter-spacing:-0.03em;font-weight:700">Challenge</h1>
+  <p style="font-family:var(--serif);font-size:1.5rem;color:var(--black);margin-top:1rem;font-weight:400">あなたの思考と能力を試す。</p>
 </section>
-<div id="app">
-<section id="intro" class="two-col">
+
+<!-- ハブ：3つのコンテンツ -->
+<section id="hub" class="two-col">
   <div class="two-col-left">
-    <h2 class="col-heading">思考スタイル診断</h2>
-    <p style="font-family:var(--sans);font-size:13px;color:var(--gray-500);margin-top:1rem">全10問 ｜ 約2分</p>
+    <h2 class="col-heading">3つのコンテンツ</h2>
   </div>
   <div class="two-col-right">
     <div class="col-body">
-      <p>同じ「頭が良い」でも、その知性の使い方は人によって全く異なります。</p>
-      <p>この診断では、職業心理学で<strong>60年以上の実証研究</strong>を持つホランド理論（RIASEC）をSTEM人材向けに適応し、あなたの思考の傾向を<strong>6つのタイプ</strong>で分析します。</p>
-      <p>診断後には、あなたのタイプの詳細な解説に加え、<strong>この診断がどのような理論に基づき、どのようなロジックで判定しているかの全てを公開</strong>しています。「なぜこの結果になったのか」を自分で検証できます。</p>
-      <p style="margin-top:1.5rem;padding:1rem 1.2rem;background:var(--gray-100);font-size:14px;line-height:1.8">
-        <strong>この診断でわかること</strong><br>
-        — あなたの思考スタイルのメインタイプとサブタイプ<br>
-        — 6つの次元それぞれのスコア分布<br>
-        — 同じタイプの著名なSTEM人材<br>
-        — 診断ロジックの完全な解説と学術的根拠
-      </p>
+      <div class="persona-card">
+        <h3>思考スタイル診断</h3>
+        <p>あなたは研究者タイプか、起業家タイプか、芸術家タイプか。10問の質問で、自分の思考の傾向を知る。約2分。</p>
+        <button class="apply-btn" id="startBtn" style="margin-top:0.75rem">診断してみる →</button>
+      </div>
+      <div class="persona-card">
+        <h3>認知能力チャレンジ</h3>
+        <p>パターン推理と数学的思考の2種目で、あなたの「地頭」を試す。制限時間内にどこまで解けるか。</p>
+        <a href="{{ "challenge/" | relURL }}" class="apply-btn" style="margin-top:0.75rem;text-decoration:none">挑戦してみる →</a>
+      </div>
+      <div class="persona-card">
+        <h3>起業家シミュレーション</h3>
+        <p>課題発見からピッチまで、スタートアップの5ステップを疑似体験。Edgeのプログラムで実際に取り組む内容のミニ版です。</p>
+        <a href="{{ "logistics/" | relURL }}" class="apply-btn" style="margin-top:0.75rem;text-decoration:none">体験してみる →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 思考スタイル診断（インライン） -->
+<div id="app">
+<section id="intro" class="two-col" style="display:none">
+  <div class="two-col-left">
+    <h2 class="col-heading">思考スタイル診断</h2>
+    <p style="font-family:var(--sans);font-size:16px;color:var(--black);margin-top:1rem">全10問 ｜ 約2分</p>
+  </div>
+  <div class="two-col-right">
+    <div class="col-body">
+      <p>同じ「頭が良い」でも、その知性の使い方は人によって全く異なります。あなたの思考の傾向を<strong>6つのタイプ</strong>で分析します。</p>
+      <p>診断後には、あなたのタイプの詳細な解説と、同じタイプの著名人を紹介します。診断ロジックと学術的根拠も全て公開しています。</p>
       <p>正解はありません。直感で選んでください。</p>
-      <button class="apply-btn" id="startBtn">診断を始める →</button>
+      <button class="apply-btn" id="beginBtn">診断を始める →</button>
     </div>
   </div>
 </section>
@@ -143,6 +164,9 @@ function show(id){document.getElementById(id).style.display='';}
 function hide(id){document.getElementById(id).style.display='none';}
 
 document.getElementById('startBtn').addEventListener('click',function(){
+ hide('hub');show('intro');
+});
+document.getElementById('beginBtn').addEventListener('click',function(){
  hide('intro');show('quiz');render();
 });
 document.getElementById('backBtn').addEventListener('click',function(){
@@ -192,7 +216,7 @@ function result(){
  h+='<h2 class="col-heading" style="font-size:1.2rem">思考スタイル診断</h2>';
  h+='<p style="font-family:var(--sans);font-size:12px;color:var(--gray-500);margin-top:0.5rem">Roppongi Venture Capital</p></div>';
  h+='<div class="two-col-right">';
- h+='<div class="rs-card"><div class="rs-card-head">STEM THINKING STYLE</div>';
+ h+='<div class="rs-card"><div class="rs-card-head">THINKING STYLE</div>';
  h+='<div class="rs-card-type">'+t.name+' &mdash; '+t.sub+'</div>';
  h+='<div class="rs-card-tag">'+t.tag+'</div><div>';
  for(var i=0;i<6;i++){
@@ -239,9 +263,14 @@ function result(){
  h+='Brown, A., & Maydeu-Olivares, A. (2011). Item response modeling of forced-choice questionnaires. <em>Educational and Psychological Measurement</em>, 71(3), 460-502.<br>';
  h+='Gosling, S. D., Rentfrow, P. J., & Swann, W. B. (2003). A very brief measure of the Big-Five personality domains. <em>Journal of Research in Personality</em>, 37(6), 504-528.</p>';
  h+='</div></div></div>';
+ h+='<div class="two-col" style="border-bottom:none"><div class="two-col-left"><h2 class="col-heading" style="font-size:1.2rem">次のステップ</h2></div>';
+ h+='<div class="two-col-right"><div class="col-body">';
+ h+='<p>あなたの思考スタイルを活かせる場があります。Edgeは、突出した能力を持つ高校生・大学生が、個人またはチームで課題を見つけ、形にするところまでを体験する実践プログラムです。</p>';
+ h+='<a href="/program/" style="display:inline-block;margin-top:0.75rem;font-family:var(--sans);font-size:16px;font-weight:500;color:var(--black);text-decoration:underline;text-underline-offset:3px">Edgeプログラムを見る →</a>';
+ h+='</div></div></div>';
  el.innerHTML=h;
  document.getElementById('copyBtn').addEventListener('click',function(){
-  var txt='STEM思考スタイル診断 結果\n================================\n\n';
+  var txt='思考スタイル診断 結果\n================================\n\n';
   txt+='メインタイプ：'+t.name+'（'+t.sub+'）\n'+t.tag+'\n\nサブタイプ：'+T[si].name+'（'+T[si].sub+'）\n\nスコア分布：\n';
   for(var i=0;i<6;i++){var p=Math.round((sc[i]/tot)*100);var b='';for(var j=0;j<Math.round(p/5);j++)b+='#';txt+='  '+T[i].name+' '+p+'% '+b+'\n';}
   txt+='\n同じタイプの著名人：'+t.ex+'\n\n診断：roppongivc.com/quiz\n理論基盤：Holland RIASEC Model (1997)\n';
