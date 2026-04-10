@@ -12,13 +12,21 @@ paginate = 12
     [languages.ja.params]
       description = "日本最高峰のSTEM頭脳に、世界最高峰の起業家体験を。"
     [[languages.ja.menus.main]]
-      name = "Members"
-      url = "/members/"
+      name = "Program"
+      url = "/program/"
       weight = 1
+    [[languages.ja.menus.main]]
+      name = "Challenge"
+      url = "/quiz/"
+      weight = 2
     [[languages.ja.menus.main]]
       name = "Media"
       url = "/jiwa/"
-      weight = 2
+      weight = 3
+    [[languages.ja.menus.main]]
+      name = "Members"
+      url = "/members/"
+      weight = 4
   [languages.en]
     languageName = "EN"
     weight = 2
@@ -26,13 +34,21 @@ paginate = 12
     [languages.en.params]
       description = "World-class entrepreneurial experiences for Japan's brightest STEM minds."
     [[languages.en.menus.main]]
-      name = "Members"
-      url = "/en/members/"
+      name = "Program"
+      url = "/en/program/"
       weight = 1
+    [[languages.en.menus.main]]
+      name = "Challenge"
+      url = "/en/quiz/"
+      weight = 2
     [[languages.en.menus.main]]
       name = "Media"
       url = "/en/jiwa/"
-      weight = 2
+      weight = 3
+    [[languages.en.menus.main]]
+      name = "Members"
+      url = "/en/members/"
+      weight = 4
 
 [markup]
   [markup.goldmark]

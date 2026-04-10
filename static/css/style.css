@@ -48,8 +48,8 @@ img{max-width:100%;height:auto;display:block}
 
 /* SHARED */
 .eyebrow{
-  font-family:var(--sans);font-size:14px;font-weight:500;
-  letter-spacing:0.15em;text-transform:uppercase;color:var(--gray-500);
+  font-family:var(--sans);font-size:15px;font-weight:500;
+  letter-spacing:0.1em;color:var(--black);
   margin-bottom:1.5rem;
 }
 .section-border{border-bottom:4px solid var(--black)}
@@ -66,7 +66,7 @@ img{max-width:100%;height:auto;display:block}
 .two-col{display:grid;grid-template-columns:1fr 2fr;border-bottom:1px solid var(--gray-200)}
 .two-col-left{padding:4rem 2.5rem;border-right:1px solid var(--gray-200)}
 .two-col-right{padding:4rem 2.5rem}
-.col-heading{font-family:var(--serif);font-size:1.75rem;font-weight:300;line-height:1.35;margin-bottom:1.5rem}
+.col-heading{font-family:var(--serif);font-size:1.75rem;font-weight:500;line-height:1.35;margin-bottom:1.5rem}
 .col-body{font-family:var(--sans);font-size:16px;line-height:1.9;color:var(--black);font-weight:400}
 .col-body p{margin-bottom:1.2rem}
 .col-body strong{font-weight:600;color:var(--black)}
@@ -74,8 +74,9 @@ img{max-width:100%;height:auto;display:block}
 .stats-row{display:grid;grid-template-columns:repeat(4,1fr);border-bottom:4px solid var(--black)}
 .stat-cell{padding:3rem 2.5rem;border-right:1px solid var(--gray-200);text-align:center}
 .stat-cell:last-child{border-right:none}
+.stat-value{font-family:var(--sans);font-size:18px;font-weight:400;color:var(--black)}
 .stat-num{font-family:var(--serif);font-size:clamp(2rem,4vw,3rem);font-weight:700;line-height:1;letter-spacing:-0.02em}
-.stat-label{font-family:var(--sans);font-size:14px;font-weight:500;letter-spacing:0.15em;text-transform:uppercase;color:var(--gray-500);margin-top:0.75rem}
+.stat-label{font-family:var(--sans);font-size:14px;font-weight:500;letter-spacing:0.1em;color:var(--black);margin-top:0.75rem}
 
 .cards{display:grid;grid-template-columns:repeat(3,1fr);border-bottom:1px solid var(--gray-200)}
 .card{padding:3rem 2.5rem;border-right:1px solid var(--gray-200);transition:background 0.2s}
@@ -83,11 +84,11 @@ img{max-width:100%;height:auto;display:block}
 .card:hover{background:var(--gray-100)}
 .card-num{font-family:var(--sans);font-size:14px;font-weight:600;letter-spacing:0.15em;color:var(--gray-500);margin-bottom:2rem}
 .card h3{font-family:var(--sans);font-size:16px;font-weight:600;letter-spacing:-0.01em;margin-bottom:0.75rem}
-.card p{font-size:15px;line-height:1.6;color:var(--gray-500);font-weight:300}
+.card p{font-size:15px;line-height:1.6;color:var(--black);font-weight:300}
 
 .home-latest{padding:4rem 2.5rem;border-bottom:1px solid var(--gray-200)}
 .home-latest-header{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:3rem}
-.home-latest-header h2{font-family:var(--sans);font-size:20px;font-weight:600;letter-spacing:-0.01em}
+.home-latest-header h2{font-family:var(--sans);font-size:28px;font-weight:600;letter-spacing:-0.01em}
 .home-latest-desc{font-family:var(--sans);font-size:16px;color:var(--black);margin-top:0.4rem;font-weight:400}
 .home-latest-header a{font-family:var(--sans);font-size:14px;color:var(--gray-500)}
 .home-latest-header a:hover{color:var(--black)}
@@ -97,8 +98,8 @@ img{max-width:100%;height:auto;display:block}
 .article-item a{display:block}
 .article-pillar{font-family:var(--sans);font-size:14px;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;color:var(--accent);margin-bottom:0.5rem}
 .article-item time{font-family:var(--sans);font-size:14px;color:var(--gray-500)}
-.article-item h3{font-family:var(--sans);font-size:16px;font-weight:500;margin:0.5rem 0;line-height:1.5}
-.article-item p{font-family:var(--sans);font-size:15px;color:var(--gray-500);line-height:1.6;font-weight:400}
+.article-item h3{font-family:var(--sans);font-size:18px;font-weight:600;margin:0.5rem 0;line-height:1.4}
+.article-item p{font-family:var(--sans);font-size:15px;color:#2a2a2a;line-height:1.6;font-weight:400}
 
 /* ============ MEMBERS ============ */
 .members-header{padding:4rem 2.5rem;border-bottom:4px solid var(--black)}
@@ -128,8 +129,8 @@ img{max-width:100%;height:auto;display:block}
 .blog-item:hover{background:var(--gray-100)}
 .blog-item a{display:block}
 .blog-item time{font-family:var(--sans);font-size:14px;color:var(--gray-500)}
-.blog-item h2{font-family:var(--sans);font-size:16px;font-weight:500;margin:0.5rem 0;line-height:1.5}
-.blog-item p{font-family:var(--sans);font-size:15px;color:var(--gray-500);line-height:1.6;font-weight:400}
+.blog-item h2{font-family:var(--sans);font-size:18px;font-weight:600;margin:0.5rem 0;line-height:1.4}
+.blog-item p{font-family:var(--sans);font-size:15px;color:#2a2a2a;line-height:1.6;font-weight:400}
 
 /* BLOG SINGLE */
 .blog-hero{
@@ -194,14 +195,14 @@ img{max-width:100%;height:auto;display:block}
 .persona-card{margin-bottom:2rem;padding-bottom:2rem;border-bottom:1px solid var(--gray-100)}
 .persona-card:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0}
 .persona-card h3{font-family:var(--sans);font-size:16px;font-weight:600;margin-bottom:0.5rem}
-.persona-card p{font-size:15px;line-height:1.8;color:var(--gray-600)}
-.persona-card ul,.persona-card ol{font-size:15px;line-height:2;color:var(--gray-600)}
+.persona-card p{font-size:16px;line-height:1.8;color:var(--black)}
+.persona-card ul,.persona-card ol{font-size:15px;line-height:2;color:var(--black)}
 .curriculum-item{margin-bottom:2.5rem;padding-bottom:2.5rem;border-bottom:1px solid var(--gray-100)}
 .curriculum-item:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0}
 .curriculum-day{font-family:var(--sans);font-size:14px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--accent);margin-bottom:0.5rem}
 .curriculum-date{margin-left:1rem;font-weight:400;color:var(--gray-500);text-transform:none;letter-spacing:0}
-.curriculum-item h3{font-family:var(--serif);font-size:1.25rem;font-weight:400;margin-bottom:0.75rem}
-.curriculum-item p{font-size:15px;line-height:1.8;color:var(--gray-600)}
-.curriculum-hw{margin-top:0.75rem;font-size:14px;color:var(--gray-500);font-style:italic}
+.curriculum-item h3{font-family:var(--sans);font-size:1.25rem;font-weight:500;margin-bottom:0.75rem}
+.curriculum-item p{font-size:16px;line-height:1.8;color:var(--black)}
+.curriculum-hw{margin-top:0.75rem;font-size:14px;color:var(--black);font-style:italic}
 .apply-btn{display:inline-block;margin-top:2rem;padding:0.8rem 2rem;background:var(--black);color:var(--white);font-family:var(--sans);font-size:15px;font-weight:500;letter-spacing:0.05em;transition:opacity 0.15s}
 .apply-btn:hover{opacity:0.7}

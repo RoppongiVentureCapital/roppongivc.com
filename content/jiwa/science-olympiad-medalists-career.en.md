@@ -2,7 +2,7 @@
 title: "Where Do Science Olympiad Medalists End Up? — Tracking the Career Paths of the World's Brightest Students"
 date: 2026-04-06
 draft: false
-description: "There are 12 International Science Olympiads, drawing middle and high school students worldwide each year. What career paths do medalists from IMO, IOI, IPhO, IChO, and IBO take? We examine the data from 700+ tracked gold medalists and recent case studies."
+description: "40% of gold medalists earn PhDs and cluster at Google, Apple, and Meta — yet fewer than 5% start companies. What separates Japan from the rest? A structural analysis of 700+ tracked careers."
 pillars: ["Deep Tech Decoded"]
 tags: ["Data", "AI", "Startups"]
 hero_style: "background:linear-gradient(135deg,#0a1628 0%,#1a2744 40%,#0d3655 100%)"
