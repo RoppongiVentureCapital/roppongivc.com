@@ -1,7 +1,7 @@
 ---
 title: "How Much Money Is There in the World? — The $600 Trillion Big Picture"
 date: 2026-03-22
-description: "A complete, source-backed breakdown of the world's ≈$600 trillion in net worth."
+description: "Cash, equities, real estate, bonds, crypto — all global assets classified by the accounting equation, mapped into a single picture of ≈$600 trillion."
 pillars: ["Global Money Map"]
 tags: ["economics", "data", "investing"]
 hero_style: "background:linear-gradient(135deg,#0a1628 0%,#1a2744 40%,#0d3655 100%)"

@@ -1,8 +1,21 @@
 {{ define "main" }}
-<section class="blog-header">
-  <h1>JIWA</h1>
-  <p>六本木ベンチャーキャピタルが運営するWebメディア。経済・金融・テクノロジーの最前線を、データと物語で伝える。</p>
+<section class="hero">
+  <p class="eyebrow">Webメディア</p>
+  <h1 style="font-size:4.5rem;letter-spacing:-0.03em;font-weight:700">JIWA</h1>
+  <p style="font-family:var(--serif);font-size:1.5rem;color:var(--black);margin-top:1rem;font-weight:400">世界で何が起きていて、それがなぜ重要なのか。</p>
 </section>
+
+<section class="two-col">
+  <div class="two-col-left">
+    <h2 class="col-heading">データと構造分析で読み解く。</h2>
+  </div>
+  <div class="two-col-right">
+    <div class="col-body">
+      <p>マネーがどこに流れ、才能がどこに向かい、技術が何を変えるか。<br>六本木ベンチャーキャピタルが運営するWebメディアです。</p>
+    </div>
+  </div>
+</section>
+
 <div class="blog-grid">
   {{ range .Paginator.Pages }}
   <div class="blog-item">

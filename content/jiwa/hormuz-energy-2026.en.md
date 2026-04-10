@@ -2,7 +2,7 @@
 title: "What Happens If the Strait of Hormuz Shuts Down — Japan's Energy Structure in One Article"
 date: 2026-04-02
 draft: false
-description: "The real risk of a Hormuz Strait blockade, explained in 8 charts."
+description: "95% of Japan's crude oil and over 20% of its LNG pass through this strait. What happens to electricity prices if it's blocked? 8 charts visualizing Japan's energy dependency."
 pillars: ["Energy Security"]
 tags: ["energy", "geopolitics", "data"]
 hero_style: "background:linear-gradient(135deg,#0a1628 0%,#1a2744 40%,#0d3655 100%)"
