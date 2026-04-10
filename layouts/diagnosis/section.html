@@ -1,0 +1,256 @@
+{{ define "main" }}
+<section class="hero">
+  <p class="eyebrow">Challenge</p>
+  <h1 style="font-size:4.5rem;letter-spacing:-0.03em;font-weight:700">思考スタイル診断</h1>
+  <p style="font-family:var(--serif);font-size:1.5rem;color:var(--black);margin-top:1rem;font-weight:400">あなたは研究者タイプか、起業家タイプか、芸術家タイプか。</p>
+</section>
+
+<div id="app">
+<section id="intro" class="two-col">
+  <div class="two-col-left">
+    <h2 class="col-heading">思考スタイル診断</h2>
+    <p style="font-family:var(--sans);font-size:16px;color:var(--black);margin-top:1rem">全10問 ｜ 約2分</p>
+  </div>
+  <div class="two-col-right">
+    <div class="col-body">
+      <p>同じ「頭が良い」でも、その知性の使い方は人によって全く異なります。あなたの思考の傾向を<strong>6つのタイプ</strong>で分析します。</p>
+      <p>診断後には、あなたのタイプの詳細な解説と、同じタイプの著名人を紹介します。診断ロジックと学術的根拠も全て公開しています。</p>
+      <p>正解はありません。直感で選んでください。</p>
+      <button class="apply-btn" id="startBtn">診断を始める →</button>
+    </div>
+  </div>
+</section>
+<section id="quiz" style="display:none">
+  <div class="qz-pbar-wrap"><div class="qz-pbar" id="pbar"></div></div>
+  <div class="two-col" style="border-bottom:none">
+    <div class="two-col-left">
+      <p class="eyebrow" id="qnum"></p>
+      <h2 class="col-heading" id="qtext" style="font-size:1.35rem"></h2>
+      <button id="backBtn" style="display:none;background:none;border:none;font-family:var(--sans);font-size:13px;color:var(--gray-500);cursor:pointer;margin-top:1.5rem;padding:0">← 前の質問に戻る</button>
+    </div>
+    <div class="two-col-right"><div id="choices"></div></div>
+  </div>
+</section>
+<section id="result" style="display:none"></section>
+</div>
+<style>
+.qz-pbar-wrap{height:3px;background:var(--gray-100)}
+.qz-pbar{height:100%;background:var(--black);transition:width .4s ease;width:0}
+.qz-choice{display:block;width:100%;text-align:left;background:none;border:1px solid var(--gray-200);padding:1.2rem 1.5rem;margin-bottom:0.75rem;cursor:pointer;font-family:var(--sans);font-size:15px;line-height:1.6;color:var(--black);font-weight:400;transition:all .15s}
+.qz-choice:hover{background:var(--gray-100);border-color:var(--black)}
+.rs-card{border:1px solid var(--gray-200);padding:2rem;margin-bottom:2rem;background:var(--white)}
+.rs-card-head{font-family:var(--sans);font-size:11px;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;color:var(--gray-500);margin-bottom:1rem}
+.rs-card-type{font-family:var(--serif);font-size:1.5rem;font-weight:300;margin-bottom:0.25rem}
+.rs-card-tag{font-family:var(--sans);font-size:13px;color:var(--gray-500);margin-bottom:1.5rem}
+.rs-card-footer{font-family:var(--sans);font-size:11px;color:var(--gray-500);border-top:1px solid var(--gray-200);padding-top:1rem;margin-top:1rem}
+.sc-row{display:flex;align-items:center;gap:1rem;margin-bottom:0.75rem}
+.sc-label{width:100px;font-family:var(--sans);font-size:13px;color:var(--gray-600);text-align:right;flex-shrink:0}
+.sc-track{flex:1;background:var(--gray-100);height:6px}
+.sc-fill{height:100%;background:var(--black);transition:width 1s ease}
+.sc-pct{width:36px;font-family:var(--sans);font-size:12px;color:var(--gray-500)}
+.rs-copy{background:none;border:1px solid var(--gray-200);font-family:var(--sans);font-size:13px;color:var(--gray-600);cursor:pointer;padding:0.6rem 1.2rem;transition:all .15s}
+.rs-copy:hover{border-color:var(--black);color:var(--black)}
+.lg-body{font-family:var(--sans);font-size:13px;line-height:1.9;color:var(--gray-600)}
+.lg-body h4{font-size:14px;font-weight:600;color:var(--black);margin:1.5rem 0 0.5rem}
+.lg-body h4:first-child{margin-top:0}
+.lg-body p{margin-bottom:0.75rem}
+.lg-body table{width:100%;border-collapse:collapse;margin:1rem 0;font-size:13px}
+.lg-body th,.lg-body td{padding:0.5rem 0.75rem;border:1px solid var(--gray-200);text-align:left}
+.lg-body th{font-weight:600;background:var(--gray-100)}
+</style>
+<script>
+(function(){
+var T=[
+{name:"探究型",sub:"Investigative",tag:"原理を解明し、知の境界を広げる",
+desc:"あなたは物事の「なぜ？」を突き詰めることに最も強い情熱を持つタイプです。表面的な理解では満足せず、根本原理まで掘り下げようとします。ホランド理論における Investigative 型に対応し、分析的・知的探究を志向します。ディープテック領域で革新を起こす可能性を秘めています。",
+ex:"Terence Tao（数学者）、Demis Hassabis（DeepMind創業者）、望月新一（ABC予想証明）"},
+{name:"実装型",sub:"Realistic",tag:"アイデアを動くものに変える",
+desc:"あなたは「動くものを作る」ことに最も強い喜びを感じるタイプです。理論だけで終わらせず、手を動かしてプロダクトを生み出します。ホランド理論における Realistic 型に対応し、実践的・技術的な実装を志向します。完璧を待たずにプロトタイプを作り、改善を重ねるアプローチが自然にできます。",
+ex:"Linus Torvalds（Linux開発者）、Palmer Luckey（Oculus VR創業者）、まつもとゆきひろ（Ruby開発者）"},
+{name:"創造型",sub:"Artistic",tag:"既存の枠を超え、新しい道を拓く",
+desc:"あなたは既存の枠組みにとらわれず、独自の発想で問題を解決するタイプです。分野の境界を越えた思考や、解法の「美しさ」に価値を見出します。ホランド理論における Artistic 型に対応し、STEM領域ではクリエイティブ・テクノロジー、数学的可視化、分野横断的な研究で力を発揮します。",
+ex:"Bret Victor（創造的コンピューティング）、Neri Oxman（MIT Media Lab）、Vi Hart（数学とアートの融合）"},
+{name:"伝達型",sub:"Social",tag:"知識を届け、人の可能性を引き出す",
+desc:"あなたは自分が理解したことを他者にわかりやすく伝える能力に優れたタイプです。複雑な概念を直感的に説明し、人の理解を助けることに喜びを感じます。ホランド理論における Social 型に対応し、教育とテクノロジーの領域で次世代の才能を開花させる可能性を秘めています。",
+ex:"Grant Sanderson（3Blue1Brown）、Sal Khan（Khan Academy創設者）、落合陽一"},
+{name:"事業型",sub:"Enterprising",tag:"事業を創り、社会を動かす",
+desc:"あなたは技術そのものよりも、技術が生み出す市場機会に目が向くタイプです。リスクを恐れず、チームを率いて大きなビジョンを実現しようとします。ホランド理論における Enterprising 型に対応し、STEM的な思考力をビジネスに応用して社会にインパクトを与える事業を作る可能性を秘めています。",
+ex:"Patrick Collison（Stripe・元数学オリンピック出場）、Jensen Huang（NVIDIA創業者）、孫正義"},
+{name:"設計型",sub:"Conventional",tag:"構造を見抜き、最適な仕組みを作る",
+desc:"あなたは個別の問題を解くよりも、問題が発生しない構造を作ることを好むタイプです。全体を俯瞰し、要素間の関係性を見抜く力に優れています。ホランド理論における Conventional 型に対応し、複雑なシステムのアーキテクチャを設計し世界のインフラを支える可能性を秘めています。",
+ex:"Jeff Dean（Google基盤設計）、John Carmack（ゲームエンジン設計者）、クロード・シャノン（情報理論の父）"}
+];
+var Q=[
+{q:"難しい課題に取り組むとき、あなたが最も重視するアプローチは？",c:[
+["原理に立ち返る。根本がわからないまま進めたくない",[2,0,0,0,0,1]],
+["手を動かして試す。考えるより先にプロトタイプを作る",[0,2,1,0,0,0]],
+["前例を調べて、応用できる解決策がないか探す",[0,0,0,0,2,1]],
+["常識的なアプローチを疑い、別の角度から見てみる",[1,0,2,0,0,0]]]},
+{q:"グループワークで、自分が最も力を発揮できるのは？",c:[
+["手を動かして成果物を形にする役割",[1,2,0,0,0,0]],
+["メンバーの理解を揃え、全員が納得する方向に導く役割",[0,0,0,2,1,0]],
+["全体の計画を立て、進捗と品質を管理する役割",[0,0,0,0,1,2]],
+["方向性を決めて、チームを前に進める役割",[0,0,0,1,2,0]]]},
+{q:"新しい分野を学ぶとき、最も自然なやり方は？",c:[
+["基礎理論から体系的に積み上げる",[2,0,0,0,0,1]],
+["異分野との共通点を探しながら学ぶ",[1,0,2,0,0,0]],
+["誰かに教えるつもりでまとめながら学ぶ",[0,0,0,2,0,1]],
+["「これを学ぶと何ができるようになるか」を先に確認する",[0,1,0,0,2,0]]]},
+{q:"自分の成果物で最もこだわるポイントは？",c:[
+["全体の構造が論理的に整合していること",[1,0,0,0,0,2]],
+["実際に触って使える状態まで仕上げること",[0,2,0,1,0,0]],
+["独自性があること。ありきたりでないこと",[0,0,2,0,1,0]],
+["多くの人に届くこと。インパクトの大きさ",[0,0,0,1,2,0]]]},
+{q:"「すごい」と感じる人の共通点は？",c:[
+["一つのことを極限まで深く理解している",[2,0,0,0,0,1]],
+["常識を覆す発想で新しい道を切り拓いた",[0,0,2,0,1,0]],
+["複雑なことを驚くほどわかりやすく説明できる",[0,0,0,2,0,1]],
+["周囲を巻き込んで大きなことを成し遂げた",[0,1,0,0,2,0]]]},
+{q:"休日に気づいたら没頭しているのは？",c:[
+["物事の仕組みを分解して理解すること",[1,0,0,0,0,2]],
+["個人プロジェクトの開発やものづくり",[0,2,1,0,0,0]],
+["ビジネスや社会の動向を追うこと",[0,0,0,1,2,0]],
+["気になるテーマを延々と深掘りすること",[2,0,1,0,0,0]]]},
+{q:"チームで成果を出したとき、最も誇りに感じるのは？",c:[
+["誰も思いつかなかったアプローチで解決できたこと",[1,0,2,0,0,0]],
+["実際に動くプロダクトを完成させたこと",[0,2,0,0,0,1]],
+["当初の目標を超える成果を出せたこと",[0,1,0,0,2,0]],
+["メンバー全員が成長を実感できたこと",[0,0,0,2,1,0]]]},
+{q:"失敗から学ぶとき、最も重視するのは？",c:[
+["なぜ失敗したかの原因を徹底的に分析する",[2,0,0,0,0,1]],
+["全く違うアプローチを試してみる",[0,1,2,0,0,0]],
+["早く次の行動に移して検証する",[0,1,0,0,2,0]],
+["失敗のパターンを構造化して再発防止の仕組みを作る",[0,0,0,1,0,2]]]},
+{q:"10年後、どんな形で社会に貢献していたい？",c:[
+["まだ誰も解いていない問題を解決している",[2,0,1,0,0,0]],
+["世界中の人が日常的に使うものを作っている",[0,2,0,0,1,0]],
+["次の世代の才能を見出し、育てている",[0,0,1,2,0,0]],
+["大きな事業を作り、雇用と経済を動かしている",[0,0,0,0,2,1]]]},
+{q:"最も共感する考え方は？",c:[
+["「重要なのは疑問を持ち続けることだ」",[2,0,1,0,0,0]],
+["「完璧より完了。まず動くものを作れ」",[0,2,0,0,1,0]],
+["「一人の天才より、百人の協力が世界を変える」",[0,0,0,2,1,0]],
+["「シンプルさの追求は、複雑さの克服より難しい」",[0,1,1,0,0,2]]]}
+];
+var cur=0,sc=[0,0,0,0,0,0],hist=[];
+function show(id){document.getElementById(id).style.display='';}
+function hide(id){document.getElementById(id).style.display='none';}
+
+document.getElementById('startBtn').addEventListener('click',function(){
+ hide('intro');show('quiz');render();
+});
+document.getElementById('backBtn').addEventListener('click',function(){
+ if(!hist.length)return;
+ var h=hist.pop();cur=h.q;sc=h.sc;render();
+});
+
+function render(){
+ document.getElementById('pbar').style.width=((cur/Q.length)*100)+'%';
+ document.getElementById('qnum').textContent='QUESTION '+(cur+1)+' / '+Q.length;
+ document.getElementById('qtext').textContent=Q[cur].q;
+ document.getElementById('backBtn').style.display=cur>0?'':'none';
+ var el=document.getElementById('choices');
+ el.innerHTML='';
+ var order=[0,1,2,3];
+ for(var i=3;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=order[i];order[i]=order[j];order[j]=t;}
+ for(var n=0;n<order.length;n++){
+  var ci=order[n];
+  var b=document.createElement('button');
+  b.className='qz-choice';
+  b.textContent=Q[cur].c[ci][0];
+  b.setAttribute('data-ci',ci);
+  b.addEventListener('click',handleClick);
+  el.appendChild(b);
+ }
+}
+function handleClick(e){
+ var ci=parseInt(e.target.getAttribute('data-ci'));
+ hist.push({q:cur,sc:sc.slice()});
+ var s=Q[cur].c[ci][1];
+ for(var i=0;i<6;i++)sc[i]+=s[i];
+ cur++;
+ if(cur<Q.length)render();else result();
+}
+function result(){
+ hide('quiz');show('result');
+ var mx=0,wi=0,tot=0;
+ for(var i=0;i<6;i++){tot+=sc[i];if(sc[i]>mx){mx=sc[i];wi=i;}}
+ if(!tot)tot=1;
+ var t=T[wi];
+ var s2=sc.slice();s2[wi]=-1;
+ var mx2=0,si=0;
+ for(var i=0;i<6;i++){if(s2[i]>mx2){mx2=s2[i];si=i;}}
+ var el=document.getElementById('result');
+ var h='<div class="two-col" style="border-bottom:1px solid var(--gray-200)">';
+ h+='<div class="two-col-left"><p class="eyebrow">YOUR RESULT</p>';
+ h+='<h2 class="col-heading" style="font-size:1.2rem">思考スタイル診断</h2>';
+ h+='<p style="font-family:var(--sans);font-size:12px;color:var(--gray-500);margin-top:0.5rem">Roppongi Venture Capital</p></div>';
+ h+='<div class="two-col-right">';
+ h+='<div class="rs-card"><div class="rs-card-head">THINKING STYLE</div>';
+ h+='<div class="rs-card-type">'+t.name+' &mdash; '+t.sub+'</div>';
+ h+='<div class="rs-card-tag">'+t.tag+'</div><div>';
+ for(var i=0;i<6;i++){
+  var pct=Math.round((sc[i]/tot)*100);
+  var bw=mx>0?Math.round((sc[i]/mx)*100):0;
+  h+='<div class="sc-row"><span class="sc-label">'+T[i].name+'</span>';
+  h+='<div class="sc-track"><div class="sc-fill" style="width:'+bw+'%"></div></div>';
+  h+='<span class="sc-pct">'+pct+'%</span></div>';
+ }
+ h+='</div><div class="rs-card-footer">サブタイプ：'+T[si].name+'（'+T[si].sub+'） ｜ roppongivc.com/quiz</div></div>';
+ h+='<p style="font-family:var(--sans);font-size:13px;color:var(--gray-500);margin-bottom:0.5rem">結果をSNSでシェアしたり、後で見返したい場合はこのカードをスクリーンショットで保存できます。</p>';
+ h+='<p style="font-family:var(--sans);font-size:13px;color:var(--gray-500);margin-bottom:1.5rem">テキスト形式で保存したい場合は「テキストでコピー」からクリップボードにコピーして、メモアプリ等に貼り付けてください。</p>';
+ h+='<div style="display:flex;gap:1rem;flex-wrap:wrap;margin-bottom:2rem">';
+ h+='<button class="rs-copy" id="copyBtn">テキストでコピー</button>';
+ h+='<button class="apply-btn" id="retryBtn">もう一度診断する</button></div>';
+ h+='<div style="border-top:1px solid var(--gray-200);padding-top:2rem;font-family:var(--sans);font-size:15px;line-height:1.9;font-weight:400"><p style="margin-bottom:1.2rem">'+t.desc+'</p>';
+ h+='<p style="font-size:13px;color:var(--gray-500);margin-bottom:2rem"><strong>同じタイプの著名人：</strong>'+t.ex+'</p></div>';
+ h+='</div></div>';
+ h+='<div class="two-col" style="border-bottom:1px solid var(--gray-200)"><div class="two-col-left">';
+ h+='<h2 class="col-heading" style="font-size:1.2rem">診断ロジック</h2>';
+ h+='<p style="font-family:var(--sans);font-size:13px;color:var(--gray-500);margin-top:0.5rem">理論的背景と測定手法</p></div>';
+ h+='<div class="two-col-right"><div class="lg-body">';
+ h+='<h4>理論的基盤：ホランドのRIASECモデル</h4>';
+ h+='<p>この診断は、職業心理学者 John Holland が1959年に提唱し、60年以上にわたり実証研究が蓄積されている RIASEC理論（Holland, 1997）に基づいています。</p>';
+ h+='<p>RIASECは米国労働省のO*NET（職業情報ネットワーク）の分類基盤として現在も使用されており、Strong Interest Inventory（2012年改訂）やACT Interest Inventoryなど、世界で最も広く使われている職業適性検査の理論的基盤です。2014年のメタ分析（Rounds & Su）および2012年のメタ分析（Nye et al.）でも、6タイプ構造の妥当性が再確認されています。</p>';
+ h+='<h4>6つのタイプとRIASECの対応</h4>';
+ h+='<table><tr><th>RIASEC</th><th>本診断</th><th>特徴</th></tr>';
+ h+='<tr><td>I &mdash; Investigative</td><td>探究型</td><td>分析的・知的探究。「なぜ？」を突き詰める</td></tr>';
+ h+='<tr><td>R &mdash; Realistic</td><td>実装型</td><td>実践的・技術的。手を動かしてものを作る</td></tr>';
+ h+='<tr><td>A &mdash; Artistic</td><td>創造型</td><td>独創的・分野横断的。既存の枠を超える発想</td></tr>';
+ h+='<tr><td>S &mdash; Social</td><td>伝達型</td><td>教育的・協力的。知識を伝え人を育てる</td></tr>';
+ h+='<tr><td>E &mdash; Enterprising</td><td>事業型</td><td>リーダーシップ・事業創造。ビジョンを実現する</td></tr>';
+ h+='<tr><td>C &mdash; Conventional</td><td>設計型</td><td>体系的・構造的。仕組みを設計し最適化する</td></tr></table>';
+ h+='<h4>STEM文脈への適応</h4>';
+ h+='<p>オリジナルのRIASECは全職業領域を対象としていますが、本診断ではSTEM人材の文脈に特化した質問設計を行っています。特にArtistic型は、芸術的表現だけでなく「解法の美しさへのこだわり」「分野横断的な思考」「クリエイティブ・テクノロジー」といったSTEM領域での創造性として再解釈しています。</p>';
+ h+='<h4>測定手法：多次元強制選択法（MFC）</h4>';
+ h+='<p>各質問の4つの選択肢は、それぞれ複数のタイプに異なる重みで加点されます（主要タイプに+2、副次タイプに+1）。これは多次元強制選択法（Multidimensional Forced Choice）と呼ばれる手法で、単純な1対1対応ではありません。MFC形式は社会的望ましさバイアスを低減できることが知られています（Brown & Maydeu-Olivares, 2011）。</p>';
+ h+='<h4>問題数の妥当性</h4>';
+ h+='<p>本診断は10問で構成されています。短縮版性格検査の先行研究（Gosling et al., 2003 "TIPI"）により、適切に設計された少数の項目でも次元の本質的な構造を捉えられることが示されています。MFC形式では各回答が複数の次元に情報を提供するため、10問 x 4選択肢 = 40のデータポイントから6次元を測定することは統計的に妥当です。ただし、これは臨床的な診断ツールではなく、自己理解のきっかけとなることを目的とした簡易診断です。</p>';
+ h+='<h4>参考文献</h4>';
+ h+='<p style="font-size:12px;color:var(--gray-500)">Holland, J. L. (1997). <em>Making Vocational Choices: A Theory of Vocational Personalities and Work Environments</em> (3rd ed.). Psychological Assessment Resources.<br>';
+ h+='Rounds, J., & Su, R. (2014). The nature and power of interests. <em>Current Directions in Psychological Science</em>, 23(2), 98-103.<br>';
+ h+='Nye, C. D., Su, R., Rounds, J., & Drasgow, F. (2012). Vocational interests and performance: A quantitative summary of over 60 years of research. <em>Perspectives on Psychological Science</em>, 7(4), 384-403.<br>';
+ h+='Brown, A., & Maydeu-Olivares, A. (2011). Item response modeling of forced-choice questionnaires. <em>Educational and Psychological Measurement</em>, 71(3), 460-502.<br>';
+ h+='Gosling, S. D., Rentfrow, P. J., & Swann, W. B. (2003). A very brief measure of the Big-Five personality domains. <em>Journal of Research in Personality</em>, 37(6), 504-528.</p>';
+ h+='</div></div></div>';
+ h+='<div class="two-col" style="border-bottom:none"><div class="two-col-left"><h2 class="col-heading" style="font-size:1.2rem">次のステップ</h2></div>';
+ h+='<div class="two-col-right"><div class="col-body">';
+ h+='<p>あなたの思考スタイルを活かせる場があります。Edgeは、突出した能力を持つ高校生・大学生が、個人またはチームで課題を見つけ、形にするところまでを体験する実践プログラムです。</p>';
+ h+='<a href="/program/" style="display:inline-block;margin-top:0.75rem;font-family:var(--sans);font-size:16px;font-weight:500;color:var(--black);text-decoration:underline;text-underline-offset:3px">Edgeプログラムを見る →</a>';
+ h+='</div></div></div>';
+ el.innerHTML=h;
+ document.getElementById('copyBtn').addEventListener('click',function(){
+  var txt='思考スタイル診断 結果\n================================\n\n';
+  txt+='メインタイプ：'+t.name+'（'+t.sub+'）\n'+t.tag+'\n\nサブタイプ：'+T[si].name+'（'+T[si].sub+'）\n\nスコア分布：\n';
+  for(var i=0;i<6;i++){var p=Math.round((sc[i]/tot)*100);var b='';for(var j=0;j<Math.round(p/5);j++)b+='#';txt+='  '+T[i].name+' '+p+'% '+b+'\n';}
+  txt+='\n同じタイプの著名人：'+t.ex+'\n\n診断：roppongivc.com/quiz\n理論基盤：Holland RIASEC Model (1997)\n';
+  navigator.clipboard.writeText(txt).then(function(){
+   var btn=document.getElementById('copyBtn');btn.textContent='コピーしました';
+   setTimeout(function(){btn.textContent='テキストでコピー';},2000);
+  });
+ });
+ document.getElementById('retryBtn').addEventListener('click',function(){location.reload();});
+}
+})();
+</script>
+{{ end }}
