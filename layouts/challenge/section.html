@@ -1,13 +1,14 @@
 {{ define "main" }}
-<section class="hero" style="padding:4rem 2.5rem 3rem">
-  <h1 style="font-size:clamp(1.8rem,3.5vw,2.5rem)">STEM Cognitive Challenge</h1>
-  <p style="font-family:var(--sans);font-size:15px;color:var(--gray-500);margin-top:0.75rem">あなたの認知能力と数理的思考力を測定する</p>
+<section class="hero">
+  <p class="eyebrow">Challenge</p>
+  <h1 style="font-size:4.5rem;letter-spacing:-0.03em;font-weight:700">認知能力チャレンジ</h1>
+  <p style="font-family:var(--serif);font-size:1.5rem;color:var(--black);margin-top:1rem;font-weight:400">あなたの認知能力と数理的思考力を測定する。</p>
 </section>
 <div id="app">
 <section id="intro" class="two-col">
   <div class="two-col-left">
     <h2 class="col-heading">認知能力チャレンジ</h2>
-    <p style="font-family:var(--sans);font-size:13px;color:var(--gray-500);margin-top:1rem">全18問 ｜ 約10分</p>
+    <p style="font-family:var(--sans);font-size:14px;color:var(--gray-500);margin-top:1rem">全18問 ｜ 約10分</p>
   </div>
   <div class="two-col-right">
     <div class="col-body">
@@ -20,7 +21,7 @@
       </p>
       <p>難易度は適応型です。正解するほど難しくなり、あなたの能力レベルに収束します。最初の数問は誰でも解けるレベルから始まります。</p>
       <p>チャレンジ終了後、<strong>測定手法の完全な解説と学術的根拠</strong>を公開しています。</p>
-      <p style="font-size:13px;color:var(--gray-500);margin-top:1rem">注：本テストは認知能力の一部を測定するものであり、オリンピック成績を直接予測するものではありません。</p>
+      <p style="font-size:14px;color:var(--gray-500);margin-top:1rem">注：本テストは認知能力の一部を測定するものであり、オリンピック成績を直接予測するものではありません。</p>
       <button class="apply-btn" id="startBtn">チャレンジを始める →</button>
     </div>
   </div>
@@ -30,9 +31,9 @@
   <div class="two-col" style="border-bottom:none">
     <div class="two-col-left">
       <p class="eyebrow" id="partLabel"></p>
-      <p id="qnum" style="font-family:var(--sans);font-size:13px;color:var(--gray-500);margin-bottom:0.5rem"></p>
+      <p id="qnum" style="font-family:var(--sans);font-size:14px;color:var(--gray-500);margin-bottom:0.5rem"></p>
       <p id="timer" style="font-family:var(--sans);font-size:24px;font-weight:600;margin-bottom:1rem"></p>
-      <p id="levelInfo" style="font-family:var(--sans);font-size:12px;color:var(--gray-500)"></p>
+      <p id="levelInfo" style="font-family:var(--sans);font-size:14px;color:var(--gray-500)"></p>
     </div>
     <div class="two-col-right">
       <div id="questionArea"></div>
@@ -47,4 +48,18 @@
 <script src="{{ "js/challenge-patterns.js" | relURL }}?v={{ now.Unix }}"></script>
 <script src="{{ "js/challenge-math.js" | relURL }}?v={{ now.Unix }}"></script>
 <script src="{{ "js/challenge-main.js" | relURL }}?v={{ now.Unix }}"></script>
+<!-- 次のステップ -->
+<section class="two-col" style="border-bottom:none">
+  <div class="two-col-left">
+    <h2 class="col-heading">次のステップ</h2>
+  </div>
+  <div class="two-col-right">
+    <div class="col-body">
+      <p><strong>Edgeプログラム</strong><br>突出した能力を持つ高校生・大学生が、個人またはチームで課題を見つけ、形にするところまでを体験する実践プログラム。</p>
+      <a href="{{ "program/" | relURL }}" style="display:inline-block;margin-top:0.5rem;margin-bottom:2rem;font-family:var(--sans);font-size:16px;font-weight:500;color:var(--black);text-decoration:underline;text-underline-offset:3px">Edgeプログラムを見る →</a>
+      <p><strong>他のチャレンジ</strong></p>
+      <p><a href="{{ "diagnosis/" | relURL }}" style="font-family:var(--sans);font-weight:500;color:var(--black);text-decoration:underline;text-underline-offset:3px">思考スタイル診断 →</a>　<a href="{{ "logistics/" | relURL }}" style="font-family:var(--sans);font-weight:500;color:var(--black);text-decoration:underline;text-underline-offset:3px">起業家シミュレーション →</a></p>
+    </div>
+  </div>
+</section>
 {{ end }}

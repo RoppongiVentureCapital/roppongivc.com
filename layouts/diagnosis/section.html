@@ -26,7 +26,7 @@
     <div class="two-col-left">
       <p class="eyebrow" id="qnum"></p>
       <h2 class="col-heading" id="qtext" style="font-size:1.35rem"></h2>
-      <button id="backBtn" style="display:none;background:none;border:none;font-family:var(--sans);font-size:13px;color:var(--gray-500);cursor:pointer;margin-top:1.5rem;padding:0">← 前の質問に戻る</button>
+      <button id="backBtn" style="display:none;background:none;border:none;font-family:var(--sans);font-size:14px;color:var(--gray-500);cursor:pointer;margin-top:1.5rem;padding:0">← 前の質問に戻る</button>
     </div>
     <div class="two-col-right"><div id="choices"></div></div>
   </div>
@@ -39,22 +39,22 @@
 .qz-choice{display:block;width:100%;text-align:left;background:none;border:1px solid var(--gray-200);padding:1.2rem 1.5rem;margin-bottom:0.75rem;cursor:pointer;font-family:var(--sans);font-size:15px;line-height:1.6;color:var(--black);font-weight:400;transition:all .15s}
 .qz-choice:hover{background:var(--gray-100);border-color:var(--black)}
 .rs-card{border:1px solid var(--gray-200);padding:2rem;margin-bottom:2rem;background:var(--white)}
-.rs-card-head{font-family:var(--sans);font-size:11px;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;color:var(--gray-500);margin-bottom:1rem}
+.rs-card-head{font-family:var(--sans);font-size:14px;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;color:var(--gray-500);margin-bottom:1rem}
 .rs-card-type{font-family:var(--serif);font-size:1.5rem;font-weight:300;margin-bottom:0.25rem}
-.rs-card-tag{font-family:var(--sans);font-size:13px;color:var(--gray-500);margin-bottom:1.5rem}
-.rs-card-footer{font-family:var(--sans);font-size:11px;color:var(--gray-500);border-top:1px solid var(--gray-200);padding-top:1rem;margin-top:1rem}
+.rs-card-tag{font-family:var(--sans);font-size:14px;color:var(--gray-500);margin-bottom:1.5rem}
+.rs-card-footer{font-family:var(--sans);font-size:14px;color:var(--gray-500);border-top:1px solid var(--gray-200);padding-top:1rem;margin-top:1rem}
 .sc-row{display:flex;align-items:center;gap:1rem;margin-bottom:0.75rem}
-.sc-label{width:100px;font-family:var(--sans);font-size:13px;color:var(--gray-600);text-align:right;flex-shrink:0}
+.sc-label{width:100px;font-family:var(--sans);font-size:14px;color:var(--gray-600);text-align:right;flex-shrink:0}
 .sc-track{flex:1;background:var(--gray-100);height:6px}
 .sc-fill{height:100%;background:var(--black);transition:width 1s ease}
-.sc-pct{width:36px;font-family:var(--sans);font-size:12px;color:var(--gray-500)}
-.rs-copy{background:none;border:1px solid var(--gray-200);font-family:var(--sans);font-size:13px;color:var(--gray-600);cursor:pointer;padding:0.6rem 1.2rem;transition:all .15s}
+.sc-pct{width:36px;font-family:var(--sans);font-size:14px;color:var(--gray-500)}
+.rs-copy{background:none;border:1px solid var(--gray-200);font-family:var(--sans);font-size:14px;color:var(--gray-600);cursor:pointer;padding:0.6rem 1.2rem;transition:all .15s}
 .rs-copy:hover{border-color:var(--black);color:var(--black)}
-.lg-body{font-family:var(--sans);font-size:13px;line-height:1.9;color:var(--gray-600)}
+.lg-body{font-family:var(--sans);font-size:14px;line-height:1.9;color:var(--gray-600)}
 .lg-body h4{font-size:14px;font-weight:600;color:var(--black);margin:1.5rem 0 0.5rem}
 .lg-body h4:first-child{margin-top:0}
 .lg-body p{margin-bottom:0.75rem}
-.lg-body table{width:100%;border-collapse:collapse;margin:1rem 0;font-size:13px}
+.lg-body table{width:100%;border-collapse:collapse;margin:1rem 0;font-size:14px}
 .lg-body th,.lg-body td{padding:0.5rem 0.75rem;border:1px solid var(--gray-200);text-align:left}
 .lg-body th{font-weight:600;background:var(--gray-100)}
 </style>
@@ -184,7 +184,7 @@ function result(){
  var h='<div class="two-col" style="border-bottom:1px solid var(--gray-200)">';
  h+='<div class="two-col-left"><p class="eyebrow">YOUR RESULT</p>';
  h+='<h2 class="col-heading" style="font-size:1.2rem">思考スタイル診断</h2>';
- h+='<p style="font-family:var(--sans);font-size:12px;color:var(--gray-500);margin-top:0.5rem">Roppongi Venture Capital</p></div>';
+ h+='<p style="font-family:var(--sans);font-size:14px;color:var(--gray-500);margin-top:0.5rem">Roppongi Venture Capital</p></div>';
  h+='<div class="two-col-right">';
  h+='<div class="rs-card"><div class="rs-card-head">THINKING STYLE</div>';
  h+='<div class="rs-card-type">'+t.name+' &mdash; '+t.sub+'</div>';
@@ -197,17 +197,17 @@ function result(){
   h+='<span class="sc-pct">'+pct+'%</span></div>';
  }
  h+='</div><div class="rs-card-footer">サブタイプ：'+T[si].name+'（'+T[si].sub+'） ｜ roppongivc.com/quiz</div></div>';
- h+='<p style="font-family:var(--sans);font-size:13px;color:var(--gray-500);margin-bottom:0.5rem">結果をSNSでシェアしたり、後で見返したい場合はこのカードをスクリーンショットで保存できます。</p>';
- h+='<p style="font-family:var(--sans);font-size:13px;color:var(--gray-500);margin-bottom:1.5rem">テキスト形式で保存したい場合は「テキストでコピー」からクリップボードにコピーして、メモアプリ等に貼り付けてください。</p>';
+ h+='<p style="font-family:var(--sans);font-size:14px;color:var(--gray-500);margin-bottom:0.5rem">結果をSNSでシェアしたり、後で見返したい場合はこのカードをスクリーンショットで保存できます。</p>';
+ h+='<p style="font-family:var(--sans);font-size:14px;color:var(--gray-500);margin-bottom:1.5rem">テキスト形式で保存したい場合は「テキストでコピー」からクリップボードにコピーして、メモアプリ等に貼り付けてください。</p>';
  h+='<div style="display:flex;gap:1rem;flex-wrap:wrap;margin-bottom:2rem">';
  h+='<button class="rs-copy" id="copyBtn">テキストでコピー</button>';
  h+='<button class="apply-btn" id="retryBtn">もう一度診断する</button></div>';
  h+='<div style="border-top:1px solid var(--gray-200);padding-top:2rem;font-family:var(--sans);font-size:15px;line-height:1.9;font-weight:400"><p style="margin-bottom:1.2rem">'+t.desc+'</p>';
- h+='<p style="font-size:13px;color:var(--gray-500);margin-bottom:2rem"><strong>同じタイプの著名人：</strong>'+t.ex+'</p></div>';
+ h+='<p style="font-size:14px;color:var(--gray-500);margin-bottom:2rem"><strong>同じタイプの著名人：</strong>'+t.ex+'</p></div>';
  h+='</div></div>';
  h+='<div class="two-col" style="border-bottom:1px solid var(--gray-200)"><div class="two-col-left">';
  h+='<h2 class="col-heading" style="font-size:1.2rem">診断ロジック</h2>';
- h+='<p style="font-family:var(--sans);font-size:13px;color:var(--gray-500);margin-top:0.5rem">理論的背景と測定手法</p></div>';
+ h+='<p style="font-family:var(--sans);font-size:14px;color:var(--gray-500);margin-top:0.5rem">理論的背景と測定手法</p></div>';
  h+='<div class="two-col-right"><div class="lg-body">';
  h+='<h4>理論的基盤：ホランドのRIASECモデル</h4>';
  h+='<p>この診断は、職業心理学者 John Holland が1959年に提唱し、60年以上にわたり実証研究が蓄積されている RIASEC理論（Holland, 1997）に基づいています。</p>';
@@ -227,7 +227,7 @@ function result(){
  h+='<h4>問題数の妥当性</h4>';
  h+='<p>本診断は10問で構成されています。短縮版性格検査の先行研究（Gosling et al., 2003 "TIPI"）により、適切に設計された少数の項目でも次元の本質的な構造を捉えられることが示されています。MFC形式では各回答が複数の次元に情報を提供するため、10問 x 4選択肢 = 40のデータポイントから6次元を測定することは統計的に妥当です。ただし、これは臨床的な診断ツールではなく、自己理解のきっかけとなることを目的とした簡易診断です。</p>';
  h+='<h4>参考文献</h4>';
- h+='<p style="font-size:12px;color:var(--gray-500)">Holland, J. L. (1997). <em>Making Vocational Choices: A Theory of Vocational Personalities and Work Environments</em> (3rd ed.). Psychological Assessment Resources.<br>';
+ h+='<p style="font-size:14px;color:var(--gray-500)">Holland, J. L. (1997). <em>Making Vocational Choices: A Theory of Vocational Personalities and Work Environments</em> (3rd ed.). Psychological Assessment Resources.<br>';
  h+='Rounds, J., & Su, R. (2014). The nature and power of interests. <em>Current Directions in Psychological Science</em>, 23(2), 98-103.<br>';
  h+='Nye, C. D., Su, R., Rounds, J., & Drasgow, F. (2012). Vocational interests and performance: A quantitative summary of over 60 years of research. <em>Perspectives on Psychological Science</em>, 7(4), 384-403.<br>';
  h+='Brown, A., & Maydeu-Olivares, A. (2011). Item response modeling of forced-choice questionnaires. <em>Educational and Psychological Measurement</em>, 71(3), 460-502.<br>';
@@ -237,6 +237,8 @@ function result(){
  h+='<div class="two-col-right"><div class="col-body">';
  h+='<p>あなたの思考スタイルを活かせる場があります。Edgeは、突出した能力を持つ高校生・大学生が、個人またはチームで課題を見つけ、形にするところまでを体験する実践プログラムです。</p>';
  h+='<a href="/program/" style="display:inline-block;margin-top:0.75rem;font-family:var(--sans);font-size:16px;font-weight:500;color:var(--black);text-decoration:underline;text-underline-offset:3px">Edgeプログラムを見る →</a>';
+ h+='<p style="margin-top:2rem"><strong>他のチャレンジ</strong></p>';
+ h+='<p><a href="/challenge/" style="font-family:var(--sans);font-weight:500;color:var(--black);text-decoration:underline;text-underline-offset:3px">認知能力チャレンジ →</a>　<a href="/logistics/" style="font-family:var(--sans);font-weight:500;color:var(--black);text-decoration:underline;text-underline-offset:3px">起業家シミュレーション →</a></p>';
  h+='</div></div></div>';
  el.innerHTML=h;
  document.getElementById('copyBtn').addEventListener('click',function(){

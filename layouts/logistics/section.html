@@ -1,13 +1,14 @@
 {{ define "main" }}
-<section class="hero" style="padding:4rem 2.5rem 3rem">
-  <h1 style="font-size:clamp(1.8rem,3.5vw,2.5rem)">物流最適化チャレンジ</h1>
-  <p style="font-family:var(--sans);font-size:15px;color:var(--gray-500);margin-top:0.75rem">スタートアップの思考プロセスを体験する</p>
+<section class="hero">
+  <p class="eyebrow">Challenge</p>
+  <h1 style="font-size:4.5rem;letter-spacing:-0.03em;font-weight:700">起業家シミュレーション</h1>
+  <p style="font-family:var(--serif);font-size:1.5rem;color:var(--black);margin-top:1rem;font-weight:400">スタートアップの思考プロセスを体験する。</p>
 </section>
 <div id="app">
 <section id="intro" class="two-col">
   <div class="two-col-left">
     <h2 class="col-heading">起業家シミュレーション</h2>
-    <p style="font-family:var(--sans);font-size:13px;color:var(--gray-500);margin-top:1rem">5ステップ ｜ 約10分</p>
+    <p style="font-family:var(--sans);font-size:14px;color:var(--gray-500);margin-top:1rem">5ステップ ｜ 約10分</p>
   </div>
   <div class="two-col-right">
     <div class="col-body">
@@ -20,7 +21,7 @@
         4. 事業化 — 価格・市場規模・競争優位を考える<br>
         5. ピッチ — 30秒で事業を説明する
       </p>
-      <p style="font-size:13px;color:var(--gray-500);margin-top:1rem">スタートアップの失敗原因の42%は「市場需要の不在」。技術より先に、課題を見つけることが全ての始まりです。</p>
+      <p style="font-size:14px;color:var(--gray-500);margin-top:1rem">スタートアップの失敗原因の42%は「市場需要の不在」。技術より先に、課題を見つけることが全ての始まりです。</p>
       <button class="apply-btn" id="startBtn">始める →</button>
     </div>
   </div>
@@ -38,7 +39,7 @@
 .st-fb{padding:1rem;margin:1rem 0;font-family:var(--sans);font-size:14px;line-height:1.8}
 .st-fb.ok{background:#f0fdf4;border:1px solid #059669}
 .st-fb.ng{background:#fef2f2;border:1px solid #dc2626}
-.st-insight{padding:1rem 1.2rem;background:#eff6ff;border:1px solid #bfdbfe;margin:1rem 0;font-family:var(--sans);font-size:13px;line-height:1.8;color:#1e40af}
+.st-insight{padding:1rem 1.2rem;background:#eff6ff;border:1px solid #bfdbfe;margin:1rem 0;font-family:var(--sans);font-size:14px;line-height:1.8;color:#1e40af}
 .ch-opts{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
 .ch-opt{background:var(--white);border:1px solid var(--gray-200);padding:8px;cursor:pointer;transition:all .15s;display:flex;align-items:center;justify-content:center}
 .ch-opt:hover{border-color:var(--black);background:var(--gray-100)}
@@ -48,11 +49,25 @@
 .pitch-field{width:100%;border:1px solid var(--gray-200);padding:0.75rem;font-family:var(--sans);font-size:14px;margin-bottom:0.75rem;resize:none}
 .pitch-field:focus{outline:none;border-color:var(--black)}
 .sc-row{display:flex;align-items:center;gap:1rem;margin-bottom:0.75rem}
-.sc-label{width:120px;font-family:var(--sans);font-size:13px;color:var(--gray-600);text-align:right;flex-shrink:0}
+.sc-label{width:120px;font-family:var(--sans);font-size:14px;color:var(--gray-600);text-align:right;flex-shrink:0}
 .sc-track{flex:1;background:var(--gray-100);height:8px}
 .sc-fill{height:100%;background:var(--black);transition:width 1s ease}
-.sc-val{width:50px;font-family:var(--sans);font-size:13px;color:var(--gray-500)}
+.sc-val{width:50px;font-family:var(--sans);font-size:14px;color:var(--gray-500)}
 #map{background:#fafafa}
 </style>
 <script src="{{ "js/logistics-v3.js" | relURL }}?v={{ now.Unix }}"></script>
+<!-- 次のステップ -->
+<section class="two-col" style="border-bottom:none">
+  <div class="two-col-left">
+    <h2 class="col-heading">次のステップ</h2>
+  </div>
+  <div class="two-col-right">
+    <div class="col-body">
+      <p><strong>Edgeプログラム</strong><br>突出した能力を持つ高校生・大学生が、個人またはチームで課題を見つけ、形にするところまでを体験する実践プログラム。</p>
+      <a href="{{ "program/" | relURL }}" style="display:inline-block;margin-top:0.5rem;margin-bottom:2rem;font-family:var(--sans);font-size:16px;font-weight:500;color:var(--black);text-decoration:underline;text-underline-offset:3px">Edgeプログラムを見る →</a>
+      <p><strong>他のチャレンジ</strong></p>
+      <p><a href="{{ "diagnosis/" | relURL }}" style="font-family:var(--sans);font-weight:500;color:var(--black);text-decoration:underline;text-underline-offset:3px">思考スタイル診断 →</a>　<a href="{{ "challenge/" | relURL }}" style="font-family:var(--sans);font-weight:500;color:var(--black);text-decoration:underline;text-underline-offset:3px">認知能力チャレンジ →</a></p>
+    </div>
+  </div>
+</section>
 {{ end }}
