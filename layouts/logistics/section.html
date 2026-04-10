@@ -1,0 +1,58 @@
+{{ define "main" }}
+<section class="hero" style="padding:4rem 2.5rem 3rem">
+  <h1 style="font-size:clamp(1.8rem,3.5vw,2.5rem)">物流最適化チャレンジ</h1>
+  <p style="font-family:var(--sans);font-size:15px;color:var(--gray-500);margin-top:0.75rem">スタートアップの思考プロセスを体験する</p>
+</section>
+<div id="app">
+<section id="intro" class="two-col">
+  <div class="two-col-left">
+    <h2 class="col-heading">起業家シミュレーション</h2>
+    <p style="font-family:var(--sans);font-size:13px;color:var(--gray-500);margin-top:1rem">5ステップ ｜ 約10分</p>
+  </div>
+  <div class="two-col-right">
+    <div class="col-body">
+      <p>このチャレンジでは、物流業界の課題を発見し、ソリューションを体験し、事業として成立させるまでの<strong>起業家の思考プロセス</strong>を5つのステップで体験します。</p>
+      <p style="margin-top:1rem;padding:1rem 1.2rem;background:var(--gray-100);font-size:14px;line-height:1.8">
+        <strong>5つのステップ</strong><br>
+        1. 機会の発見 — データから課題を特定する<br>
+        2. 課題の深掘り — 誰が最も困っているかを見極める<br>
+        3. ソリューション体験 — 最短ルートを見つける<br>
+        4. 事業化 — 価格・市場規模・競争優位を考える<br>
+        5. ピッチ — 30秒で事業を説明する
+      </p>
+      <p style="font-size:13px;color:var(--gray-500);margin-top:1rem">スタートアップの失敗原因の42%は「市場需要の不在」。技術より先に、課題を見つけることが全ての始まりです。</p>
+      <button class="apply-btn" id="startBtn">始める →</button>
+    </div>
+  </div>
+</section>
+<section id="step" style="display:none"></section>
+</div>
+<style>
+.st-wrap{padding:2rem 2.5rem}
+.st-q{font-family:var(--sans);font-size:15px;line-height:1.8;margin-bottom:1.5rem}
+.st-opt{display:block;width:100%;text-align:left;background:none;border:1px solid var(--gray-200);padding:1.2rem 1.5rem;margin-bottom:0.75rem;cursor:pointer;font-family:var(--sans);font-size:14px;line-height:1.6;color:var(--black);transition:all .15s}
+.st-opt:hover{background:var(--gray-100);border-color:var(--black)}
+.st-opt.correct{background:#f0fdf4;border-color:#059669}
+.st-opt.wrong{opacity:0.3}
+.st-data{padding:1.2rem;background:var(--gray-100);margin-bottom:1.5rem;font-family:var(--sans);font-size:14px;line-height:1.8}
+.st-fb{padding:1rem;margin:1rem 0;font-family:var(--sans);font-size:14px;line-height:1.8}
+.st-fb.ok{background:#f0fdf4;border:1px solid #059669}
+.st-fb.ng{background:#fef2f2;border:1px solid #dc2626}
+.st-insight{padding:1rem 1.2rem;background:#eff6ff;border:1px solid #bfdbfe;margin:1rem 0;font-family:var(--sans);font-size:13px;line-height:1.8;color:#1e40af}
+.ch-opts{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.ch-opt{background:var(--white);border:1px solid var(--gray-200);padding:8px;cursor:pointer;transition:all .15s;display:flex;align-items:center;justify-content:center}
+.ch-opt:hover{border-color:var(--black);background:var(--gray-100)}
+.st-slider-wrap{margin:1rem 0}
+.st-slider-wrap input[type=range]{width:100%}
+.st-slider-val{font-family:var(--sans);font-size:20px;font-weight:600;text-align:center;margin:0.5rem 0}
+.pitch-field{width:100%;border:1px solid var(--gray-200);padding:0.75rem;font-family:var(--sans);font-size:14px;margin-bottom:0.75rem;resize:none}
+.pitch-field:focus{outline:none;border-color:var(--black)}
+.sc-row{display:flex;align-items:center;gap:1rem;margin-bottom:0.75rem}
+.sc-label{width:120px;font-family:var(--sans);font-size:13px;color:var(--gray-600);text-align:right;flex-shrink:0}
+.sc-track{flex:1;background:var(--gray-100);height:8px}
+.sc-fill{height:100%;background:var(--black);transition:width 1s ease}
+.sc-val{width:50px;font-family:var(--sans);font-size:13px;color:var(--gray-500)}
+#map{background:#fafafa}
+</style>
+<script src="{{ "js/logistics-v3.js" | relURL }}?v={{ now.Unix }}"></script>
+{{ end }}

@@ -8,6 +8,7 @@
 
 # Hugo サイト構成ファイルのみ許可
 !/hugo.toml
+!/README.md
 !/content/
 !/layouts/
 !/static/
