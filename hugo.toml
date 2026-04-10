@@ -17,7 +17,7 @@ paginate = 12
       weight = 1
     [[languages.ja.menus.main]]
       name = "Challenge"
-      url = "/quiz/"
+      url = "/challenges/"
       weight = 2
     [[languages.ja.menus.main]]
       name = "Media"
@@ -39,7 +39,7 @@ paginate = 12
       weight = 1
     [[languages.en.menus.main]]
       name = "Challenge"
-      url = "/en/quiz/"
+      url = "/en/challenges/"
       weight = 2
     [[languages.en.menus.main]]
       name = "Media"
