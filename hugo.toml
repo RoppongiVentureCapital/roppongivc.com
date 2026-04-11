@@ -27,6 +27,10 @@ paginate = 12
       name = "Members"
       url = "/members/"
       weight = 4
+    [[languages.ja.menus.main]]
+      name = "Draft"
+      url = "/test/"
+      weight = 5
   [languages.en]
     languageName = "EN"
     weight = 2
