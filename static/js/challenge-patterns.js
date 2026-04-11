@@ -1,93 +1,156 @@
 var PatternEngine=(function(){
-var SHAPES=['circle','triangle','square','diamond','pentagon'];
-var COLORS=['#000','#2563eb','#dc2626','#059669','#d97706'];
-var SIZES=[14,22,30];
-var SHAPE_NAMES=['丸','三角','四角','ひし形','五角形'];
-var COLOR_NAMES=['黒','青','赤','緑','橙'];
-var SIZE_NAMES=['小','中','大'];
+// Drawing
+var SHAPES=['circle','triangle','square','diamond','cross'];
+var COLORS=['#000','#2563eb','#dc2626'];
+var SIZES=[12,20,28];
 
 function drawShape(ctx,shape,x,y,size,color){
-  ctx.fillStyle=color;ctx.beginPath();
+  ctx.fillStyle=color;ctx.strokeStyle=color;ctx.lineWidth=2;ctx.beginPath();
   if(shape==='circle'){ctx.arc(x,y,size,0,Math.PI*2);ctx.fill();}
   else if(shape==='triangle'){ctx.moveTo(x,y-size);ctx.lineTo(x-size*0.87,y+size*0.5);ctx.lineTo(x+size*0.87,y+size*0.5);ctx.closePath();ctx.fill();}
-  else if(shape==='square'){ctx.fillRect(x-size*0.8,y-size*0.8,size*1.6,size*1.6);}
+  else if(shape==='square'){ctx.fillRect(x-size*0.75,y-size*0.75,size*1.5,size*1.5);}
   else if(shape==='diamond'){ctx.moveTo(x,y-size);ctx.lineTo(x+size*0.7,y);ctx.lineTo(x,y+size);ctx.lineTo(x-size*0.7,y);ctx.closePath();ctx.fill();}
-  else if(shape==='pentagon'){for(var i=0;i<5;i++){var a=Math.PI*2*i/5-Math.PI/2;if(i===0)ctx.moveTo(x+Math.cos(a)*size,y+Math.sin(a)*size);else ctx.lineTo(x+Math.cos(a)*size,y+Math.sin(a)*size);}ctx.closePath();ctx.fill();}
+  else if(shape==='cross'){var w=size*0.3;ctx.fillRect(x-w,y-size,w*2,size*2);ctx.fillRect(x-size,y-w,size*2,w*2);}
 }
+
 function drawCell(canvas,items){
   var ctx=canvas.getContext('2d'),w=canvas.width,h=canvas.height;ctx.clearRect(0,0,w,h);
   if(!items||!items.length)return;
-  var pos=items.length===1?[[w/2,h/2]]:items.length===2?[[w*0.35,h/2],[w*0.65,h/2]]:[[w/2,h*0.3],[w*0.3,h*0.7],[w*0.7,h*0.7]];
-  for(var i=0;i<items.length;i++)drawShape(ctx,SHAPES[items[i].shape],pos[i][0],pos[i][1],SIZES[items[i].size],COLORS[items[i].color]);
-}
-function cellToItems(c){var items=[];for(var i=0;i<(c.count||1);i++)items.push({shape:c.shape,color:c.color,size:c.size});return items;}
-
-var PERMS=[[0,1,2],[0,2,1],[1,0,2],[1,2,0],[2,0,1],[2,1,0]];
-function rp(){return PERMS[Math.floor(Math.random()*6)];}
-
-function makeGrid(rules){
-  var grid=[];for(var r=0;r<3;r++){grid[r]=[];for(var c=0;c<3;c++)grid[r][c]={shape:0,color:0,size:1,count:1};}
-  for(var ri=0;ri<rules.length;ri++){
-    var rule=rules[ri],attr=rule.attr,type=rule.type,p=rp();
-    if(type==='row_seq'){for(var r=0;r<3;r++)for(var c=0;c<3;c++)grid[r][c][attr]=p[c];}
-    else if(type==='col_seq'){for(var r=0;r<3;r++)for(var c=0;c<3;c++)grid[r][c][attr]=p[r];}
-    else if(type==='dist'){for(var r=0;r<3;r++)for(var c=0;c<3;c++)grid[r][c][attr]=p[(c+r)%3];}
-    else if(type==='const_row'){for(var r=0;r<3;r++)for(var c=0;c<3;c++)grid[r][c][attr]=p[r];}
-    else if(type==='const_col'){for(var r=0;r<3;r++)for(var c=0;c<3;c++)grid[r][c][attr]=p[c];}
-    else if(type==='xor'){var rps=[rp(),rp(),rp()];for(var r=0;r<3;r++){grid[r][0][attr]=rps[r][0];grid[r][1][attr]=rps[r][1];grid[r][2][attr]=(rps[r][0]+rps[r][1])%3;}}
-  }
-  return grid;
+  var n=items.length;
+  var pos=n===1?[[w/2,h/2]]:n===2?[[w*0.33,h/2],[w*0.67,h/2]]:n===3?[[w/2,h*0.28],[w*0.3,h*0.7],[w*0.7,h*0.7]]:[[w*0.3,h*0.3],[w*0.7,h*0.3],[w*0.3,h*0.7],[w*0.7,h*0.7]];
+  for(var i=0;i<n;i++){var it=items[i],sz=n>=3?Math.min(SIZES[it.size||1],16):SIZES[it.size||1];drawShape(ctx,SHAPES[it.shape],pos[i][0],pos[i][1],sz,COLORS[it.color||0]);}
 }
 
-function generateDistractors(answer,count){
-  var ds=[],seen={},ak=answer.shape+','+answer.color+','+answer.size;seen[ak]=true;
-  for(var att=0;att<60&&ds.length<count;att++){
-    var d={shape:answer.shape,color:answer.color,size:answer.size,count:1};
-    var attrs=['shape','color','size'];
-    var nc=1+Math.floor(Math.random()*2);
-    for(var i=0;i<nc;i++)d[attrs[Math.floor(Math.random()*3)]]=Math.floor(Math.random()*3);
-    var k=d.shape+','+d.color+','+d.size;
-    if(!seen[k]){seen[k]=true;ds.push(d);}
-  }
-  while(ds.length<count){var d={shape:Math.floor(Math.random()*3),color:Math.floor(Math.random()*3),size:Math.floor(Math.random()*3),count:1};
-    var k=d.shape+','+d.color+','+d.size;if(!seen[k]){seen[k]=true;ds.push(d);}}
-  return ds.slice(0,count);
-}
+function cellToItems(c){return c.elements?c.elements.slice():[];}
 
-// Rule explanation generator
-function explainRules(rules){
-  var parts=[];
-  for(var i=0;i<rules.length;i++){
-    var r=rules[i],an=r.attr==='shape'?'形':r.attr==='color'?'色':'サイズ';
-    if(r.type==='row_seq')parts.push(an+'が各行で左から右に変化する（行ごとに同じパターン）');
-    else if(r.type==='col_seq')parts.push(an+'が各列で上から下に変化する（列ごとに同じパターン）');
-    else if(r.type==='dist')parts.push(an+'が各行・各列に1回ずつ出現する（ラテン方陣）');
-    else if(r.type==='const_row')parts.push(an+'が各行で統一されている（行ごとに異なる）');
-    else if(r.type==='const_col')parts.push(an+'が各列で統一されている（列ごとに異なる）');
-    else if(r.type==='xor')parts.push(an+'が各行で「1番目と2番目の組み合わせ → 3番目」の法則に従う');
-  }
-  return parts.join('。\n')+'。';
-}
+// Helper to make cell
+function E(s,c,sz){return{shape:s,color:c||0,size:sz===undefined?1:sz};}
+function C(){return{elements:Array.prototype.slice.call(arguments)};}
 
-var LEVELS=[
-  {rules:[{attr:'shape',type:'row_seq'}]},
-  {rules:[{attr:'color',type:'col_seq'}]},
-  {rules:[{attr:'shape',type:'row_seq'},{attr:'color',type:'const_row'}]},
-  {rules:[{attr:'shape',type:'const_row'},{attr:'color',type:'col_seq'}]},
-  {rules:[{attr:'shape',type:'dist'}]},
-  {rules:[{attr:'shape',type:'dist'},{attr:'color',type:'const_row'}]},
-  {rules:[{attr:'shape',type:'dist'},{attr:'color',type:'dist'}]},
-  {rules:[{attr:'shape',type:'dist'},{attr:'color',type:'col_seq'},{attr:'size',type:'const_row'}]},
-  {rules:[{attr:'shape',type:'xor'},{attr:'color',type:'dist'}]},
-  {rules:[{attr:'shape',type:'xor'},{attr:'color',type:'xor'},{attr:'size',type:'dist'}]}
+// ===== 10 FIXED PROBLEMS =====
+var PROBLEMS=[
+
+// Q1: Shape distribution (easy)
+{grid:[
+  [C(E(0)),C(E(1)),C(E(2))],
+  [C(E(1)),C(E(2)),C(E(0))],
+  [C(E(2)),C(E(0)),null]
+],
+answer:C(E(1)),
+options:[C(E(0)),C(E(2)),C(E(1)),C(E(3)),C(E(4)),C(E(1,1))],
+answerIndex:2,
+explanation:'各行・各列に丸・三角・四角が1つずつ入る。3行目に三角がない。3列目にも三角がない。よって右下は三角。'},
+
+// Q2: Size progression (easy)
+{grid:[
+  [C(E(0,0,0)),C(E(0,0,1)),C(E(0,0,2))],
+  [C(E(1,1,0)),C(E(1,1,1)),C(E(1,1,2))],
+  [C(E(2,2,0)),C(E(2,2,1)),null]
+],
+answer:C(E(2,2,2)),
+options:[C(E(2,2,0)),C(E(2,2,1)),C(E(2,2,2)),C(E(0,2,2)),C(E(1,2,2)),C(E(2,0,2))],
+answerIndex:2,
+explanation:'各行で同じ形が小→中→大と大きくなる。3行目は赤い四角が小→中と来ているので、右下は大きい赤い四角。'},
+
+// Q3: Shape + Color distribution (medium)
+{grid:[
+  [C(E(0,0)),C(E(1,2)),C(E(2,1))],
+  [C(E(1,1)),C(E(2,0)),C(E(0,2))],
+  [C(E(2,2)),C(E(0,1)),null]
+],
+answer:C(E(1,0)),
+options:[C(E(1,1)),C(E(1,2)),C(E(0,0)),C(E(2,0)),C(E(1,0)),C(E(3,0))],
+answerIndex:4,
+explanation:'形（丸・三角・四角）と色（黒・青・赤）がそれぞれ各行・各列に1つずつ入る。3行目に三角がなく、3列目にも三角がない→形は三角。3行目に黒がなく、3列目にも黒がない→色は黒。'},
+
+// Q4: Element count progression (medium)
+{grid:[
+  [C(E(0,0)),C(E(0,0),E(1,0)),C(E(0,0),E(1,0),E(2,0))],
+  [C(E(3,1)),C(E(3,1),E(4,1)),C(E(3,1),E(4,1),E(0,1))],
+  [C(E(1,2)),C(E(1,2),E(2,2)),null]
+],
+answer:C(E(1,2),E(2,2),E(3,2)),
+options:[C(E(1,2),E(2,2)),C(E(1,2),E(2,2),E(3,2)),C(E(1,2),E(2,2),E(0,2)),C(E(1,2),E(2,2),E(4,2)),C(E(1,2),E(3,2)),C(E(2,2),E(3,2))],
+answerIndex:1,
+explanation:'各行で左から右に図形が1つずつ増える。3行目は三角→三角+四角と来ている。各行で3番目に追加される図形を見ると、1行目は四角、2行目は丸。3行目で新しく追加されるのはひし形。'},
+
+// Q5: Subtraction (medium)
+{grid:[
+  [C(E(0,0),E(1,0),E(2,0)),C(E(0,0),E(1,0)),C(E(0,0))],
+  [C(E(3,1),E(4,1),E(0,1)),C(E(3,1),E(4,1)),C(E(3,1))],
+  [C(E(1,2),E(2,2),E(3,2)),C(E(1,2),E(2,2)),null]
+],
+answer:C(E(1,2)),
+options:[C(E(1,2)),C(E(2,2)),C(E(3,2)),C(E(1,2),E(2,2)),C(E(1,0)),C(E(1,2),E(3,2))],
+answerIndex:0,
+explanation:'各行で右に行くほど図形が1つずつ減る。残るのは各行の最初の図形。3行目の最初は三角なので、右下は赤い三角1つ。'},
+
+// Q6: Column-consistent addition (medium-hard)
+{grid:[
+  [C(E(0,0)),C(E(0,0),E(1,0)),C(E(0,0),E(1,0),E(2,0))],
+  [C(E(0,1)),C(E(0,1),E(1,1)),C(E(0,1),E(1,1),E(2,1))],
+  [C(E(0,2)),C(E(0,2),E(1,2)),null]
+],
+answer:C(E(0,2),E(1,2),E(2,2)),
+options:[C(E(0,2),E(1,2),E(2,2)),C(E(0,2),E(1,2)),C(E(0,2),E(1,2),E(3,2)),C(E(0,2),E(2,2)),C(E(1,2),E(2,2)),C(E(0,2),E(1,2),E(2,0))],
+answerIndex:0,
+explanation:'各行で図形が1つずつ増える。さらに列方向を見ると、2列目で追加されるのは常に三角、3列目で追加されるのは常に四角。色は行ごとに統一。よって右下は赤い丸+三角+四角。'},
+
+// Q7: Addition + color varies by position (hard)
+{grid:[
+  [C(E(0,0)),C(E(0,0),E(1,1)),C(E(0,0),E(1,1),E(2,2))],
+  [C(E(3,1)),C(E(3,1),E(4,2)),C(E(3,1),E(4,2),E(0,0))],
+  [C(E(1,2)),C(E(1,2),E(2,0)),null]
+],
+answer:C(E(1,2),E(2,0),E(3,1)),
+options:[C(E(1,2),E(2,0),E(3,1)),C(E(1,2),E(2,0),E(3,0)),C(E(1,2),E(2,0),E(0,1)),C(E(1,2),E(2,0)),C(E(1,2),E(2,0),E(3,2)),C(E(1,2),E(3,1))],
+answerIndex:0,
+explanation:'各行で図形が1つずつ増える。追加される図形の色に注目：2列目で追加される色は行ごとに異なり（青→赤→黒）、3列目で追加される色も行ごとに異なる（赤→黒→青）。形は各行で新しい形が追加される。'},
+
+// Q8: Shape+Color+Size all distributed (hard)
+{grid:[
+  [C(E(0,1,2)),C(E(1,0,1)),C(E(2,2,0))],
+  [C(E(2,0,0)),C(E(0,2,2)),C(E(1,1,1))],
+  [C(E(1,2,1)),C(E(2,1,0)),null]
+],
+answer:C(E(0,0,2)),
+options:[C(E(0,0,2)),C(E(0,0,1)),C(E(0,0,0)),C(E(0,2,2)),C(E(1,0,2)),C(E(2,0,2))],
+answerIndex:0,
+explanation:'形・色・サイズの3つが全て、各行・各列に1つずつ入る。3行目に丸がない＋3列目に丸がない→形は丸。3行目に黒がない＋3列目に黒がない→色は黒。3行目に大がない＋3列目に大がない→サイズは大。'},
+
+// Q9: Intersection (hard)
+{grid:[
+  [C(E(0,0),E(1,0),E(2,0)),C(E(1,0),E(2,0),E(3,0)),C(E(1,0),E(2,0))],
+  [C(E(3,1),E(4,1),E(0,1)),C(E(4,1),E(0,1),E(1,1)),C(E(4,1),E(0,1))],
+  [C(E(2,2),E(3,2),E(4,2)),C(E(3,2),E(4,2),E(0,2)),null]
+],
+answer:C(E(3,2),E(4,2)),
+options:[C(E(3,2),E(4,2)),C(E(2,2),E(3,2),E(4,2)),C(E(3,2)),C(E(4,2)),C(E(3,2),E(4,2),E(0,2)),C(E(2,2),E(4,2))],
+answerIndex:0,
+explanation:'各行の3番目のセルには、1番目と2番目の両方に共通する図形だけが入る。1行目：{丸,三角,四角}∩{三角,四角,ひし形}＝{三角,四角}。同じルールで3行目：{四角,ひし形,十字}∩{ひし形,十字,丸}＝{ひし形,十字}。'},
+
+// Q10: Complex — shape+color distributed + size progression (hardest)
+{grid:[
+  [C(E(0,0,0)),C(E(1,1,1)),C(E(2,2,2))],
+  [C(E(2,1,0)),C(E(0,2,1)),C(E(1,0,2))],
+  [C(E(1,2,0)),C(E(2,0,1)),null]
+],
+answer:C(E(0,1,2)),
+options:[C(E(0,1,2)),C(E(0,1,1)),C(E(0,1,0)),C(E(0,2,2)),C(E(0,0,2)),C(E(1,1,2))],
+answerIndex:0,
+explanation:'3つの属性が全て独立に各行・各列で分配されている。形：3行目に丸がない＋3列目に丸がない→丸。色：3行目に青がない＋3列目に青がない→青。サイズ：各行で小→中→大と進む＋3列目は全て大→大。よって右下は青い大きな丸。'}
 ];
 
 function generate(level){
-  var li=Math.min(level-1,LEVELS.length-1),def=LEVELS[li];
-  var grid=makeGrid(def.rules),answer=grid[2][2];
-  var ds=generateDistractors(answer,5),opts=ds.slice();
-  var ai=Math.floor(Math.random()*6);opts.splice(ai,0,answer);
-  return{grid:grid,answer:answer,answerIndex:ai,options:opts,level:level,rules:def.rules,explanation:explainRules(def.rules)};
+  var idx=Math.min(level-1,PROBLEMS.length-1);
+  var p=PROBLEMS[idx];
+  // Deep copy grid with answer filled in
+  var grid=[];
+  for(var r=0;r<3;r++){grid[r]=[];for(var c=0;c<3;c++){
+    if(p.grid[r][c]===null)grid[r][c]=p.answer;
+    else grid[r][c]={elements:p.grid[r][c].elements.map(function(e){return{shape:e.shape,color:e.color||0,size:e.size===undefined?1:e.size};})};
+  }}
+  return{grid:grid,answer:p.answer,answerIndex:p.answerIndex,options:p.options,level:level,explanation:p.explanation};
 }
 
 return{drawCell:drawCell,cellToItems:cellToItems,generate:generate};

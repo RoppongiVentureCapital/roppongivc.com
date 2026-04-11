@@ -1,8 +1,8 @@
 {{ define "main" }}
 <section class="hero">
   <p class="eyebrow">Challenge</p>
-  <h1 style="font-size:4.5rem;letter-spacing:-0.03em;font-weight:700">思考スタイル診断</h1>
-  <p style="font-family:var(--serif);font-size:1.5rem;color:var(--black);margin-top:1rem;font-weight:400">あなたは研究者タイプか、起業家タイプか、芸術家タイプか。</p>
+  <h1 style="font-size:3rem;letter-spacing:-0.03em;font-weight:700">思考スタイル診断</h1>
+  <p style="font-family:var(--serif);font-size:1.5rem;color:var(--black);margin-top:1rem;font-weight:400">あなたは探究型か、創造型か、事業型か。</p>
 </section>
 
 <div id="app">
@@ -14,7 +14,7 @@
   <div class="two-col-right">
     <div class="col-body">
       <p>同じ「頭が良い」でも、その知性の使い方は人によって全く異なります。あなたの思考の傾向を<strong>6つのタイプ</strong>で分析します。</p>
-      <p>診断後には、あなたのタイプの詳細な解説と、同じタイプの著名人を紹介します。診断ロジックと学術的根拠も全て公開しています。</p>
+      <p>診断後には、あなたのタイプの詳細な解説と、このタイプに近いと思われる著名人を紹介します。診断ロジックと学術的根拠も全て公開しています。</p>
       <p>正解はありません。直感で選んでください。</p>
       <button class="apply-btn" id="startBtn">診断を始める →</button>
     </div>
@@ -196,14 +196,14 @@ function result(){
   h+='<div class="sc-track"><div class="sc-fill" style="width:'+bw+'%"></div></div>';
   h+='<span class="sc-pct">'+pct+'%</span></div>';
  }
- h+='</div><div class="rs-card-footer">サブタイプ：'+T[si].name+'（'+T[si].sub+'） ｜ roppongivc.com/quiz</div></div>';
+ h+='</div><div class="rs-card-footer">サブタイプ：'+T[si].name+'（'+T[si].sub+'）</div></div>';
  h+='<p style="font-family:var(--sans);font-size:16px;color:var(--black);margin-bottom:0.5rem">結果をSNSでシェアしたり、後で見返したい場合はこのカードをスクリーンショットで保存できます。</p>';
  h+='<p style="font-family:var(--sans);font-size:16px;color:var(--black);margin-bottom:1.5rem">テキスト形式で保存したい場合は「テキストでコピー」からクリップボードにコピーして、メモアプリ等に貼り付けてください。</p>';
  h+='<div style="display:flex;gap:1rem;flex-wrap:wrap;margin-bottom:2rem">';
  h+='<button class="rs-copy" id="copyBtn">テキストでコピー</button>';
  h+='<button class="apply-btn" id="retryBtn">もう一度診断する</button></div>';
  h+='<div style="border-top:1px solid var(--gray-200);padding-top:2rem;font-family:var(--sans);font-size:15px;line-height:1.9;font-weight:400"><p style="margin-bottom:1.2rem">'+t.desc+'</p>';
- h+='<p style="font-size:16px;color:var(--black);margin-bottom:2rem"><strong>同じタイプの著名人：</strong>'+t.ex+'</p></div>';
+ h+='<p style="font-size:16px;color:var(--black);margin-bottom:2rem"><strong>このタイプに近いと思われる著名人：</strong>'+t.ex+'</p></div>';
  h+='</div></div>';
  h+='<div class="two-col" style="border-bottom:1px solid var(--gray-200)"><div class="two-col-left">';
  h+='<h2 class="col-heading" style="font-size:1.2rem">診断ロジック</h2>';
@@ -221,7 +221,7 @@ function result(){
  h+='<tr><td>E &mdash; Enterprising</td><td>事業型</td><td>リーダーシップ・事業創造。ビジョンを実現する</td></tr>';
  h+='<tr><td>C &mdash; Conventional</td><td>設計型</td><td>体系的・構造的。仕組みを設計し最適化する</td></tr></table>';
  h+='<h4>STEM文脈への適応</h4>';
- h+='<p>オリジナルのRIASECは全職業領域を対象としていますが、本診断ではSTEM人材の文脈に特化した質問設計を行っています。特にArtistic型は、芸術的表現だけでなく「解法の美しさへのこだわり」「分野横断的な思考」「クリエイティブ・テクノロジー」といったSTEM領域での創造性として再解釈しています。</p>';
+ h+='<p>オリジナルのRIASECは全職業領域を対象としていますが、本診断ではSTEM人材を想定した質問設計を行っています。特にArtistic型は、芸術的表現だけでなく「解法の美しさへのこだわり」「分野横断的な思考」「クリエイティブ・テクノロジー」といったSTEM領域での創造性として再解釈しています。</p>';
  h+='<h4>測定手法：多次元強制選択法（MFC）</h4>';
  h+='<p>各質問の4つの選択肢は、それぞれ複数のタイプに異なる重みで加点されます（主要タイプに+2、副次タイプに+1）。これは多次元強制選択法（Multidimensional Forced Choice）と呼ばれる手法で、単純な1対1対応ではありません。MFC形式は社会的望ましさバイアスを低減できることが知られています（Brown & Maydeu-Olivares, 2011）。</p>';
  h+='<h4>問題数の妥当性</h4>';
@@ -238,14 +238,14 @@ function result(){
  h+='<p>あなたの思考スタイルを活かせる場があります。Edgeは、突出した能力を持つ高校生・大学生が、個人またはチームで課題を見つけ、形にするところまでを体験する実践プログラムです。</p>';
  h+='<a href="/program/" style="display:inline-block;margin-top:0.75rem;font-family:var(--sans);font-size:16px;font-weight:500;color:var(--black);text-decoration:underline;text-underline-offset:3px">Edgeプログラムを見る →</a>';
  h+='<p style="margin-top:2rem"><strong>他のチャレンジ</strong></p>';
- h+='<p><a href="/challenge/" style="font-family:var(--sans);font-weight:500;color:var(--black);text-decoration:underline;text-underline-offset:3px">認知能力チャレンジ →</a>　<a href="/logistics/" style="font-family:var(--sans);font-weight:500;color:var(--black);text-decoration:underline;text-underline-offset:3px">起業家シミュレーション →</a></p>';
+ h+='<p><a href="/challenge/" style="font-family:var(--sans);font-weight:500;color:var(--black);text-decoration:underline;text-underline-offset:3px">認知能力チャレンジ →</a></p>';
  h+='</div></div></div>';
  el.innerHTML=h;
  document.getElementById('copyBtn').addEventListener('click',function(){
   var txt='思考スタイル診断 結果\n================================\n\n';
   txt+='メインタイプ：'+t.name+'（'+t.sub+'）\n'+t.tag+'\n\nサブタイプ：'+T[si].name+'（'+T[si].sub+'）\n\nスコア分布：\n';
   for(var i=0;i<6;i++){var p=Math.round((sc[i]/tot)*100);var b='';for(var j=0;j<Math.round(p/5);j++)b+='#';txt+='  '+T[i].name+' '+p+'% '+b+'\n';}
-  txt+='\n同じタイプの著名人：'+t.ex+'\n\n診断：roppongivc.com/quiz\n理論基盤：Holland RIASEC Model (1997)\n';
+  txt+='\nこのタイプに近いと思われる著名人：'+t.ex+'\n\n診断：roppongivc.com/diagnosis\n理論基盤：Holland RIASEC Model (1997)\n';
   navigator.clipboard.writeText(txt).then(function(){
    var btn=document.getElementById('copyBtn');btn.textContent='コピーしました';
    setTimeout(function(){btn.textContent='テキストでコピー';},2000);
