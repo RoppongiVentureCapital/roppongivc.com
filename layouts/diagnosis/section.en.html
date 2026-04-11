@@ -1,0 +1,258 @@
+{{ define "main" }}
+<section class="hero">
+  <p class="eyebrow">Challenge</p>
+  <h1 style="font-size:3rem;letter-spacing:-0.03em;font-weight:700">Thinking Style Diagnosis</h1>
+  <p style="font-family:var(--serif);font-size:1.5rem;color:var(--black);margin-top:1rem;font-weight:400">Are you the investigative type, the creative type, or the enterprising type?</p>
+</section>
+
+<div id="app">
+<section id="intro" class="two-col">
+  <div class="two-col-left">
+    <h2 class="col-heading">Thinking Style Diagnosis</h2>
+    <p style="font-family:var(--sans);font-size:16px;color:var(--black);margin-top:1rem">10 questions ｜ ~2 min</p>
+  </div>
+  <div class="two-col-right">
+    <div class="col-body">
+      <p>Even among "smart" people, the way they use their intelligence varies greatly. This diagnosis analyzes your thinking tendencies across <strong>6 types</strong>.</p>
+      <p>After the diagnosis, you'll receive a detailed explanation of your type and notable figures thought to share your type. The diagnostic logic and academic basis are fully disclosed.</p>
+      <p>There are no right answers. Go with your gut.</p>
+      <button class="apply-btn" id="startBtn">Start the diagnosis →</button>
+    </div>
+  </div>
+</section>
+<section id="quiz" style="display:none">
+  <div class="qz-pbar-wrap"><div class="qz-pbar" id="pbar"></div></div>
+  <div class="two-col" style="border-bottom:none">
+    <div class="two-col-left">
+      <p class="eyebrow" id="qnum"></p>
+      <h2 class="col-heading" id="qtext" style="font-size:1.35rem"></h2>
+      <button id="backBtn" style="display:none;background:none;border:none;font-family:var(--sans);font-size:16px;color:var(--black);cursor:pointer;margin-top:1.5rem;padding:0">← Previous question</button>
+    </div>
+    <div class="two-col-right"><div id="choices"></div></div>
+  </div>
+</section>
+<section id="result" style="display:none"></section>
+</div>
+<style>
+.qz-pbar-wrap{height:3px;background:var(--gray-100)}
+.qz-pbar{height:100%;background:var(--black);transition:width .4s ease;width:0}
+.qz-choice{display:block;width:100%;text-align:left;background:none;border:1px solid var(--gray-200);padding:1.2rem 1.5rem;margin-bottom:0.75rem;cursor:pointer;font-family:var(--sans);font-size:15px;line-height:1.6;color:var(--black);font-weight:400;transition:all .15s}
+.qz-choice:hover{background:var(--gray-100);border-color:var(--black)}
+.rs-card{border:1px solid var(--gray-200);padding:2rem;margin-bottom:2rem;background:var(--white)}
+.rs-card-head{font-family:var(--sans);font-size:16px;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;color:var(--black);margin-bottom:1rem}
+.rs-card-type{font-family:var(--serif);font-size:1.5rem;font-weight:300;margin-bottom:0.25rem}
+.rs-card-tag{font-family:var(--sans);font-size:16px;color:var(--black);margin-bottom:1.5rem}
+.rs-card-footer{font-family:var(--sans);font-size:16px;color:var(--black);border-top:1px solid var(--gray-200);padding-top:1rem;margin-top:1rem}
+.sc-row{display:flex;align-items:center;gap:1rem;margin-bottom:0.75rem}
+.sc-label{width:100px;font-family:var(--sans);font-size:16px;color:var(--black);text-align:right;flex-shrink:0}
+.sc-track{flex:1;background:var(--gray-100);height:6px}
+.sc-fill{height:100%;background:var(--black);transition:width 1s ease}
+.sc-pct{width:36px;font-family:var(--sans);font-size:16px;color:var(--black)}
+.rs-copy{background:none;border:1px solid var(--gray-200);font-family:var(--sans);font-size:16px;color:var(--black);cursor:pointer;padding:0.6rem 1.2rem;transition:all .15s}
+.rs-copy:hover{border-color:var(--black);color:var(--black)}
+.lg-body{font-family:var(--sans);font-size:16px;line-height:1.9;color:var(--black)}
+.lg-body h4{font-size:16px;font-weight:600;color:var(--black);margin:1.5rem 0 0.5rem}
+.lg-body h4:first-child{margin-top:0}
+.lg-body p{margin-bottom:0.75rem}
+.lg-body table{width:100%;border-collapse:collapse;margin:1rem 0;font-size:16px}
+.lg-body th,.lg-body td{padding:0.5rem 0.75rem;border:1px solid var(--gray-200);text-align:left}
+.lg-body th{font-weight:600;background:var(--gray-100)}
+</style>
+<script>
+(function(){
+var T=[
+{name:"Investigative",sub:"Investigative",tag:"Uncovering principles and expanding the boundaries of knowledge",
+desc:"You are driven by the question 'why?' You won't settle for surface-level understanding and dig deep to find root principles. Corresponding to the Investigative type in Holland's theory, you are oriented toward analytical and intellectual inquiry. You have the potential to drive innovation in deep tech.",
+ex:"Terence Tao (mathematician), Demis Hassabis (DeepMind co-founder), Shinichi Mochizuki (ABC conjecture proof)"},
+{name:"Realistic",sub:"Realistic",tag:"Turning ideas into working things",
+desc:"You find the greatest joy in 'making things work.' You don't stop at theory — you get your hands dirty and build. Corresponding to the Realistic type in Holland's theory, you are oriented toward practical, technical implementation. You naturally iterate: build a prototype first, then improve.",
+ex:"Linus Torvalds (Linux creator), Palmer Luckey (Oculus VR founder), Yukihiro Matsumoto (Ruby creator)"},
+{name:"Creative",sub:"Artistic",tag:"Breaking existing frameworks and forging new paths",
+desc:"You solve problems with original thinking, unconstrained by existing frameworks. You find value in crossing disciplinary boundaries and in the 'elegance' of solutions. Corresponding to the Artistic type in Holland's theory, in STEM you excel in creative technology, mathematical visualization, and interdisciplinary research.",
+ex:"Bret Victor (creative computing), Neri Oxman (MIT Media Lab), Vi Hart (math + art fusion)"},
+{name:"Social",sub:"Social",tag:"Sharing knowledge and unlocking others' potential",
+desc:"You excel at making complex concepts intuitive for others. You find joy in helping people understand. Corresponding to the Social type in Holland's theory, you have the potential to nurture the next generation of talent at the intersection of education and technology.",
+ex:"Grant Sanderson (3Blue1Brown), Sal Khan (Khan Academy founder), Yoichi Ochiai"},
+{name:"Enterprising",sub:"Enterprising",tag:"Building ventures and moving society",
+desc:"Your eye is drawn not to technology itself, but to the market opportunities it creates. You're unafraid of risk and driven to lead teams toward big visions. Corresponding to the Enterprising type in Holland's theory, you have the potential to apply STEM thinking to business and create societal impact.",
+ex:"Patrick Collison (Stripe, former Math Olympiad participant), Jensen Huang (NVIDIA founder), Masayoshi Son"},
+{name:"Systematic",sub:"Conventional",tag:"Seeing structure and building optimal systems",
+desc:"Rather than solving individual problems, you prefer building structures that prevent problems from occurring. You excel at seeing the big picture and understanding relationships between elements. Corresponding to the Conventional type in Holland's theory, you have the potential to design complex system architectures that support the world's infrastructure.",
+ex:"Jeff Dean (Google infrastructure), John Carmack (game engine architect), Claude Shannon (father of information theory)"}
+];
+var Q=[
+{q:"When tackling a difficult challenge, what approach do you value most?",c:[
+["Go back to first principles. I can't move forward without understanding the fundamentals",[2,0,0,0,0,1]],
+["Get hands-on and try things. Build a prototype before overthinking",[0,2,1,0,0,0]],
+["Research precedents and look for applicable solutions",[0,0,0,0,2,1]],
+["Question the conventional approach and look at it from a different angle",[1,0,2,0,0,0]]]},
+{q:"In group work, where do you contribute most?",c:[
+["The hands-on role — building and creating deliverables",[1,2,0,0,0,0]],
+["Aligning everyone's understanding and guiding the group to consensus",[0,0,0,2,1,0]],
+["Planning the overall schedule and managing progress and quality",[0,0,0,0,1,2]],
+["Setting the direction and driving the team forward",[0,0,0,1,2,0]]]},
+{q:"When learning something new, what's your most natural approach?",c:[
+["Build up systematically from foundational theory",[2,0,0,0,0,1]],
+["Look for connections with other fields while learning",[1,0,2,0,0,0]],
+["Learn by organizing material as if you'll teach it to someone",[0,0,0,2,0,1]],
+["First check 'what will I be able to do after learning this?'",[0,1,0,0,2,0]]]},
+{q:"What do you care about most in your own work?",c:[
+["That the overall structure is logically consistent",[1,0,0,0,0,2]],
+["That it's finished to a usable, working state",[0,2,0,1,0,0]],
+["That it's original — not something ordinary",[0,0,2,0,1,0]],
+["That it reaches many people — maximum impact",[0,0,0,1,2,0]]]},
+{q:"What do people you find 'amazing' have in common?",c:[
+["They understand one thing to an extreme depth",[2,0,0,0,0,1]],
+["They overturned conventional wisdom and forged a new path",[0,0,2,0,1,0]],
+["They can explain complex things with stunning clarity",[0,0,0,2,0,1]],
+["They rallied others and accomplished something big",[0,1,0,0,2,0]]]},
+{q:"What do you find yourself absorbed in on days off?",c:[
+["Taking things apart to understand how they work",[1,0,0,0,0,2]],
+["Personal projects — building and making things",[0,2,1,0,0,0]],
+["Following business and social trends",[0,0,0,1,2,0]],
+["Deep-diving endlessly into a topic that interests me",[2,0,1,0,0,0]]]},
+{q:"When your team achieves results, what makes you most proud?",c:[
+["We solved it with an approach nobody else thought of",[1,0,2,0,0,0]],
+["We completed a working product",[0,2,0,0,0,1]],
+["We exceeded our original goals",[0,1,0,0,2,0]],
+["Every team member felt they grew",[0,0,0,2,1,0]]]},
+{q:"When learning from failure, what do you focus on most?",c:[
+["Thoroughly analyzing why it failed",[2,0,0,0,0,1]],
+["Trying a completely different approach",[0,1,2,0,0,0]],
+["Moving quickly to the next action and testing",[0,1,0,0,2,0]],
+["Structuring the failure pattern to build prevention systems",[0,0,0,1,0,2]]]},
+{q:"In 10 years, how do you want to contribute to society?",c:[
+["Solving problems nobody has solved yet",[2,0,1,0,0,0]],
+["Building something people around the world use daily",[0,2,0,0,1,0]],
+["Discovering and nurturing the next generation of talent",[0,0,1,2,0,0]],
+["Building a major business that creates jobs and drives the economy",[0,0,0,0,2,1]]]},
+{q:"Which idea resonates with you most?",c:[
+["'The important thing is to never stop questioning'",[2,0,1,0,0,0]],
+["'Done is better than perfect. Ship something that works'",[0,2,0,0,1,0]],
+["'One genius matters less than a hundred people cooperating to change the world'",[0,0,0,2,1,0]],
+["'Pursuing simplicity is harder than overcoming complexity'",[0,1,1,0,0,2]]]}
+];
+var cur=0,sc=[0,0,0,0,0,0],hist=[];
+function show(id){document.getElementById(id).style.display='';}
+function hide(id){document.getElementById(id).style.display='none';}
+
+document.getElementById('startBtn').addEventListener('click',function(){
+ hide('intro');show('quiz');render();
+});
+document.getElementById('backBtn').addEventListener('click',function(){
+ if(!hist.length)return;
+ var h=hist.pop();cur=h.q;sc=h.sc;render();
+});
+
+function render(){
+ document.getElementById('pbar').style.width=((cur/Q.length)*100)+'%';
+ document.getElementById('qnum').textContent='QUESTION '+(cur+1)+' / '+Q.length;
+ document.getElementById('qtext').textContent=Q[cur].q;
+ document.getElementById('backBtn').style.display=cur>0?'':'none';
+ var el=document.getElementById('choices');
+ el.innerHTML='';
+ var order=[0,1,2,3];
+ for(var i=3;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=order[i];order[i]=order[j];order[j]=t;}
+ for(var n=0;n<order.length;n++){
+  var ci=order[n];
+  var b=document.createElement('button');
+  b.className='qz-choice';
+  b.textContent=Q[cur].c[ci][0];
+  b.setAttribute('data-ci',ci);
+  b.addEventListener('click',handleClick);
+  el.appendChild(b);
+ }
+}
+function handleClick(e){
+ var ci=parseInt(e.target.getAttribute('data-ci'));
+ hist.push({q:cur,sc:sc.slice()});
+ var s=Q[cur].c[ci][1];
+ for(var i=0;i<6;i++)sc[i]+=s[i];
+ cur++;
+ if(cur<Q.length)render();else result();
+}
+function result(){
+ hide('quiz');show('result');
+ var mx=0,wi=0,tot=0;
+ for(var i=0;i<6;i++){tot+=sc[i];if(sc[i]>mx){mx=sc[i];wi=i;}}
+ if(!tot)tot=1;
+ var t=T[wi];
+ var s2=sc.slice();s2[wi]=-1;
+ var mx2=0,si=0;
+ for(var i=0;i<6;i++){if(s2[i]>mx2){mx2=s2[i];si=i;}}
+ var el=document.getElementById('result');
+ var h='<div class="two-col" style="border-bottom:1px solid var(--gray-200)">';
+ h+='<div class="two-col-left"><p class="eyebrow">YOUR RESULT</p>';
+ h+='<h2 class="col-heading" style="font-size:1.2rem">Thinking Style Diagnosis</h2>';
+ h+='<p style="font-family:var(--sans);font-size:16px;color:var(--black);margin-top:0.5rem">Roppongi Venture Capital</p></div>';
+ h+='<div class="two-col-right">';
+ h+='<div class="rs-card"><div class="rs-card-head">THINKING STYLE</div>';
+ h+='<div class="rs-card-type">'+t.name+' — '+t.sub+'</div>';
+ h+='<div class="rs-card-tag">'+t.tag+'</div><div>';
+ for(var i=0;i<6;i++){
+  var pct=Math.round((sc[i]/tot)*100);
+  var bw=mx>0?Math.round((sc[i]/mx)*100):0;
+  h+='<div class="sc-row"><span class="sc-label">'+T[i].name+'</span>';
+  h+='<div class="sc-track"><div class="sc-fill" style="width:'+bw+'%"></div></div>';
+  h+='<span class="sc-pct">'+pct+'%</span></div>';
+ }
+ h+='</div><div class="rs-card-footer">Subtype: '+T[si].name+' ('+T[si].sub+')</div></div>';
+ h+='<p style="font-family:var(--sans);font-size:16px;color:var(--black);margin-bottom:0.5rem">Take a screenshot of the card above to save or share your results on social media.</p>';
+ h+='<p style="font-family:var(--sans);font-size:16px;color:var(--black);margin-bottom:1.5rem">To save as text, click "Copy as text" to copy to your clipboard.</p>';
+ h+='<div style="display:flex;gap:1rem;flex-wrap:wrap;margin-bottom:2rem">';
+ h+='<button class="rs-copy" id="copyBtn">Copy as text</button>';
+ h+='<button class="apply-btn" id="retryBtn">Take again</button></div>';
+ h+='<div style="border-top:1px solid var(--gray-200);padding-top:2rem;font-family:var(--sans);font-size:15px;line-height:1.9;font-weight:400"><p style="margin-bottom:1.2rem">'+t.desc+'</p>';
+ h+='<p style="font-size:16px;color:var(--black);margin-bottom:2rem"><strong>Notable figures thought to share this type: </strong>'+t.ex+'</p></div>';
+ h+='</div></div>';
+ h+='<div class="two-col" style="border-bottom:1px solid var(--gray-200)"><div class="two-col-left">';
+ h+='<h2 class="col-heading" style="font-size:1.2rem">Diagnostic Logic</h2>';
+ h+='<p style="font-family:var(--sans);font-size:16px;color:var(--black);margin-top:0.5rem">Theoretical basis and methodology</p></div>';
+ h+='<div class="two-col-right"><div class="lg-body">';
+ h+='<h4>Theoretical Foundation: Holland\'s RIASEC Model</h4>';
+ h+='<p>This diagnosis is based on RIASEC theory (Holland, 1997), proposed by vocational psychologist John Holland in 1959 and backed by over 60 years of empirical research.</p>';
+ h+='<p>RIASEC serves as the classification foundation for the U.S. Department of Labor\'s O*NET and underpins widely used assessments such as the Strong Interest Inventory (2012 revision). Meta-analyses by Rounds & Su (2014) and Nye et al. (2012) have reconfirmed the validity of the six-type structure.</p>';
+ h+='<h4>Six Types and RIASEC Correspondence</h4>';
+ h+='<table><tr><th>RIASEC</th><th>This Diagnosis</th><th>Characteristics</th></tr>';
+ h+='<tr><td>I — Investigative</td><td>Investigative</td><td>Analytical, intellectual inquiry. Driven by "why?"</td></tr>';
+ h+='<tr><td>R — Realistic</td><td>Realistic</td><td>Practical, technical. Builds things with hands</td></tr>';
+ h+='<tr><td>A — Artistic</td><td>Creative</td><td>Original, interdisciplinary. Breaks existing frameworks</td></tr>';
+ h+='<tr><td>S — Social</td><td>Social</td><td>Educational, cooperative. Shares knowledge, nurtures others</td></tr>';
+ h+='<tr><td>E — Enterprising</td><td>Enterprising</td><td>Leadership, venture creation. Realizes visions</td></tr>';
+ h+='<tr><td>C — Conventional</td><td>Systematic</td><td>Structured, systematic. Designs and optimizes systems</td></tr></table>';
+ h+='<h4>Adaptation for STEM Context</h4>';
+ h+='<p>While the original RIASEC covers all occupational domains, this diagnosis uses questions designed with STEM talent in mind. In particular, the Artistic type is reinterpreted to include "appreciation for elegant solutions," "interdisciplinary thinking," and "creative technology" — forms of creativity within STEM fields.</p>';
+ h+='<h4>Measurement Method: Multidimensional Forced Choice (MFC)</h4>';
+ h+='<p>Each question\'s four choices are weighted across multiple types (+2 for primary, +1 for secondary). This Multidimensional Forced Choice method reduces social desirability bias (Brown & Maydeu-Olivares, 2011).</p>';
+ h+='<h4>Validity of Question Count</h4>';
+ h+='<p>This diagnosis consists of 10 questions. Research on brief personality measures (Gosling et al., 2003 "TIPI") has shown that well-designed short instruments can capture the essential structure of dimensions. With MFC format, each response provides information across multiple dimensions, making it statistically reasonable to measure 6 dimensions from 10 questions × 4 choices = 40 data points. However, this is not a clinical diagnostic tool — it is a simplified assessment intended as a starting point for self-understanding.</p>';
+ h+='<h4>References</h4>';
+ h+='<p style="font-size:16px;color:var(--black)">Holland, J. L. (1997). <em>Making Vocational Choices</em> (3rd ed.). Psychological Assessment Resources.<br>';
+ h+='Rounds, J., & Su, R. (2014). The nature and power of interests. <em>Current Directions in Psychological Science</em>, 23(2), 98-103.<br>';
+ h+='Nye, C. D., Su, R., Rounds, J., & Drasgow, F. (2012). Vocational interests and performance. <em>Perspectives on Psychological Science</em>, 7(4), 384-403.<br>';
+ h+='Brown, A., & Maydeu-Olivares, A. (2011). Item response modeling of forced-choice questionnaires. <em>Educational and Psychological Measurement</em>, 71(3), 460-502.<br>';
+ h+='Gosling, S. D., Rentfrow, P. J., & Swann, W. B. (2003). A very brief measure of the Big-Five personality domains. <em>Journal of Research in Personality</em>, 37(6), 504-528.</p>';
+ h+='</div></div></div>';
+ h+='<div class="two-col" style="border-bottom:none"><div class="two-col-left"><h2 class="col-heading" style="font-size:1.2rem">Next Steps</h2></div>';
+ h+='<div class="two-col-right"><div class="col-body">';
+ h+='<p>There\'s a place where you can put your thinking style to work. Edge is a hands-on program where exceptional high school and university students find problems and build solutions, individually or in teams.</p>';
+ h+='<a href="/program/" style="display:inline-block;margin-top:0.75rem;font-family:var(--sans);font-size:16px;font-weight:500;color:var(--black);text-decoration:underline;text-underline-offset:3px">Learn about Edge →</a>';
+ h+='<p style="margin-top:2rem"><strong>Other Challenges</strong></p>';
+ h+='<p><a href="/challenge/" style="font-family:var(--sans);font-weight:500;color:var(--black);text-decoration:underline;text-underline-offset:3px">Cognitive Challenge →</a></p>';
+ h+='</div></div></div>';
+ el.innerHTML=h;
+ document.getElementById('copyBtn').addEventListener('click',function(){
+  var txt='Thinking Style Diagnosis Result\n================================\n\n';
+  txt+='Main Type: '+t.name+' ('+t.sub+')\n'+t.tag+'\n\nSubtype: '+T[si].name+' ('+T[si].sub+')\n\nScore Distribution:\n';
+  for(var i=0;i<6;i++){var p=Math.round((sc[i]/tot)*100);var b='';for(var j=0;j<Math.round(p/5);j++)b+='#';txt+='  '+T[i].name+' '+p+'% '+b+'\n';}
+  txt+='\nNotable figures: '+t.ex+'\n\nDiagnosis: roppongivc.com/diagnosis\nTheory: Holland RIASEC Model (1997)\n';
+  navigator.clipboard.writeText(txt).then(function(){
+   var btn=document.getElementById('copyBtn');btn.textContent='Copied!';
+   setTimeout(function(){btn.textContent='Copy as text';},2000);
+  });
+ });
+ document.getElementById('retryBtn').addEventListener('click',function(){location.reload();});
+}
+})();
+</script>
+{{ end }}

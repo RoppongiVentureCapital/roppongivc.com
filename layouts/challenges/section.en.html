@@ -1,0 +1,27 @@
+{{ define "main" }}
+<section class="hero">
+  <p class="eyebrow">Gateway to the Edge Program</p>
+  <h1 style="font-size:4.5rem;letter-spacing:-0.03em;font-weight:700">Challenge</h1>
+  <p style="font-family:var(--serif);font-size:1.5rem;color:var(--black);margin-top:1rem;font-weight:400">Test your thinking and abilities.</p>
+</section>
+
+<section class="two-col">
+  <div class="two-col-left">
+    <h2 class="col-heading">2 Challenges</h2>
+  </div>
+  <div class="two-col-right">
+    <div class="col-body">
+      <div class="persona-card">
+        <h3 style="font-size:20px">Thinking Style Diagnosis</h3>
+        <p>Are you the investigative type, the creative type, or the enterprising type? 10 questions to discover your thinking tendencies. You might be surprised by what you find about which fields suit you best.</p>
+        <a href="{{ "diagnosis/" | relURL }}" style="display:inline-block;margin-top:0.75rem;font-family:var(--sans);font-size:15px;font-weight:500;color:var(--black);text-decoration:underline;text-underline-offset:3px">Try it →</a>
+      </div>
+      <div class="persona-card">
+        <h3 style="font-size:20px">Cognitive Challenge</h3>
+        <p>Test your raw cognitive ability through pattern reasoning. Find the rules governing a 3×3 grid and identify the missing piece. The number of rules to track increases as you progress.</p>
+        <a href="{{ "challenge/" | relURL }}" style="display:inline-block;margin-top:0.75rem;font-family:var(--sans);font-size:15px;font-weight:500;color:var(--black);text-decoration:underline;text-underline-offset:3px">Try it →</a>
+      </div>
+    </div>
+  </div>
+</section>
+{{ end }}

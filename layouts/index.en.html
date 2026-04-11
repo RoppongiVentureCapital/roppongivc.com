@@ -1,28 +1,103 @@
 {{ define "main" }}
 <section class="hero">
   <h2 class="hero-brand-name">Roppongi Venture Capital</h2>
-  <h1>World-class entrepreneurial experiences<br>for Japan's brightest STEM minds.</h1>
+  <h1>Giving talent a choice.</h1>
 </section>
 
+<!-- Vision -->
 <section class="two-col">
   <div class="two-col-left">
-    <h2 class="col-heading">Building the next generation of deep tech founders.</h2>
+    <h2 class="col-heading">Our Vision</h2>
   </div>
   <div class="two-col-right">
     <div class="col-body">
-      <p>Roppongi Venture Capital is planning an incubation program for high school and university students who have demonstrated exceptional talent in STEM — Math Olympiad and Science Olympiad medalists and finalists.</p>
-      <p>We also publish JIWA, a web media covering the frontlines of economics, finance, and technology from a unique perspective.</p>
+      <p style="font-family:var(--serif);font-size:2rem;font-weight:500;color:var(--black);line-height:1.4;margin-bottom:2.5rem">Turning Japan's young talent into a force that changes the world.</p>
+      <div class="persona-card">
+        <h3>We want them to see a bigger world.</h3>
+        <p>Japan has remarkably talented young minds. But daily life at top schools is often consumed by cram schools and exam prep, and career paths tend to converge on "just get into Tokyo University" or "just go to medical school." These are excellent paths, of course. But opportunities to learn about what lies beyond — startups, research, international organizations, deep tech — are rare during school years. We want to create that first spark.</p>
+      </div>
+      <div class="persona-card">
+        <h3>Some things can't be learned from textbooks.</h3>
+        <p>Classroom learning has immense value. But actually building something, collaborating with a team, rallying people when nobody knows your name, and gradually earning trust — these lessons can only come from experience. Even a small product, built and shipped by your own hands, becomes a source of confidence if it works, and a valuable lesson if it doesn't. These experiences will serve you no matter what path you choose. No need to take big risks. Small challenges, in a safe environment. We design with parents' peace of mind in mind.</p>
+      </div>
+      <div class="persona-card">
+        <h3>Around the world, young talent is already in motion.</h3>
+        <p>Demis Hassabis, co-founder of Google DeepMind, became a chess master at 13, skipped two years of school exams, developed the hit game "Theme Park" at 17, graduated top of his class from Cambridge, founded an AI company, and won the Nobel Prize in Chemistry in 2024. He didn't stop at studying — he built, founded, and changed the world. Frontier AI companies like Google, OpenAI, and Anthropic are filled with people who demonstrated exceptional STEM talent early, including Math Olympiad medalists.</p>
+      </div>
+      <div class="persona-card">
+        <h3>The US already has an ecosystem for young talent to take on challenges.</h3>
+        <p>Universities, investors, and experienced entrepreneurs form a connected ecosystem where it's not unusual for top university students to launch startups while still enrolled. A culture of trying, failing, and trying again is deeply rooted. Japan has world-class scientific and engineering capabilities. If this country's brightest young people had the option to tackle the world's biggest challenges — that would be enormously valuable, both for them and for society.</p>
+      </div>
+      <div class="persona-card">
+        <h3>That's why we're building this.</h3>
+        <p>Starting with STEM, we provide selected participants with the chance to meet exceptional peers and build something together as a team. We're also considering overseas opportunities for top performers. We welcome not only Science Olympiad achievers but also those from humanities, arts, sports, and other backgrounds. We believe that when diverse talents intersect, more interesting things emerge. We carry the name "Venture Capital," but we are not currently engaged in financial investment — we are focused on investing in the next generation of talent.</p>
+      </div>
     </div>
   </div>
 </section>
 
+<!-- Edge Program -->
+<section class="two-col">
+  <div class="two-col-left">
+    <h2 class="col-heading">Edge</h2>
+    <p style="font-size:16px;color:var(--black);font-weight:500">Incubation Program — Cohort 1</p>
+  </div>
+  <div class="two-col-right">
+    <div class="col-body">
+      <p>A hands-on program where exceptional high school and university students find a problem, build a solution, and ship it — all in two months. Not lectures, but real action.</p>
+      <div class="stats-row" style="border-bottom:none;margin-top:2rem">
+        <div class="stat-cell" style="border:none;text-align:left;padding:1rem 0">
+          <div class="stat-label">Duration</div>
+          <div style="font-size:16px;font-weight:500">5 sessions (biweekly Sat)</div>
+        </div>
+        <div class="stat-cell" style="border:none;text-align:left;padding:1rem 0">
+          <div class="stat-label">Period</div>
+          <div style="font-size:16px;font-weight:500">May – July 2026</div>
+        </div>
+        <div class="stat-cell" style="border:none;text-align:left;padding:1rem 0">
+          <div class="stat-label">Fee</div>
+          <div style="font-size:16px;font-weight:500">Free</div>
+        </div>
+        <div class="stat-cell" style="border:none;text-align:left;padding:1rem 0">
+          <div class="stat-label">Capacity</div>
+          <div style="font-size:16px;font-weight:500">5–10 (selective)</div>
+        </div>
+      </div>
+      <a href="{{ "program/" | relURL }}" style="display:inline-block;margin-top:1rem;font-family:var(--sans);font-size:15px;font-weight:500;color:var(--black);text-decoration:underline;text-underline-offset:3px">Learn more →</a>
+    </div>
+  </div>
+</section>
+
+<!-- Challenge -->
+<section class="two-col">
+  <div class="two-col-left">
+    <h2 class="col-heading">Test your thinking</h2>
+    <p style="font-size:16px;color:var(--black);font-weight:500">Gateway to the Edge program</p>
+  </div>
+  <div class="two-col-right">
+    <div class="col-body">
+      <div class="persona-card">
+        <h3 style="font-size:20px">Thinking Style Diagnosis</h3>
+        <p>Are you the investigative type, the creative type, or the enterprising type? 10 questions to discover your thinking tendencies. You might be surprised by what you find.</p>
+        <a href="{{ "challenges/" | relURL }}" style="display:inline-block;margin-top:0.75rem;font-family:var(--sans);font-size:15px;font-weight:500;color:var(--black);text-decoration:underline;text-underline-offset:3px">Try it →</a>
+      </div>
+      <div class="persona-card">
+        <h3 style="font-size:20px">Cognitive Challenge</h3>
+        <p>Test your raw cognitive ability through pattern reasoning. Find the rules governing a 3×3 grid and identify the missing piece. The number of rules to track increases as you progress.</p>
+        <a href="{{ "challenges/" | relURL }}" style="display:inline-block;margin-top:0.75rem;font-family:var(--sans);font-size:15px;font-weight:500;color:var(--black);text-decoration:underline;text-underline-offset:3px">Try it →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- JIWA -->
 {{ $articles := where .Site.RegularPages "Section" "jiwa" }}
 {{ if $articles }}
 <section class="home-latest">
   <div class="home-latest-header">
     <div>
       <h2>JIWA</h2>
-      <p class="home-latest-desc">A web media by Roppongi Venture Capital. Economics, finance, and technology — told through data and stories.</p>
+      <p class="home-latest-desc">What's happening in the world, and why it matters.<br>Where money flows, where talent goes, and what technology is changing.<br>A web media by Roppongi Venture Capital, powered by data and structural analysis.</p>
     </div>
     <a href="{{ "jiwa/" | relURL }}">All articles →</a>
   </div>
