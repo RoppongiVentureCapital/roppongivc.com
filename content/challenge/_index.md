@@ -1,4 +1,4 @@
 ---
 title: "STEM Cognitive Challenge"
-draft: true
+draft: false
 ---
