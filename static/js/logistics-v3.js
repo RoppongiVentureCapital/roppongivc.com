@@ -8,7 +8,7 @@ document.getElementById('startBtn').addEventListener('click',function(){
 function step1(){
   var h='<div class="two-col"><div class="two-col-left"><p class="eyebrow">STEP 1 / 5</p>';
   h+='<h2 class="col-heading" style="font-size:1.2rem">機会の発見</h2>';
-  h+='<p style="font-family:var(--sans);font-size:13px;color:var(--gray-500)">Opportunity</p></div>';
+  h+='<p style="font-family:var(--sans);font-size:16px;color:var(--black)">Opportunity</p></div>';
   h+='<div class="two-col-right"><div class="st-wrap">';
   h+='<div class="st-q">あなたは物流業界でスタートアップを検討中です。以下はある中堅配送会社の年間コスト構造です。</div>';
   h+='<div class="st-data"><strong>年間コスト構造（売上12億円）</strong><br>';
@@ -41,7 +41,7 @@ function step1(){
 function step2(){
   var h='<div class="two-col"><div class="two-col-left"><p class="eyebrow">STEP 2 / 5</p>';
   h+='<h2 class="col-heading" style="font-size:1.2rem">課題の深掘り</h2>';
-  h+='<p style="font-family:var(--sans);font-size:13px;color:var(--gray-500)">Problem — 誰が最も困っているか</p></div>';
+  h+='<p style="font-family:var(--sans);font-size:16px;color:var(--black)">Problem — 誰が最も困っているか</p></div>';
   h+='<div class="two-col-right"><div class="st-wrap">';
   h+='<div class="st-q">ルーティング非効率の課題を解決するサービスを作るとして、最初に狙うべき顧客（MVCS）は誰ですか？</div>';
   h+='<div class="st-data"><strong>顧客プロファイル</strong><br><br>';
@@ -78,8 +78,8 @@ function step3(){
   userRoute=[];aiRoute=null;
   var h='<div class="two-col"><div class="two-col-left"><p class="eyebrow">STEP 3 / 5</p>';
   h+='<h2 class="col-heading" style="font-size:1.2rem">ソリューション体験</h2>';
-  h+='<p style="font-family:var(--sans);font-size:13px;color:var(--gray-500)">Solution — 最短ルートを見つけろ</p>';
-  h+='<p style="font-family:var(--sans);font-size:13px;color:var(--gray-500);margin-top:1rem">配送先をクリックしてルートを繋げてください。全箇所を回ると倉庫に戻ります。</p>';
+  h+='<p style="font-family:var(--sans);font-size:16px;color:var(--black)">Solution — 最短ルートを見つけろ</p>';
+  h+='<p style="font-family:var(--sans);font-size:16px;color:var(--black);margin-top:1rem">配送先をクリックしてルートを繋げてください。全箇所を回ると倉庫に戻ります。</p>';
   h+='<p id="dist" style="font-family:var(--sans);font-size:20px;font-weight:600;margin-top:1rem">— km</p>';
   h+='</div><div class="two-col-right"><div class="st-wrap">';
   h+='<div style="text-align:center"><canvas id="map" width="700" height="500" style="border:1px solid var(--gray-200);max-width:100%;cursor:crosshair"></canvas></div>';
@@ -147,11 +147,11 @@ function step3(){
 function step4(){
   var h='<div class="two-col"><div class="two-col-left"><p class="eyebrow">STEP 4 / 5</p>';
   h+='<h2 class="col-heading" style="font-size:1.2rem">事業化</h2>';
-  h+='<p style="font-family:var(--sans);font-size:13px;color:var(--gray-500)">Business — 事業として成立するか</p></div>';
+  h+='<p style="font-family:var(--sans);font-size:16px;color:var(--black)">Business — 事業として成立するか</p></div>';
   h+='<div class="two-col-right"><div class="st-wrap">';
   h+='<div class="st-q">このルート最適化サービスを中小配送会社に月額サブスクリプションで提供します。</div>';
   h+='<div class="st-data"><strong>市場データ</strong><br>日本の中小配送会社：約3,000社<br>平均車両数：15台/社<br>ルーティング非効率による余剰コスト：1台あたり月20万円<br>最適化で削減可能な割合：約30%（月6万円/台の価値）</div>';
-  h+='<div class="st-q"><strong>Q1. 月額料金をいくらに設定しますか？</strong>（1台あたり）<br><span style="font-size:13px;color:var(--gray-500)">顧客が得る価値（月6万円/台の削減）の何割を料金にするか</span></div>';
+  h+='<div class="st-q"><strong>Q1. 月額料金をいくらに設定しますか？</strong>（1台あたり）<br><span style="font-size:16px;color:var(--black)">顧客が得る価値（月6万円/台の削減）の何割を料金にするか</span></div>';
   h+='<div class="st-slider-wrap"><input type="range" id="price" min="1000" max="30000" step="1000" value="10000"><div class="st-slider-val" id="priceVal">¥10,000 / 台 / 月</div></div>';
   h+='<div class="st-q"><strong>Q2. このサービスは「ビタミン」か「鎮痛剤」か？</strong></div>';
   h+='<button class="st-opt" data-v="0">ビタミン（あると便利だが、なくても困らない）</button>';
@@ -187,7 +187,7 @@ function step4(){
 function step5(){
   var h='<div class="two-col"><div class="two-col-left"><p class="eyebrow">STEP 5 / 5</p>';
   h+='<h2 class="col-heading" style="font-size:1.2rem">ピッチ</h2>';
-  h+='<p style="font-family:var(--sans);font-size:13px;color:var(--gray-500)">Pitch — 30秒で説明する</p></div>';
+  h+='<p style="font-family:var(--sans);font-size:16px;color:var(--black)">Pitch — 30秒で説明する</p></div>';
   h+='<div class="two-col-right"><div class="st-wrap">';
   h+='<div class="st-q">ここまでの分析を30秒のピッチにまとめてください。空欄を埋めてください。</div>';
   h+='<div class="st-data" style="line-height:2.5">';
@@ -211,23 +211,90 @@ function step5(){
 
 function showResult(){
   var avg=Math.round((sc.s1+sc.s2+sc.s3+sc.s4+(sc.s5||0))/5);
-  var h='<div class="two-col" style="border-bottom:1px solid var(--gray-200)"><div class="two-col-left"><p class="eyebrow">RESULT</p>';
-  h+='<h2 class="col-heading" style="font-size:1.2rem">起業家スコア</h2></div>';
-  h+='<div class="two-col-right"><div class="st-wrap">';
-  h+='<div style="font-family:var(--serif);font-size:2rem;font-weight:300;margin-bottom:1.5rem">'+avg+' / 100</div>';
+  var rank=avg>=90?'S':avg>=70?'A':avg>=50?'B':avg>=30?'C':'D';
   var labels=['課題発見力','顧客理解力','ソリューション力','事業構想力','ピッチ力'];
   var vals=[sc.s1,sc.s2,sc.s3,sc.s4,sc.s5||0];
+
+  var h='<div class="two-col" style="border-bottom:1px solid var(--gray-200)"><div class="two-col-left"><p class="eyebrow">RESULT</p>';
+  h+='<h2 class="col-heading" style="font-size:1.2rem">起業家シミュレーション</h2>';
+  h+='<p style="font-family:var(--sans);font-size:16px;color:var(--black);margin-top:0.5rem">Roppongi Venture Capital</p></div>';
+  h+='<div class="two-col-right">';
+  h+='<div class="rs-card"><div class="rs-card-head">ENTREPRENEUR SCORE</div>';
+  h+='<div class="rs-card-type">Rank '+rank+' — '+avg+' / 100</div>';
+  h+='<div style="margin:1.5rem 0">';
   for(var i=0;i<5;i++){
     h+='<div class="sc-row"><span class="sc-label">'+labels[i]+'</span>';
     h+='<div class="sc-track"><div class="sc-fill" style="width:'+vals[i]+'%"></div></div>';
-    h+='<span class="sc-val">'+vals[i]+'</span></div>';}
-  h+='<div style="margin-top:2rem;padding:1.5rem;border:1px solid var(--gray-200)">';
-  h+='<p style="font-family:var(--sans);font-size:14px;line-height:1.8;margin-bottom:1rem">あなたが体験したのは、スタートアップの思考プロセスの圧縮版です。</p>';
-  h+='<p style="font-family:var(--sans);font-size:14px;line-height:1.8;margin-bottom:1rem"><strong>Opportunity → Problem → Solution → Business → Pitch</strong><br>';
-  h+='この5ステップを、実際のチームで、実際の課題で、実際のプロダクトを作りながら体験するのが、六本木ベンチャーキャピタルのインキュベーションプログラムです。</p>';
-  h+='<a href="/program/" class="apply-btn" style="display:inline-block;margin-top:0.5rem">プログラム詳細を見る →</a></div>';
-  h+='<div style="margin-top:2rem"><button class="apply-btn" onclick="location.reload()">もう一度挑戦する</button></div>';
+    h+='<span class="sc-val">'+vals[i]+'</span></div>';
+  }
+  h+='</div>';
+  h+='</div>';
+
+  h+='<p style="font-family:var(--sans);font-size:16px;color:var(--black);padding:0.75rem;background:#fffbeb;border:1px solid #fde68a;margin-bottom:1.5rem"><strong>注意：</strong>本シミュレーションは起業家の思考プロセスを体験するための教育コンテンツです。スコアは起業家としての適性を測定するものではありません。</p>';
+
+  h+='<p style="font-family:var(--sans);font-size:16px;color:var(--black);margin-bottom:0.5rem">結果をSNSでシェアしたり、後で見返したい場合はこのカードをスクリーンショットで保存できます。</p>';
+  h+='<p style="font-family:var(--sans);font-size:16px;color:var(--black);margin-bottom:1.5rem">テキスト形式で保存したい場合は「テキストでコピー」からクリップボードにコピーして、メモアプリ等に貼り付けてください。</p>';
+
+  h+='<div style="display:flex;gap:1rem;flex-wrap:wrap;margin-bottom:2rem">';
+  h+='<button class="rs-copy" id="copyBtn">テキストでコピー</button>';
+  h+='<button class="apply-btn" id="retryBtn">もう一度挑戦する</button></div>';
+  h+='</div></div>';
+
+  // ===== 方法論 =====
+  h+='<div class="two-col" style="border-bottom:1px solid var(--gray-200)"><div class="two-col-left">';
+  h+='<h2 class="col-heading" style="font-size:1.2rem">設計根拠</h2>';
+  h+='<p style="font-family:var(--sans);font-size:16px;color:var(--black);margin-top:0.5rem">理論的背景と5ステップの設計思想</p></div>';
+  h+='<div class="two-col-right"><div class="lg-body">';
+
+  h+='<h4>1. 理論的基盤：リーンスタートアップ + デザイン思考</h4>';
+  h+='<p>本シミュレーションは、Eric Ries の <strong>リーンスタートアップ</strong>（2011）と Stanford d.school の <strong>デザイン思考</strong>プロセスを組み合わせた5ステップで構成されています。</p>';
+  h+='<p>CB Insights の調査（2021）によると、スタートアップ失敗の最大原因は「市場需要の不在」（42%）です。本シミュレーションでは、技術やプロダクトではなく<strong>課題の発見と検証</strong>から始める思考プロセスを体験します。</p>';
+
+  h+='<h4>2. 5ステップの設計</h4>';
+  h+='<table><tr><th>ステップ</th><th>対応する起業プロセス</th><th>測定する能力</th></tr>';
+  h+='<tr><td>1. 機会の発見</td><td>市場分析・課題特定</td><td>データから本質的な課題を見抜く力</td></tr>';
+  h+='<tr><td>2. 課題の深掘り</td><td>顧客セグメンテーション</td><td>MVCS（最小顧客セグメント）を特定する力</td></tr>';
+  h+='<tr><td>3. ソリューション体験</td><td>プロトタイピング</td><td>制約下での最適化・問題解決力</td></tr>';
+  h+='<tr><td>4. 事業化</td><td>ビジネスモデル設計</td><td>価格設定・市場規模の推定力</td></tr>';
+  h+='<tr><td>5. ピッチ</td><td>投資家・顧客への説明</td><td>構造化された説明力</td></tr></table>';
+
+  h+='<h4>3. 物流業界を題材にした理由</h4>';
+  h+='<p>物流は①課題が定量化しやすい（コスト構造が明確）②テクノロジーによる改善余地が大きい③日常生活との接点があり直感的に理解しやすい、という特徴があり、起業プロセスの教材として適しています。</p>';
+
+  h+='<h4>4. スコアリング</h4>';
+  h+='<table><tr><th>ステップ</th><th>配点基準</th></tr>';
+  h+='<tr><td>課題発見力</td><td>最もインパクトが大きくテクノロジーで解決可能な課題を選択できたか</td></tr>';
+  h+='<tr><td>顧客理解力</td><td>課題が切実で代替手段がないセグメントを選択できたか</td></tr>';
+  h+='<tr><td>ソリューション力</td><td>AI最適解との距離（ルート効率）</td></tr>';
+  h+='<tr><td>事業構想力</td><td>価格設定の妥当性（顧客価値の10〜25%）+ ビタミン/鎮痛剤の判断</td></tr>';
+  h+='<tr><td>ピッチ力</td><td>7つの構成要素の記入率</td></tr></table>';
+
+  h+='<h4>5. 参考文献</h4>';
+  h+='<p style="font-size:16px;color:var(--black)">';
+  h+='Ries, E. (2011). <em>The Lean Startup</em>. Crown Business.<br>';
+  h+='CB Insights (2021). The Top 12 Reasons Startups Fail.<br>';
+  h+='Blank, S. (2013). <em>The Four Steps to the Epiphany</em>. K&S Ranch.<br>';
+  h+='Osterwalder, A., & Pigneur, Y. (2010). <em>Business Model Generation</em>. John Wiley & Sons.</p>';
+
   h+='</div></div></div>';
+
+  // ===== 次のステップ =====
+  h+='<div class="two-col" style="border-bottom:none"><div class="two-col-left"><h2 class="col-heading" style="font-size:1.2rem">次のステップ</h2></div>';
+  h+='<div class="two-col-right"><div class="col-body">';
+  h+='<p>このシミュレーションで体験した5ステップを、実際のチームで、実際の課題で、実際のプロダクトを作りながら体験するのがEdgeプログラムです。</p>';
+  h+='<a href="/program/" style="display:inline-block;margin-top:0.75rem;font-family:var(--sans);font-size:16px;font-weight:500;color:var(--black);text-decoration:underline;text-underline-offset:3px">Edgeプログラムを見る →</a>';
+  h+='<p style="margin-top:2rem"><strong>他のチャレンジ</strong></p>';
+  h+='<p><a href="/diagnosis/" style="font-family:var(--sans);font-weight:500;color:var(--black);text-decoration:underline;text-underline-offset:3px">思考スタイル診断 →</a>　<a href="/challenge/" style="font-family:var(--sans);font-weight:500;color:var(--black);text-decoration:underline;text-underline-offset:3px">認知能力チャレンジ →</a></p>';
+  h+='</div></div></div>';
+
   el.innerHTML=h;
+
+  document.getElementById('retryBtn').addEventListener('click',function(){location.reload();});
+  document.getElementById('copyBtn').addEventListener('click',function(){
+    var txt='起業家シミュレーション 結果\n================================\nRank '+rank+' — '+avg+'/100\n\nスコア分布：\n';
+    for(var i=0;i<5;i++){var b='';for(var j=0;j<Math.round(vals[i]/5);j++)b+='#';txt+='  '+labels[i]+' '+vals[i]+' '+b+'\n';}
+    txt+='\nroppongivc.com/logistics\n';
+    navigator.clipboard.writeText(txt).then(function(){var b=document.getElementById('copyBtn');b.textContent='コピーしました';setTimeout(function(){b.textContent='テキストでコピー';},2000);});
+  });
 }
 })();
