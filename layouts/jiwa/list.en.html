@@ -1,8 +1,21 @@
 {{ define "main" }}
-<section class="blog-header">
-  <h1>JIWA</h1>
-  <p>A web media by Roppongi Venture Capital. Economics, finance, and technology — told through data and stories.</p>
+<section class="hero">
+  <p class="eyebrow">Web Media</p>
+  <h1 style="font-size:4.5rem;letter-spacing:-0.03em;font-weight:700">JIWA</h1>
+  <p style="font-family:var(--serif);font-size:1.5rem;color:var(--black);margin-top:1rem;font-weight:400">What's happening in the world, and why it matters.</p>
 </section>
+
+<section class="two-col">
+  <div class="two-col-left">
+    <h2 class="col-heading">Decoded through data and structural analysis.</h2>
+  </div>
+  <div class="two-col-right">
+    <div class="col-body">
+      <p>Where money flows, where talent goes, and what technology is changing.<br>A web media operated by Roppongi Venture Capital.</p>
+    </div>
+  </div>
+</section>
+
 <div class="blog-grid">
   {{ range .Paginator.Pages }}
   <div class="blog-item">
