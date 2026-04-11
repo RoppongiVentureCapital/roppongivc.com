@@ -1,7 +1,7 @@
 {{ define "main" }}
 <section class="hero">
   <p class="eyebrow">Challenge</p>
-  <h1 style="font-size:4.5rem;letter-spacing:-0.03em;font-weight:700">起業家シミュレーション</h1>
+  <h1 style="font-size:3rem;letter-spacing:-0.03em;font-weight:700">起業家シミュレーション</h1>
   <p style="font-family:var(--serif);font-size:1.5rem;color:var(--black);margin-top:1rem;font-weight:400">スタートアップの思考プロセスを体験する。</p>
 </section>
 <div id="app">
@@ -30,7 +30,7 @@
 </div>
 <style>
 .st-wrap{padding:2rem 2.5rem}
-.st-q{font-family:var(--sans);font-size:15px;line-height:1.8;margin-bottom:1.5rem}
+.st-q{font-family:var(--sans);font-size:16px;line-height:1.8;margin-bottom:1.5rem}
 .st-opt{display:block;width:100%;text-align:left;background:none;border:1px solid var(--gray-200);padding:1.2rem 1.5rem;margin-bottom:0.75rem;cursor:pointer;font-family:var(--sans);font-size:16px;line-height:1.6;color:var(--black);transition:all .15s}
 .st-opt:hover{background:var(--gray-100);border-color:var(--black)}
 .st-opt.correct{background:#f0fdf4;border-color:#059669}
@@ -56,18 +56,5 @@
 #map{background:#fafafa}
 </style>
 <script src="{{ "js/logistics-v3.js" | relURL }}?v={{ now.Unix }}"></script>
-<!-- 次のステップ -->
-<section class="two-col" style="border-bottom:none">
-  <div class="two-col-left">
-    <h2 class="col-heading">次のステップ</h2>
-  </div>
-  <div class="two-col-right">
-    <div class="col-body">
-      <p><strong>Edgeプログラム</strong><br>突出した能力を持つ高校生・大学生が、個人またはチームで課題を見つけ、形にするところまでを体験する実践プログラム。</p>
-      <a href="{{ "program/" | relURL }}" style="display:inline-block;margin-top:0.5rem;margin-bottom:2rem;font-family:var(--sans);font-size:16px;font-weight:500;color:var(--black);text-decoration:underline;text-underline-offset:3px">Edgeプログラムを見る →</a>
-      <p><strong>他のチャレンジ</strong></p>
-      <p><a href="{{ "diagnosis/" | relURL }}" style="font-family:var(--sans);font-weight:500;color:var(--black);text-decoration:underline;text-underline-offset:3px">思考スタイル診断 →</a>　<a href="{{ "challenge/" | relURL }}" style="font-family:var(--sans);font-weight:500;color:var(--black);text-decoration:underline;text-underline-offset:3px">認知能力チャレンジ →</a></p>
-    </div>
-  </div>
-</section>
+<link rel="stylesheet" href="{{ "css/challenge.css" | relURL }}?v={{ now.Unix }}">
 {{ end }}

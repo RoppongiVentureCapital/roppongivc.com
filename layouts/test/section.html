@@ -1,0 +1,28 @@
+{{ define "main" }}
+<section class="hero">
+  <p class="eyebrow">Edge Program</p>
+  <h1 style="font-size:3rem;letter-spacing:-0.03em;font-weight:700">プログラム再設計案</h1>
+  <p style="font-family:var(--serif);font-size:1.5rem;color:var(--black);margin-top:1rem;font-weight:400">第1期・マンツーマン伴走型</p>
+</section>
+<section style="padding:2rem 2.5rem">
+  <div class="test-body">
+    {{ .Content }}
+  </div>
+</section>
+<style>
+.test-body{font-family:var(--sans);font-size:16px;line-height:1.9;color:var(--black)}
+.test-body h2{font-size:1.5rem;font-weight:700;margin:3rem 0 1rem;padding-bottom:0.5rem;border-bottom:2px solid var(--black)}
+.test-body h3{font-size:1.2rem;font-weight:600;margin:2rem 0 0.75rem}
+.test-body h4{font-size:1.1rem;font-weight:600;margin:1.5rem 0 0.5rem}
+.test-body p{margin-bottom:0.75rem}
+.test-body strong{font-weight:600}
+.test-body a{color:var(--black);text-decoration:underline;text-underline-offset:3px}
+.test-body ul,.test-body ol{padding-left:1.5rem;margin-bottom:1rem}
+.test-body li{margin-bottom:0.3rem}
+.test-body table{width:100%;border-collapse:collapse;margin:1rem 0;font-size:16px;display:block;overflow-x:auto}
+.test-body th,.test-body td{padding:0.6rem 0.75rem;border:1px solid var(--gray-200);text-align:left;vertical-align:top;min-width:120px}
+.test-body th{font-weight:600;background:var(--gray-100)}
+.test-body hr{border:none;border-top:1px solid var(--gray-200);margin:2rem 0}
+.test-body blockquote{border-left:3px solid var(--black);padding-left:1rem;margin:1rem 0;font-style:italic}
+</style>
+{{ end }}
