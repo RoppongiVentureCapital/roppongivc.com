@@ -1,28 +1,312 @@
 {{ define "main" }}
 <section class="hero">
-  <p class="eyebrow">Edge Program</p>
-  <h1 style="font-size:3rem;letter-spacing:-0.03em;font-weight:700">プログラム再設計案</h1>
-  <p style="font-family:var(--serif);font-size:1.5rem;color:var(--black);margin-top:1rem;font-weight:400">第1期・マンツーマン伴走型</p>
+  <p class="eyebrow">インキュベーションプログラム — 第1期 参加者募集中</p>
+  <h1 style="font-size:4.5rem;letter-spacing:-0.03em;font-weight:700">Edge</h1>
+  <p style="font-family:var(--serif);font-size:1.5rem;color:var(--black);margin-top:1rem;font-weight:400">選び抜かれた仲間と、枠に捉われない、<br>本物のプロダクトを作ろう。</p>
 </section>
-<section style="padding:2rem 2.5rem">
-  <div class="test-body">
-    {{ .Content }}
+
+<section class="two-col">
+  <div class="two-col-left">
+    <h2 class="col-heading">2ヶ月で、課題発見からDemo Dayまで。</h2>
+  </div>
+  <div class="two-col-right">
+    <div class="col-body">
+      <p>2025年、AIは国際数学オリンピックの問題を解けるレベルに到達しました。</p>
+      <p>しかし、AIがいくら賢くても、それを使いこなせなければ意味がありません。自分自身も難しい問題に向き合える人ほど、AIに何をどう解かせるかを設計し、結果を組み合わせて新しい価値を生み出せる。<strong>深く考える力を持つ人ほど、AIの力を何倍にも引き出せます。</strong></p>
+      <p>これまで鍛えてきた論理的思考力や構造化する力は、AI時代にこそ最大の武器になります。一人では作れなかったものが、作れるようになる時代が来ています。その力を活かして、周りの人を巻き込み、実際にプロダクトを形にして、世に出す。それがEdgeで体験できることです。</p>
+      <p><strong>Edge</strong>は、選抜された参加者が個人またはチームで、実際に動くプロダクトを作り、世に出すところまでを2ヶ月で体験するインキュベーションプログラムです。インキュベーションプログラムとは、起業家やスタートアップの卵を育てるための支援プログラムで、メンタリング・開発環境・発表機会・ネットワークなどを提供し、アイデア段階からプロダクトの立ち上げまでを伴走します。</p>
+      <p>プロダクト開発にはAIをフル活用できます。プログラミング経験は問いません。大切なのは「何を作りたいか」を考える力と、周りを巻き込んでそれを形にする意欲です。STEM分野を軸としたプログラムですが、分野を問わず、何かに秀でた方の参加を歓迎します。</p>
+      <p style="font-size:14px;color:var(--gray-500);margin-top:1rem">※本プログラムは現在企画段階であり、内容・日程・条件等は今後変更される可能性があります。</p>
+    </div>
   </div>
 </section>
+
+<!-- Program Info -->
+<section class="program-info">
+  <div class="stats-row">
+    <div class="stat-cell">
+      <div class="stat-label">期間</div>
+      <div class="stat-value">全5回（隔週土曜）</div>
+    </div>
+    <div class="stat-cell">
+      <div class="stat-label">時期</div>
+      <div class="stat-value">2026年5月〜7月</div>
+    </div>
+    <div class="stat-cell">
+      <div class="stat-label">参加費</div>
+      <div class="stat-value">無料</div>
+    </div>
+    <div class="stat-cell">
+      <div class="stat-label">定員</div>
+      <div class="stat-value">5〜10名（選抜制）</div>
+    </div>
+  </div>
+</section>
+
+<!-- 特徴 -->
+<section class="two-col">
+  <div class="two-col-left">
+    <h2 class="col-heading">プログラムの特徴</h2>
+    <p style="font-size:14px;color:var(--gray-500)">※内容は今後変更される可能性があります。</p>
+  </div>
+  <div class="two-col-right">
+    <div class="col-body">
+      <div class="persona-card">
+        <h3>選抜された仲間</h3>
+        <p>受験の偏差値ではなく「何かを変えたい、作りたい」という意欲や好奇心で集まった仲間と出会えます。同じ方向を向く同世代と、学校の外で繋がれる場は、なかなかありません。個人での参加も、チームを組んでの参加も可能です。</p>
+      </div>
+      <div class="persona-card">
+        <h3>座学では終わらない</h3>
+        <p>講義を聞いてレポートを書いて発表して終わり — ではありません。自分で課題を見つけ、人に話を聞き、解決策を考え、形にするところまで挑戦します。正解のない問題に、自分なりの答えを出す。受験では味わえない種類の面白さがあります。大事なのは、自分の頭と手を動かして一歩踏み出すことです。</p>
+      </div>
+      <div class="persona-card">
+        <h3>起業しなくても、一生使える経験</h3>
+        <p>誰も自分のことを知らない状態から、人を説得し、巻き込み、少しずつ信頼を築いていく。この経験は、医者になっても、研究者になっても、会社に入っても、必ず活きます。しかも失敗しても破産しません。小さな挑戦を、安全な環境で。保護者の方にもご安心いただける設計を心がけています。</p>
+      </div>
+      <div class="persona-card">
+        <h3>AIを武器にする</h3>
+        <p>プロダクト開発にAIをフル活用できます。プログラミング経験は不問。「何を作るか」を考え、AIに的確な指示を出す力 — 構造的思考力がそのまま武器になります。</p>
+        <p style="font-size:14px;color:var(--gray-500);margin-top:0.5rem">※AIの活用は推奨していますが、必須ではありません。自分の得意な方法で取り組めます。</p>
+      </div>
+      <div class="persona-card">
+        <h3>受験と両立できる設計</h3>
+        <p>各回2時間、隔週土曜日。セッション間の作業はAIを活用して効率化でき、困ったときは運営スタッフが個別にサポートします。忙しい受験生でも参加できる負荷設計です。</p>
+      </div>
+      <div class="persona-card">
+        <h3>多様なバックグラウンド歓迎</h3>
+        <p>STEM分野を軸にしていますが、文系・芸術・スポーツなど異なるバックグラウンドを持つ方も歓迎します。多様な才能が交わることで、より面白いプロダクトが生まれると考えています。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== 新セクション：世界のトップ大学が評価する力 ========== -->
+<section class="two-col">
+  <div class="two-col-left">
+    <h2 class="col-heading">世界のトップ大学が<br>評価する力</h2>
+  </div>
+  <div class="two-col-right">
+    <div class="col-body">
+      <p>MITやStanfordといった世界のトップ大学は、テストの点数や成績だけで学生を選んでいません。彼らが重視しているのは、自ら動き、リスクを取り、手を動かして何かを形にできる人間かどうか — つまり、スタートアップの世界で求められる力とほぼ同じものです。</p>
+      <p>Edgeのカリキュラムは、こうした力を実践の中で自然に磨けるように設計されています。</p>
+
+      <div class="persona-card">
+        <h3>Initiative — 自ら動く力</h3>
+        <p>MITは「機会を自ら掴みに行く姿勢」を明確に評価基準に掲げています。挑戦的な授業を取る、会社を始める、コミュニティに貢献する — 待っているだけでは得られないものを、自分から取りに行く力。</p>
+        <p style="font-size:14px;color:var(--gray-500)">Edgeでは → Day 1で自分自身の課題を見つけ、自分で動き出すところから始まります。</p>
+      </div>
+
+      <div class="persona-card">
+        <h3>Risk-taking — リスクを取り、失敗から学ぶ力</h3>
+        <p>MITは「リスクを取り、失敗しても立ち直る回復力」を重視しています。最も創造的で成功している人は、リスクが失敗につながることも成功につながることも知っている、と。</p>
+        <p style="font-size:14px;color:var(--gray-500)">Edgeでは → Day 3で不完全なプロダクトを実際の人に使ってもらい、想定と違う反応から学びます。</p>
+      </div>
+
+      <div class="persona-card">
+        <h3>Hands-on creativity — 手を動かす創造力</h3>
+        <p>MITのモットーは "Mind and Hand"（頭と手）。理論を考えるだけでなく、実世界の問題に適用し、実際に手を動かして解決する力を求めています。</p>
+        <p style="font-size:14px;color:var(--gray-500)">Edgeでは → Day 2でAIを活用しながら、実際に動くプロダクトを自分の手で作ります。</p>
+      </div>
+
+      <div class="persona-card">
+        <h3>Collaborative spirit — 協働する力</h3>
+        <p>MITの核心は協働と協力であり、問題セットはグループで取り組む設計になっています。異なるバックグラウンドの人と一緒に、大きな課題に挑む力。</p>
+        <p style="font-size:14px;color:var(--gray-500)">Edgeでは → メンターや仲間と役割分担しながら、プロジェクトを前に進めます。</p>
+      </div>
+
+      <div class="persona-card">
+        <h3>Intellectual Vitality — 知的好奇心</h3>
+        <p>Stanfordが最も重視する資質のひとつ。教室の外でも学び続け、自分の視野を広げ、新しい機会を求めて行動する姿勢。好奇心、開放性、想像力に溢れた学生を求めています。</p>
+        <p style="font-size:14px;color:var(--gray-500)">Edgeでは → 教室の外で、自分の知的好奇心に従って課題を見つけ、行動に移します。</p>
+      </div>
+
+      <p style="font-size:13px;color:var(--gray-500);margin-top:1.5rem">出典：<a href="https://mitadmissions.org/apply/process/what-we-look-for/" target="_blank" style="color:var(--gray-500)">MIT Admissions "What We Look For"</a>、<a href="https://admission.stanford.edu/apply/selection/index.html" target="_blank" style="color:var(--gray-500)">Stanford Undergraduate Admission</a></p>
+    </div>
+  </div>
+</section>
+<!-- ========== 新セクション ここまで ========== -->
+
+<!-- カリキュラム（ドラフト版ベース・一般向けリライト） -->
+<section class="two-col">
+  <div class="two-col-left">
+    <h2 class="col-heading">カリキュラム</h2>
+    <p style="font-size:14px;color:var(--gray-500)">※内容・日程は今後変更される可能性があります。</p>
+  </div>
+  <div class="two-col-right">
+    <div class="col-body">
+      <div class="curriculum-item">
+        <div class="curriculum-day">Day 1<span class="curriculum-date">5月中旬</span></div>
+        <h3>自分の問いを見つける</h3>
+        <p>自己紹介とオリエンテーション。「自分が時間を忘れて没頭すること」「怒りを感じること」などから、本気で取り組みたい課題を探す。AIを壁打ち相手にして課題の解像度を上げ、「誰の、何の課題を、なぜ自分が解くのか」を言語化する。ソリューションの方向性とプロダクトの形を仮決めする。</p>
+        <p class="curriculum-hw">セッション間：メンターとの1on1で深掘り。実際に困っている人を見つけて話を聞く。プロトタイプの開発に着手。</p>
+        <div class="curriculum-tags"><span class="curriculum-tag">Initiative</span><span class="curriculum-tag">Intellectual Vitality</span></div>
+      </div>
+      <div class="curriculum-item">
+        <div class="curriculum-day">Day 2<span class="curriculum-date">6月上旬</span></div>
+        <h3>作る</h3>
+        <p>各自の課題と解決策を共有した後、AIを活用してプロトタイプを開発する。参加者が設計・意思決定し、AIに指示を出して実装する。完璧でなくていい、動くものを作る。</p>
+        <p class="curriculum-hw">セッション間：プロトタイプの開発を続ける。プログラム全体で最も重要な期間。メンターとの1on1で方向性を確認。</p>
+        <div class="curriculum-tags"><span class="curriculum-tag">Hands-on creativity</span><span class="curriculum-tag">Risk-taking</span></div>
+      </div>
+      <div class="curriculum-item">
+        <div class="curriculum-day">Day 3<span class="curriculum-date">6月下旬</span></div>
+        <h3>出して検証する</h3>
+        <p>プロトタイプを実際の人に使ってもらう。「これは本当に使いたいか？」「何が足りないか？」を聞く。想定と違った反応を整理し、方向転換が必要かを判断する。</p>
+        <p class="curriculum-hw">セッション間：フィードバックを反映してプロダクトを改善。</p>
+        <div class="curriculum-tags"><span class="curriculum-tag">Risk-taking</span><span class="curriculum-tag">Collaborative spirit</span></div>
+      </div>
+      <div class="curriculum-item">
+        <div class="curriculum-day">Day 4<span class="curriculum-date">7月上旬</span></div>
+        <h3>磨く + 再検証</h3>
+        <p>フィードバックを反映してプロダクトを改善し、再度人に使ってもらう。1回目と比べて反応がどう変わったかを確認する。Build-Measure-Learnの2サイクル目。</p>
+        <p class="curriculum-hw">セッション間：プロダクトの最終調整。Demo Day用のデモ準備。</p>
+        <div class="curriculum-tags"><span class="curriculum-tag">Risk-taking</span><span class="curriculum-tag">Collaborative spirit</span></div>
+      </div>
+      <div class="curriculum-item">
+        <div class="curriculum-day">Day 5<span class="curriculum-date">7月下旬</span></div>
+        <h3>Demo Day</h3>
+        <p>外部審査員の前で各参加者がピッチ。審査・表彰。「Day 1の自分と今の自分で何が変わったか」を振り返り、言語化する。アルムナイネットワークの開設。</p>
+        <div class="curriculum-tags"><span class="curriculum-tag">Initiative</span><span class="curriculum-tag">Risk-taking</span><span class="curriculum-tag">Collaborative spirit</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- こんな方におすすめ（微修正版） -->
+<section class="two-col">
+  <div class="two-col-left">
+    <h2 class="col-heading">こんな方におすすめ</h2>
+    <p style="font-size:15px;color:var(--black)">突出した能力を持つ方へ</p>
+  </div>
+  <div class="two-col-right">
+    <div class="col-body">
+      <div class="persona-card">
+        <h3>自分の得意分野にとことん集中してきた方</h3>
+        <p>数学、物理、情報科学など、自分の得意分野で高い成果を出してきた方。科学オリンピックの経験がある方はもちろん、同世代の中で頭一つ抜けている自覚がある方も。受験や研究だけでなく、「自分の力で何かを生み出す」体験にも興味があれば、それだけで十分です。座学ではなく実践で、自分の手を動かして挑戦してみたい方。経営やビジネスへの関心も歓迎します。</p>
+      </div>
+      <div class="persona-card">
+        <h3>将来の選択肢を広げたい方</h3>
+        <p>海外トップ大学や国内トップ大学の推薦・AO入試を考えている方にとって、Edgeでの体験は強力な材料になります。MITやStanfordが公式に重視しているInitiative（自ら動く力）、Risk-taking（挑戦する力）、Hands-on creativity（手を動かす創造力）といった資質は、Edgeのカリキュラムの中で実践を通じて自然に磨かれる設計になっています。実際にプロダクトを作り、人に届けた経験は、出願書類やエッセイに自然と表れます。</p>
+      </div>
+      <div class="persona-card">
+        <h3>分野を問わず、何かに秀でた方</h3>
+        <p>STEM分野に限りません。文系・芸術・スポーツなど、自分の分野で突出した実績や情熱を持つ方を歓迎します。異なる才能が交わることで、より面白いものが生まれます。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Edgeの原点 -->
+<section class="two-col">
+  <div class="two-col-left">
+    <h2 class="col-heading">Edge創設の原点</h2>
+  </div>
+  <div class="two-col-right">
+    <div class="col-body">
+      <p>六本木ベンチャーキャピタル Founding Partnerの山田は、東京工業大学大学院で機械工学を学び、住友重機械工業で6年半、極低温冷凍機の開発エンジニアとして日本のものづくりの現場に立ちました。その後IBM、AWSで製造業×AIの領域に携わってきました。日本の理系人材の能力は世界に誇れるものです。しかし現場では、高度な技術を支えている人ほど、その貢献に見合った評価を受けにくい構造があると感じてきました。AIが社会を根本から変えつつある今、理系人材が正当に評価され、その力を存分に発揮できる環境を整えることは、日本の国際競争力にとっても、エネルギーや医療、食料といった世界規模の課題の解決にとっても、欠かせないことだと考えています。</p>
+      <p>ヘルスケアNPO「港区ウェルネス推進研究所」の立ち上げや、経済産業省「始動Next Innovator」、UC Berkeley「SkyDeck Bootcamp in Tokyo」などのアクセラレータプログラムへの参加を通じて、多様な人々とのコミュニティが広がりました。NPOを立ち上げたときは、誰にも相手にされない状態から始まりました。断られ続けても行動し続けた結果、少しずつ信頼が生まれ、道が開けていく — その過程で得た学びや成長は、どんな座学よりも大きなものでした。</p>
+      <p>こうした体験を、次世代を担うトップ人材にも届けたい。それがEdge創設の原点です。</p>
+      <p style="margin-top:2.5rem"><strong>技術の最前線にいるエンジニアが伴走する</strong><br>主催者の山田は製造業×AIの領域で働く現役のエンジニアです。教科書の知識ではなく、技術の現場を知る人間が、参加者のプロジェクトに直接アドバイスします。</p>
+      <p><strong>多様な分野の人々と出会える機会</strong><br>山田がダボス会議への参加をはじめ、これまでの活動で築いてきた国内外のネットワークを活かし、起業家、エンジニア、研究者など、学校生活だけでは出会いにくい多様な分野の方々と交流できる機会も設けていきたいと考えています。</p>
+    </div>
+  </div>
+</section>
+
+<!-- 応募 -->
+<section class="two-col">
+  <div class="two-col-left">
+    <h2 class="col-heading">応募について</h2>
+    <p style="font-size:14px;color:var(--gray-500)">※条件・選考プロセスは今後変更される可能性があります。</p>
+  </div>
+  <div class="two-col-right">
+    <div class="col-body">
+      <div class="persona-card">
+        <h3>少人数・選抜制</h3>
+        <p>第1期は5〜10名の少人数で開催します。参加者の質を最も重視しており、運営からの招待、または応募フォームからの選考を経てご参加いただきます。</p>
+      </div>
+      <div class="persona-card">
+        <h3>応募条件</h3>
+        <ul style="margin-top:0.5rem;padding-left:1.2rem">
+          <li>高校生または大学生（中学生も応募可）</li>
+          <li>自分の分野で突出した実績、または強い情熱を持っている方</li>
+          <li>科学オリンピックや大会の実績がなくても応募できます</li>
+          <li>起業経験は不要</li>
+        </ul>
+      </div>
+      <div class="persona-card">
+        <h3>参加までの流れ</h3>
+        <ol style="margin-top:0.5rem;padding-left:1.2rem">
+          <li>運営からのご招待、または応募フォームに記入</li>
+          <li>面談（オンライン、30分程度）</li>
+          <li>参加のご連絡</li>
+        </ol>
+        <p style="margin-top:0.75rem">面談では、これまでの取り組みや今後挑戦したいことについてお聞きします。</p>
+      </div>
+      <p style="margin-top:2rem;font-size:14px;color:var(--gray-500)">応募フォームは近日公開予定です。</p>
+    </div>
+  </div>
+</section>
+
+<!-- Demo Day 表彰 -->
+<section class="two-col">
+  <div class="two-col-left">
+    <h2 class="col-heading">Demo Day 表彰</h2>
+    <p style="font-size:14px;color:var(--gray-500)">※内容は現在検討中であり、変更される可能性があります。</p>
+  </div>
+  <div class="two-col-right">
+    <div class="col-body">
+      <div class="persona-card">
+        <h3>最優秀賞</h3>
+        <p>海外カンファレンス派遣（検討中）</p>
+      </div>
+      <div class="persona-card">
+        <h3>優秀賞・審査員特別賞</h3>
+        <p>賞金（金額検討中）</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="two-col" style="border-bottom:none">
+  <div class="two-col-left">
+    <h2 class="col-heading">よくある質問</h2>
+    <p style="font-size:14px;color:var(--gray-500)">※回答内容は今後変更される可能性があります。</p>
+  </div>
+  <div class="two-col-right">
+    <div class="col-body">
+      <div class="persona-card">
+        <h3>プログラミング経験は必要ですか？</h3>
+        <p>必須ではありません。AIを活用すれば、コードを書かなくてもプロダクトを作ることができます。大切なのは「何を作るか考える力」と「AIに的確な指示を出す力」です。もちろん、プログラミング経験があればより深い開発が可能です。</p>
+      </div>
+      <div class="persona-card">
+        <h3>受験勉強と両立できますか？</h3>
+        <p>はい。各回2時間・隔週土曜日の開催です。セッション間の作業はAIやサポーターに任せられる省エネオプションもあります。海外大学受験の課外活動実績としても活用できるスケジュール設計です。</p>
+      </div>
+      <div class="persona-card">
+        <h3>一人で参加しても大丈夫ですか？</h3>
+        <p>はい。個人での参加を基本としています。プログラム内でチームを組みたい方にはその機会も設けます。</p>
+      </div>
+      <div class="persona-card">
+        <h3>ビジネスアイデアは必要ですか？</h3>
+        <p>応募時点では不要です。Day 1で課題を見つけるところから始めます。もし自分でテーマが見つからなくても、他の参加者が取り組んでいる課題に合流して一緒に取り組むこともできます。</p>
+      </div>
+      <div class="persona-card">
+        <h3>参加費は本当に無料ですか？</h3>
+        <p>はい。第1期はプログラム参加に費用は一切かかりません。今後の期については変更の可能性があります。</p>
+      </div>
+      <div class="persona-card">
+        <h3>海外大学や国内推薦入試の出願に使えますか？</h3>
+        <p>はい。本気で取り組んだ課外活動の経験は、出願書類やエッセイに自然と表れます。海外トップ大学の出願だけでなく、東大推薦や京大特色入試などの国内推薦・AO入試にも活きる経験になります。プログラムの時期（5月〜7月）は、出願準備が本格化する直前であり、実践的な経験を積む良い機会です。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- カリキュラムタグ用スタイル -->
 <style>
-.test-body{font-family:var(--sans);font-size:16px;line-height:1.9;color:var(--black)}
-.test-body h2{font-size:1.5rem;font-weight:700;margin:3rem 0 1rem;padding-bottom:0.5rem;border-bottom:2px solid var(--black)}
-.test-body h3{font-size:1.2rem;font-weight:600;margin:2rem 0 0.75rem}
-.test-body h4{font-size:1.1rem;font-weight:600;margin:1.5rem 0 0.5rem}
-.test-body p{margin-bottom:0.75rem}
-.test-body strong{font-weight:600}
-.test-body a{color:var(--black);text-decoration:underline;text-underline-offset:3px}
-.test-body ul,.test-body ol{padding-left:1.5rem;margin-bottom:1rem}
-.test-body li{margin-bottom:0.3rem}
-.test-body table{width:100%;border-collapse:collapse;margin:1rem 0;font-size:16px;display:block;overflow-x:auto}
-.test-body th,.test-body td{padding:0.6rem 0.75rem;border:1px solid var(--gray-200);text-align:left;vertical-align:top;min-width:120px}
-.test-body th{font-weight:600;background:var(--gray-100)}
-.test-body hr{border:none;border-top:1px solid var(--gray-200);margin:2rem 0}
-.test-body blockquote{border-left:3px solid var(--black);padding-left:1rem;margin:1rem 0;font-style:italic}
+.curriculum-tags{margin-top:0.5rem;display:flex;flex-wrap:wrap;gap:0.4rem}
+.curriculum-tag{font-size:12px;color:var(--gray-500);background:var(--gray-100);padding:0.15rem 0.6rem;border-radius:3px;letter-spacing:0.02em}
 </style>
+
 {{ end }}
