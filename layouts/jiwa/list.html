@@ -20,11 +20,14 @@
   {{ range .Paginator.Pages }}
   <div class="blog-item">
     <a href="{{ .RelPermalink }}">
-      {{ with .Params.pillars }}<div class="article-pillar">{{ index . 0 }}</div>{{ end }}
-      <time>{{ .Date.Format "2006.01.02" }}</time>
-      <h2>{{ .Title }}</h2>
-      {{ with .Params.description }}<p>{{ . }}</p>{{ end }}
-      <span class="blog-arrow">続きを読む →</span>
+      {{ with .Params.thumbnail }}<img class="blog-item-img" src="{{ . }}" alt="">{{ end }}
+      <div class="blog-item-body">
+        {{ with .Params.pillars }}<div class="article-pillar">{{ index . 0 }}</div>{{ end }}
+        <time>{{ .Date.Format "2006.01.02" }}</time>
+        <h2>{{ .Title }}</h2>
+        {{ with .Params.description }}<p>{{ . }}</p>{{ end }}
+        <span class="blog-arrow">続きを読む →</span>
+      </div>
     </a>
   </div>
   {{ end }}

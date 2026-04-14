@@ -36,3 +36,5 @@ SESSION_HANDOFF.md
 *.env
 *.key
 *.pem
+static/img/about/
+static/img/jiwa/*-v*.png
