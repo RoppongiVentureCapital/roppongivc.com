@@ -6,6 +6,7 @@ description: "40% of gold medalists earn PhDs and cluster at Google, Apple, and 
 pillars: ["Deep Tech Decoded"]
 tags: ["Data", "AI", "Startups"]
 hero_style: "background:linear-gradient(135deg,#0a1628 0%,#1a2744 40%,#0d3655 100%)"
+thumbnail: "/img/jiwa/science-olympiad-careers.png"
 hero_label: "Deep Tech Decoded"
 ---
 
