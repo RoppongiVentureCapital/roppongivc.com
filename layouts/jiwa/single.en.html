@@ -1,11 +1,20 @@
 {{ define "main" }}
 <article class="blog-single">
-  {{ with .Params.hero_style }}
-  <div class="blog-hero" style="{{ . | safeCSS }}">
+  {{ if .Params.thumbnail }}
+  <div class="blog-hero-img" style="background:url('{{ .Params.thumbnail }}') center/cover"></div>
+  <div class="blog-hero-title-bar">
     <div class="blog-hero-inner">
-      {{ with $.Params.hero_label }}<span class="blog-hero-label">{{ . }}</span>{{ end }}
-      <h1 class="blog-hero-title">{{ $.Title }}</h1>
-      <div class="blog-hero-meta">{{ $.Date.Format "January 2, 2006" }}</div>
+      {{ with .Params.hero_label }}<span class="blog-hero-label">{{ . }}</span>{{ end }}
+      <h1 class="blog-hero-title">{{ .Title }}</h1>
+      <div class="blog-hero-meta">{{ .Date.Format "January 2, 2006" }}</div>
+    </div>
+  </div>
+  {{ else if .Params.hero_style }}
+  <div class="blog-hero" style="{{ .Params.hero_style | safeCSS }}">
+    <div class="blog-hero-inner">
+      {{ with .Params.hero_label }}<span class="blog-hero-label">{{ . }}</span>{{ end }}
+      <h1 class="blog-hero-title">{{ .Title }}</h1>
+      <div class="blog-hero-meta">{{ .Date.Format "January 2, 2006" }}</div>
     </div>
   </div>
   {{ else }}
