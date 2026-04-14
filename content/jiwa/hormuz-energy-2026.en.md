@@ -6,6 +6,7 @@ description: "95% of Japan's crude oil and over 20% of its LNG pass through this
 pillars: ["Energy Security"]
 tags: ["energy", "geopolitics", "data"]
 hero_style: "background:linear-gradient(135deg,#0a1628 0%,#1a2744 40%,#0d3655 100%)"
+thumbnail: "/img/jiwa/hormuz-energy.png"
 hero_label: "Energy Security"
 ---
 ---

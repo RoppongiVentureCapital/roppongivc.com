@@ -6,6 +6,7 @@ description: "日本の一次エネルギーの35%は石油。だがその大部
 pillars: ["Energy Security"]
 tags: ["エネルギー", "地政学", "データ"]
 hero_style: "background:linear-gradient(135deg,#0a1628 0%,#1a2744 40%,#0d3655 100%)"
+thumbnail: "/img/jiwa/hormuz-energy.png"
 hero_label: "Energy Security"
 ---
 ---

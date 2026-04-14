@@ -6,6 +6,7 @@ description: "2025年、AIがIMOで金メダルレベルに到達した。では
 pillars: ["Deep Tech Decoded"]
 tags: ["データ", "AI", "スタートアップ"]
 hero_style: "background:linear-gradient(135deg,#0a1628 0%,#1a2744 40%,#0d3655 100%)"
+thumbnail: "/img/jiwa/science-olympiad-careers.png"
 hero_label: "Deep Tech Decoded"
 ---
 

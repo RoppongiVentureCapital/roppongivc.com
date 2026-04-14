@@ -6,6 +6,7 @@ pillars: ["Global Money Map"]
 tags: ["経済", "データ", "投資"]
 hero_style: "background:linear-gradient(135deg,#0a1628 0%,#1a2744 40%,#0d3655 100%)"
 hero_label: "Global Money Map"
+thumbnail: "/img/jiwa/global-money-map.png"
 ---
 
 &nbsp;
