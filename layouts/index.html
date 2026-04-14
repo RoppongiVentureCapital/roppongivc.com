@@ -109,6 +109,7 @@
         <time>{{ .Date.Format "2006.01.02" }}</time>
         <h3>{{ .Title }}</h3>
         {{ with .Params.description }}<p>{{ . }}</p>{{ end }}
+        <span class="blog-arrow">続きを読む →</span>
       </a>
     </div>
     {{ end }}
