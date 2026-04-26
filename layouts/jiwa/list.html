@@ -1,8 +1,11 @@
 {{ define "main" }}
-<section class="hero">
-  <p class="eyebrow">Webメディア</p>
-  <h1 style="font-size:4.5rem;letter-spacing:-0.03em;font-weight:700">JIWA</h1>
-  <p style="font-family:var(--serif);font-size:1.5rem;color:var(--black);margin-top:1rem;font-weight:400">世界で何が起きていて、それがなぜ重要なのか。</p>
+<section class="hero" style="position:relative;overflow:hidden">
+  <img src="{{ "img/hero/hero-edge.png" | relURL }}" alt="" aria-hidden="true" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.22;pointer-events:none;z-index:0">
+  <div style="position:relative;z-index:1">
+    <p class="eyebrow">Webメディア</p>
+    <h1 style="font-size:4.5rem;letter-spacing:-0.03em;font-weight:700">JIWA</h1>
+    <p style="font-family:var(--serif);font-size:1.5rem;color:var(--black);margin-top:1rem;font-weight:400">世界で何が起きていて、それがなぜ重要なのか。</p>
+  </div>
 </section>
 
 <section class="two-col">
