@@ -27,7 +27,7 @@ img{max-width:100%;height:auto;display:block}
   border-bottom:1px solid var(--black);
   position:sticky;top:0;z-index:100;background:var(--bg);
 }
-.nav-logo-img{height:36px;width:auto}
+.nav-logo-img{height:52px;width:auto}
 .nav-links{display:flex;gap:2rem;list-style:none}
 .nav-links a{
   font-family:var(--sans);font-size:14px;font-weight:500;
