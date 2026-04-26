@@ -1,8 +1,11 @@
 {{ define "main" }}
-<section class="hero">
-  <p class="eyebrow">インキュベーションプログラム — 第1期 参加者募集中</p>
-  <h1 style="font-size:4.5rem;letter-spacing:-0.03em;font-weight:700">Edge</h1>
-  <p style="font-family:var(--serif);font-size:1.5rem;color:var(--black);margin-top:1rem;font-weight:400">選び抜かれた仲間と、枠に捉われない、<br>本物のプロダクトを作ろう。</p>
+<section class="hero" style="position:relative;overflow:hidden">
+  <img src="{{ "img/hero/above-clouds.png" | relURL }}" alt="" aria-hidden="true" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 20%;opacity:.35;pointer-events:none;z-index:0">
+  <div style="position:relative;z-index:1">
+    <p class="eyebrow">インキュベーションプログラム — 第1期 参加者募集中</p>
+    <h1 style="font-size:4.5rem;letter-spacing:-0.03em;font-weight:700">Edge</h1>
+    <p style="font-family:var(--serif);font-size:1.5rem;color:var(--black);margin-top:1rem;font-weight:400">選び抜かれた仲間と、枠に捉われない、<br>本物のプロダクトを作ろう。</p>
+  </div>
 </section>
 
 <section class="two-col">
@@ -51,6 +54,9 @@
   </div>
   <div class="two-col-right">
     <div class="col-body">
+      <figure style="margin:0 0 2.5rem">
+        <img src="{{ "img/hero/hands-create-v2.png" | relURL }}" alt="" style="width:100%;height:auto;display:block;aspect-ratio:21/9;object-fit:cover">
+      </figure>
       <div class="persona-card">
         <h3>選抜された仲間</h3>
         <p>受験の偏差値ではなく「何かを変えたい、作りたい」という意欲や好奇心で集まった仲間と出会えます。同じ方向を向く同世代と、学校の外で繋がれる場は、なかなかありません。個人での参加も、チームを組んでの参加も可能です。</p>
