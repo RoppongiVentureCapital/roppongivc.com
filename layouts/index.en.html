@@ -1,10 +1,13 @@
 {{ define "main" }}
 
 <!-- Hero -->
-<section class="hero">
-  <h2 class="hero-brand-name">Roppongi Venture Capital</h2>
-  <h1>Choices, for every talent.</h1>
-  <p style="font-family:var(--serif);font-style:italic;font-size:1.15rem;font-weight:400;color:var(--gray-600);letter-spacing:0.02em;margin-top:2rem">A single step changes the view.</p>
+<section class="hero" style="position:relative;overflow:hidden">
+  <img src="{{ "img/hero/silhouette.png" | relURL }}" alt="" aria-hidden="true" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-45%);width:min(760px,95vw);height:auto;opacity:.12;pointer-events:none;z-index:0">
+  <div style="position:relative;z-index:1">
+    <h2 class="hero-brand-name">Roppongi Venture Capital</h2>
+    <h1>Choices, for every talent.</h1>
+    <p style="font-family:var(--serif);font-style:italic;font-size:1.15rem;font-weight:400;color:var(--gray-600);letter-spacing:0.02em;margin-top:2rem">A single step changes the view.</p>
+  </div>
 </section>
 
 <!-- About -->
