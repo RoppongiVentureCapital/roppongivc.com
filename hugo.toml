@@ -10,23 +10,27 @@ paginate = 12
     weight = 1
     title = "六本木ベンチャーキャピタル"
     [languages.ja.params]
-      description = "日本最高峰のSTEM頭脳に、世界最高峰の起業家体験を。"
+      description = "六本木ベンチャーキャピタルは、突出した能力を持つ中学生・高校生・大学生が、AIを活用して、まだ世にない新しいものを生み出すプログラム「Agora」と「Edge」を運営する団体です。"
     [[languages.ja.menus.main]]
-      name = "Program"
-      url = "/program/"
+      name = "Agora"
+      url = "/agora/"
       weight = 1
+    [[languages.ja.menus.main]]
+      name = "Edge"
+      url = "/edge/"
+      weight = 2
     [[languages.ja.menus.main]]
       name = "Challenge"
       url = "/challenges/"
-      weight = 2
+      weight = 3
     [[languages.ja.menus.main]]
       name = "Media"
       url = "/jiwa/"
-      weight = 3
+      weight = 4
     [[languages.ja.menus.main]]
       name = "Members"
       url = "/members/"
-      weight = 4
+      weight = 5
   [languages.en]
     languageName = "EN"
     weight = 2
@@ -34,21 +38,25 @@ paginate = 12
     [languages.en.params]
       description = "World-class entrepreneurial experiences for Japan's brightest STEM minds."
     [[languages.en.menus.main]]
-      name = "Program"
-      url = "/en/program/"
+      name = "Agora"
+      url = "/en/agora/"
       weight = 1
+    [[languages.en.menus.main]]
+      name = "Edge"
+      url = "/en/edge/"
+      weight = 2
     [[languages.en.menus.main]]
       name = "Challenge"
       url = "/en/challenges/"
-      weight = 2
+      weight = 3
     [[languages.en.menus.main]]
       name = "Media"
       url = "/en/jiwa/"
-      weight = 3
+      weight = 4
     [[languages.en.menus.main]]
       name = "Members"
       url = "/en/members/"
-      weight = 4
+      weight = 5
 
 [markup]
   [markup.goldmark]
