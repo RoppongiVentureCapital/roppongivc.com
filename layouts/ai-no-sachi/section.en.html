@@ -1,0 +1,42 @@
+{{ define "main" }}
+<article class="article-page">
+  <header class="article-head">
+    <p class="eyebrow">Agora | A Record of the Dialogue</p>
+    <h1 class="article-title">{{ .Title }}</h1>
+    {{ with .Params.subtitle }}<p class="article-sub">{{ . }}</p>{{ end }}
+    {{ with .Params.author }}<p class="article-author">{{ . }}</p>{{ end }}
+  </header>
+
+  <div class="article-body">
+    {{ .Content }}
+  </div>
+
+  <div class="article-foot">
+    <a href="/en/agora/">← Back to Agora</a>
+  </div>
+</article>
+
+<style>
+.article-page{max-width:720px;margin:0 auto;padding:3.5rem 1.5rem 5rem}
+.article-head{margin-bottom:3rem;padding-bottom:2rem;border-bottom:1px solid var(--gray-200,#eee)}
+.article-title{font-family:var(--serif);font-size:clamp(1.9rem,4vw,2.6rem);font-weight:700;line-height:1.35;letter-spacing:-0.01em;margin:0.75rem 0 0}
+.article-sub{font-family:var(--serif);font-size:clamp(1.05rem,2vw,1.25rem);color:var(--gray-600,#555);line-height:1.6;margin-top:1.1rem;font-weight:400}
+.article-author{font-family:var(--sans);font-size:14px;color:var(--gray-500,#888);margin-top:1.5rem;letter-spacing:.05em}
+.article-body{font-family:var(--sans);font-size:16px;line-height:1.9;color:var(--black,#111);font-weight:400}
+.article-body h2{font-family:var(--serif);font-size:1.5rem;font-weight:600;line-height:1.4;margin:3rem 0 1.25rem;padding-top:1rem;border-top:2px solid var(--black,#111)}
+.article-body h3{font-family:var(--sans);font-size:1.15rem;font-weight:700;margin:2.25rem 0 0.75rem}
+.article-body p{margin:0 0 1.4rem}
+.article-body blockquote{
+  margin:1.5rem 0;padding:0.75rem 1.25rem;border-left:3px solid var(--accent,#019949);
+  background:var(--gray-50,#fafafa);border-radius:0 6px 6px 0;
+  font-size:1rem;line-height:1.85;color:var(--gray-700,#333)
+}
+.article-body blockquote p:last-child{margin-bottom:0}
+.article-body strong{font-weight:700}
+.article-body hr{border:none;border-top:1px solid var(--gray-200,#eee);margin:2.5rem 0}
+.article-body ul,.article-body ol{margin:0 0 1.4rem;padding-left:1.4rem;line-height:1.9}
+.article-foot{margin-top:4rem;padding-top:2rem;border-top:1px solid var(--gray-200,#eee)}
+.article-foot a{font-family:var(--sans);font-size:15px;font-weight:600;color:var(--black,#111);text-decoration:underline;text-underline-offset:4px}
+@media(max-width:768px){.article-page{padding:2.5rem 1.25rem 4rem}}
+</style>
+{{ end }}
