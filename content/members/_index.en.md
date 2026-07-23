@@ -1,4 +1,4 @@
 ---
-title: "Koji Yamada — Founding Partner"
-description: "Founding Partner of Roppongi Venture Capital. M.Eng. from Tokyo Institute of Technology. Former cryocooler development engineer, now AWS Solutions Architect. Founded Edge, an incubation program for next-generation STEM talent."
+title: "Members — Koji Yamada, Tokio Itonaga & Kenichi Kitamura"
+description: "Meet the team at Roppongi Venture Capital: Koji Yamada (Founding Partner, M.Eng. Tokyo Institute of Technology, Harvard Medical School AI in Health Care, AWS Solutions Architect), Tokio Itonaga (Entrepreneur, Representative Director of FEA Agricultural Research Association), and Kenichi Kitamura (Advisor, M.S. in Mathematics from Kyoto University)."
 ---

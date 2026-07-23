@@ -1,4 +1,50 @@
 {{ define "main" }}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Person",
+      "name": "Koji Yamada",
+      "alternateName": "山田 航司",
+      "jobTitle": "Founding Partner",
+      "worksFor": {"@type": "Organization", "name": "Roppongi Venture Capital", "url": "https://www.roppongivc.com/"},
+      "alumniOf": [{"@type": "CollegeOrUniversity", "name": "Tokyo Institute of Technology"}],
+      "sameAs": [
+        "https://www.linkedin.com/in/koji-yamada-386578202/",
+        "https://x.com/koji_yamada_aws",
+        "https://note.com/koji_yamada_note",
+        "https://zenn.dev/trump"
+      ],
+      "url": "https://www.roppongivc.com/en/members/"
+    },
+    {
+      "@type": "Person",
+      "name": "Tokio Itonaga",
+      "alternateName": ["糸永 季生", "糸永トキオ"],
+      "jobTitle": "Entrepreneur / Venture Capital Associate",
+      "worksFor": [
+        {"@type": "Organization", "name": "Roppongi Venture Capital", "url": "https://www.roppongivc.com/"},
+        {"@type": "Organization", "name": "FEA Agricultural Research Association"}
+      ],
+      "alumniOf": [{"@type": "CollegeOrUniversity", "name": "Hosei University"}],
+      "description": "Representative Director of FEA Agricultural Research Association. Former mathematics instructor at a major prep school. Entrepreneur in education, agriculture, and AI with 60+ companies supported and 39 business exits.",
+      "image": "https://www.roppongivc.com/img/members/itonaga.jpg",
+      "url": "https://www.roppongivc.com/en/members/"
+    },
+    {
+      "@type": "Person",
+      "name": "Kenichi Kitamura",
+      "alternateName": "北村 研一",
+      "jobTitle": "Advisor",
+      "worksFor": {"@type": "Organization", "name": "Roppongi Venture Capital", "url": "https://www.roppongivc.com/"},
+      "alumniOf": [{"@type": "CollegeOrUniversity", "name": "Kyoto University"}],
+      "description": "M.S. in Mathematics from Kyoto University. Works at a government-affiliated financial institution. Advisor who sharpens Agora discussions from a mathematical perspective.",
+      "url": "https://www.roppongivc.com/en/members/"
+    }
+  ]
+}
+</script>
 <section class="hero" style="position:relative;overflow:hidden">
   <img src="{{ "img/hero/roppongi.jpg" | relURL }}" alt="" aria-hidden="true" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 40%;opacity:.30;pointer-events:none;z-index:0">
   <div style="position:relative;z-index:1">
@@ -28,10 +74,10 @@
     </div>
   </div>
 </div>
-{{/* Itonaga: self-written profile; photo pending, temporarily using anonymous.png silhouette—replace when received. (Hugo strips this comment from output.) */}}
+{{/* Itonaga: self-written profile; photo replaced with the one he provided (2026-07-23). */}}
 <div class="member-profile">
   <div class="member-photo">
-    <img src="{{ "img/members/anonymous.png" | relURL }}" alt="Tokio Itonaga">
+    <img src="{{ "img/members/itonaga.jpg" | relURL }}" alt="Tokio Itonaga">
   </div>
   <div class="member-info">
     <h2 class="member-name">Tokio Itonaga</h2>

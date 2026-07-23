@@ -1,4 +1,50 @@
 {{ define "main" }}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Person",
+      "name": "山田 航司",
+      "alternateName": "Koji Yamada",
+      "jobTitle": "Founding Partner",
+      "worksFor": {"@type": "Organization", "name": "六本木ベンチャーキャピタル", "url": "https://www.roppongivc.com/"},
+      "alumniOf": [{"@type": "CollegeOrUniversity", "name": "東京工業大学"}],
+      "sameAs": [
+        "https://www.linkedin.com/in/koji-yamada-386578202/",
+        "https://x.com/koji_yamada_aws",
+        "https://note.com/koji_yamada_note",
+        "https://zenn.dev/trump"
+      ],
+      "url": "https://www.roppongivc.com/members/"
+    },
+    {
+      "@type": "Person",
+      "name": "糸永 季生",
+      "alternateName": ["糸永トキオ", "Tokio Itonaga"],
+      "jobTitle": "Entrepreneur / Venture Capital Associate",
+      "worksFor": [
+        {"@type": "Organization", "name": "六本木ベンチャーキャピタル", "url": "https://www.roppongivc.com/"},
+        {"@type": "Organization", "name": "一般社団法人FEA農研"}
+      ],
+      "alumniOf": [{"@type": "CollegeOrUniversity", "name": "法政大学"}],
+      "description": "一般社団法人FEA農研代表理事。元大手予備校数学講師。教育・農業・AI領域の起業家。上場企業を含む60社以上の事業推進・39件の事業売却実績。",
+      "image": "https://www.roppongivc.com/img/members/itonaga.jpg",
+      "url": "https://www.roppongivc.com/members/"
+    },
+    {
+      "@type": "Person",
+      "name": "北村 研一",
+      "alternateName": "Kenichi Kitamura",
+      "jobTitle": "Advisor",
+      "worksFor": {"@type": "Organization", "name": "六本木ベンチャーキャピタル", "url": "https://www.roppongivc.com/"},
+      "alumniOf": [{"@type": "CollegeOrUniversity", "name": "京都大学"}],
+      "description": "京都大学大学院理学研究科数学専攻修了。政府系金融機関勤務。数学的な視点からAgoraの議論を深掘りするAdvisor。",
+      "url": "https://www.roppongivc.com/members/"
+    }
+  ]
+}
+</script>
 <section class="hero" style="position:relative;overflow:hidden">
   <img src="{{ "img/hero/roppongi.jpg" | relURL }}" alt="" aria-hidden="true" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 40%;opacity:.30;pointer-events:none;z-index:0">
   <div style="position:relative;z-index:1">
@@ -28,10 +74,10 @@
     </div>
   </div>
 </div>
-{{/* 糸永さん：本人記載のプロフィール（山田様Membersと同粒度）。写真は本人提供待ちのため暫定で anonymous.png のシルエットを使用。到着後に img/members/itonaga.jpg へ差し替え。※このコメントはHugoが出力HTMLから除去する内部メモ（公開ソースには出ない） */}}
+{{/* 糸永さん：本人記載のプロフィール（山田様Membersと同粒度）。写真は2026-07-23に本人提供のものへ差し替え済み */}}
 <div class="member-profile">
   <div class="member-photo">
-    <img src="{{ "img/members/anonymous.png" | relURL }}" alt="糸永 季生">
+    <img src="{{ "img/members/itonaga.jpg" | relURL }}" alt="糸永 季生">
   </div>
   <div class="member-info">
     <h2 class="member-name">糸永 季生</h2>
