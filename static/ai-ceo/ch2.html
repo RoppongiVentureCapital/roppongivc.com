@@ -63,6 +63,8 @@
 <script src="ch2.data.js"></script>
 <script>
 
+/* ══════════ 資料由来の数字（★文面の一部。「差し込み口にしない」）══════════
+   ★出どころ  Brown et al. 2020, arXiv:2005.14165 Table 2.2（欄4-1） */
 const LIT={
  src:[ /* [名前, 億語, 読ませた回数の表示, 読ませる量に占める割合] */
   ['ざっと集めた web',4100,'1周の44%だけ','60%'],
@@ -180,7 +182,7 @@ if(!HAND){
   cal:Math.round(100-D.set.ece0),
   width:D.set.widthBase,
   spent:P.dev+(+RUN.staff||0)*D.set.staffPay,   // ★1年目の開発費 ＋ 1年目の人件費
-  mul:1                                    // ★設定9：第1章の幅は基礎50だけなので必ず 1.0
+  mul:1
  });
  RUN.safe=C.safeOf(D,RUN.obey,RUN.rlvr);
 }

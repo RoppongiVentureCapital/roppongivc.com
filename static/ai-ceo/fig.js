@@ -231,10 +231,6 @@ const G={
 
  flow:(v={})=>{
   const g=x=>(x===undefined||x===null||x==='')?'─':x;
-  //   ★★2026-08-22 に「目標のシェア」→「行き着く先のシェア」に替え、★★同日さらに
-  //     ★★同じ量に3つの名前が付いていた（★序章「行き着く先のシェア」／決算「目標のシェア」／
-  //     ★★★この量は target＝魅力÷(魅力＋他社の力)。★毎年【残りの差の4割】ずつ近づく先の値。
-  //       「行き着く先のシェア」→【落ち着くシェア】に揃えること（★同じ量に2名を残さない）。
   let rows=[
    ['魅力',              g(v.appeal), '#67d3e8'],
    ['落ち着くシェア',    g(v.target), '#67d3e8'],
@@ -244,9 +240,6 @@ const G={
    ['捌けた回数',        g(v.served), '#5ed093'],
    ['売上',              g(v.rev),    '#5ed093'],
   ];
-  // ★横から合流する量＝[入る段の番号, 名前, 値, 添える1行]
-  //       ★★別の数も掛かっているのか、★図からは判断できませんでした」
-  //     → ★★★説明で補うのではなく【図の側に足す】（★★§125-2 で確定した形＝図で完結させる）
   let sides=[
    [1,'他社の力',           g(v.rival), 'これと比べた取り分'],
    [3,'安全が許すシェアの上限', g(v.cap),   '安全から決まる枠'],
@@ -617,6 +610,47 @@ const G={
   });
   s+=`<text x="12" y="16" fill="#dfeaf4" font-size="11.5">5本のバーが、5年でどう動いたかです（0〜100点）。</text>`;
   return `<svg viewBox="0 0 640 ${ly+30}" style="width:100%">${s}</svg>`;
+ },
+
+ equip:(v={})=>{
+  const X=12, W=600, MAX=200, sc=x=>X+W*Math.max(0,Math.min(MAX,x))/MAX;  // ★0〜200%を画素へ
+  const mid=sc(100);                       // ★「必要ちょうど」の位置（★帯の境目）
+  const short=(v.pct!==undefined&&v.pct!==null&&v.pct<100);   // ★境目より左＝足りない
+  let s='';
+  s+=`<text x="12" y="15" fill="#dfeaf4" font-size="11.5">必要な容量まで買うと、その回数まで捌けます。足りない分は捌けず、余った分はその年で消えます。</text>`;
+  // ★境目（★ここより左だと足りない）
+  if(short) s+=`<rect x="${X}" y="44" width="${(sc(v.pct)-X).toFixed(1)}" height="18" rx="3" fill="rgba(224,87,74,.28)"/>`;
+  // ★0〜必要の2倍 の帯
+  s+=`<rect x="${X}" y="44" width="${W}" height="18" rx="3" fill="none" stroke="#8a9db3" stroke-width=".9"/>`
+   +`<text x="${X}" y="78" fill="#8a9db3" font-size="10">0</text>`
+   +`<text x="${X+W}" y="78" fill="#8a9db3" font-size="10" text-anchor="end">必要の2倍</text>`;
+  // ★「必要ちょうど」の境目の線
+  s+=`<line x1="${mid}" y1="40" x2="${mid}" y2="66" stroke="#5ed093" stroke-width="1.6"/>`
+   +`<text x="${mid}" y="37" fill="#5ed093" font-size="10" text-anchor="middle">必要ちょうど</text>`;
+  // ★買った量の塗り（★足りなければ赤／届いていれば緑）
+  if(v.pct!==undefined&&v.pct!==null){
+   const col=short?'#ff9d90':'#5ed093';
+   s+=`<rect x="${X}" y="44" width="${(sc(v.pct)-X).toFixed(1)}" height="18" rx="3" fill="${col}" opacity=".45"/>`
+    +`<text x="${sc(v.pct)}" y="92" fill="#cdeff8" font-size="11" text-anchor="middle"
+      font-family="Oswald">買った量</text>`;
+  }
+  // ★帯の下に「必要な容量」「買った容量」「設備費」「この容量で立つ売上」を並べる（★数字は呼ぶ側が文字列で渡す）
+  const rows=[
+   ['必要な容量', v.need,   '#67d3e8'],
+   ['買った容量', v.bought, short?'#ff9d90':'#5ed093'],
+   ['設備費',     v.fee,    '#f5c14e'],
+   ['この容量で立つ売上', v.rev, '#67d3e8'],
+  ].filter(r=>r[1]!==undefined&&r[1]!==null&&r[1]!=='');
+  let yy=110;
+  rows.forEach(([nm,val,c])=>{
+   s+=`<rect x="${X}" y="${yy}" width="${W}" height="22" rx="5"
+      fill="rgba(103,211,232,.09)" stroke="${c}" stroke-width=".9"/>`
+    +`<text x="${X+10}" y="${yy+15}" fill="#bcccdd" font-size="11">${nm}</text>`
+    +`<text x="${X+W-10}" y="${yy+15}" fill="${c}" font-size="12" font-family="Oswald"
+      text-anchor="end">${val}</text>`;
+   yy+=27;
+  });
+  return `<svg viewBox="0 0 640 ${yy+4}" style="width:100%">${s}</svg>`;
  }
 };
 
