@@ -24,18 +24,6 @@
 img{display:block}
 
 /* ══════════ 器：ウィンドウいっぱいに広げる（★黒い余白を出さない） ══════════ */
-/* ★2026-08-20 に実装。★決定は 2026-08-19（山田様）*/
-/* ★★山田様の決定：「★黒の左右の余白とかをなくして、画面いっぱいのサイズで固定にすればいい」
-     「★情報いっぱいで、縦スクロールもあるのに、横の余分を活用しないってどういうこと？」
-   ★★旧版  ★`#frame` は 1024×768 の固定で、★`transform:scale(--s)` で窓に合わせて縮小・拡大していた。
-     → ★窓の縦横比が 4:3 でないぶんが【黒い余白】として左右に残っていた（★実測は下記）
-   ★★選んだ形  ★【窓幅に合わせて広げる】（★もう1つの案＝「読み込み時に窓を測って固定する」は採らなかった）
-     ★理由：★固定にすると、★窓の大きさを変えたときに黒い余白とはみ出しが【また出る】。
-       ★広げる形にすれば、★余白が出る条件そのものが無くなる。
-       ★かつ `fit()` は元から resize で呼ばれているので、★新しい仕掛けを足さずに済む
-   ★★`--s` は使わなくなった（★JS 側は今も値を入れるが、★どの指定からも参照されない）。
-     ★`--W` / `--H` も参照が0件になったが、★狭い画面の閾値（820×615）と揃えて残す
-   ★★狭い画面（`html.fluid`＝820×615 未満）の道は【1文字も変えていない】 */
 html,body{width:100%;height:100%;overflow:hidden;background:#000}
 body{font-family:var(--sn);font-size:15px;line-height:1.8;color:var(--ink)}
 #fit{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;
@@ -67,11 +55,6 @@ h1,h2,h3,.dp{font-family:var(--dp);font-weight:900;letter-spacing:.03em}
  linear-gradient(180deg,rgba(4,10,18,.78) 0,rgba(4,10,18,0) 15%,rgba(4,10,18,0) 58%,rgba(4,10,18,.66) 100%),
  radial-gradient(80% 72% at 50% 46%,rgba(0,0,0,0) 38%,rgba(3,8,14,.6) 100%),
  linear-gradient(rgba(12,28,48,.26),rgba(12,28,48,.26))}
-/* 秘書の全身立ち絵（背景レイヤ右手前）。無ければ表示されない
-   ★★出るのは【序章の最初の1画面だけ】（★2026-08-19 山田様の決定。★以後は顔だけ。
-     ★隠すボタンは作らない）。★出す条件は `html.firstpage`（★付け外しは ch1.html の paintPane が1箇所で行う）
-   ★★既定を display:none にした（★旧版は常に出ていた ＝ 決定が未実装だった）
-   ★`html.fluid #whole{display:none}`（★資料の縦長表示）は下の方にあり、★あとに書いてあるので勝つ */
 #whole{display:none;position:absolute;right:4px;bottom:var(--INFO);height:68%;max-height:522px;
  width:auto;z-index:3;
  filter:drop-shadow(-7px 6px 12px rgba(0,0,0,.6))}
@@ -105,31 +88,13 @@ html.firstpage #whole{display:block}
 .rival{display:flex;align-items:center;gap:6px;padding:0 11px;flex:0 0 auto;
  border-left:1px solid rgba(0,0,0,.55);box-shadow:1px 0 0 rgba(255,255,255,.14) inset}
 .rival .k{font-size:11px;color:#ffcfc7}
-/* ★グループ見出しの「いくつ選べるか」（→ 03 §57-4）。★見出しより小さく、色を落とす */
 .grpL .gn{margin-left:8px;font-size:10.5px;font-weight:400;opacity:.8;letter-spacing:0}
 .rbar{position:relative;width:92px;height:13px;background:#060f18;border:1px solid #000;overflow:hidden;
  box-shadow:0 0 0 1px rgba(255,255,255,.28),0 1px 3px rgba(0,0,0,.8) inset}
 .rbar i{display:block;height:100%;transition:width .35s;
  background:linear-gradient(180deg,#ffab9e,#e0574a 46%,#8c1e13)}
-/* ★目盛りの重ね掛けをやめた（★2026-08-19。山田様の指摘「赤いの何個ってなんのため？」）。
-   ★6ピクセルごとに黒い線を重ねていたので、★1本のバーが【何個も並んでいる】ように見えていた。
-   ★いまは1本のバーとして、★端に光を1本だけ入れる（→ 03 §57-8） */
 .rbar:after{content:"";position:absolute;inset:0;pointer-events:none;
  box-shadow:0 0 0 1px rgba(255,255,255,.10) inset}
-/* ══════════ ★★他社の力が【満点を超えた年】の見せ方（★2026-08-21。→03 §76-2）══════════
-   ★★出どころ：★山田様の疑問（★なぜきれいに2割ずつ伸びるのか）を調べて出た1件。
-     ★他社は毎年2割ずつ増え（★02 設定8）、★分母（★自社の満点）は動かない
-     → ★★5年目に 103.68% になる（★237.5 × 1.2⁴ ÷ 475。★03 が算術で出し、レビュー役が一致を確かめた）
-   ★★何が問題だったか：★`.rbar` は `overflow:hidden` なので、★★バーは満杯で【黙って止まる】。
-     ★隣の数字は「103%」と出る ＝★★同じ画面の2つの表示が食い違う
-   ★★処置（★★決めたのは 03。★レビュー役の判定＝①盤面は動かさない ②数字は正しい値を出す
-     ★③バーは振り切れていることが分かる形にする）
-     ★1 ★★塗りを縞にする（★★満杯の赤と見分けが付く。★「これ以上入らない」を柄で言う）
-     ★2 ★★右へ出る三角を付ける（★★枠の外に出す＝★★振り切れたことが形で分かる）
-     ★3 ★★`overflow` を戻す（★★三角を枠の外に出すため）
-   ★★この形は【class を1つ足すだけで効く】。★★付け外しは `C.top`（★実装役の持ち物）が行う。
-     ★★03 は class の名前と見え方だけを決めた（★★JS は1文字も書いていない）
-   ★★数字（`#rvp`）は【100%で止めない】：★★止めると嘘になる（★レビュー役の判定②） */
 .rbar.over{overflow:visible}
 .rbar.over>i{width:100%!important;
  background:repeating-linear-gradient(135deg,#ffab9e 0 5px,#8c1e13 5px 10px)}
@@ -166,13 +131,6 @@ html.firstpage .stage{padding-right:208px}
    ★実測：★資料の §7-4 を開いた状態で、★その下の5項目が潰れていた（★HEAD の描画でも同じ） */
 .menu > *{flex:0 0 auto}
 
-/* ★★資料（doc.html）だけ、左メニューの横幅を広げる（★2026-08-19。★山田様の指摘 A4）
-   ★理由：★資料には秘書の立ち絵が無い。★上の右 208px は【立ち絵のための余白】なので、
-     ★資料では丸ごと無駄になり、★そのぶん左メニューが 198px に押し込められていた
-   ★変えたのは【横幅】だけである（★縦スクロールは元から `.menu{overflow-y:auto}` にある）
-   ★構成は変えない：★全体の目次 ＋ 1項目1ページ ＋ ボタンで飛ぶ（★山田様の意向。★1ページに畳まない）
-   ★★clip-path の切り欠き（右 10px）と `.mi{overflow:hidden}` は質感なので残す。
-     ★切り欠きに文字が乗らないよう、★資料側だけ右の余白を 13px → 22px にする */
 html.doc .stage{grid-template-columns:286px 1fr}
 html.doc .mi{padding:5px 22px 5px 15px}
 html.doc .mi .t{font-size:13.5px}
@@ -285,20 +243,6 @@ html.doc .mi .sub{font-size:10.5px}
 .veil{position:absolute;inset:0;z-index:40;display:none;overflow:auto;padding:12px;
  background:rgba(2,6,11,.9)}
 .veil.on{display:block}
-/* ══════════ 決算のモーダル ══════════
-   ★★660px の由来は【どこにも書かれていなかった】（★2026-08-20 に数えた。★対象 記録と ui.css の注記／
-     ★パターン `660`／★注記 0行）。★★1024×768 時代の残骸で、★決定9（画面いっぱい）の追随漏れである
-   ★★実害（→記録 §86）：★第2章の決算で表が 95px はみ出したので実装役が列を1つ落とし、
-     ★★列の並びは1箇所（`CMP_K`）で持っているので【押す前の表からも同じ列が消えた】。
-     ★★消えた列は「5種類の文章に回した量」＝★第2章の骨が一目で見える唯一の列だった
-   ★★処置（★山田様の決定21 の3）★★表を出すときだけ広げる
-     ★`:has()` で、★中に `.cmp3`（比べる表）があるときだけ 820px にする
-     ★★実測  ★第2章の決算の表が要る幅 ★634px（4列）。★実装役の申告では5列で 95px はみ出す ＝
-       ★★5列で要る幅は 約729px。★★820px なら中身の幅は 786px（★820 − 枠2 − 余白32）＝
-       ★★5列でも 57px の余りがある
-     ★★本文の行は長くしない（★上の決定21 の3）：★`.db` の中の文には別に上限を置く（★下の指定）
-   ★★`:has()` が効かない古いブラウザでの落としどころ（★申告）
-     → ★★660px のまま（★いまと同じ）。★表がはみ出す。★★いまより悪くはならない */
 .dlg{max-width:660px;margin:10px auto 16px;overflow:hidden;
  background:linear-gradient(rgba(16,32,50,.99),rgba(6,14,24,.99));
  border:1px solid #000;
@@ -318,14 +262,6 @@ html.doc .mi .sub{font-size:10.5px}
 .db p{margin-bottom:11px;font-size:14px}
 /* ★★モーダル：★表があるときだけ広げる ／ ★本文の行は長くしない（★決定21 の3。★2026-08-20） */
 .dlg:has(.cmp3){max-width:820px}
-/* ★★立ち絵が出ないページ（firstpage 以外）は、モーダルの幅を上げる（★2026-08-22。→記録 §138-7）
-   ★山田様「右に黒い余白があるのに、狭いスペースで上下に移動する。無駄では」
-   ★原因  ★秘書の立ち絵のために右を空けた名残で、★.dlg が 660px のままだった。
-     ★立ち絵が出るのは序章の1ページ目（html.firstpage）だけなので、★それ以外は広げてよい。
-   ★幅  ★760px にした。★理由：★本文の行長は下の .db p{max-width:640px} で別に抑えてあるので
-     ★広げても1行が長くなりすぎない。★かつ図の上限（.db svg{max-width:760px}）にちょうど合う。
-   ★表があるモーダル（.cmp3）は上の 820px を保つため、:not(:has(.cmp3)) で除外する（★決算の表を狭めない）。
-   ★firstpage（序章1ページ目・立ち絵あり）は 660px のまま（★秘書2つは山田様が構わないと判定済み） */
 html:not(.firstpage) .dlg:not(:has(.cmp3)){max-width:760px}
 .db p,.db .note,.db .qt,.db .mline,.db .gg{max-width:640px}
 .db h4{font-family:var(--dp);font-weight:900;font-size:14px;color:var(--amber);margin:20px 0 9px;
@@ -368,15 +304,6 @@ details.cite summary{color:var(--cy);font-size:12px}
 .mline{display:flex;justify-content:space-between;font-size:14px;padding:7px 0;border-bottom:1px solid rgba(255,255,255,.07)}
 .mline b{font-family:var(--nm);font-weight:500}
 
-/* ───── 決算の段2「配分3枚を比べる」（→ 03 §49-2）─────
-   3枚を同じ並びで置いて、選んだ行だけを .me で立てる。
-   狭い画面では1行が縦積みになるので、th を見出し行として扱う */
-/* ★★2026-08-19 山田様の指摘 A5 ── ★3枚の表が右端で途切れて全部読めなかった
-   ★原因は【幅】である：★6列すべて nowrap で、★各セルが「開発費 3,640 億円」のように
-     ★項目名を1つずつ抱えていた（★同じ項目名が3行くり返される）＝★行が器より長くなる
-   ★処置1 ★項目名を【見出しの行に1回だけ】置いた（★セルは数字と単位だけ）。
-     ★行＝カードのままなので、★選んだ行の目印（settle() が付ける tr.me）は1文字も変えていない
-   ★処置2 ★器そのものを広げた（→ ui.css の `.stage`。★立ち絵の余白を序章の1画面だけにした分） */
 .cmp3{width:100%;border-collapse:collapse;margin:10px 0 4px;font-size:12.5px}
 .cmp3 thead th{color:var(--dim2);font-weight:500;font-size:11.5px;white-space:nowrap;
  padding:0 10px 3px 0;border-bottom:1px solid rgba(255,255,255,.14)}
@@ -387,23 +314,6 @@ details.cite summary{color:var(--cy);font-size:12px}
 .cmp3 tr.me{background:rgba(103,211,232,.09)}
 .cmp3 tr.me th{color:#67d3e8}
 .cmp3 .pick{display:none}
-/* ★★目印は【行の幅を食わない形】に変えた（★2026-08-20。★★実装役の実測への処置）
-   ★★何が起きていたか  ★旧版は目印を【行見出しの中に流し込んで】いた（`display:inline;margin-left:8px`）。
-     ★`th{white-space:nowrap}` なので、★★目印が付いた行だけ列が広がり、★表ぜんぶが広くなっていた
-     ★★「★選ぶ前は0px、★選んだ後にはみ出す」という見つけにくい形である
-   ★★実測（★★目印が食う幅。★1件＝表1つ。★`max-content` で「要る幅」を測って引き算した）
-     ★旧版  ★第1章 ★＋83.4px（★5列）／ ★第2章 ★＋119.9px（★4列）
-     ★新版  ★★どちらも ＋0px
-   ★★処置  ★★名前の【下】に絶対配置で置く（★行見出しの箱の外に出すので幅を食わない）
-     ★`top:calc(100% - 4px)` の 4px は【測って決めた】：
-       ★`top:100%` だと ★次の行の字と 2px 重なる（★第1章。★第2章は0px）／
-       ★★4px 引き上げると ★どちらも 0px になる（★6px でも 0px。★4px を採った＝引き上げは最小で足りる）
-   ★★採らなかった案（★どちらも測ってから外した）
-     ✗ ★行の右端に重ねる  → ★幅は0pxだが、★★最後の列の【字】と重なる
-       （★実測 ★第1章 13px ／ ★第2章 21.8px。★★1回目はセルの【箱】と比べて「重なり なし」と誤判定した）
-     ✗ ★目印を記号だけにする  → ★★第2章で ＋15px 食う。★かつ語（「← これを選びました」）が消える
-   ★★字を 10.5px にした（★旧版 11px）。★理由：★名前の下の1行なので、★名前より小さいほうが従属して見える
-   ★★狭い画面（`html.fluid`）は表を縦に積むので、★この指定は当てない（★下で戻す） */
 .cmp3 tr.me th{position:relative}
 .cmp3 tr.me .pick{display:block;position:absolute;left:0;top:calc(100% - 4px);
  margin:0;white-space:nowrap;line-height:1;font-size:10.5px;color:#67d3e8}
@@ -424,32 +334,8 @@ html.fluid .cmp3 td{padding:1px 0 1px 10px}
 .panel.full #pane{display:flex;flex-direction:column;height:100%;min-height:0}
 .panel.full .pc{flex:1;min-height:0;display:flex;flex-direction:column}
 .panel.full .row{flex:0 0 auto;margin-top:12px}
-/* ══════════ 読む欄の1行に上限を入れる（★2026-08-20。★山田様の決定21）══════════
-   ★★決まったこと（3つ）
-     1 ★本文（読む欄）には【幅の上限を入れる】
-     2 ★★表と図は【上限の外】に置く（★横幅を使ってよい）
-     3 ★★決算のモーダル（`.dlg`）は【表を出すときだけ広げる】。★本文の行は長くしない
-   ★★何が起きていたか：★決定9 で器を窓いっぱいにした結果、★広い画面で本文の1行が長くなった
-   ★★上限の値は【測って決めた】（★値そのものは山田様が「②が決める」とされた分）
-     ★実測（★窓 1920×1080。★全角1字を実測した＝15px）
-       ★いま      ★本文の器 1,654px → ★★1行 約110字
-       ★上限 760px → 約51字 ／ ★820px → 約55字 ／ ★900px → 約60字 ／
-       ★1,000px → 約67字 ／ ★1,100px → 約73字
-     ★★採った値 ★★820px（★約55字）。★理由は2つある
-       1 ★★図の上限が既に 760px である（→§63-3 で入れた分）。★★本文の上限を 820px にすると、
-         ★図が本文の幅の中に収まる（★図が本文より狭く見えない）
-       2 ★★決算のモーダルは 626px（★約44字）で読まれてきて、★行の長さの指摘は出ていない。
-         ★★55字はその隣に置ける値である（★110字の半分。★★「読めるか」は判定しない）
-   ★★表と図が上限の外であること（★上の2）
-     ★実測：★3枚を比べる表が要る幅は ★第1章 540px（5列）／★第2章 525px（4列）＝★どちらも 820px 未満。
-       → ★★いまの表は上限に当たらない。★当たるようになったら、その表に上限の外へ出す指定を足す */
 .ibody,.cbody{max-width:820px}
 .ibody{flex:1;min-height:0;overflow-y:auto;padding-right:8px;font-size:15px;line-height:1.98}
-/* ★★序章の図は【行の中の絵】ではなく【1つの塊】として置く（★2026-08-19。★山田様の指摘 A2）
-   ★原因：★図（svg）は本文の途中に直に書かれていて、★既定では行の中に並ぶ要素である。
-     ★line-height 1.98 の行送りの中に高さ 200px 超の絵が入るので、
-     ★前後の本文と図の中の語が重なって読めなくなっていた
-   ★処置：★display:block にして、★上下に自分の余白を持たせる（★図の中身は触っていない） */
 .ibody svg{display:block;width:100%;margin:6px 0 8px}
 /* ★★図の幅に上限を入れた（★2026-08-20。★器を窓いっぱいにした分の後始末）
    ★図は全部 viewBox 640 幅で、★`style="width:100%"` が直に書いてある（★9枚）。
@@ -572,19 +458,6 @@ html.fluid.narrow .menu{max-height:25vh}
 html.fluid .cbody{max-height:none;overflow:visible;padding-right:0}
 /* 操作ボタンは Information バーのすぐ上に張り付かせる。
    本文を切らずに、押すボタンが常に画面内にある状態を保つ */
-/* ★★2026-08-20 ── ★★下のマージンを 0 にした（★旧版は `-14px`）。★実装役の申告への処置
-   ★申告：「★狭い画面では『くわしく知る』のボタンが本文の上に固定で乗るので、
-     ★表の下の行がボタンの下に隠れる。★表を足した分、隠れる行が増えた」
-   ★★現物を測った（★対象 ch2.html のカード画面／★窓 390×844・375×667・360×640／
-     ★上端と下端の2点。★★`.row` の箱と本文側の要素の箱の縦の重なりを px で数えた）
-     ★上端  ★★重なり 33px（★相手は「上がるもの 考える力が上がる」の行）
-     ★下端  ★重なり 0px
-   ★★原因は【下のマージンが負】だったことである：★`margin:14px -12px -14px` の `-14px` が
-     ★器の下の余白に食い込み、★張り付いた帯が本文の箱の上に乗っていた
-   ★★処置は下のマージンを 0 にするだけである（★張り付く仕掛け・位置・帯の見た目は変えていない）
-   ★★あわせて本文の下に余白を入れた：★張り付いた帯の高さぶん（★実測 65px／狭い画面）を
-     ★下に確保して、★★どこまでスクロールしても最後の行が帯の下に来ない形にした
-   ★★横持ち（`side`）は対象外である（★ページごとスクロールする作りなので、元から重なりが出ない） */
 html.fluid .row{position:sticky;bottom:calc(var(--infoH,110px) + 8px);z-index:5;
  margin:14px -12px 0;padding:10px 12px 12px;
  background:linear-gradient(rgba(6,15,26,0),rgba(6,15,26,.97) 34%);
@@ -593,12 +466,6 @@ html.fluid .cbody,html.fluid .ibody{padding-bottom:78px}
 html.fluid.side .cbody,html.fluid.side .ibody{padding-bottom:0}
 
 /* 極端に狭い端末（iPhone SE 幅375など） */
-/* ★★「他社の力」の文字を出す（★2026-08-20 に実装。★山田様の決定6＝2026-08-19）
-   ★旧版  ★`html.fluid.narrow .rival .k{display:none}` の1本で【文字を丸ごと消していた】。
-     ★`.k` は【ラベル「他社の力」と、右の「50%」の両方】に付いている ＝
-     ★狭い画面では【赤いバーだけが並ぶ】状態になっていた（★序章の指摘7 と同じ場所である）
-   ★処置  ★消すのをやめ、★入るように詰める（★字を 10px、★バーを 44px、★左右の余白を 6px）
-   ★★実測（★下記の数字は 03 §63 に記す）：★390px と 375px で上部バーが1行に収まり、はみ出し0件 */
 html.fluid.narrow .rival{padding:0 6px;gap:4px}
 html.fluid.narrow .rival .k{font-size:10px}
 html.fluid.narrow .rbar{width:44px}

@@ -2,6 +2,7 @@
 <html lang="ja">
 <head>
 <meta charset="utf-8">
+<meta name="robots" content="noindex,nofollow,noarchive">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>第1章 ── 1体目を世に出す</title>
 <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Zen+Kaku+Gothic+New:wght@500;700;900&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
@@ -60,32 +61,12 @@
 </div></div><!-- /#frame /#fit -->
 
 <script src="fig.js"></script>
-<!-- ★土台（章をまたぐ条件・決算の枠・カードUIの部品）。→04 §11-1／ch_common.js §B
-     ★読むだけ（実装役の持ち物）。★第1章は「第2章へ」で C.closeYear() ＋ C.save() を呼ぶ -->
 <script src="ch_common.js"></script>
-<!-- ★数値・カード定義・出典（設計役の持ち物）。02_数値設計.md 第28版が正本。
-     fetch ではなく <script> で読む（file:// で fetch できないため。→01 §9・§10） -->
 <script src="ch1.data.js"></script>
 <script>
 /* ══════════ 背景 ══════════ */
-/* ★背景のオフィスは fig.js の部品にした（→ 03 §53-2）。★同じ絵が2箇所にあったのを寄せた分。
-   ★01 §9「共有するのは CSS と絵の部品まで」。★#office は空の器で、ここで流し込む */
 document.getElementById('office').innerHTML=G.office();
-/* ══════════ 序章は intro.html に出した（★2026-08-21。★★山田様の決定10）══════════
-   ★★序章の中身（★図3枚 F ／★10ページ INTRO ／★見出し INTRO_T ／★描画 paintIntro ほか）は
-     ★★`intro.html` に【そのまま】移した。★★1文字も書き換えていない
-   ★★出どころ：★決定10「★序章と第1章を【分ける】／
-     ★第2章以降のどの章からでも序章を開けるボタン」
-   ★★だからこの章は【本編から始まる】。★★場面を分ける印（旧 `S.phase`）は落とした
-   ★★読み返しは `intro.html?from=ch1.html` を開く（★左メニューの「説明をもう一度読む」）
-     ★★戻る先を `?from=` で渡す形は C.openDoc の先例に合わせた（→03 §65-1）
-   ★★秘書の全身（`html.firstpage`）の付け外しも intro.html 側に移った。
-     ★★この章では1度も付かない（★★決定5「全身は序章の1ページ目」） */
 
-/* ══════════ 選択肢 ══════════
-   ★数値・値札・必要人員・出典は ch1.data.js（設計役の持ち物）が持つ。
-     ここに置くのは【文面だけ】である。数字を本文に書くときは、
-     ch1.data.js の値から組み立てる（★2箇所に書くと片方が古くなる。→01 §8-4） */
 const T1=D.card('big'),T2=D.card('data'),T3=D.card('lite');
 const TXT={
 big:{
@@ -115,17 +96,12 @@ hire:{
  note:'<b>5年間で合わせて40名まで</b>。1名につき<b>毎年1億円</b>かかります（雇った年から5年目まで）。早く雇うほど累計の人件費が高くなります。',help:'eval'}
 };
 const A=D.cards.map(c=>Object.assign({},c,TXT[c.id]));
-/* ★左メニューのグループ見出しに添える注記（→ 03 §57-4） */
 const GRPN={'作る':'どれか1枚だけ（AIは作り直せません）','仕上げ':'いくつでも'};
 /* 左メニューの副題も数値から組み立てる */
 function subOf(a){return a.kind==='staff'
  ?`1名 年1億円 ／ 上限 ${a.cap}名`
  :`${D.oku(a.cost)}億円`}
 
-/* ══════════ 解説 ══════════
-   ★「小さく試す」の解説（exp）は削除した。カード自体を落としたため（→02 §3 注3）。
-     GPT-4 が1万分の1の計算量から【損失】を予測した話は、決算のあと（②）に言葉だけで置き、
-     ★数字は「章末の事実」（③）に置く（→01 §4 の一般規則）。settle() を見ること */
 const H={
 dull:{t:'お金をかけても、賢さはあまり伸びない',b:`
  <p>パラメータを増やすと、<b>間違いは減ります。ちゃんと減ります。</b><br>
@@ -321,34 +297,16 @@ let S={used:0,log:[],trained:null,sel:'big',staff:0,assigned:0,dev:0,hireN:10};
 /* ★★2026-08-21：★`phase`・`ip`・`seen` を落とした（★序章が intro.html に出たので誰も読まない）。
    ★★機械で確かめた：★`grep -n "S\.phase\|S\.ip\|S\.seen" ch1.html` が 0件 */
 const yen=n=>n.toLocaleString(),left=()=>TURNS-S.used;
-/* ★資金は残高を持ち回らず、毎回「予算 − 開発費 − 人件費」から出す。
-   人件費は年額なので、第1章では1年目分だけが引かれる（→02 §4-F-3） */
 const fixedCost=()=>S.staff*D.set.staffPay;
 const money=()=>BUDGET-S.dev-fixedCost();
 const freeStaff=()=>S.staff-S.assigned;
 const hireMax=()=>D.set.staffCap-S.staff;
 const costOf=a=>a.kind==='staff'?S.hireN*a.per:a.cost;
 
-/* ══════════ 決算の段2「配分3枚を比べる」（スロット②。→ 03 §49-2）══════════
-   ★第1章の骨：同じ費用でも、配り方で結果が変わる（Chinchilla）。
-   ★数値を1つも本文に書かない。ch1.data.js の値（cost / p / w / ratio / think）から組み立てる。
-   ★選んだ行の目印は settle() が DOM で付ける（文面を2箇所に持たないため）。
-   ★キー名は H と同じ t / b / cite にしてある → 検査.py の対象範囲に自動で入る */
 /* ★★項目名は【1箇所だけ】に置く（★2026-08-19。★指摘 A5 の処置）。
    ★横に広い画面では見出しの行に出し、★縦の狭い画面では各セルの前に出す（→ ui.css の td:before）。
    ★★2箇所に同じ語を書かない（★誤りの型⑥＝片方だけ古くなる） */
 const CMP_K=['開発費','パラメータ','読ませた量','1個あたり','考える力'];
-/* ══════════ 3枚を比べる表 ── ★★土台の部品（C.cmp）に切り替えた（★2026-08-20）══════════
-   ★★記録 §80 の判定2：★表を組む部品は土台（`ch_common.js` §C-2）に置き、★第1〜5章が使う。
-     ★理由：★第3〜5章でも同じ表が要る（★第2章の G25 で同じ型が既に出ている）。
-       ★別々に書くと【同じ表が4箇所】になる（★型⑥が確定する形）
-   ★★この節に残るのは【行の作り方】だけである（★列は CMP_K、★行は ch1.data.js の T1・T2・T3）。
-     ★★表の HTML は土台が持つ。★★見た目は変わらない（★`.cmp3`／`.pick`／`data-k` は同形）
-   ★★列は【5列そのまま】（★山田様の決定3。★伏せない。→記録 §76 の3）
-   ★★数値は ch1.data.js から組む。★html に写しを置かない
-     ★実測の実害：★「見本は5億円」の写しを html に置いたら、残金が5億円ずれた
-   ★★`id="cmp-…"` はもう出ない（★土台の部品が【id を出す口を持たない】）。
-     ★★だから `settle()` の `querySelector('#dlg #cmp-…')` は消した。★目印は `sel` で組み立て時に付く */
 function cmpRows(){
  return [T1,T2,T3].map(c=>({id:c.id, name:c.name, cells:[
   `<b>${yen(c.cost)}</b> 億円`, `<b>${D.oku(c.p)}</b> 億個`, `<b>${D.words(c.w)}</b>`,
@@ -394,7 +352,7 @@ ratio3:{
 
 function why(a){
  if(a.kind==='staff'){
-  if(S.log.includes(a.id))return'済み（この章では雇用は1回だけ）';  /* ★→記録 §138-1。他カードと同じく実施済みを見る */
+  if(S.log.includes(a.id))return'済み（この章では雇用は1回だけ）';
   if(hireMax()<=0)return`これ以上は雇えない（上限${D.set.staffCap}名）`;
   if(costOf(a)>money())return'資金が足りない';
   return null}
@@ -402,10 +360,6 @@ function why(a){
  if(a.kind==='train'&&S.trained)return'AIを作るのは1回だけ';
  if(a.kind==='sft'&&!S.trained)return'先にAIを作る必要がある';
  if(a.staff&&freeStaff()<a.staff)return`人が足りない（${a.staff}名必要）`;
- /* ★「残り時間が足りない」のガードは落とした（★2026-08-19。→ 03 §58-2）。
-    ★理由：★時間の表示をやめた決定（→§57-1）に対する死んだコードである。
-      ★到達しうる全組み合わせで発火0件（★枠4ターン／★最大消費4ターン＝大きく作る3＋見本1）。
-    ★★`ch1.data.js` の `turn` の値は残っている（★設計役の持ち物）。★消したのは【この判定だけ】 */
  if(a.cost>money())return'資金が足りない';
  return null;
 }
@@ -444,24 +398,14 @@ addEventListener('resize',fit);
 addEventListener('orientationchange',fit);
 fit();
 
-/* ★時間の表示はやめた（★2026-08-19。山田様の決定。→ 03 §57-1）。
-   ★理由：★到達しうる全組み合わせで「残り時間が足りない」は0件（★枠4ターン／最大消費4ターン）。
-     ★存在しない制約を画面で説明していた。
-   ★★ch1.data.js の `turn` は消していない（★設計役の持ち物。★表示だけやめた） */
 function paintTop(){
  document.getElementById('cash').textContent=yen(money());
- /* ★他社は【1年に2割】伸びる（設定8）。年の途中では動かない。
-    ★旧実装は 15+ターン×22% でターンごとに伸ばしていた（＝早く出すと得、という
-      設計に無い因果を画面に出していた。→02 §1 の慣性・設定34） */
  const rp=Math.round(D.set.rival0/D.set.full*100);
  document.getElementById('rv').style.width=rp+'%';
  document.getElementById('rvp').textContent=rp+'%';
 }
 function paintMenu(){
  let last='',h='';
- /* ★グループごとに「いくつ選べるか」を常時出す（★2026-08-19。山田様の指摘。→ 03 §57-4）。
-    ★いままでは押したあとに「AIを作るのは1回だけ」と出るだけで、★選ぶ前に分からなかった。
-    ★★grp の名前は ch1.data.js（設計役）が持つので、★ここでは名前に対する注記だけを持つ */
  A.forEach(a=>{
   if(a.grp!==last){h+=`<div class="grpL ol">${a.grp}<span class="gn">${GRPN[a.grp]||''}</span></div>`;last=a.grp}
   const w=why(a),sc=S.sel===a.id,o=sc?'':' ol';
@@ -504,13 +448,8 @@ function paintPane(){
  const stp=a.kind==='staff'?stepper():'';
  const need=a.staff?`<div class="note">この工程には <b>${a.staff}名</b> の人手が要ります。
   いま未配属は <b>${freeStaff()}名</b>です。<b>投じた人はこの工程に固定されます。</b></div>`:'';
- /* ★値札の出どころを画面に出す（→01 §8-1）。正本は ch1.data.js */
  const src=`<details class="cite"><summary>この値札の出どころ</summary>
   ${a.tag}<br>${a.cite}</details>`;
- /* ★★3枚を比べる表を【押す前】に出す（★2026-08-20。★山田様の決定3。→記録 §66 の2・§76 の3）
-    ★出すのは「作る」の3枚だけ（★kind==='train'）。★人を雇う・見本を読ませるは配分の話ではない
-    ★★いま見ているカードの行に目印を付ける（★決算の「← これを選びました」と同じ仕掛け。★語は別）
-    ★★表と見出しは土台の部品（`C.cmpHead` / `C.cmp`）で組む。★★id は出ない（→ 上の cmpRows の注） */
  const cmp=a.kind==='train'
   ?C.cmpHead('3枚を比べる')
    +C.cmp({keys:CMP_K,rows:cmpRows(),sel:a.id,lab:'← いま見ているカード'})
@@ -544,8 +483,6 @@ function ask(id){
     <div class="mline"><span>実行後の合計</span><b>${S.staff+S.hireN} 名 ／ あと雇える ${D.set.staffCap-(S.staff+S.hireN)} 名</b></div>`
   :`<div class="mline"><span>費用</span><b>${yen(cost)} 億円</b></div>`;
  const st=a.staff?`<div class="mline"><span>この工程に固定される人員</span><b>${a.staff} 名</b></div>`:'';
- /* ★人を雇うは【この章に1回だけ】（→記録 §117-5・§138-1）。★押し間違いが取り返せないので、
-    ★実行の前に「1回だけ」と実行後の人数を必ず出す */
  const once=a.kind==='staff'
   ?`<div class="note"><b>この章で人を雇えるのは、この1回だけです。</b>
     実行すると、この章ではもう雇えません。<b>人数はいま決めた ${S.hireN} 名で確定します。</b></div>`:'';
@@ -566,9 +503,7 @@ function exec(id){
  if(a.kind==='staff'){
   S.staff+=S.hireN;
   S.hireN=Math.min(10,Math.max(1,hireMax()));
-  S.log.push(id);   /* ★人を雇うは【1章に1回だけ】（→記録 §117-5・§138-1）。
-                       ★他のカードと同じく「実施済み」になるよう log に積む。
-                       ★id は 'hire'。★settle は 'sft' しか includes しないので干渉しない */
+  S.log.push(id);
  }else{
   S.dev+=a.cost;S.used+=a.turn;S.log.push(id);
   if(a.staff)S.assigned+=a.staff;
@@ -597,11 +532,6 @@ function say(last){
   h+=`学習を始めました。読ませた文章は、パラメータ1個あたり <span class="hl">${r.toFixed(1)}語</span> です。`;
   h+=`<br><span style="color:#bcccdd">この配り方が良かったかは、決算で分かります。</span>`;
  }
- /* ★★時間で出す案内をやめた（★2026-08-19。→ 03 §59）。
-    ★旧  `last&&left()===0` ＝★残りターンで出していたので、★4ターン使った手だけで出ていた
-    ★★かつ「できることは終わりました」は【真ではなかった】：★人を雇う手は最後まで残っている
-    ★新  ★AIを作ったら出す。★条件を「やることが済んだら」に変えて、★断定をやめた
-      → ★★決算に進める条件（左メニューの「1年目を締める」）と同じ条件になった */
  if(last&&S.trained)h+=`<br><span class="hl">やることが済んだら、メニューの一番下の「1年目を締める」へ。</span>`;
  document.getElementById('said').innerHTML=h;
  padStage();
@@ -614,11 +544,6 @@ function pop(k){const d=H[k];if(!d)return;
  const use=d.use?`<div class="use"><div class="uh"><b>★ あなたが今日から使えること</b>
    <span class="utag${d.utag==='導出'?' d':''}">${d.utag||''}</span></div>
    <div class="ub">${d.use}</div></div>`:'';
- /* ★★〔確信度 ${d.cf}〕を落とした（★2026-08-20。★01 §8-1 の条文の (a)）。
-    ★★`H[k].cf` の欄そのものは【残してある】。★描画だけをやめた
-    ★理由：★確信度は自己申告であって、★読む人が確かめる手ではない。
-      ★看板「確かめられるから正しい」を支えているのは【出典（論文名＋節/式/表番号）】である
-    ★★〔【実測】〕の側は確信度ではない（★数値の出どころ）ので、★この処置の対象外である */
  const cite=d.cite?`<details class="cite"><summary>先にこれをやった研究チームが書いていること`
    +`</summary>${d.cite}</details>`:'';
  const ref=d.doc?`<div class="dref" onclick="openDoc('${d.doc}')"
@@ -635,14 +560,6 @@ document.getElementById('veil').onclick=e=>{if(e.target.id==='veil')shut()};
    iframe で入れ子にせず画面遷移する。戻ったときに進行が消えないよう
    sessionStorage に状態を預ける（★ch1.html に初めて入る永続化） */
 function openDoc(anchor){
- /* ★★別タブで開く（★2026-08-19 山田様の指摘 A3）。
-    ★同じタブで遷移していたので、★資料を閉じると本体ごと消え、★戻ると資料側が消えていた
-    ★`window.open` は file:// でも動くので 01 §9（★fetch を使わない・単体で開ける）に反しない
-    ★★`noopener` は付けない：★戻り値が必ず null になり、★下の「塞がれたか」の判定ができない
-    ★塞がれたときだけ、★従来の遷移（sessionStorage に預けて同じタブ）に落とす
-    ★★`?from=ch1.html` を付ける（★2026-08-20。★山田様の指摘 G26）。
-      ★資料側は【来た章】の名前で戻るボタンを出す。★塞がれて同じタブで開いたときに効く
-      ★★別タブで開けた場合は opener があるので、★資料側は from を見ずに元のタブへ戻す */
  const url='doc.html?from=ch1.html'+(anchor||'');
  const w = window.open(url, '_blank');
  if(w){ try{ w.focus() }catch(e){} return }
@@ -657,12 +574,6 @@ function restore(){
 }
 addEventListener('keydown',e=>{if(e.key==='Escape')shut()});
 
-/* ══════════ 決算（02 §1）══════════
-   ★第1章には売値が無い（売値は第3章から）。だから売上・運用費・魅力・シェアは
-     この章では計算しない。出すのは 5本のバー／出荷判定／使ったお金／人員／予告。
-     → 01 §4 の H「1〜2年目はシェア0%・赤字だけになるので、バーだけ見せる」
-   ★旧実装は 反応＝考える力×40＋指示に従う×7、4ターン到達で ×0.85 だった。
-     どちらも設計に無い（追加調達は無い＝設定2。他社は年単位＝設定8）。落とした */
 function settle(){
  if(!S.trained){pop('dull');return}
  const c=S.trained;
@@ -740,8 +651,6 @@ function settle(){
    <div class="mline"><span>開発費</span><b>${yen(R.dev)} 億円</b></div>
    <div class="mline"><span>人件費（1年目）</span><b>${yen(R.fixed)} 億円（${S.staff}名）</b></div>
    <div class="mline"><span>予算の残り</span><b>${yen(R.left)} 億円</b></div>
-   <!-- ★★語と断りの正本は 03 §74-2（★★「資金」は現金残高ではない。★予算の残りである）。
-        ★★第1章は売上が0なので、★この数は全額が次の年に残る。★★それでも語は5章で1つに揃える -->
    <div class="note">${D.oku(D.set.budget)}億円のうち、まだ使っていない分です。<br>
     <b>追加の出資はありません。</b>この残りが、あと4年ぶんの全部です。<br>
     今年は年度末に出したところなので、<b>売上はまだ立ちません。</b>値段を決めるのは第3章です。<br>
@@ -809,16 +718,6 @@ function settle(){
       ★表だけを外に出すと段2 が2箇所に散る（★型⑥の形そのもの） */
 }
 
-/* ══════════ 第2章へ引き渡す（ch_common.js §B の手順）══════════
-   ★§B の指定は2行：C.closeYear(D,R,run); C.save(run); location.href='ch2.html';
-   ★closeYear が run に焼くもの  5本のバー／支出／累計利益／設定9 の倍率／救済／ログ
-   ★closeYear が【焼かないもの】は、こちらで run に入れる：
-       pick（選んだ作り方）／sft（見本を読ませたか）／tokensB・paramsOku（第2章の配合の分母）／
-       staff・assigned（人員の通期の枠）
-   ★tokensB の単位は【B】である（ch2.data.js の注記「ch1.data.js の w ÷ 10」）。
-     ★3,000億語 → 300B。★ここで単位を間違えると第2章の配合の分母がずれる
-   ★★closeYear() は D.ch・D.year を読む。★ch1.data.js は 2026-08-19 に `ch:1, year:1` を持った
-     （★設計役が入れた。★それまでは呼ぶ側で添えていた。★添え物は落とした＝★型⑥の残骸を作らない） */
 function toCh2(){
  const c=S.trained; if(!c){pop('dull');return}
  const sft=S.log.includes('sft');

@@ -1,12 +1,8 @@
 <!DOCTYPE html>
-<!-- ★★`class="doc"` は【資料の側だけに効く指定】の取っ手である（★2026-08-19。★山田様の指摘 A4）。
-     ★資料には秘書の立ち絵が無いので、★ゲーム用に空けてある右 208px が【そのまま無駄な余白】になり、
-     ★左メニューの横幅を 198px に押し込めていた。★ui.css の `html.doc .stage` で広げる。
-     ★★構成は変えない（★全体の目次 ＋ 1項目1ページ ＋ ボタンで飛ぶ。★山田様の意向）
-     ★fit() が付ける fluid / narrow / side とは別で、★こちらは静的である -->
 <html lang="ja" class="doc">
 <head>
 <meta charset="utf-8">
+<meta name="robots" content="noindex,nofollow,noarchive">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>AIの原理 ── 原論文で確かめる</title>
 <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Zen+Kaku+Gothic+New:wght@500;700;900&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
@@ -21,9 +17,6 @@
 <img id="bgimg" src="assets/bg_office.png" alt="" onerror="this.remove()">
 <img id="bgimg2" src="assets/bg_office_portrait.png" alt="" onerror="this.remove()">
 <div id="grade"></div>
-<!-- ★秘書の全身立ち絵は【置かない】（★2026-08-19 山田様の決定。★全身は序章の最初の1画面だけ）。
-     ★資料は序章ではないので、★顔（Information の胸像）だけにする。
-     ★空いた右の場所は本文と左メニューに回した（★指摘 A4。→ ui.css の `html.doc .stage`） -->
 
 <!-- ══════════ 上部バー。ゲームと同じ形。中身だけ資料用に差し替える ══════════ -->
 <div class="topbar">
@@ -75,7 +68,6 @@
 
 /* ══════════ 図 ══════════ */
 
-/* ★線の束は fig.js の G.wire() に移した（★2026-08-18。★案B。→03 §47-9） */
 
 const FIG={
 
@@ -2413,28 +2405,6 @@ const WIP=[
 /* open＝いま開いている grp。null なら全部閉じる（初期は読んでいる節のグループだけ開く） */
 let S={i:0,seen:[0],open:null};
 
-/* ══════════ ゲームへ戻る ══════════
-   ★★2026-08-19 山田様の指摘 A3 ── ★資料は【別タブ】で開くようにした（ch1.html の openDoc）。
-   ★だから「第1章にもどる」で `location.href='ch1.html'` を踏むと、
-     ★このタブに【まっさらな第1章】が開き、★進行を持っている元のタブと2つになる。
-   ★★別タブで開かれた場合（★opener がいる）は、★元のタブに焦点を戻してこのタブを閉じる。
-   ★同じタブで来た場合（★window.open が塞がれたときの落としどころ）は、★従来どおり遷移する
-
-   ★★2026-08-20 山田様の指摘 G26 ── ★★「2章から飛んだら第1章に戻るボタンしかないから2章に戻れない」
-   ★★現物を読んだ結果  ★★戻る【動き】は第2章からでも正しかった（★opener に焦点を戻して閉じるので、
-     ★進行を持ったタブにそのまま戻る）。★★壊れていたのは【ボタンの文字】だけである。
-     ★★「第1章にもどる」と書いてあるので、★第2章の人には「第1章へ行かされる」と読める
-   ★★処置  ★★文字を、実際に起きることに合わせる
-     ・★別タブで来た（opener がいる）→ ★★「ゲームにもどる」（★どの章から来ても正しい）
-     ・★同じタブで来た（opener がいない）→ ★★来た章の名前で出す。★来た章の見分け方は下の3段である
-   ★★来た章の見分け方（★上から順に。★見分けられなければ第1章に落とす）
-     1 ★`?from=chN.html`（★ch1.html の openDoc が付ける。★これがいちばん確実である）
-     2 ★`document.referrer`（★file:// では空になることが多い。★保険として見る）
-     3 ★どちらも無ければ `ch1.html`（★資料を直接開いた人はこれでよい）
-   ★★localStorage の保存は【読まない】。★理由：★保存の形は `ch_common.js`（実装役）の持ち物であり、
-     ★形が変わったときに資料側が黙って壊れる（★誤りの型⑥がファイルをまたぐ形になる）
-   ★★申し送り  ★`ch_common.js` の openDoc（★第2章以降が使う側）に `?from=` を足すと、
-     ★★「塞がれて同じタブで開いた」場合も来た章に戻れる。★★これは実装役の持ち物である */
 const BACK=(function(){
  const q  =(location.search.match(/[?&]from=(ch\d+)\.html/)||[])[1];
  const ref=(document.referrer.match(/(ch\d+)\.html/)||[])[1];
@@ -2487,8 +2457,6 @@ function paintMenu(){
     開いているグループ（S.open）の節だけを中に出す。見出しを押すと開閉する */
  /* ★見出しは固定文字列をやめ、各節の grp でグループ分けする（2026-08-18 76節化）。
     grp の並び順は SEC の中で最初に出てきた順。同じ grp の節が離れていても1つに束ねる */
- /* ★★版の断り（★2026-08-19。★出典の中の「版は未確認」74箇所をここ1行に畳んだ。→ 03 §54-2）
-    ★理由：★読者に意味のない内部の語を74回出していた。★情報は入口の1行で保てる */
  let h='<div class="grpL ol" style="opacity:.75;font-weight:400;line-height:1.5">'
   +'論文の改訂版のどれを読んだかまでは確認していません</div>';
  const ORD=[]; const BY={};
@@ -2531,19 +2499,6 @@ function shut(){document.getElementById('veil').classList.remove('on')}
 document.getElementById('veil').onclick=e=>{if(e.target.id==='veil')shut()};
 
 function paintPane(){
- /* ★★節見出しのタグから〔確信度〕を落とした（★2026-08-20。★01 §8-1 の条文の (a)）。
-    ★左メニューの副題（★旧「確信度 ◎」）も同じ回に落とした。★どちらも76節ぜんぶに出ていた
-    ★★`SEC[].cf` の欄そのものは【残してある】。★描画だけをやめた
-    ★★落としていないもの（★条文の (b)。★★2026-08-20 に【残す】と決まった。★★山田様の決定20）
-      ・★§7-4 の「★原典の留保」の中の「だからこの節の確信度は ◎ ではなく ○ です」
-      ・★第1部のまとめの表の列見出し（「主張／確信度／種別」）
-      ・★§3-4「平均へ流れる機構」の表の列見出し（★この節は「確信度が違う」が主題である）
-      ★★理由：★★(b) を落とすと §3-4 が何を言う節か分からなくなる。★★だから今後も触らない
-      ★★数え方：★★(b) は【3箇所だが5行】である（★§7-4 が1行／★第1部のまとめが2行／★§3-4 が2行）。
-        ★★「5件」と書くと次の役が2件多く探す
-      ★★山田様の判断待ちは【0件】になった（★旧版はここに「判断待ち」と書いていた）
-    ★★落としていないもの（★条文の (c)。★語義が別）
-      ・★較正の節の「★高い確信度で誤答します」ほか ＝★AIの出力の自信の高さであって、出典の印ではない */
  const s=SEC[S.i];
  document.querySelector('.panel').classList.add('full');
  document.getElementById('pane').innerHTML=`
@@ -2573,7 +2528,6 @@ function say(){
   `<span class="lbl">AI秘書・鳥居 麻衣</span><br>${SEC[S.i].mai}`;
  padStage();
 }
-/* ★節の中から別の節へ飛ぶ（★id で指す。★→ 03 §51-5。★反論が別の節にある箇所を繋ぐため） */
 function goId(id){const i=SEC.findIndex(s=>s.id===id);if(i>=0)go(i)}
 function go(i){
  if(i<0||i>=SEC.length)return;
