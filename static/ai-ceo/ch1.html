@@ -352,7 +352,7 @@ ratio3:{
 
 function why(a){
  if(a.kind==='staff'){
-  if(S.log.includes(a.id))return'済み（この章では雇用は1回だけ）';
+  if(S.log.includes(a.id))return'済み（この章では雇用は1回だけ）';  /* ★。他カードと同じく実施済みを見る */
   if(hireMax()<=0)return`これ以上は雇えない（上限${D.set.staffCap}名）`;
   if(costOf(a)>money())return'資金が足りない';
   return null}
@@ -503,7 +503,9 @@ function exec(id){
  if(a.kind==='staff'){
   S.staff+=S.hireN;
   S.hireN=Math.min(10,Math.max(1,hireMax()));
-  S.log.push(id);
+  S.log.push(id);   /* ★人を雇うは【1章に1回だけ】。
+                       ★他のカードと同じく「実施済み」になるよう log に積む。
+                       ★id は 'hire'。★settle は 'sft' しか includes しないので干渉しない */
  }else{
   S.dev+=a.cost;S.used+=a.turn;S.log.push(id);
   if(a.staff)S.assigned+=a.staff;
@@ -651,6 +653,8 @@ function settle(){
    <div class="mline"><span>開発費</span><b>${yen(R.dev)} 億円</b></div>
    <div class="mline"><span>人件費（1年目）</span><b>${yen(R.fixed)} 億円（${S.staff}名）</b></div>
    <div class="mline"><span>予算の残り</span><b>${yen(R.left)} 億円</b></div>
+   <!-- ★★語と断りの正本は （★★「資金」は現金残高ではない。★予算の残りである）。
+        ★★第1章は売上が0なので、★この数は全額が次の年に残る。★★それでも語は5章で1つに揃える -->
    <div class="note">${D.oku(D.set.budget)}億円のうち、まだ使っていない分です。<br>
     <b>追加の出資はありません。</b>この残りが、あと4年ぶんの全部です。<br>
     今年は年度末に出したところなので、<b>売上はまだ立ちません。</b>値段を決めるのは第3章です。<br>

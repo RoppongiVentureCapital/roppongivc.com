@@ -123,6 +123,71 @@ rlvr:(base,ver,gold)=>{
  <rect x="${X}" y="176" width="${W}" height="${H}" rx="2" fill="none" stroke="rgba(255,255,255,.18)"/>
  ${legend}
  <text x="10" y="306" fill="#f5c14e" font-size="12">人を増やすのではなく、取り合っています</text>
+</svg>`},
+
+hire:()=>{
+ const cap=D.set.staffCap, verMax=D.card('rlvr').staffMax, gold=D.card('gold').staff;
+ const both=verMax+gold, X=118, W=502, H=17;
+ const w=n=>+(W*n/cap).toFixed(1);
+ const segs=[[verMax,'#5ed093','検証器の基準づくり（上限）'],
+             [gold,  '#f5c14e','人の模範解答を書く']];
+ let x=X, bars='';
+ segs.forEach(([n,c])=>{const ww=w(n);
+  bars+=`<rect x="${x}" y="34" width="${ww}" height="${H}" rx="2" fill="${c}"
+   stroke="rgba(0,0,0,.35)" stroke-width=".6"/>`; x+=ww});
+ const legend=segs.map(([n,c,lab],i)=>
+  `<rect x="10" y="${64+i*22}" width="9" height="9" fill="${c}"/>
+   <text x="24" y="${73+i*22}" fill="#bcccdd" font-size="10.5">${lab}</text>
+   <text x="330" y="${73+i*22}" fill="#f4f8fc" font-family="Oswald" font-size="11"
+    text-anchor="end">${n}</text>
+   <text x="336" y="${73+i*22}" fill="#8a9db3" font-size="10.5">名</text>`).join('');
+ return `<svg viewBox="0 0 640 158" style="width:100%">
+ <text x="10" y="14" fill="#bcccdd" font-size="12">今年その人を回せる先は、2つです（同じ目盛りは5年ぶんの枠 ${cap}名）</text>
+ ${bars}
+ <rect x="${X}" y="34" width="${W}" height="${H}" rx="2" fill="none" stroke="rgba(255,255,255,.18)"/>
+ <text x="${X+W}" y="30" fill="#8a9db3" font-size="9.5" text-anchor="end">枠 ${cap}名</text>
+ ${legend}
+ <text x="10" y="130" fill="#c9f2dc" font-size="10.5">2つとも上限まで回すと、合わせて ${both}名 です</text>
+ <text x="10" y="152" fill="#f5c14e" font-size="12">2つとも取ると、それだけで枠を使います</text>
+</svg>`},
+
+gold:()=>{
+ const g=D.card('gold'), up=g.obey, dn=Math.abs(g.think);
+ const MID=320, SCALE=9.5, y0=54;                 // ★中央線 ＝ 増減0（右が増・左が減）
+ const bar=(y,v,col)=>{const len=Math.abs(v)*SCALE, x0=v>=0?MID:MID-len;
+  return `<rect x="${x0}" y="${y}" width="${len.toFixed(1)}" height="14" rx="2" fill="${col}"
+   stroke="rgba(0,0,0,.35)" stroke-width=".6"/>`};
+ return `<svg viewBox="0 0 640 152" style="width:100%">
+ <text x="10" y="14" fill="#bcccdd" font-size="12">指示に従うは上がり、考える力は下がります</text>
+ <rect x="10" y="${y0}" width="9" height="9" fill="#5ed093"/>
+ <text x="24" y="${y0+9}" fill="#c9f2dc" font-size="10.5">指示に従う</text>
+ ${bar(y0-2,up,'#5ed093')}
+ <text x="${MID+up*SCALE+8}" y="${y0+9}" fill="#c9f2dc" font-family="Oswald" font-size="11.5">＋${up}</text>
+ <rect x="10" y="${y0+38}" width="9" height="9" fill="#67d3e8"/>
+ <text x="24" y="${y0+47}" fill="#cfe0f0" font-size="10.5">考える力</text>
+ ${bar(y0+36,-dn,'#67d3e8')}
+ <text x="${MID-dn*SCALE-8}" y="${y0+47}" fill="#cfe0f0" font-family="Oswald" font-size="11.5"
+  text-anchor="end">−${dn}</text>
+ <line x1="${MID}" y1="${y0-8}" x2="${MID}" y2="${y0+52}" stroke="#7590a8" stroke-dasharray="3 3"/>
+ <text x="${MID}" y="${y0+70}" fill="#8a9db3" font-size="9.5" text-anchor="middle">← 減　│　増 →</text>
+ <text x="10" y="146" fill="#8a9db3" font-size="10.5">この2つは、同じ論文の中で両方とも測られています</text>
+</svg>`},
+
+risk:()=>{
+ const ng=V.safeNG(), gain=V.capUp();             // ★境目＝safeNG／上限の上がり＝capUp（→data cap 式）
+ const X=118, W=340, H=17, base=(W*0.7);
+ return `<svg viewBox="0 0 640 152" style="width:100%">
+ <text x="10" y="14" fill="#bcccdd" font-size="12">安全が許すシェアの上限を、作る／作らないで並べます</text>
+ <text x="10" y="46" fill="#8a9db3" font-size="10.5">作らない</text>
+ <rect x="${X}" y="34" width="${base.toFixed(1)}" height="${H}" rx="2" fill="#4a5a6b"
+  stroke="rgba(0,0,0,.35)" stroke-width=".6"/>
+ <text x="10" y="80" fill="#c9f2dc" font-size="10.5">作る</text>
+ <rect x="${X}" y="68" width="${(base+gain*3.4).toFixed(1)}" height="${H}" rx="2" fill="#5ed093"
+  stroke="rgba(0,0,0,.35)" stroke-width=".6"/>
+ <line x1="${X+base}" y1="30" x2="${X+base}" y2="90" stroke="#7590a8" stroke-dasharray="3 3"/>
+ <text x="${X+base+4}" y="104" fill="#a9e8c4" font-size="9.5">＋${gain} 上がる</text>
+ <text x="10" y="130" fill="#ff9d90" font-size="10.5">ただし安全が ${ng} 以下だと、作っても上限は 0% のままです</text>
+ <text x="10" y="148" fill="#f5c14e" font-size="12">安全が許すシェアの上限が ${gain} 上がります</text>
 </svg>`}
 };
 
@@ -138,8 +203,6 @@ const RUN=Object.assign({},C.RUN0,C.carry({},HAND));
 Object.assign(RUN,{year:D.year, from:3, verifier:0, gold:false, risk:false,
                    capacity:0, log:RUN.log||[]});
 C.run=RUN;
-/* ★★章に入った時点で【すでに工程に固定されている人数】（★第1章の見本＋第3章の好み訓練）。
-   ★★この章の配属はこれに足す（★上書きしない）。★理由：★人員は通期の枠である */
 const ASSIGNED0=RUN.assigned||0;
 const STAFF0=RUN.staff||0;          // ★章に入った時点で雇っていた人数（★今年雇った分を出すため）
 
@@ -303,9 +366,8 @@ risk:{
 equip:{
  lead:`設備の話は、去年から続いています。仕組みは去年と同じです。<br>
        人に使ってもらうには、答えを返す設備が要ります。`,
- def:`設備は<b>その年に捌く回数ぶん</b>を、毎年買います。去年買った分は今年には残りません。<br>
-      <b>買わないと、1回も捌けません。製品があっても、その年の売上は0です。</b><br>
-      <b>買いすぎた分は、その年で消えます。</b>翌年に持ち越せません。<br><br>
+ def:`去年買った分は今年には残りません。<br>
+      翌年に持ち越せません。<br><br>
       <span class="em">今年から1つ変わります。</span><br>
       「正誤で鍛える」を押すと、答えるまでに書く量が増えます。<br>
       書く量が増えると、1回あたりの電気代が上がります。ここまでは去年と同じ話です。<br>
@@ -329,7 +391,6 @@ equip:{
 
 function H(id){return {
 rlvr:{t:A.name,b:`
- <div class="fig">${F.rlvr(ASSIGNED0,RUN.verifier,RUN.gold?B.staff:0)}</div>
  <p>点は、答えが合っているかどうかだけで付きます。人の好みは入りません。<br>
  同じ問題に何通りも答えさせて、その中で良い側に寄せていきます。</p>
  <p>成績は大きく変わりました。生の数字は章末に出します。<br>
@@ -462,7 +523,6 @@ let S={phase:'intro',ip:0,seen:[0],sel:'hire',hireN:10,
         hired:false,
         rlvr:null,verN:10,gold:null,risk:null,equip:null};
 let lastSay=null;
-/* ★★人員。★この章の配属は ASSIGNED0 に足す（★上書きしない） */
 const usedHere=()=>RUN.verifier+(RUN.gold?B.staff:0);
 const freeNow =()=>RUN.staff-ASSIGNED0-usedHere();      // ★まだ工程に回せる人数
 const verMax  =()=>Math.min(A.staffMax,RUN.verifier+freeNow());
@@ -628,6 +688,11 @@ function paintPane(){
   <div class="pc"><div class="cbody">
    <p class="lead">${t.lead}</p>
    <div class="def">${t.def}</div>
+   ${c.id==='hire'?`<div class="fig">${F.hire()}</div>`
+    :c.id==='gold'?`<div class="fig">${F.gold()}</div>`
+    :c.id==='risk'?`<div class="fig">${F.risk()}</div>`
+    :c.id==='rlvr'?`<div class="fig">${F.rlvr(ASSIGNED0,RUN.verifier,RUN.gold?B.staff:0)}</div>`
+    :c.id==='equip'?equipFig():''}
    <div class="note">${t.note}</div>
    ${body}
    ${C.src(c.tag,c.cite)}
@@ -649,8 +714,6 @@ function riskBox(){
  </div>`;
 }
 
-/* ★★検証器に回す人数を決める欄（★「回す」を選んだときだけ出す。★0〜30名の連続量）
-   ★★人数の上限は【上限30名】と【まだ回せる人数】の小さい側である */
 function verBox(){
  if(S.rlvr!=='on')return '';
  const mx=verMax(), n=RUN.verifier;
@@ -691,6 +754,24 @@ function capBox(){
  </div>`;
 }
 function setCap(v){RUN.capacity=Math.max(0,v);paintTop();paintMenu();paintPane();say('equip')}
+/* ★★設備の図（層1）── ★fig.js の G.equip を呼ぶだけ（★図の本体は html に写さない＝検査2）。
+   ★★渡す値は capBox() が使っているものと同じ（needCap()・RUN.capacity・equipY()・times()・D.oku()）。
+   ★★★need が 0 の年は【描かない】（★capBox() と同じ抜け道。★pct の0除算を作らない）。
+   ★★買う量が決まっていない間（S.equip!=='buy'）は pct・bought・fee・rev を【渡さない】。 */
+function equipFig(){
+ if(!equipOpen())return '';
+ const need=needCap(); if(need<=0)return '';
+ const v={need:times(need)};
+ if(S.equip==='buy'){
+  const cap=RUN.capacity;
+  const R=D.settle(C.stFor(D,RUN,{capacity:cap}));
+  v.pct=cap/need*100;
+  v.bought=times(cap);
+  v.fee=D.oku(Math.round(equipY()))+' 億円';
+  v.rev=D.oku(Math.round(R.rev))+' 億円';
+ }
+ return `<div class="fig">${G.equip(v)}</div>`;
+}
 function setVer(n){
  RUN.verifier=Math.max(0,Math.min(verMax(),n));
  RUN.rlvr=RUN.verifier>0;
@@ -905,8 +986,6 @@ function settle(){
  C.dlg(C.settleFrame({title:'第4章 決算',head:T.head,
   s1,s2:C.mai(T.s2(R)+'<br><br>'+SET.fore,'#67d3e8'),
   s3label:T.s3label,s3:T.s3,s4:T.s4,tail}));
- /* ★年を閉じて次章へ渡す（★土台が持つ）。
-    ★★RLVR の有無は第5章が読む。★run に焼いてから閉じる */
  RUN.rlvr=R.rlvr; RUN.verifier=R.verifier;
  C.closeYear(D,R,RUN);
  C.run=RUN;

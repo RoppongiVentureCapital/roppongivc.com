@@ -88,7 +88,79 @@ temp:()=>`<svg viewBox="0 0 640 250" style="width:100%">
  <text x="10" y="200" fill="#c9f2dc" font-size="11.5">上げた場合　　答えがばらつくので、多かった答えを採れます</text>
  <text x="10" y="222" fill="#ff9d90" font-size="11.5">上げた場合　　1回だけ引いたときの正確さは落ちます</text>
  <text x="10" y="244" fill="#f5c14e" font-size="12">温度は、ばらつきを決める設定です。創造性の設定ではありません</text>
-</svg>`
+</svg>`,
+
+cot:()=>`<svg viewBox="0 0 640 236" style="width:100%">
+ <text x="10" y="14" fill="#bcccdd" font-size="12">効かなかった試しと、効く形</text>
+ ${G.box(10,26,300,140,'#e0574a')}
+ <text x="24" y="46" fill="#ff9d90" font-size="11.5">効かなかった試し</text>
+ <text x="24" y="72" fill="#c9f2dc" font-size="10.5">同じ文字数だけ点（…）を出させる</text>
+ <text x="24" y="96" fill="#c9f2dc" font-size="10.5">式だけを書かせる（言葉なし）</text>
+ <text x="24" y="120" fill="#c9f2dc" font-size="10.5">答えを出した後で途中を書かせる</text>
+ <text x="24" y="150" fill="#8a9db3" font-size="10.5">どれも正答率は上がりませんでした</text>
+ ${G.box(330,26,300,140,'#5ed093')}
+ <text x="344" y="46" fill="#a9e8c4" font-size="11.5">効く形</text>
+ <text x="344" y="76" fill="#c9f2dc" font-size="11">言葉で</text>
+ <text x="344" y="102" fill="#c9f2dc" font-size="11">答えより前に</text>
+ <text x="344" y="128" fill="#c9f2dc" font-size="11">順番に書かせる</text>
+ <text x="344" y="156" fill="#a9e8c4" font-size="10.5">考える力 ＋${V.cotUp()}（1回の費用は ${V.cotMul()}）</text>
+ <line x1="10" y1="182" x2="630" y2="182" stroke="#7590a8" stroke-dasharray="4 4"/>
+ <text x="10" y="230" fill="#f5c14e" font-size="12">言葉で・答えより前に・順番に書かせることが要ります</text>
+</svg>`,
+
+few:()=>{
+ const up=V.fewUp();                       // ★＋10 または −10（盤面の rlvr で決まる）
+ const good=!RUN.rlvr;                      // ★人を回さなかった年は効く側
+ return `<svg viewBox="0 0 640 220" style="width:100%">
+ <text x="10" y="14" fill="#bcccdd" font-size="12">同じ「例を見せる」が、去年の選び方で逆を向きます</text>
+ ${G.box(10,30,300,120,good?'#5ed093':'#4a5a6b')}
+ <text x="24" y="52" fill="${good?'#a9e8c4':'#8a9db3'}" font-size="11.5">検証器に人を回さなかった道</text>
+ <text x="24" y="82" fill="#c9f2dc" font-size="11">例を見せると成績が上がります</text>
+ <text x="24" y="118" fill="${good?'#a9e8c4':'#8a9db3'}" font-family="Oswald" font-size="13">考える力 ＋10</text>
+ ${G.box(330,30,300,120,good?'#4a5a6b':'#e0574a')}
+ <text x="344" y="52" fill="${good?'#8a9db3':'#ff9d90'}" font-size="11.5">検証器に人を回した道</text>
+ <text x="344" y="82" fill="#c9f2dc" font-size="11">例を見せないほうが成績が良くなります</text>
+ <text x="344" y="118" fill="${good?'#8a9db3':'#ff9d90'}" font-family="Oswald" font-size="13">考える力 −10</text>
+ <text x="10" y="176" fill="#8a9db3" font-size="10.5">いまのあなたは ${good?'左':'右'} の側です（考える力 ${up>0?'＋':'−'}${Math.abs(up)}）</text>
+ <text x="10" y="212" fill="#f5c14e" font-size="12">効果が ＋10 から −10 に反転します（AIの中身は変わりません）</text>
+</svg>`},
+
+tool:()=>`<svg viewBox="0 0 640 206" style="width:100%">
+ <text x="10" y="14" fill="#bcccdd" font-size="12">道具は、AIの外側に付けます</text>
+ ${G.box(10,28,180,96,'#67d3e8')}
+ ${G.man(70,110,.9,'#8fd8f0')}
+ <text x="100" y="52" fill="#8fd8f0" font-size="11.5" text-anchor="middle">AI</text>
+ <text x="220" y="80" fill="#8a9db3" font-size="16">→</text>
+ ${G.box(260,28,180,96,'#5ed093')}
+ <text x="350" y="60" fill="#a9e8c4" font-size="11.5" text-anchor="middle">電卓・検索</text>
+ <text x="350" y="88" fill="#c9f2dc" font-size="10.5" text-anchor="middle">計算の間違いを正す</text>
+ <text x="470" y="60" fill="#c9f2dc" font-size="11">考える力 ＋${V.toolUp()}</text>
+ <text x="470" y="86" fill="#c9f2dc" font-size="11">1回の費用 ${V.toolMul()}</text>
+ <text x="470" y="112" fill="#8a9db3" font-size="9.5">（使うたびに払う代金）</text>
+ <line x1="10" y1="142" x2="630" y2="142" stroke="#7590a8" stroke-dasharray="4 4"/>
+ <text x="10" y="164" fill="#8a9db3" font-size="10.5">＋${V.toolUp()} はこのゲームが置いた値です。論文から取った数ではありません</text>
+ <text x="10" y="198" fill="#f5c14e" font-size="12">使えるかは、AIの賢さではなく、外側に何を付けたかで決まります</text>
+</svg>`,
+
+maj:()=>{
+ const M=Math.max(1,Math.min(100,V.majMin()));     // ★下限（目盛りの位置に使う）
+ const X0=150, W=460, mx=X0+W*M/100;
+ return `<svg viewBox="0 0 640 214" style="width:100%">
+ <text x="10" y="14" fill="#bcccdd" font-size="12">答えの幅が下限に届かないと、多数決は効きません</text>
+ <text x="10" y="46" fill="#cfe0f0" font-size="10.5">答えの幅</text>
+ <rect x="${X0}" y="34" width="${W}" height="14" rx="2" fill="rgba(103,211,232,.12)"
+   stroke="rgba(255,255,255,.18)"/>
+ <line x1="${mx.toFixed(1)}" y1="26" x2="${mx.toFixed(1)}" y2="56" stroke="#f5c14e" stroke-dasharray="3 3"/>
+ <text x="${mx.toFixed(1)}" y="72" fill="#f5c14e" font-size="9.5" text-anchor="middle">下限 ${V.majMin()}</text>
+ <text x="${X0}" y="72" fill="#8a9db3" font-size="9.5">← 効かない</text>
+ <text x="${(X0+W).toFixed(1)}" y="72" fill="#8a9db3" font-size="9.5" text-anchor="end">効く →</text>
+ <line x1="10" y1="90" x2="630" y2="90" stroke="#7590a8" stroke-dasharray="4 4"/>
+ <text x="10" y="112" fill="#bcccdd" font-size="12">効く場合、引く回数だけ費用が上がります</text>
+ <text x="10" y="138" fill="#c9f2dc" font-size="11">同じ問いを ${V.majK()}回 引いて、多かった答えを採ります</text>
+ <text x="10" y="162" fill="#c9f2dc" font-size="11">確かめたい一部の利用だけ費用が上がり、全体の平均は ${V.majMul()} になります</text>
+ <text x="10" y="186" fill="#a9e8c4" font-family="Oswald" font-size="12">考える力 ＋${V.majUp()}</text>
+ <text x="10" y="210" fill="#f5c14e" font-size="12">下限に届かないと効かず、引く回数だけ費用が上がります</text>
+</svg>`}
 };
 
 /* ══════════════════════════════════════════════════════════════════════════
@@ -107,7 +179,6 @@ const CD=D.card('cot'), FW=D.card('few'), TL=D.card('tool'),
 const V={
  cotUp   :()=>CD.think,                 // {CoTの効果}
  cotMul  :()=>D.set.mulCot+'倍',        // {CoTの原価倍率}
- /* ★★{few-shotの効果} は【第4章の選択で符号が変わる】（★土台が持つ） */
  fewUp   :()=>C.thinkOf(FW,RUN),
  fewMul  :()=>D.set.mulFew+'倍',        // {few-shotの原価倍率}
  toolUp  :()=>TL.think,                 // {道具の効果}
@@ -119,7 +190,7 @@ const V={
  majMin  :()=>D.set.majMin,             // {多数決の下限}
  majK    :()=>MJ.k,                     // ★何回引くか（★原典の設定）
  unitX   :()=>D.yen(D.set.equipX),      // {設備の単価}
- loan    :()=>D.oku(D.set.rescue)+'億円'// ★救済で借りた額
+ loan    :()=>D.oku(D.set.rescue)+'億円'
 };
 
 const INTRO=[
@@ -163,11 +234,7 @@ cot:{
        AIを作り直していません。頼み方を変えただけです。それで正答率が上がります。`,
  def:`なぜ効くのかは、この方法を見つけた研究チームも分かっていません。<br>
       この研究チームは、「答えを出すまでの計算が増えるから効く」という説明を<br>
-      実験で試して、退けています。<br>
-      <span class="sm">　途中の計算と同じ文字数だけ、点（…）を出させる　→　正答率は上がらない<br>
-      　式だけを書かせる（言葉なし）　　　　　　　　　→　ほとんど上がらない<br>
-      　答えを出した後で途中を書かせる　　　　　　　　→　上がらない</span><br>
-      <span class="em">言えるのは「言葉で、答えより前に、順番に書かせる」ことが要る、までです。</span>`,
+      実験で試して、退けています。`,
  /* ★★この欄は正本に対応が無い（★仮置き。★申告する）。★中身は T18 から取っている */
  note:`払うのは開発費ではありません。1回答えるごとの費用です。<br>
        <span class="sm">使われた量が増えるほど、この費用も増えます。<br>
@@ -207,9 +274,7 @@ few:{
 tool:{
  lead:`電卓や検索を、AIの外側に付けます。AIが計算を間違えても、電卓が正します。`,
  def:`ただし、人を回して正誤で鍛えたAIは、道具を使えません。<br>
-      作った研究チームがそう報告しています。<br>
-      <span class="em">「AIが道具を使う」かどうかは、AIの賢さではなく、
-      外側に何を付けたかで決まります。</span>`,
+      作った研究チームがそう報告しています。`,
  /* ★★この欄は正本に対応が無い（★仮置き。★申告する） */
  note:`電卓や検索そのものの効き目は、このゲームが確かめた論文32本の中に入っていません。<br>
        <span class="sm">このカードの ＋${V.toolUp()} は【このゲームが置いた値】です。論文から取った数ではありません。<br>
@@ -250,8 +315,7 @@ maj:{
 equip:{
  lead:`設備の話は、第3章から3年つづいています。仕組みは同じです。<br>
        答えを返す設備を、その年に捌く回数ぶんだけ、毎年買います。`,
- def:`買わないと1回も捌けません。買いすぎた分は、その年で消えます。<br><br>
-      <span class="em">今年は、そこに1つ重なります。</span><br>
+ def:`<span class="em">今年は、そこに1つ重なります。</span><br>
       この章のカードは、どれも「1回の答えに使う計算の量」を増やします。<br>
       途中を書かせる。例を並べる。同じ問いを何回も解かせる。どれも計算が増えます。<br>
       計算が増えると、電気代が上がります。同じ回数を捌くのに要る設備も増えます。<br>
@@ -316,7 +380,6 @@ few:{t:FW.name,b:`
  doc:'#s5-6-limits',dt:'§5-6 この層の限界'},
 
 temp:{t:TP.name+' ／ '+MJ.name,b:`
- <div class="fig">${F.temp()}</div>
  <p>この2枚は組です。温度を上げないと、多数決が働きません。<br>
  ${V.majK()}回引いても、${V.majK()}回とも同じ答えだからです。</p>`,
  use:`温度は、答えのばらつきを決める設定です。創造性の設定ではありません。
@@ -436,7 +499,6 @@ const USE=['cot','few','tool','temp','maj'];        // ★使い方の5枚（★
 let S={phase:'intro',ip:0,seen:[0],sel:null,equip:null,
        pick:{cot:null,few:null,tool:null,temp:null,maj:null}};
 let lastSay=null;
-/* ★★盤面から消える判定は土台が持つ（★C.hiddenBy） */
 const hidden=id=>C.hiddenBy(D.card(id),RUN);
 const shown =()=>USE.filter(id=>!hidden(id));
 const equipY=()=>{
@@ -559,6 +621,12 @@ function paintPane(){
   <div class="pc"><div class="cbody">
    <p class="lead">${t.lead}</p>
    <div class="def">${t.def}</div>
+   ${c.id==='cot'?`<div class="fig">${F.cot()}</div>`
+    :c.id==='few'?`<div class="fig">${F.few()}</div>`
+    :c.id==='tool'?`<div class="fig">${F.tool()}</div>`
+    :c.id==='maj'?`<div class="fig">${F.maj()}</div>`
+    :c.id==='temp'?`<div class="fig">${F.temp()}</div>`
+    :c.id==='equip'?equipFig():''}
    <div class="note">${t.note}</div>
    ${body}
    ${C.src(c.tag,c.cite)}
@@ -567,7 +635,6 @@ function paintPane(){
     >くわしく知る</button></div>`:''}
   </div>`;
 }
-/* ★★多数決が効くかどうかを、選んだ直後に見える位置に出す（★C.voteOk） */
 function majBox(){
  if(S.pick.maj!=='yes')return '';
  const w=Math.max(0,Math.min(100,RUN.width+(RUN.temp?TP.width:0)));
@@ -613,6 +680,24 @@ function capBox(){
  </div>`;
 }
 function setCap(v){RUN.capacity=Math.max(0,v);paintTop();paintMenu();paintPane();say('equip')}
+/* ★★設備の図（層1）── ★fig.js の G.equip を呼ぶだけ（★図の本体は html に写さない＝検査2）。
+   ★★渡す値は capBox() が使っているものと同じ（needCap()・RUN.capacity・R.equip・R.rev・times()・D.oku()）。
+   ★★★need が 0 の年は【描かない】（★capBox() と同じ抜け道。★pct の0除算を作らない）。
+   ★★買う量が決まっていない間（S.equip!=='buy'）は pct・bought・fee・rev を【渡さない】。 */
+function equipFig(){
+ if(!equipOpen())return '';
+ const need=needCap(); if(need<=0)return '';
+ const v={need:times(need)};
+ if(S.equip==='buy'){
+  const cap=RUN.capacity;
+  const R=D.settle(C.stFor(D,RUN,Object.assign(stUse(),{capacity:cap})));
+  v.pct=cap/need*100;
+  v.bought=times(cap);
+  v.fee=D.oku(Math.round(R.equip))+' 億円';
+  v.rev=D.oku(Math.round(R.rev))+' 億円';
+ }
+ return `<div class="fig">${G.equip(v)}</div>`;
+}
 function pick(cardId,endId){
  if(cardId==='equip'){
   S.equip=endId;
