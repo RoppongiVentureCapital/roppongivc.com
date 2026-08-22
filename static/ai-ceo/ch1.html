@@ -1,0 +1,845 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>第1章 ── 1体目を世に出す</title>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Zen+Kaku+Gothic+New:wght@500;700;900&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="ui.css">
+
+</head>
+<body>
+<div id="fit"><div id="frame">
+
+<!-- ══════════ オフィス（一点透視・アセット未設置時のフォールバック） ══════════ -->
+<div id="office"></div>
+
+<!-- 背景画像を置いたら、上のSVGを覆って最優先で表示される。無ければ自分を消す -->
+<img id="bgimg" src="assets/bg_office.png" alt="" onerror="this.remove()">
+<!-- 縦画面用。狭い画面のときだけ表示され、上の横長背景を覆う -->
+<img id="bgimg2" src="assets/bg_office_portrait.png" alt="" onerror="this.remove()">
+<!-- 秘書の全身立ち絵（任意）。無ければ自分を消す -->
+<div id="grade"></div>
+<img id="whole" src="assets/secretary_full.png" alt="" onerror="this.remove()">
+
+<!-- ══════════ 上部バー ══════════ -->
+<div class="topbar">
+ <div class="logo ol"><span>AI&nbsp;LAB</span></div>
+ <div class="when ol">
+  <span class="yr">1年目</span>
+  <span class="qq">／ 5年のうち</span>
+ </div>
+ <div class="rival">
+  <span class="k ol">他社の力</span>
+  <span class="rbar" title="他社のAIの力。自社の満点に対する割合"><i id="rv" style="width:15%"></i></span>
+  <span class="k ol" id="rvp">50%</span>
+ </div>
+ <div class="cash">
+  <span class="y ol">¥</span><span class="v ol2" id="cash">5,000</span><span class="u ol">億円</span>
+ </div>
+</div>
+
+<div class="stage">
+ <div class="menu" id="menu"></div>
+ <div class="panel"><div id="pane"></div></div>
+</div>
+
+<div class="info">
+ <div class="infoH"><b>Information</b></div>
+ <div class="in">
+  <div class="bust">
+   <div class="ph"><div class="h"></div></div>
+   <img src="assets/secretary_bust.png" alt="" onerror="this.remove()">
+  </div>
+  <div class="said" id="said"></div>
+ </div>
+</div>
+
+<div class="veil" id="veil"><div class="dlg" id="dlg"></div></div>
+
+</div></div><!-- /#frame /#fit -->
+
+<script src="fig.js"></script>
+<!-- ★土台（章をまたぐ条件・決算の枠・カードUIの部品）。→04 §11-1／ch_common.js §B
+     ★読むだけ（実装役の持ち物）。★第1章は「第2章へ」で C.closeYear() ＋ C.save() を呼ぶ -->
+<script src="ch_common.js"></script>
+<!-- ★数値・カード定義・出典（設計役の持ち物）。02_数値設計.md 第28版が正本。
+     fetch ではなく <script> で読む（file:// で fetch できないため。→01 §9・§10） -->
+<script src="ch1.data.js"></script>
+<script>
+/* ══════════ 背景 ══════════ */
+/* ★背景のオフィスは fig.js の部品にした（→ 03 §53-2）。★同じ絵が2箇所にあったのを寄せた分。
+   ★01 §9「共有するのは CSS と絵の部品まで」。★#office は空の器で、ここで流し込む */
+document.getElementById('office').innerHTML=G.office();
+/* ══════════ 序章は intro.html に出した（★2026-08-21。★★山田様の決定10）══════════
+   ★★序章の中身（★図3枚 F ／★10ページ INTRO ／★見出し INTRO_T ／★描画 paintIntro ほか）は
+     ★★`intro.html` に【そのまま】移した。★★1文字も書き換えていない
+   ★★出どころ：★決定10「★序章と第1章を【分ける】／
+     ★第2章以降のどの章からでも序章を開けるボタン」
+   ★★だからこの章は【本編から始まる】。★★場面を分ける印（旧 `S.phase`）は落とした
+   ★★読み返しは `intro.html?from=ch1.html` を開く（★左メニューの「説明をもう一度読む」）
+     ★★戻る先を `?from=` で渡す形は C.openDoc の先例に合わせた（→03 §65-1）
+   ★★秘書の全身（`html.firstpage`）の付け外しも intro.html 側に移った。
+     ★★この章では1度も付かない（★★決定5「全身は序章の1ページ目」） */
+
+/* ══════════ 選択肢 ══════════
+   ★数値・値札・必要人員・出典は ch1.data.js（設計役の持ち物）が持つ。
+     ここに置くのは【文面だけ】である。数字を本文に書くときは、
+     ch1.data.js の値から組み立てる（★2箇所に書くと片方が古くなる。→01 §8-4） */
+const T1=D.card('big'),T2=D.card('data'),T3=D.card('lite');
+const TXT={
+big:{
+ lead:`パラメータ（AIの中の調整用の数値）を <b>${D.oku(T1.p)}億個</b>。読ませる文章は <b>${D.words(T1.w)}</b>。`,
+ def:'2020年に実際に行われた構成です。当時、これが世界最高でした。',
+ note:`資金の73%を使います。作るのに9か月かかります（1年は4回に区切られていて、その3回ぶんです）。<br>
+       <span class="sm">どのカードを選んでも1年に収まります。期間で詰まることはありません。</span>`,help:'ratio'},
+
+data:{
+ lead:`パラメータは <b>${D.oku(T2.p)}億個</b> に抑えて、代わりに文章を <b>${D.words(T2.w)}</b> 読ませます。`,
+ def:'費用は「大きく作る」と<b>同じ</b>です。同じ計算量になるように、パラメータと文章の量を配り直しただけです。',
+ note:'費用も期間も「大きく作る」と同じです。どちらが賢くなるかは<b>「くわしく知る」にあります</b>。',help:'ratio'},
+
+lite:{
+ lead:`パラメータ <b>${D.oku(T3.p)}個</b>、文章 <b>${D.words(T3.w)}</b>。3か月で終わります。`,
+ def:`資金は${D.oku(D.set.budget-T3.cost)}億円残ります。他のことが全部できます。`,
+ note:'ただし考える力は伸びません。なぜ伸びないかは「くわしく知る」に書きました。',help:'dull'},
+
+sft:{
+ lead:'人が書いた<b>見本の回答を1万3千件</b>読ませます。',
+ def:'文章だけを読ませたAIは「次に来そうな単語」を出す機械です。質問を投げると、<b>質問の続きを書いてしまいます。</b>見本を読ませると、質問に答える形に直ります。',
+ note:'費用は「大きく作る」の0.1%です。ただし<b>見本を書く人が10名必要</b>です。先に人を雇ってください。',help:'sft'},
+
+hire:{
+ lead:'人を雇います。<b>何人雇うかを、あなたが決めます。</b>',
+ def:'見本を書く。答えを順位づける。答え合わせに注釈を付ける。<b>この3つは全部、人の手です。</b>雇った人は、投じた工程に<b>固定されます</b>（あとで別の工程に回せません）。',
+ note:'<b>5年間で合わせて40名まで</b>。1名につき<b>毎年1億円</b>かかります（雇った年から5年目まで）。早く雇うほど累計の人件費が高くなります。',help:'eval'}
+};
+const A=D.cards.map(c=>Object.assign({},c,TXT[c.id]));
+/* ★左メニューのグループ見出しに添える注記（→ 03 §57-4） */
+const GRPN={'作る':'どれか1枚だけ（AIは作り直せません）','仕上げ':'いくつでも'};
+/* 左メニューの副題も数値から組み立てる */
+function subOf(a){return a.kind==='staff'
+ ?`1名 年1億円 ／ 上限 ${a.cap}名`
+ :`${D.oku(a.cost)}億円`}
+
+/* ══════════ 解説 ══════════
+   ★「小さく試す」の解説（exp）は削除した。カード自体を落としたため（→02 §3 注3）。
+     GPT-4 が1万分の1の計算量から【損失】を予測した話は、決算のあと（②）に言葉だけで置き、
+     ★数字は「章末の事実」（③）に置く（→01 §4 の一般規則）。settle() を見ること */
+const H={
+dull:{t:'お金をかけても、賢さはあまり伸びない',b:`
+ <p>パラメータを増やすと、<b>間違いは減ります。ちゃんと減ります。</b><br>
+ 問題は、<b>減る量がとても小さいこと</b>です。</p>
+ <div class="fig"><svg viewBox="0 0 640 250" style="width:100%">
+  <text x="10" y="16" fill="#bcccdd" font-size="12">パラメータを2倍に増やすと</text>
+  <text x="14" y="44" fill="#f5c14e" font-size="12">払うお金</text>
+  ${G.money(96,38,1)}
+  <text x="130" y="42" fill="#8a9db3" font-size="13">→</text>
+  ${G.money(152,38,2)}
+  <text x="222" y="42" fill="#f5c14e" font-size="12.5">2倍</text>
+  <text x="14" y="82" fill="#5ed093" font-size="12">間違いの量</text>
+  <rect x="96" y="70" width="220" height="16" rx="3" fill="#8a9db3" opacity=".55"/>
+  <text x="326" y="83" fill="#8a9db3" font-size="11.5" font-family="Oswald">100</text>
+  <rect x="96" y="92" width="209" height="16" rx="3" fill="#5ed093"/>
+  <text x="315" y="105" fill="#5ed093" font-size="11.5" font-family="Oswald">95</text>
+  <text x="360" y="94" fill="#ff9d90" font-size="12.5">たった 5 しか減らない</text>
+
+  <line x1="10" y1="126" x2="630" y2="126" stroke="#7590a8" stroke-dasharray="4 4"/>
+  <text x="10" y="148" fill="#bcccdd" font-size="12">では、1000倍に増やすと</text>
+  <text x="14" y="176" fill="#f5c14e" font-size="12">払うお金</text>
+  ${G.money(96,170,1)}
+  <text x="130" y="174" fill="#8a9db3" font-size="13">→</text>
+  ${G.money(152,170,6)}
+  <text x="266" y="174" fill="#f5c14e" font-size="12.5">…×1000倍</text>
+  <text x="14" y="214" fill="#5ed093" font-size="12">間違いの量</text>
+  <rect x="96" y="202" width="220" height="16" rx="3" fill="#8a9db3" opacity=".55"/>
+  <text x="326" y="215" fill="#8a9db3" font-size="11.5" font-family="Oswald">100</text>
+  <rect x="96" y="224" width="132" height="16" rx="3" fill="#f5c14e"/>
+  <text x="238" y="237" fill="#f5c14e" font-size="11.5" font-family="Oswald">60</text>
+  <text x="300" y="236" fill="#ffdf9c" font-size="12.5">やっと 4割 減る</text>
+ </svg></div>
+ <p>お金を1000倍にして、やっと4割です。<b>だから、少し増やすだけでは意味がありません。
+ 桁で増やすしかありません。</b></p>
+ <p>これが、世界の会社が何千億円もかけてAIを作っている理由です。</p>
+ <h4>そして、なぜこうなるのかは誰も分かっていません</h4>
+ <div class="qt">「いまのところ、私たちはこれについて、しっかりした理屈を持っていない。
+  <b>特に謎である</b>」<br>
+  <span style="font-size:12px;color:#8a9db3">── この関係を見つけた研究者たちが、自分たちの論文の最後に書いた一文</span></div>
+ `,
+ use:'大きいモデルに替えても、賢さは劇的には伸びません。はっきり差が出るのは、大きさが10倍、100倍とちがうときです。そこまで違わないなら、安いモデルで足りる場面があります。',
+ utag:'導出',cf:'◎',
+ cite:'Kaplan et al. 2020, arXiv:2001.08361 Eq.1.1 / Appendix C（原文 "especially mysterious"）',
+ doc:'#s7-4-power-law',dt:'§7-4 スケーリング則'},
+
+ratio:{t:'パラメータを増やすか、本を増やすか',b:`
+ <p>使えるお金は決まっています。そして<b>お金の使い先は2つ</b>あります。</p>
+ <p><b>パラメータを増やす</b>か、<b>読ませる本を増やす</b>か。片方に多く使えば、もう片方は減ります。</p>
+ <div class="fig"><svg viewBox="0 0 640 300" style="width:100%">
+  <rect x="6" y="6" width="308" height="286" rx="9" fill="rgba(224,87,74,.09)" stroke="rgba(224,87,74,.45)"/>
+  <text x="160" y="28" fill="#ff9d90" font-size="12.5" text-anchor="middle">2020年に実際に作られたAI</text>
+  ${G.box(28,44,152,120)}${G.wire(28,44,152,120,6,7,'#67d3e8')}
+  <text x="104" y="180" fill="#67d3e8" font-size="11.5" text-anchor="middle">パラメータ 1,750億個</text>
+  ${G.books(248,160,3)}
+  <text x="248" y="180" fill="#7fb98f" font-size="11.5" text-anchor="middle">読ませた本</text>
+  <text x="160" y="212" fill="#ff9d90" font-size="13" text-anchor="middle">パラメータの数に対して</text>
+  <text x="160" y="232" fill="#ff9d90" font-size="15" text-anchor="middle">本が足りていない</text>
+  <text x="160" y="266" fill="#bcccdd" font-size="11.5" text-anchor="middle">パラメータの数字を決めるのが本なので、</text>
+  <text x="160" y="282" fill="#bcccdd" font-size="11.5" text-anchor="middle">本が少ないと、数字が決まりきらない</text>
+
+  <rect x="326" y="6" width="308" height="286" rx="9" fill="rgba(94,208,147,.09)" stroke="rgba(94,208,147,.45)"/>
+  <text x="480" y="28" fill="#5ed093" font-size="12.5" text-anchor="middle">2022年に分かった、正しい配り方</text>
+  ${G.box(348,60,104,88)}${G.wire(348,60,104,88,4,5,'#67d3e8')}
+  <text x="400" y="180" fill="#67d3e8" font-size="11.5" text-anchor="middle">パラメータ 512億個</text>
+  ${G.books(556,160,9)}
+  <text x="556" y="180" fill="#7fb98f" font-size="11.5" text-anchor="middle">読ませた本</text>
+  <text x="480" y="212" fill="#5ed093" font-size="13" text-anchor="middle">パラメータを 3.4分の1 にして、</text>
+  <text x="480" y="232" fill="#5ed093" font-size="15" text-anchor="middle">本を 3.4倍 にした</text>
+  <text x="480" y="266" fill="#bcccdd" font-size="11.5" text-anchor="middle">かかるお金は左と同じ。</text>
+  <text x="480" y="282" fill="#ffdf9c" font-size="11.5" text-anchor="middle">それでも、こちらの方が賢くなる</text>
+ </svg></div>
+ <h4>何が起きていたか</h4>
+ <p>2020年、みんなこう考えていました。<b>「お金が増えたら、まずパラメータを増やそう」。</b>
+ そのとおりに作られたのが、左のAIです。</p>
+ <p>2022年、別の研究チームが調べ直しました。答えはこうでした。<b>「パラメータと本は、同じくらいの割合で増やすのが一番良い」。</b>
+ 目安は<b>パラメータ1個あたり20語</b>です。左のAIは <b>1.71語</b> しかなく、<b>12分の1</b>でした。</p>
+ <p>つまり<b>同じお金で、もっと賢いAIが作れたのに、そうしていなかった</b>ということです。
+ <b>2年間、世界中の誰も気づいていませんでした。</b></p>
+ `,
+ use:'同じ費用でも、パラメータを増やすか、読ませる量を増やすかで、賢さが変わります。2020年は「パラメータが多いほうが強い」が常識でした。2022年に別の研究チームが「同じ費用なら、パラメータを抑えて読ませる量を増やしたほうが強い」と主張し、常識が入れ替わりました。',
+ utag:'導出',cf:'○',
+ cite:'Brown et al. 2020「Language Models are Few-Shot Learners」arXiv:2005.14165（1,750億／3,000億語）／ Hoffmann et al. 2022「Training Compute-Optimal Large Language Models」arXiv:2203.15556（このゲームが確かめた論文32本の外です）',
+ doc:'#s7-4-chinchilla',dt:'§7-4 スケーリング則'},
+
+sft:{t:'見本を読ませないと、言うことを聞かない',b:`
+ <p>本をたくさん読ませただけのAIは、<b>「文章の続きを書く機械」</b>です。
+ <b>質問に答える機械ではありません。</b></p>
+ <p>だから質問すると、こうなります。</p>
+ <div class="fig"><svg viewBox="0 0 640 230" style="width:100%">
+  <rect x="6" y="6" width="628" height="100" rx="8" fill="rgba(224,87,74,.09)" stroke="rgba(224,87,74,.45)"/>
+  <text x="20" y="26" fill="#ff9d90" font-size="12">見本を読ませていないAI</text>
+  ${G.man(44,84,.85,'#cfe0ee')}
+  ${G.bub(72,44,206,26,'日本の首都を教えて','#cfe0ee')}
+  ${G.box(300,42,52,44)}${G.wire(300,42,52,44,2,3,'#67d3e8')}
+  ${G.bub(364,44,258,26,'…また人口も教えてください。さらに','#ff9d90')}
+  <text x="493" y="98" fill="#ff9d90" font-size="11.5" text-anchor="middle">質問の続きを書いてしまう</text>
+
+  <rect x="6" y="118" width="628" height="100" rx="8" fill="rgba(94,208,147,.09)" stroke="rgba(94,208,147,.45)"/>
+  <text x="20" y="138" fill="#5ed093" font-size="12">人が書いた見本を1万3千件読ませたAI</text>
+  ${G.man(44,196,.85,'#cfe0ee')}
+  ${G.bub(72,156,206,26,'日本の首都を教えて','#cfe0ee')}
+  ${G.box(300,154,52,44)}${G.wire(300,154,52,44,2,3,'#67d3e8')}
+  ${G.bub(364,156,120,26,'東京です。','#5ed093')}
+  <text x="424" y="210" fill="#5ed093" font-size="11.5" text-anchor="middle">ちゃんと答える</text>
+ </svg></div>
+ <p>見本とは、「こう聞かれたら、こう答える」という<b>手本の会話</b>です。人が書きます。</p>
+ <p>かかるお金は、AIを作るお金の <b>0.1%</b>（5億円 対 3,640億円）。<b>安いのに、効き目は大きいです。</b></p>
+ `,
+ use:'文章だけを読ませたAIは、次に来そうな語を出す機械です。質問すると、質問の続きを書きます。見本を読ませると、ふだん使うチャットのAIのように、質問に答える形になります。ただしこれは3つの工程の1つ目で、残り2つ（人が答えを順位づける／その順位を報酬にして強化学習する）は第3章です。',
+ utag:'導出',cf:'◎',
+ cite:'Ouyang et al. 2022「Training language models to follow instructions with human feedback」arXiv:2203.02155 §3, §5.1',
+ doc:'#s4-2-3stage',dt:'§4-2 選好整合の3段ロケット ── 読むのは冒頭の「段1 SFT」'},
+
+eval:{t:'雇った人は、何をする人か',b:`
+ <p>この会社が人を雇うのは、<b>3つの工程が全部「人の手」だから</b>です。</p>
+ <div class="fig"><svg viewBox="0 0 640 96" style="width:100%">
+  <rect x="6" y="8" width="200" height="76" rx="7" fill="rgba(103,211,232,.10)" stroke="#67d3e8"/>
+  <text x="106" y="36" fill="#cdeff8" font-size="12" text-anchor="middle">見本を書く</text>
+  <text x="106" y="60" fill="#8a9db3" font-size="10.5" text-anchor="middle">1万3千件の手本の会話</text>
+  <rect x="218" y="8" width="200" height="76" rx="7" fill="rgba(245,193,78,.10)" stroke="#f5c14e"/>
+  <text x="318" y="36" fill="#ffdf9c" font-size="12" text-anchor="middle">答えを順位づける</text>
+  <text x="318" y="60" fill="#8a9db3" font-size="10.5" text-anchor="middle">どちらの答えが良いかを選ぶ</text>
+  <rect x="430" y="8" width="204" height="76" rx="7" fill="rgba(94,208,147,.10)" stroke="#5ed093"/>
+  <text x="532" y="36" fill="#c9f2dc" font-size="12" text-anchor="middle">答え合わせに注釈を付ける</text>
+  <text x="532" y="60" fill="#8a9db3" font-size="10.5" text-anchor="middle">途中の式が合っているか</text>
+ </svg></div>
+ <p><b>上限は40名です。だから全部はできません。</b>
+ どれに人を回すかが、この先の章の決定になります。</p>
+ <h4>そもそも「バー」とは ── AIの性質を出す5本の目盛りです</h4>
+ <div class="fig">${G.bars()}</div>
+ <h4>何人雇えばいいのか ── 決め方は3つだけです</h4>
+ <div class="def"><b>① バーを1ポイント上げるには、人が1名います。</b>
+ 　<span class="sm">これはこのゲームが置いた規則です（論文にこの換算はありません）。<br>
+ 　だからカードの札を見れば必要な人数が分かります。たとえば「指示に従う ＋10」なら10名です。</span><br>
+ <b>② 人は5年間で合わせて40名までです。</b>単位は人です。
+ 　<span class="sm">投じた工程に固定され、他の工程には戻りません。<br>
+ 　1名につき年1億円、雇った年から5年目まで毎年かかります（このゲームが置いた値です）。</span><br>
+ <b>③ いま要る分だけ雇えば損はしません。</b>
+ 　<span class="sm">人件費は雇った年から5年目まで毎年1億円かかります。同じ40名でも1年目に雇うと5年分、3年目に雇うと3年分で、遅く雇うほど払う年数が短く、合計は安くなります。だから、いま要る分だけ雇えば損はしません。</span></div>
+ <h4>なぜ上限が40名なのか ── これは論文の人数です</h4>
+ <p><b>40名は、実際にこれをやった研究チームが雇った人数です</b>（単位は人。論文が書いている実測値です）。
+ そのチームは<b>あえて人を増やしませんでした。</b>
+ 少人数と密にやりとりするほうが速いから、と論文に書いてあります。<br>
+ <span class="sm">だから「千人雇えば早い」にはなりません。上限40名は、この人数をそのまま借りた枠です。</span></p>
+ <h4>3つのうち「答えを順位づける」は、こうやります</h4>
+ <div class="fig"><svg viewBox="0 0 640 210" style="width:100%">
+  <text x="10" y="16" fill="#bcccdd" font-size="12">① AIに同じ質問をして、答えを2つ出させる</text>
+  ${G.box(14,26,52,44)}${G.wire(14,26,52,44,2,3,'#67d3e8')}
+  ${G.bub(80,26,220,22,'答えA　ていねいで長い','#cfe0ee')}
+  ${G.bub(80,52,220,22,'答えB　短くてぶっきらぼう','#cfe0ee')}
+  <text x="316" y="52" fill="#8a9db3" font-size="14">→</text>
+  <text x="340" y="42" fill="#f5c14e" font-size="12">② 人にどちらが良いか選ばせる</text>
+  ${G.man(376,110,.9,'#f5c14e')}${G.man(424,110,.9,'#f5c14e')}${G.man(472,110,.9,'#f5c14e')}
+  ${G.man(520,110,.9,'#f5c14e')}${G.man(568,110,.9,'#f5c14e')}
+  <text x="472" y="130" fill="#ffdf9c" font-size="12" text-anchor="middle">この人たちが「評価者」</text>
+  <text x="10" y="152" fill="#bcccdd" font-size="12">③ 選ばれた方に近づくよう、AIの数字を少しずつ変える</text>
+  <rect x="10" y="162" width="624" height="38" rx="7" fill="rgba(245,193,78,.1)" stroke="#f5c14e"/>
+  <text x="322" y="186" fill="#ffdf9c" font-size="13" text-anchor="middle">
+   これをくり返すと、AIは「人に好まれる答え方」をするようになる</text>
+ </svg></div>
+ <h4>ここが面白いところです</h4>
+ <p>あなたが今日使っているAIの、あの丁寧なしゃべり方も、この工程で決まりました。
+ 実際に選んでいたのは、<b>その約40名</b>です（上の上限40名と同じ人数です）。<br>
+ <span class="sm">下の3つの数字は、どれも論文が測った実測値です。このゲームが置いた値ではありません。</span></p>
+ <div class="fig"><svg viewBox="0 0 640 112" style="width:100%">
+  <text x="10" y="18" fill="#bcccdd" font-size="12">評価者どうしの意見が一致した割合</text>
+  <rect x="10" y="28" width="620" height="18" rx="4" fill="rgba(0,0,0,.5)"/>
+  <rect x="10" y="28" width="450" height="18" rx="4" fill="#5ed093" opacity=".85"/>
+  <text x="474" y="42" fill="#5ed093" font-family="Oswald" font-size="15">72.6%</text>
+  <text x="10" y="74" fill="#f5c14e" font-size="12">★ しかも、ほとんどの判定は 1人しか見ていない</text>
+  <text x="10" y="98" fill="#bcccdd" font-size="12">★ アンケートに答えた19人のうち、75%が 35歳より若い</text>
+ </svg></div>
+ <h4>判定に迷ったとき、40名に渡されていた基準</h4>
+ <p>その40名が<b>答えA と 答えB</b> のどちらが良いか決めきれないとき、論文はこう考えろと指示しました。
+ <b>問いかけられているのは、選ぶ人（＝評価者）自身です。</b></p>
+ <div class="qt">「いま判定しているその依頼を手伝ってくれる<b>客の相手をする係</b>から返事をもらうとしたら、
+  <b>答えA と 答えB</b> のどちらをもらいたいですか？」</div>
+ <p><span class="sm">「客の相手をする係」は、論文の原文では customer assistant です。
+ 店員・受付・窓口係のように、客に応対する役目の人を指します。<br>
+ これは<b>判定に迷った境界の場合の指針</b>で、全部の判定をこれだけで決めたわけではありません。</span><br>
+ <b>この一文が、いまのAIの丁寧なしゃべり方の出どころです。</b>
+ 客に応対する係のように答えろと言われたから、AIは無難で礼儀正しくなりました。</p>
+ `,
+ use:'AIの無難さと丁寧さは故障ではなく設計どおりです。尖った見解が要るなら、質問に条件を足してください。',
+ utag:'導出',cf:'◎',
+ cite:'Ouyang et al. 2022 arXiv:2203.02155 Figure 10, §4.3, §3.4, Appendix B.3, Table 12（原文は "customer assistant"）',
+ doc:'#s4-4-tone',dt:'§4-4 ChatGPTのあの口調の出所'}
+};
+
+/* ══════════ 状態 ══════════ */
+const BUDGET=D.set.budget,TURNS=D.set.turns;
+let S={used:0,log:[],trained:null,sel:'big',staff:0,assigned:0,dev:0,hireN:10};
+/* ★★2026-08-21：★`phase`・`ip`・`seen` を落とした（★序章が intro.html に出たので誰も読まない）。
+   ★★機械で確かめた：★`grep -n "S\.phase\|S\.ip\|S\.seen" ch1.html` が 0件 */
+const yen=n=>n.toLocaleString(),left=()=>TURNS-S.used;
+/* ★資金は残高を持ち回らず、毎回「予算 − 開発費 − 人件費」から出す。
+   人件費は年額なので、第1章では1年目分だけが引かれる（→02 §4-F-3） */
+const fixedCost=()=>S.staff*D.set.staffPay;
+const money=()=>BUDGET-S.dev-fixedCost();
+const freeStaff=()=>S.staff-S.assigned;
+const hireMax=()=>D.set.staffCap-S.staff;
+const costOf=a=>a.kind==='staff'?S.hireN*a.per:a.cost;
+
+/* ══════════ 決算の段2「配分3枚を比べる」（スロット②。→ 03 §49-2）══════════
+   ★第1章の骨：同じ費用でも、配り方で結果が変わる（Chinchilla）。
+   ★数値を1つも本文に書かない。ch1.data.js の値（cost / p / w / ratio / think）から組み立てる。
+   ★選んだ行の目印は settle() が DOM で付ける（文面を2箇所に持たないため）。
+   ★キー名は H と同じ t / b / cite にしてある → 検査.py の対象範囲に自動で入る */
+/* ★★項目名は【1箇所だけ】に置く（★2026-08-19。★指摘 A5 の処置）。
+   ★横に広い画面では見出しの行に出し、★縦の狭い画面では各セルの前に出す（→ ui.css の td:before）。
+   ★★2箇所に同じ語を書かない（★誤りの型⑥＝片方だけ古くなる） */
+const CMP_K=['開発費','パラメータ','読ませた量','1個あたり','考える力'];
+/* ══════════ 3枚を比べる表 ── ★★土台の部品（C.cmp）に切り替えた（★2026-08-20）══════════
+   ★★記録 §80 の判定2：★表を組む部品は土台（`ch_common.js` §C-2）に置き、★第1〜5章が使う。
+     ★理由：★第3〜5章でも同じ表が要る（★第2章の G25 で同じ型が既に出ている）。
+       ★別々に書くと【同じ表が4箇所】になる（★型⑥が確定する形）
+   ★★この節に残るのは【行の作り方】だけである（★列は CMP_K、★行は ch1.data.js の T1・T2・T3）。
+     ★★表の HTML は土台が持つ。★★見た目は変わらない（★`.cmp3`／`.pick`／`data-k` は同形）
+   ★★列は【5列そのまま】（★山田様の決定3。★伏せない。→記録 §76 の3）
+   ★★数値は ch1.data.js から組む。★html に写しを置かない
+     ★実測の実害：★「見本は5億円」の写しを html に置いたら、残金が5億円ずれた
+   ★★`id="cmp-…"` はもう出ない（★土台の部品が【id を出す口を持たない】）。
+     ★★だから `settle()` の `querySelector('#dlg #cmp-…')` は消した。★目印は `sel` で組み立て時に付く */
+function cmpRows(){
+ return [T1,T2,T3].map(c=>({id:c.id, name:c.name, cells:[
+  `<b>${yen(c.cost)}</b> 億円`, `<b>${D.oku(c.p)}</b> 億個`, `<b>${D.words(c.w)}</b>`,
+  `<b>${c.ratio}</b> 語`, `<b>${c.think}</b>`]}));
+}
+/* ★★「1個あたり」の語の説明（★決定で5列に残ったので、★語の説明を付ける側になった）
+   ★★これは表の2つの列から出る割り算であって、★新しい主張ではない
+   ★★2026-08-20 に `CMP` の中の `note` に移した。★理由：★★`const CMP_NOTE=…` の形は
+     ★検査.py の抽出（★欄の名前＋コロン）に当たらず、★★画面に出るのに対象から漏れていた
+     （★実測：★句「「1個あたり」は」で引いて、★どの項目にも無かった） */
+const CMP={
+note:`<div class="note">「1個あたり」は、<b>パラメータ1個あたりに読ませる語数</b>です。単位は語です。<br>
+ <b>読ませた量 ÷ パラメータの数</b> で出ます（上の表の2つの列の割り算です）。この章で見るのはこの数です。</div>`,
+ratio3:{
+ t:'同じ費用でも、配り方で結果が変わります',
+ b:sel=>`
+ <p>この章で決めたのは、同じお金を<b>「パラメータの数」</b>と<b>「読ませる文章の量」</b>に、
+ どう配るかでした。</p>
+ <p><b>さきほど比べた表の、答え合わせです。</b>選ぶ前に見たのと同じ表を、もう一度出します。
+ 違うのは、<b>あなたが選んだ行に目印が付いている</b>ことです。</p>
+ ${C.cmp({keys:CMP_K,rows:cmpRows(),sel:sel,lab:'← これを選びました'})}
+ <p><b>上の2つは、かかったお金が同じです。</b>違うのは配り方だけです。
+ それでも、できあがった考える力は <b>${T1.think}点</b> と <b>${T2.think}点</b> で違います。</p>
+ <div class="note"><b>この2つの点数は、このゲームが置いた値です。</b>論文にこの点数はありません。<br>
+  <span class="sm">単位は点（0〜100点のバーの目盛り）です。<b>カードごとに決まっている値</b>で、
+  選んだカードの点数がそのまま「考える力」になります（作る前は0点です）。<br>
+  <b>この2枚に差を付けた理由は論文にあります</b>── 下の「2つの研究チームが書いていること」が
+  その中身です。<b>差の大きさ（${T1.think}点 と ${T2.think}点）だけが、このゲームの決めごとです。</b></span></div>
+ <p><b>「${T3.name}」は、配り方ではなく額そのものが違います。</b>開発費は上の2枚の
+ <b>${Math.round(T1.cost/T3.cost)}分の1</b> です。1個あたりの語数は足りていますが、
+ パラメータの数は3枚のなかでいちばん少ないままです。</p>
+ <p>この章で見たことは2つです。<b>額が同じでも、配り方で変わる。配り方が足りていても、額で変わる。</b></p>
+ <h4>2つの研究チームが書いていること</h4>
+ <p>2020年に実際にAIを作ったチームは、パラメータ1個あたり <b>${T1.ratio}語</b> の配り方を選びました。
+ 2022年に別の研究チームが「同じ費用なら、パラメータを抑えて読ませる量を増やしたほうが強い」と主張し、
+ 常識が入れ替わりました。目安は1個あたり <b>${T2.ratio}語</b> です。</p>
+ `,
+ cite:'Brown et al. 2020「Language Models are Few-Shot Learners」arXiv:2005.14165 §2.1 Table 2.1'+
+      '／Hoffmann et al. 2022「Training Compute-Optimal Large Language Models」arXiv:2203.15556'+
+      '（このゲームが確かめた論文32本の外です）'+
+      '／Kaplan et al. 2020, arXiv:2001.08361 §2.1（計算量 ＝ 6 × パラメータ数 × 学習トークン数）'}
+};
+
+function why(a){
+ if(a.kind==='staff'){
+  if(S.log.includes(a.id))return'済み（この章では雇用は1回だけ）';  /* ★→記録 §138-1。他カードと同じく実施済みを見る */
+  if(hireMax()<=0)return`これ以上は雇えない（上限${D.set.staffCap}名）`;
+  if(costOf(a)>money())return'資金が足りない';
+  return null}
+ if(S.log.includes(a.id))return'実施済み';
+ if(a.kind==='train'&&S.trained)return'AIを作るのは1回だけ';
+ if(a.kind==='sft'&&!S.trained)return'先にAIを作る必要がある';
+ if(a.staff&&freeStaff()<a.staff)return`人が足りない（${a.staff}名必要）`;
+ /* ★「残り時間が足りない」のガードは落とした（★2026-08-19。→ 03 §58-2）。
+    ★理由：★時間の表示をやめた決定（→§57-1）に対する死んだコードである。
+      ★到達しうる全組み合わせで発火0件（★枠4ターン／★最大消費4ターン＝大きく作る3＋見本1）。
+    ★★`ch1.data.js` の `turn` の値は残っている（★設計役の持ち物）。★消したのは【この判定だけ】 */
+ if(a.cost>money())return'資金が足りない';
+ return null;
+}
+/* 秘書のセリフは向きが変わると言い直す必要があるので、直前の引数を覚えておく。
+   fit() が起動時にも resay() を呼ぶので、宣言はその前に置く（TDZ回避） */
+let lastSay,saidOnce=false;
+
+/* ══════════ 額縁：1024x768 をウィンドウにフィットさせる ══════════ */
+/* 縮小率が 0.8 を下回ると文字が読めなくなるので、その手前で額縁をやめて
+   通常フロー（.fluid）に切り替える。閾値は 820x615 の1か所だけで管理する */
+function fit(){
+ const fluid=innerWidth<820||innerHeight<615;
+ const r=document.documentElement;
+ r.classList.toggle('fluid',fluid);
+ r.classList.toggle('narrow',fluid&&innerWidth<400);
+ /* 横持ちで高さが足りない場合は縦積みをやめて2カラムにする */
+ r.classList.toggle('side',fluid&&innerWidth>=620&&innerWidth>innerHeight);
+ r.style.setProperty('--s',fluid?1:Math.min(innerWidth/1024,innerHeight/768));
+ resay();padStage();
+}
+/* 下部固定バーの実測高さぶんだけ本文の下に余白を作る。
+   秘書のセリフは長さが変わるので、固定値では隠れる */
+function padStage(){
+ const st=document.querySelector('.stage'),inf=document.querySelector('.info');
+ if(!st||!inf)return;
+ const fluid=document.documentElement.classList.contains('fluid');
+ const side=document.documentElement.classList.contains('side');
+ /* 横持ちでも下部バーに隠れるので、どちらのモードでも余白を確保する */
+ st.style.paddingBottom=fluid?(inf.offsetHeight+12)+'px':'';
+ /* sticky なボタン行が下部バーの上に来るように高さを渡す */
+ document.documentElement.style.setProperty('--infoH',inf.offsetHeight+'px');
+}
+/* 回転などでメニュー位置が変わったらセリフを言い直す */
+function resay(){if(saidOnce)say(lastSay)}
+addEventListener('resize',fit);
+addEventListener('orientationchange',fit);
+fit();
+
+/* ★時間の表示はやめた（★2026-08-19。山田様の決定。→ 03 §57-1）。
+   ★理由：★到達しうる全組み合わせで「残り時間が足りない」は0件（★枠4ターン／最大消費4ターン）。
+     ★存在しない制約を画面で説明していた。
+   ★★ch1.data.js の `turn` は消していない（★設計役の持ち物。★表示だけやめた） */
+function paintTop(){
+ document.getElementById('cash').textContent=yen(money());
+ /* ★他社は【1年に2割】伸びる（設定8）。年の途中では動かない。
+    ★旧実装は 15+ターン×22% でターンごとに伸ばしていた（＝早く出すと得、という
+      設計に無い因果を画面に出していた。→02 §1 の慣性・設定34） */
+ const rp=Math.round(D.set.rival0/D.set.full*100);
+ document.getElementById('rv').style.width=rp+'%';
+ document.getElementById('rvp').textContent=rp+'%';
+}
+function paintMenu(){
+ let last='',h='';
+ /* ★グループごとに「いくつ選べるか」を常時出す（★2026-08-19。山田様の指摘。→ 03 §57-4）。
+    ★いままでは押したあとに「AIを作るのは1回だけ」と出るだけで、★選ぶ前に分からなかった。
+    ★★grp の名前は ch1.data.js（設計役）が持つので、★ここでは名前に対する注記だけを持つ */
+ A.forEach(a=>{
+  if(a.grp!==last){h+=`<div class="grpL ol">${a.grp}<span class="gn">${GRPN[a.grp]||''}</span></div>`;last=a.grp}
+  const w=why(a),sc=S.sel===a.id,o=sc?'':' ol';
+  h+=`<div class="mi ${sc?'sel':''} ${w?'gone':''} ${S.log.includes(a.id)?'done':''}"
+   data-id="${a.id}"><div class="t${o}">${a.name}</div><div class="sub${o}">${subOf(a)}</div></div>`});
+ if(left()===0||S.trained)h+=`<div class="grpL ol">決算</div>
+  <div class="mi fin" data-id="__end">
+   <div class="t ol">1年目を締める</div><div class="sub ol">結果を見る</div></div>`;
+ h+=`<div class="grpL ol">説明</div>
+  <div class="mi" data-id="__intro"><div class="t ol">説明をもう一度読む</div>
+   <div class="sub ol">序章をひらく</div></div>
+  <div class="mi" data-id="__doc"><div class="t ol">資料を開く</div>
+   <div class="sub ol">AIの原理 ／ 原論文32本</div></div>`;
+ document.getElementById('menu').innerHTML=h;
+ document.querySelectorAll('.mi').forEach(el=>el.onclick=()=>{
+  if(el.dataset.id==='__end'){settle();return}
+  if(el.dataset.id==='__intro'){location.href='intro.html?from=ch1.html';return}
+  if(el.dataset.id==='__doc'){openDoc('');return}
+  S.sel=el.dataset.id;paintPane();paintMenu()});
+}
+/* 人数を決めるカード（評価者）用の増減ボタン。★人員は通期40名が上限（設定24） */
+function stepper(){
+ const n=S.hireN,mx=hireMax();
+ const b=(d,l)=>`<button class="btn" style="min-width:54px;padding:8px 4px"
+  ${(n+d<1||n+d>mx)?'disabled':''} onclick="setN(${n+d})">${l}</button>`;
+ return `<div class="def" style="border-color:#f5c14e;background:rgba(245,193,78,.08)">
+  <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+   ${b(-10,'−10')}${b(-1,'−1')}
+   <b style="font-family:Oswald;font-size:26px;color:#ffdf9c;min-width:54px;text-align:center">${n}</b>
+   <span style="color:#bcccdd">名</span>${b(1,'＋1')}${b(10,'＋10')}</div>
+  <div class="note" style="margin-top:8px">
+   人件費 <b>${n} 億円／年</b>（5年目まで毎年。5年で <b>${n*5} 億円</b>）<br>
+   いま雇っている <b>${S.staff} 名</b>（うち未配属 ${freeStaff()} 名）／あと <b>${mx} 名</b>まで
+  </div></div>`;
+}
+function setN(n){S.hireN=Math.max(1,Math.min(Math.max(1,hireMax()),n));paintPane()}
+
+function paintPane(){
+ const a=A.find(x=>x.id===S.sel),w=why(a),cost=costOf(a);
+ const stp=a.kind==='staff'?stepper():'';
+ const need=a.staff?`<div class="note">この工程には <b>${a.staff}名</b> の人手が要ります。
+  いま未配属は <b>${freeStaff()}名</b>です。<b>投じた人はこの工程に固定されます。</b></div>`:'';
+ /* ★値札の出どころを画面に出す（→01 §8-1）。正本は ch1.data.js */
+ const src=`<details class="cite"><summary>この値札の出どころ</summary>
+  ${a.tag}<br>${a.cite}</details>`;
+ /* ★★3枚を比べる表を【押す前】に出す（★2026-08-20。★山田様の決定3。→記録 §66 の2・§76 の3）
+    ★出すのは「作る」の3枚だけ（★kind==='train'）。★人を雇う・見本を読ませるは配分の話ではない
+    ★★いま見ているカードの行に目印を付ける（★決算の「← これを選びました」と同じ仕掛け。★語は別）
+    ★★表と見出しは土台の部品（`C.cmpHead` / `C.cmp`）で組む。★★id は出ない（→ 上の cmpRows の注） */
+ const cmp=a.kind==='train'
+  ?C.cmpHead('3枚を比べる')
+   +C.cmp({keys:CMP_K,rows:cmpRows(),sel:a.id,lab:'← いま見ているカード'})
+   +CMP.note
+  :'';
+ document.getElementById('pane').innerHTML=`
+  <div class="pt"><h2 class="ol">${a.name}</h2><div class="tag">
+   <span><span class="k ol">費用</span> <span class="v y n ol">${yen(cost)}</span>
+    <span class="k ol">億円${a.kind==='staff'?'／年':''}</span></span>
+  </div></div>
+  <div class="pc">
+   <div class="cbody">
+    <p class="lead">${a.lead}</p>
+    <div class="def">${a.def}</div>
+    ${stp}
+    <div class="note">${a.note}</div>
+    ${need}
+    ${cmp}
+    ${src}
+   </div>
+   <div class="row">
+    <button class="btn more" onclick="pop('${a.help}')">くわしく知る</button>
+    <button class="btn go" ${w?'disabled':''} onclick="ask('${a.id}')">${w||'これを実行する'}</button>
+   </div></div>`;
+}
+function ask(id){
+ const a=A.find(x=>x.id===id),cost=costOf(a);
+ const extra=a.kind==='staff'
+  ?`<div class="mline"><span>雇う人数</span><b>${S.hireN} 名</b></div>
+    <div class="mline"><span>人件費</span><b>${yen(cost)} 億円／年（5年で ${yen(cost*5)} 億円）</b></div>
+    <div class="mline"><span>実行後の合計</span><b>${S.staff+S.hireN} 名 ／ あと雇える ${D.set.staffCap-(S.staff+S.hireN)} 名</b></div>`
+  :`<div class="mline"><span>費用</span><b>${yen(cost)} 億円</b></div>`;
+ const st=a.staff?`<div class="mline"><span>この工程に固定される人員</span><b>${a.staff} 名</b></div>`:'';
+ /* ★人を雇うは【この章に1回だけ】（→記録 §117-5・§138-1）。★押し間違いが取り返せないので、
+    ★実行の前に「1回だけ」と実行後の人数を必ず出す */
+ const once=a.kind==='staff'
+  ?`<div class="note"><b>この章で人を雇えるのは、この1回だけです。</b>
+    実行すると、この章ではもう雇えません。<b>人数はいま決めた ${S.hireN} 名で確定します。</b></div>`:'';
+ document.getElementById('dlg').innerHTML=`
+  <div class="dh"><h3>実行しますか</h3><div class="x" onclick="shut()">×</div></div>
+  <div class="db">
+   <p class="lead" style="font-size:16px">${a.name}</p>
+   ${extra}${st}
+   <div class="mline"><span>実行後の予算の残り</span><b>${yen(money()-cost)} 億円</b></div>
+   ${once}
+   <div class="row"><button class="btn" onclick="shut()">やめる</button>
+    <button class="btn go" onclick="shut();exec('${id}')">実行する</button></div>
+  </div>`;
+ document.getElementById('veil').classList.add('on');
+}
+function exec(id){
+ const a=A.find(x=>x.id===id);
+ if(a.kind==='staff'){
+  S.staff+=S.hireN;
+  S.hireN=Math.min(10,Math.max(1,hireMax()));
+  S.log.push(id);   /* ★人を雇うは【1章に1回だけ】（→記録 §117-5・§138-1）。
+                       ★他のカードと同じく「実施済み」になるよう log に積む。
+                       ★id は 'hire'。★settle は 'sft' しか includes しないので干渉しない */
+ }else{
+  S.dev+=a.cost;S.used+=a.turn;S.log.push(id);
+  if(a.staff)S.assigned+=a.staff;
+  if(a.kind==='train')S.trained=a;
+ }
+ const nx=A.find(x=>!why(x));if(nx)S.sel=nx.id;
+ paintTop();paintMenu();paintPane();say(id);
+}
+/* メニューの位置はレイアウトで変わる。縦積みのときだけ「上」になる */
+function menuSide(){const c=document.documentElement.classList;
+ return c.contains('fluid')&&!c.contains('side')?'上':'左'}
+function say(last){
+ lastSay=last;saidOnce=true;
+ let h='<span class="lbl">AI秘書・鳥居 麻衣</span><br>';
+ if(!last){
+  h+=`${menuSide()}のメニューから選んでください。<b>選ぶだけでは実行されません。</b><br>
+   資金は <span class="hl">5,000億円</span>。1年目の目標は、AIを1体つくって世に出すことです。`;
+ }else if(last==='sft'){
+  h+=`見本を読ませました。<span class="ok">指示に従う力が 10 上がります。</span><br>
+   <span style="color:#bcccdd">見本を書く10名は、この工程に固定されました。他の工程には回せません。</span>`;
+ }else if(last==='hire'){
+  h+=`いま <span class="hl">${S.staff}名</span> 雇っています（未配属 ${freeStaff()}名）。<br>
+   <span style="color:#bcccdd">人件費は5年目まで毎年 ${S.staff}億円です。通期の上限は40名です。</span>`;
+ }else{
+  const r=S.trained.ratio;
+  h+=`学習を始めました。読ませた文章は、パラメータ1個あたり <span class="hl">${r.toFixed(1)}語</span> です。`;
+  h+=`<br><span style="color:#bcccdd">この配り方が良かったかは、決算で分かります。</span>`;
+ }
+ /* ★★時間で出す案内をやめた（★2026-08-19。→ 03 §59）。
+    ★旧  `last&&left()===0` ＝★残りターンで出していたので、★4ターン使った手だけで出ていた
+    ★★かつ「できることは終わりました」は【真ではなかった】：★人を雇う手は最後まで残っている
+    ★新  ★AIを作ったら出す。★条件を「やることが済んだら」に変えて、★断定をやめた
+      → ★★決算に進める条件（左メニューの「1年目を締める」）と同じ条件になった */
+ if(last&&S.trained)h+=`<br><span class="hl">やることが済んだら、メニューの一番下の「1年目を締める」へ。</span>`;
+ document.getElementById('said').innerHTML=h;
+ padStage();
+}
+/* ══════════ 層2「くわしく知る」── 型を固定する（03_資料Web版.md §2） ══════════
+   ① 図　② 何が起きていたか　③★今日から使えること　④ 先にこれをやった研究チームが書いていること
+   ⑤ もっと詳しく → 資料（1本だけ）
+   ★型をコードで強制する。手書きにすると③が抜ける（実際に5本とも抜けていた） */
+function pop(k){const d=H[k];if(!d)return;
+ const use=d.use?`<div class="use"><div class="uh"><b>★ あなたが今日から使えること</b>
+   <span class="utag${d.utag==='導出'?' d':''}">${d.utag||''}</span></div>
+   <div class="ub">${d.use}</div></div>`:'';
+ /* ★★〔確信度 ${d.cf}〕を落とした（★2026-08-20。★01 §8-1 の条文の (a)）。
+    ★★`H[k].cf` の欄そのものは【残してある】。★描画だけをやめた
+    ★理由：★確信度は自己申告であって、★読む人が確かめる手ではない。
+      ★看板「確かめられるから正しい」を支えているのは【出典（論文名＋節/式/表番号）】である
+    ★★〔【実測】〕の側は確信度ではない（★数値の出どころ）ので、★この処置の対象外である */
+ const cite=d.cite?`<details class="cite"><summary>先にこれをやった研究チームが書いていること`
+   +`</summary>${d.cite}</details>`:'';
+ const ref=d.doc?`<div class="dref" onclick="openDoc('${d.doc}')"
+   >もっと詳しく → 資料 ${d.dt}</div>`:'';
+ document.getElementById('dlg').innerHTML=
+  `<div class="dh"><h3>${d.t}</h3><div class="x" onclick="shut()">×</div></div>
+   <div class="db">${d.b}${use}${cite}${ref}</div>`;
+ document.getElementById('veil').classList.add('on')}
+function shut(){document.getElementById('veil').classList.remove('on')}
+document.getElementById('veil').onclick=e=>{if(e.target.id==='veil')shut()};
+
+/* ══════════ 層3 資料 ══════════
+   doc.html はゲームと同じ骨格（額縁・上部バー・左メニュー・麻衣）を持つので、
+   iframe で入れ子にせず画面遷移する。戻ったときに進行が消えないよう
+   sessionStorage に状態を預ける（★ch1.html に初めて入る永続化） */
+function openDoc(anchor){
+ /* ★★別タブで開く（★2026-08-19 山田様の指摘 A3）。
+    ★同じタブで遷移していたので、★資料を閉じると本体ごと消え、★戻ると資料側が消えていた
+    ★`window.open` は file:// でも動くので 01 §9（★fetch を使わない・単体で開ける）に反しない
+    ★★`noopener` は付けない：★戻り値が必ず null になり、★下の「塞がれたか」の判定ができない
+    ★塞がれたときだけ、★従来の遷移（sessionStorage に預けて同じタブ）に落とす
+    ★★`?from=ch1.html` を付ける（★2026-08-20。★山田様の指摘 G26）。
+      ★資料側は【来た章】の名前で戻るボタンを出す。★塞がれて同じタブで開いたときに効く
+      ★★別タブで開けた場合は opener があるので、★資料側は from を見ずに元のタブへ戻す */
+ const url='doc.html?from=ch1.html'+(anchor||'');
+ const w = window.open(url, '_blank');
+ if(w){ try{ w.focus() }catch(e){} return }
+ try{sessionStorage.setItem('ch1',JSON.stringify(S))}catch(e){}
+ location.href=url;
+}
+function restore(){
+ try{const j=sessionStorage.getItem('ch1');
+  if(j){Object.assign(S,JSON.parse(j));sessionStorage.removeItem('ch1');return true}
+ }catch(e){}
+ return false;
+}
+addEventListener('keydown',e=>{if(e.key==='Escape')shut()});
+
+/* ══════════ 決算（02 §1）══════════
+   ★第1章には売値が無い（売値は第3章から）。だから売上・運用費・魅力・シェアは
+     この章では計算しない。出すのは 5本のバー／出荷判定／使ったお金／人員／予告。
+     → 01 §4 の H「1〜2年目はシェア0%・赤字だけになるので、バーだけ見せる」
+   ★旧実装は 反応＝考える力×40＋指示に従う×7、4ターン到達で ×0.85 だった。
+     どちらも設計に無い（追加調達は無い＝設定2。他社は年単位＝設定8）。落とした */
+function settle(){
+ if(!S.trained){pop('dull');return}
+ const c=S.trained;
+ const R=D.settle({pick:c.id,sft:S.log.includes('sft'),
+                   staff:S.staff,assigned:S.assigned,dev:S.dev});
+ let head,msg,dref,dlab,fore='';
+ if(c.id==='data'){head='2020年の常識を外して、正解を引きました';
+  msg=`読ませた文章の量が、パラメータの数にちょうど見合っています（1個あたり <b>${T2.ratio}語</b>）。<br>
+   同じ費用で実際に作られた2020年の構成は <b>${T1.ratio}語</b>、つまり <b>${Math.round(T2.ratio/T1.ratio)}分の1</b>でした。<br>
+   <b>世界最高の研究所が2年気づかなかった配分を、初回で引いています。</b>`;
+  fore=`今年決めたのは、読ませる文章の<b>量</b>だけです（<b>${D.words(T2.w)}</b>）。<br>
+   <b>その量を何で埋めるかは、まだ決まっていません。</b>倉庫にある文章は5種類あって、
+   どれをどれだけ読ませるかで、できあがるAIが変わります。<b>それを決めるのが来年です。</b>`;
+  dref='#s7-4-chinchilla';dlab='なぜ2年間、誰も気づかなかったのか'}
+ else if(c.id==='big'){head='当時これが世界最高でした。ただし2年後に修正が入ります';
+  msg=`<b>読ませた文章の量が、パラメータの数に対して足りていません</b>（1個あたり <b>${T1.ratio}語</b>。目安は${T2.ratio}語）。<br>
+   同じ費用で、パラメータを 3.4分の1 にして文章を 3.4倍 にする道がありました。そちらの方が賢くなります。<br>
+   ただし、<b>2022年まで誰もこれに気づいていませんでした。</b>`;
+  fore=`パラメータが多いほど、<b>1回答えるごとの費用が上がります。値段を決める第3章で効いてきます。</b>`;
+  dref='#s7-4-chinchilla';dlab='なぜ2年間、誰も気づかなかったのか'}
+ else{head='安く済みました。ただし賢さは伸びません';
+  msg=`大きくしたときの効きが、驚くほど鈍いからです。<br>
+   <b>だから各社は桁で金をかけています。</b>安く済ませると、その桁を放棄することになります。`;
+  fore=`残ったお金は来年に使えます。ただし、<b>今年決めた規模の小ささは、来年の配り方では変えられません。</b><br>
+   <b>このままでは、売り始める第3章で製品が売れる水準に届きません。</b>`;
+  dref='#s7-4-power-law';dlab='効きはどれだけ鈍いのか'}
+ const mai=(t,col)=>`<div class="qt" style="border-color:${col};background:rgba(103,211,232,.06)">
+   <span class="lbl" style="color:${col};font-family:Oswald;letter-spacing:.2em;font-size:10.5px"
+    >AI秘書・鳥居 麻衣</span><br>${t}</div>`;
+ document.getElementById('dlg').innerHTML=`
+  <div class="dh"><h3>第1章 決算</h3><div class="x" onclick="shut()">×</div></div>
+  <div class="db">
+   <p class="lead" style="font-size:17px;margin-bottom:16px">${head}</p>
+
+   <h4 style="margin-top:4px">できあがったAI</h4>
+   <div class="fig">${G.bars({now:R.bars.map(g=>g[1])})}</div>
+   <details class="cite"><summary>くわしく知る（この5本の数字の中身）</summary>
+    <span class="sm">
+    　<b>「指示に従う」と「安全」が逆に動くのは、論文が測っています。</b>ラベル付けのとき、役に立つことを
+    　「本当か」「害が無いか」より優先させたと書いてあり、最大の限界として
+    　「実世界で害になりうる場合でも指示に従ってしまう」と書いています。<br>
+    　<b>10点で10点という大きさは、このゲームが置いた値です。</b>論文に大きさの数字はありません。<br>
+    　<b>自信の正しさ 99点</b>は<b>100点 − ずれ0.7ポイント</b>です（99.3 を四捨五入して99）。
+    　「ずれ」は<b>AIが言った自信と、実際の正解率の差</b>です（単位はポイント）。
+    　<b>ずれ0.7ポイントは論文が測った値</b>（GPT-4 の報告）で、第3章で好み訓練を強くすると 7.4ポイントまで広がります。</span></details>
+
+   <h4>${CMP.ratio3.t}</h4>
+   ${CMP.ratio3.b(c.id)}
+
+   <h4>世に出せるか</h4>
+   <div class="mline"><span>安全</span><b>${R.safe} 点</b></div>
+   <div class="mline"><span>いまのシェア（1年目・実績）</span><b>0%</b></div>
+   <div class="mline"><span>安全が許すシェアの上限</span>
+    <b style="color:${R.cap>0?'#5ed093':'#ff9d90'}">${R.cap}%</b></div>
+   <div class="mline"><span>判定</span><b style="color:${R.ship?'#5ed093':'#ff9d90'}"
+     >${R.ship?'出せます':'出せません（安全が足りません）'}</b></div>
+   <div class="fig">${G.safe({safe:R.safe,ng:30,cap:R.cap+'%',base:D.set.safeBase})}</div>
+   <details class="cite"><summary>くわしく知る（シェアと上限の話）</summary>
+    <span class="sm">
+    　<b>【いまの判定】</b><br>
+    　<b>安全が許すシェアの上限</b>は、いまの<b>安全 ${R.safe}点</b>から決まります。
+    　<b>安全が1点上がるごとに2%広がります</b>（このゲームが置いた式です）。
+    　いまは <b>${R.cap}%</b> なので、実績のシェア0%は上限の中におさまり、<b>出せます</b>。
+    　この判定が見ているのは、<b>安全だけ</b>です。<br>
+    　<b>【シェアという語の意味】</b><br>
+    　<b>シェア</b>とは、世の中でAIが使われる量のうち、<b>あなたの製品が占める割合</b>です。
+    　安全が許す上限より多くは売れないので、<b>足りない分は売らずに置きます</b>
+    　（その年を失うわけではありません）。<br>
+    　<b>【これから先】</b><br>
+    　この上限で売る量が決まりはじめるのは、<b>値段を決める第3章から</b>です。
+    　使う人が増えるほど<b>必要な安全は上がる</b>、とこのゲームは決めています。
+    　第3章からはもう一つ門が増え、<b>考える力が20点未満だと1円も売れません</b>。</span></details>
+
+   <h4>使ったお金</h4>
+   <div class="mline"><span>開発費</span><b>${yen(R.dev)} 億円</b></div>
+   <div class="mline"><span>人件費（1年目）</span><b>${yen(R.fixed)} 億円（${S.staff}名）</b></div>
+   <div class="mline"><span>予算の残り</span><b>${yen(R.left)} 億円</b></div>
+   <!-- ★★語と断りの正本は 03 §74-2（★★「資金」は現金残高ではない。★予算の残りである）。
+        ★★第1章は売上が0なので、★この数は全額が次の年に残る。★★それでも語は5章で1つに揃える -->
+   <div class="note">${D.oku(D.set.budget)}億円のうち、まだ使っていない分です。<br>
+    <b>追加の出資はありません。</b>この残りが、あと4年ぶんの全部です。<br>
+    今年は年度末に出したところなので、<b>売上はまだ立ちません。</b>値段を決めるのは第3章です。<br>
+    <span class="sm">1年ごとの利益は別に積まれていて、5年目の決算の「5年間の累計利益」に出ます。</span></div>
+
+   <h4>人手</h4>
+   <div class="mline"><span>雇った人員</span><b>${S.staff} 名 ／ 5年間の上限 ${D.set.staffCap} 名</b></div>
+   <div class="mline"><span>うち見本に固定した</span><b>${S.assigned} 名</b></div>
+   <div class="mline"><span>これから雇える</span><b>${hireMax()} 名（未配属 ${R.staffFree} 名）</b></div>
+   <div class="note">見本を書く／答えを順位づける／答え合わせに注釈を付ける。
+    <b>この3つ全部に人を回すには、上限の40名では足りません。</b>だから全部はできません。<br>
+    <span class="sm">上限40名は、実際にこれをやった研究チームが雇った人数です（単位は人。論文の実測値）。
+    バーを1ポイント上げるのに1名かかります（この換算はこのゲームが置いた規則です）。</span></div>
+
+   ${mai(msg+(fore?`<br><br>${fore}`:''),'#67d3e8')}
+   ${mai(`ひとつ、この判断について申し上げます。<br>
+    <b>先に読めるのは「間違いの量」までで、何ができるようになるかは読めません。</b>
+    <details class="cite" style="margin-top:8px"><summary>くわしく知る（GPT-4 の予測の話）</summary>
+    GPT-4 を作ったチームは、<b>GPT-4 そのものを作るのに使った計算量の1万分の1以下</b>で
+    作った小さいモデル群から、<b>GPT-4 の「間違いの量」を、学習を始めた直後に予測しました</b>。
+    途中の結果を一切使わずに、です。<br>
+    <span class="sm">「間違いの量」は、<b>次に来る語をどれだけ外したか</b>を測った数です（論文の語では損失）。
+    測った相手は、<b>学習に使っていない社内のプログラム集</b>でした。<br>
+    <b>これは「賢さ」ではありません。</b>「賢さ」＝問題を解ける割合は、別に測る必要があります。</span><br>
+    <b>予測できたのは、そこまでです。</b><br>
+    <span class="sm">
+    　<b>① 問題を解ける割合は、いちばん易しい束で外しました。</b>
+    　プログラムを書かせる問題集を難しさで6つの束に分け、
+    　<b>いちばん易しい束だけ、GPT-4 が予測を下回りました</b>（他の5つはよく当たりました）。<br>
+    　<b>② 個々の力は、まだ読めません。</b>原典は「<b>特定の能力は依然として予測が難しい</b>」と書いています。
+    　挙げている例は、<b>規模を大きくすると成績が下がる</b>と分かっていた課題群です
+    　（GPT-4 はそのうち1つで、下がる傾向をひっくり返しました）。</span></details>`,'#f5c14e')}
+
+   <div class="dref" onclick="openDoc('${dref}')">${dlab} → 資料 §7-4</div>
+
+   <details class="cite"><summary>章末の事実（判断には使いません）</summary>
+    <b>いまのAIの喋り方を決めたのは、思ったより少ない人数と件数です。</b><br>
+    人が書いた見本は <b>約1万3千件</b>、答えを良い順に並べたのは <b>約3万3千問</b>についてです。
+    選んでいたのは約40名で、評価者どうしの意見が一致した割合は 72.6% でした。<br>
+    <span style="color:#8a9db3">※「間違いの量」は論文の指標で、<b>このゲームの数値ではありません。</b>
+    画面の「考える力」は 0〜100 に置き直した目盛りです。</span></details>
+
+   <div class="row"><button class="btn" onclick="location.reload()">やり直す</button>
+    <button class="btn go" onclick="toCh2()">第2章へ</button></div>
+
+   <details class="cite"><summary>この画面の数字の出どころ</summary>
+    論文は計算の量を <b>PF-days</b> という単位で書いています。1 PF-days ＝
+    1秒に1,000兆回の計算を1日ぶん回した量です。<b>この画面では 1 PF-days ＝ 1億円 ＝ 計算1日として
+    お金と時間に置き換えています</b>（論文に金額の記載はありません）。<br>
+    1,750億／3,000億語／3,640 PF-days（Brown et al. 2020）、
+    512億／1兆247億語＝同じ計算量になる配り方（6ND で 3,643 PF-days）、
+    パラメータ当たり約20語（Hoffmann et al. 2022「Training Compute-Optimal Large Language Models」
+    arXiv:2203.15556。この論文はこのゲームが確かめた論文32本の外です）、
+    2倍で間違い0.95倍（Kaplan et al. 2020 Eq.1.1）、
+    見本1万3千件・4.9 PF-days（Ouyang et al. 2022 §3.2・§5.1）、
+    評価者の上限40名（同 §5.3）、器（Vaswani et al. 2017）。<br>
+    <b>5本のバーの目盛り・人件費・他社の力は、ゲームのために置いた値です。</b></details>
+  </div>`;
+ document.getElementById('veil').classList.add('on');
+ /* ★★選んだ配分の行の目印は【組み立て時】に付く（★2026-08-20。★土台の部品に切り替えた分）
+    ★旧版は描いたあとに DOM を引いて `.me` を付けていた（`querySelector('#dlg #cmp-…')`）。
+    ★★土台の部品は id を出す口を持たないので、★引く相手がいない ＝ この行は消した。
+    ★★代わりに `CMP.ratio3.b(c.id)` で札を渡している（★`b` を文字列から関数に変えた）
+    ★★`b` を関数にした理由：★決算の段2 の文と表を【同じ1箇所】に保つため。
+      ★表だけを外に出すと段2 が2箇所に散る（★型⑥の形そのもの） */
+}
+
+/* ══════════ 第2章へ引き渡す（ch_common.js §B の手順）══════════
+   ★§B の指定は2行：C.closeYear(D,R,run); C.save(run); location.href='ch2.html';
+   ★closeYear が run に焼くもの  5本のバー／支出／累計利益／設定9 の倍率／救済／ログ
+   ★closeYear が【焼かないもの】は、こちらで run に入れる：
+       pick（選んだ作り方）／sft（見本を読ませたか）／tokensB・paramsOku（第2章の配合の分母）／
+       staff・assigned（人員の通期の枠）
+   ★tokensB の単位は【B】である（ch2.data.js の注記「ch1.data.js の w ÷ 10」）。
+     ★3,000億語 → 300B。★ここで単位を間違えると第2章の配合の分母がずれる
+   ★★closeYear() は D.ch・D.year を読む。★ch1.data.js は 2026-08-19 に `ch:1, year:1` を持った
+     （★設計役が入れた。★それまでは呼ぶ側で添えていた。★添え物は落とした＝★型⑥の残骸を作らない） */
+function toCh2(){
+ const c=S.trained; if(!c){pop('dull');return}
+ const sft=S.log.includes('sft');
+ const R=D.settle({pick:c.id,sft,staff:S.staff,assigned:S.assigned,dev:S.dev});
+ const run=Object.assign({},C.RUN0,{
+  pick:c.id, sft,
+  tokensB:c.w/10, paramsOku:c.p,
+  staff:S.staff, assigned:S.assigned
+ });
+ C.closeYear(D,R,run);
+ C.save(run);
+ location.href='ch2.html';
+}
+/* ★資料から戻ってきたら進行を復元する
+   ★★2026-08-21：★序章が intro.html に出たので、★この章に序章の場面は無い。
+     ★★`.full` と `.intro` を外すのは【序章から本編に切り替える】ための処置だった。
+     ★★いまは念のための1回だけ残す（★付いていなければ何も起きない） */
+restore();
+document.querySelector('.panel').classList.remove('full');
+document.documentElement.classList.remove('intro');
+paintTop();paintMenu();paintPane();say(lastSay);
+</script>
+</body>
+</html>
