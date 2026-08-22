@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex,nofollow,noarchive">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AI開発会社の社長になる ── 5,000億円と5年</title>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Zen+Kaku+Gothic+New:wght@500;700;900&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="ui.css">
+</head>
+<body>
+<div id="fit"><div id="frame">
+
+<div id="office"></div>
+<img id="bgimg" src="assets/bg_office.png" alt="" onerror="this.remove()">
+<img id="bgimg2" src="assets/bg_office_portrait.png" alt="" onerror="this.remove()">
+<div id="grade"></div>
+<!-- 秘書の全身立ち絵（任意）。無ければ自分を消す -->
+<img id="whole" src="assets/secretary_full.png" alt="" onerror="this.remove()">
+
+<div class="topbar">
+ <div class="logo ol"><span>AI&nbsp;LAB</span></div>
+ <div class="when ol">
+  <span class="yr">はじめに</span>
+  <span class="qq">／ 5年のうち</span>
+ </div>
+ <div class="rival">
+  <span class="k ol">他社の力</span>
+  <span class="rbar" title="他社のAIの力。自社の満点に対する割合"><i id="rv" style="width:50%"></i></span>
+  <span class="k ol" id="rvp">50%</span>
+ </div>
+ <div class="cash">
+  <span class="y ol">&yen;</span><span class="v ol2" id="cash">5,000</span><span class="u ol">億円</span>
+ </div>
+</div>
+
+<div class="stage">
+ <div class="menu" id="menu"></div>
+ <div class="panel full"><div id="pane"></div></div>
+</div>
+
+<div class="info">
+ <div class="infoH"><b>Information</b></div>
+ <div class="in">
+  <div class="bust">
+   <div class="ph"><div class="h"></div></div>
+   <img src="assets/secretary_bust.png" alt="" onerror="this.remove()">
+  </div>
+  <div class="said" id="said"></div>
+ </div>
+</div>
+
+<div class="veil" id="veil"><div class="dlg" id="dlg"></div></div>
+
+</div></div><!-- /#frame /#fit -->
+
+<script src="fig.js"></script>
+<script src="ch_common.js"></script>
+<script>
+/* ══════════ 入口の字（★序章からの写し。★新しい主張を足していない）══════════ */
+const PANE=`
+ <div class="pt"><h2 class="ol">AI開発会社の社長になる</h2><div class="tag">
+  <span><span class="k ol">5,000億円</span> <span class="v c n ol">5</span>
+   <span class="k ol">年</span></span>
+ </div></div>
+ <div class="pc">
+  <div class="ibody">
+   今日から、あなたは <b>AI開発会社の社長</b>です。<br>
+   何を作るか、お金を何に使うかを、全部あなたが決めます。<br><br>
+   <b class="em">5,000億円と5年。AIを1体つくって、世界と競争します。</b><br>
+   <span class="sm">AIは1体だけです。作り直せません。1年 ＝ 1章で、全部で5章あります。</span><br><br>
+   <span class="sm">画面の数字は、書籍『原論文から解き明かす生成AI』（菊田遥平／技術評論社）が
+   扱う論文32本から取りました。<br>
+   　 論文名と節番号が付いているので、気になったら自分で原文に当たれます。</span>
+  </div>
+  <div class="row">
+   <button class="btn go" onclick="location.href='intro.html'">はじめる</button>
+   <button class="btn" onclick="location.href='ch1.html'">説明をとばして第1章へ</button>
+  </div>
+ </div>`;
+
+/* ══════════ 左メニュー（★遷移だけ。★選択肢を持たない）══════════ */
+const MENU=`
+ <div class="grpL ol">はじめに</div>
+ <div class="mi sel"><div class="t">AI開発会社の社長になる</div>
+  <div class="sub">5,000億円と5年</div></div>
+ <div class="grpL ol">本編</div>
+ <div class="mi fin" data-go="intro.html"><div class="t ol">はじめる</div>
+  <div class="sub ol">序章 ── 麻衣の説明</div></div>
+ <div class="mi" data-go="ch1.html"><div class="t ol">説明をとばして第1章へ</div>
+  <div class="sub ol">AIを1体つくる</div></div>
+ <div class="grpL ol">説明</div>
+ <div class="mi" data-go="doc.html"><div class="t ol">資料を開く</div>
+  <div class="sub ol">AIの原理 ／ 原論文32本</div></div>`;
+
+C.boot(()=>{});
+/* ★秘書の全身を出す（★入口は序章の手前なので、★序章の1ページ目と同じ扱いにした）
+   ★出す指定は ui.css の `html.firstpage #whole`（★既定は display:none） */
+document.documentElement.classList.add('intro','firstpage');
+document.getElementById('pane').innerHTML=PANE;
+document.getElementById('menu').innerHTML=MENU;
+document.querySelectorAll('.mi[data-go]').forEach(el=>
+ el.onclick=()=>{location.href=el.dataset.go});
+document.getElementById('said').innerHTML=
+ '<span class="lbl">AI秘書・鳥居 麻衣</span><br>'
+ +'おはようございます。<br>'
+ +'はじめての方は <span class="hl">「はじめる」</span> を押してください。'
+ +'序章で、これから作るものをご説明します。';
+</script>
+</body>
+</html>

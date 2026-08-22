@@ -1,0 +1,797 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex,nofollow,noarchive">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>第3章 ── 人の好みで整える</title>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Zen+Kaku+Gothic+New:wght@500;700;900&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="ui.css">
+</head>
+<body>
+<div id="fit"><div id="frame">
+
+<!-- ══════════ オフィス（中身は fig.js の G.office） ══════════ -->
+<div id="office"></div>
+<img id="bgimg" src="assets/bg_office.png" alt="" onerror="this.remove()">
+<img id="bgimg2" src="assets/bg_office_portrait.png" alt="" onerror="this.remove()">
+<div id="grade"></div>
+<img id="whole" src="assets/secretary_full.png" alt="" onerror="this.remove()">
+
+<!-- ══════════ 上部バー（★年だけを出す。★他社の力は割合の字も出す＝決定6） ══════════ -->
+<div class="topbar">
+ <div class="logo ol"><span>AI&nbsp;LAB</span></div>
+ <div class="when ol">
+  <span class="yr" id="tYear">3年目</span>
+  <span class="qq" id="tQ">／ 5年のうち</span>
+ </div>
+ <div class="rival">
+  <span class="k ol">他社の力</span>
+  <span class="rbar" title="他社のAIの力。自社の満点に対する割合"><i id="rv" style="width:50%"></i></span>
+  <span class="k ol" id="rvp">50%</span>
+ </div>
+ <div class="cash">
+  <span class="y ol">¥</span><span class="v ol2" id="cash">0</span><span class="u ol">億円</span>
+ </div>
+</div>
+
+<div class="stage">
+ <div class="menu" id="menu"></div>
+ <div class="panel"><div id="pane"></div></div>
+</div>
+
+<div class="info">
+ <div class="infoH"><b>Information</b></div>
+ <div class="in">
+  <div class="bust">
+   <div class="ph"><div class="h"></div></div>
+   <img src="assets/secretary_bust.png" alt="" onerror="this.remove()">
+  </div>
+  <div class="said" id="said"></div>
+ </div>
+</div>
+
+<div class="veil" id="veil"><div class="dlg" id="dlg"></div></div>
+
+</div></div><!-- /#frame /#fit -->
+
+<script src="fig.js"></script>
+<!-- ★土台（章をまたぐ条件・決算の枠・カードUIの部品） -->
+<script src="ch_common.js"></script>
+<script src="ch3.data.js"></script>
+<script>
+
+/* ══════════ 資料由来の数字（★文面の一部。★差し込み口にしない）══════════
+   ★出どころ  ★勝率2件＝Ouyang et al. 2022 §4.1 ／★ずれの生値＝OpenAI 2023 Figure 8 ／
+     ★評価者の人数と一致率＝資料 付録A・§3.4 ／★原価の桁＝資料 §3-5・§6.3 */
+const LIT={
+ win1:'85 ± 3%',    // 好み訓練したAI 対 素のAI
+ win2:'71 ± 4%',    // 好み訓練したAI 対 頼み方を工夫した素のAI
+ ece0:'0.007',      // 好み訓練の前
+ ece1:'0.074',      // 好み訓練の後
+ labN:'40人ほど',   // 評価者の人数
+ labA:'7割',        // 評価者どうしの一致率
+ days:'3,640 計算日',
+ kwh :'約0.4 kW-h ＝ 数セント'
+};
+
+/* ══════════ 図（★fig.js の部品だけで描く。★新しい部品を作っていない）══════════
+   使った部品  G.man（人）／G.bub（吹き出し）／G.box（箱の枠）
+   ★帯（<rect>）と文字は ch1.html・ch2.html の図と同じ書き方（生の SVG）である */
+const F={
+pref:obeyNow=>{
+ const P=id=>D.opt('pref',id);
+ const ord=['none','weak','mid','strong'];
+ const obey=id=>obeyNow+P(id).obey, cal=id=>100-P(id).ece;
+ const W=92, X0=150, GAP=118;                    // ★4段ぶんの目盛り（★左は呼び名の欄）
+ const bar=(x,y,v,col)=>`<rect x="${x}" y="${y}" width="${(W*v/100).toFixed(1)}" height="12"
+   rx="2" fill="${col}" stroke="rgba(0,0,0,.35)" stroke-width=".6"/>
+  <rect x="${x}" y="${y}" width="${W}" height="12" rx="2" fill="none" stroke="rgba(255,255,255,.18)"/>`;
+ return `<svg viewBox="0 0 640 300" style="width:100%">
+ <text x="10" y="14" fill="#bcccdd" font-size="12">① 答えを2つ出す　→　② 人が選ぶ　→　③ 選ばれた側に寄せる</text>
+ ${G.box(10,24,190,86,'#67d3e8')}
+ ${G.man(46,96,.9,'#8fd8f0')}
+ ${G.bub(74,36,52,22,'答えA','#67d3e8')}
+ ${G.bub(134,36,52,22,'答えB','#67d3e8')}
+ <text x="105" y="104" fill="#8a9db3" font-size="10.5" text-anchor="middle">①</text>
+ ${G.box(214,24,190,86,'#f5c14e')}
+ ${G.man(250,96,.9,'#ffdf9c')}
+ ${G.bub(278,36,52,22,'答えA','#f5c14e')}
+ <text x="352" y="52" fill="#8a9db3" font-size="11">こちら</text>
+ <text x="309" y="104" fill="#8a9db3" font-size="10.5" text-anchor="middle">②</text>
+ ${G.box(418,24,212,86,'#5ed093')}
+ ${G.man(452,96,.9,'#a9e8c4')}
+ <text x="524" y="60" fill="#c9f2dc" font-size="11" text-anchor="middle">選ばれ方に寄せる</text>
+ <text x="524" y="104" fill="#8a9db3" font-size="10.5" text-anchor="middle">③</text>
+
+ <line x1="10" y1="126" x2="630" y2="126" stroke="#7590a8" stroke-dasharray="4 4"/>
+ <text x="10" y="146" fill="#bcccdd" font-size="12">どれだけやるか（2本は逆を向く）</text>
+ ${ord.map((id,i)=>`<text x="${X0+i*GAP+W/2}" y="164" fill="${
+   id==='none'?'#8a9db3':'#f4f8fc'}" font-size="11.5" text-anchor="middle">${P(id).name}</text>`).join('')}
+ <rect x="10" y="176" width="9" height="9" fill="#5ed093"/>
+ <text x="24" y="185" fill="#c9f2dc" font-size="10.5">指示に従う</text>
+ ${ord.map((id,i)=>bar(X0+i*GAP,176,obey(id),'#5ed093')).join('')}
+ ${ord.map((id,i)=>`<text x="${X0+i*GAP+W/2}" y="204" fill="#c9f2dc" font-family="Oswald"
+   font-size="11.5" text-anchor="middle">${obey(id)}</text>`).join('')}
+ <rect x="10" y="220" width="9" height="9" fill="#67d3e8"/>
+ <text x="24" y="229" fill="#cfe0f0" font-size="10.5">自信の正しさ</text>
+ ${ord.map((id,i)=>bar(X0+i*GAP,220,cal(id),'#67d3e8')).join('')}
+ ${ord.map((id,i)=>`<text x="${X0+i*GAP+W/2}" y="248" fill="#cfe0f0" font-family="Oswald"
+   font-size="11.5" text-anchor="middle">${cal(id).toFixed(1)}</text>`).join('')}
+ <text x="10" y="276" fill="#f5c14e" font-size="12">便利さと、自信の正しさを交換している</text>
+ <text x="10" y="294" fill="#8a9db3" font-size="10.5"
+  >自信の正しさ ＝ 100 −（自信の申告のずれ。単位はポイント）</text>
+</svg>`}
+};
+
+/* ══════════════════════════════════════════════════════════════════════════
+   ★第2章からの引き継ぎ
+   ★★仮定値を置かない（★2026-08-20 の判断。★申告する）
+     ★理由  ★第2章は `FROM_CH1` という写しを持っている（★第1章を通っていないとき用）。
+       ★★あれは実際に腐って残金が5億円ずれた（★ch2.html の注記）。★同じ形を増やさない。
+     ★★だから第3章は【第2章を通っていないと遊べない】形にした。
+       ★★通っていなければ、その旨だけを出して先へ進ませない
+   ★受け取るのは `from` が 2 のものだけである（★第3章を締めた保存を入口として読まない）
+   ══════════════════════════════════════════════════════════════════════════ */
+const HAND=(()=>{const h=C.load();return (h&&h.from===2)?h:null})();
+const RUN=Object.assign({},C.RUN0,C.carry({},HAND));
+Object.assign(RUN,{year:D.year, from:2, pref:null, basis:null, price:null,
+                   capacity:0, log:RUN.log||[]});
+C.run=RUN;
+/* ★★章に入った時点で【すでに工程に固定されている人数】（★第1章の見本）。
+   ★★この章の配属はこれに足す（★2026-08-21 に直した。★★前は上書きしていたので、
+     ★第1章で見本に固定した分が消えて、★未配属が多く見えていた） */
+const ASSIGNED0=RUN.assigned||0;
+
+const P=id=>D.opt('pref',id);
+const V={
+ /* {好み訓練・弱／中／強}＝指示に従うの加算 ／ {安全・…}＝安全の減算（★加算と同じ大きさ） */
+ obeyUp :id=>P(id).obey,
+ safeDn :id=>P(id).obey,           // 安全 ＝ 50 −（指示に従う − 基礎）なので、下がる量は加算と同じ
+ /* {ずれ・やらない／弱／中／強}（ポイント） */
+ ece    :id=>P(id).ece+'ポイント',
+ /* {使う深さ・…}＝一人あたりの利用量の倍率 */
+ depth  :id=>D.depth(P(id).ece).toFixed(3),
+ /* {費用・…}{人数・…} */
+ cost   :id=>D.oku(P(id).cost)+'億円',
+ staffN :id=>P(id).staff+'名',
+ /* {指示に従う・好み訓練なしの上限}＝去年までに届いた値（★第2章末の指示に従う） */
+ obeyCap:()=>C.n1(RUN.obey),
+ /* {渡す基準A}{渡す基準C} など */
+ bA     :()=>D.opt('basis','A').obey,
+ bC     :()=>D.opt('basis','C').width,
+ bCdown :()=>Math.abs(D.opt('basis','C').obey),
+ /* 売値 */
+ yen    :id=>D.yen(D.opt('price',id).yen1000),
+ cheap  :id=>D.opt('price',id).cheap
+};
+
+const INTRO=[
+`去年までに、私は答えの中身を持ちました。今年は、<b>答え方</b>を直します。<br><br>
+ やり方は、人に選ばせることです。<br>
+ <span class="sm">① 同じ質問に、私が答えを2つ出します<br>
+ ② どちらが良いかを、人に選んでもらいます<br>
+ ③ 選ばれたほうに近づくよう、私を調整します</span><br>
+ <span class="cy">この工程を、この章では「好み訓練」と呼びます。</span><br><br>
+ 去年の見本を読ませる工程と、何が違うのか。<br>
+ <span class="sm">見本を読ませる　　人が<b>答えを書く</b>。私はそれを真似します<br>
+ 好み訓練　　　　　人が<b>私の答えを選ぶ</b>。私は選ばれ方に寄っていきます</span><br><br>
+ 去年までの工程だけでは届かない水準があります。これは実際に測られています。<br>
+ <span class="em">ただし、これをやると私に1つ壊れるところが出ます。カードで説明します。</span>`
+];
+const INTRO_T=['好み訓練'];
+
+const TXT={
+hire:{
+ lead:`好み訓練には、答えを選ぶ人が要ります。<br>
+       ここで雇った人は、5年目まで毎年の費用になります。`,
+ def:`雇える人数は5年間で合わせて <b>${D.set.staffCap}名</b>までです。<br>
+      <span class="sm">この枠は年ごとに戻りません。来年・再来年の工程も、同じ枠から人を出します。</span>`,
+ note:`「強さ」は、好み訓練をどれくらい強くかけるかです。弱・中・強の3段階から選びます（やらない、も選べます）。<br>
+       強くするほど、要る人手が増えます。弱で <b>${V.staffN('weak')}</b>、中で <b>${V.staffN('mid')}</b>、
+       強で <b>${V.staffN('strong')}</b> です。<br>
+       <span class="sm">先に人を雇っていないと、その強さは選べません。</span>`},
+
+pref:{
+ lead:`原典を作ったチームは、この工程を<b>最後に</b>置きました。順序はこう測られています。<br>
+       <span class="sm">素のAI　＜　頼み方を工夫する　＜　見本を読ませる　＜　<b>好み訓練</b></span><br>
+       つまり、見本を読ませるだけでは届かない水準があります。`,
+ def:`そして、これをやると1つ壊れます。<b>「自信の申告」</b>です。<br>
+      AIは「この答えはたぶん8割合っている」と自分で言えます。<br>
+      その申告が、実際の正解率とどれだけずれているかを測れます。<br>
+      好み訓練をやると、このずれが<b>約10倍</b>になります。<br>
+      <span class="sm">このずれが大きいほど、間違っているときも自信ありげに答えます。
+      便利になるのと引き換えに、信用してよいかの手がかりを失います。</span>`,
+ note:`このカードで動くのは、指示に従う力と安全です。先に仕組みだけ言います。<br>
+       <span class="sm">好み訓練は、指示に従う力を上げます。その代わりに安全が下がります。<br>
+       出せる相手の広さは、安全から決まります。安全が下がりきると、出せる相手の幅は狭まります。</span><br>
+       出せる相手が 0% になった年は、製品があっても売上が立ちません。翌年に持ち越せません。<br>
+       <span class="sm">この章では戻せません。安全の下限を下げる手は、来年の章にあります。</span>`,
+ ends:[
+  {id:'none', name:'やらない',
+   up:[`自信の申告のずれが ${V.ece('none')} のまま（最小）`,`費用と人手を使わない`],
+   down:[`指示に従うが ${V.obeyCap()} で止まる`]},
+  {id:'weak', name:'弱',
+   up:[`指示に従う ＋${V.obeyUp('weak')}`],
+   down:[`ずれ ${V.ece('weak')}`,`安全 −${V.safeDn('weak')}`,
+         `去年 見本を読ませていた場合、出せる相手が 0% になります`,
+         `${V.cost('weak')}`,`順位づけに ${V.staffN('weak')}`]},
+  {id:'mid', name:'中',
+   up:[`指示に従う ＋${V.obeyUp('mid')}`],
+   down:[`ずれ ${V.ece('mid')}`,`安全 −${V.safeDn('mid')}`,
+         `出せる相手が 0% になります`,`${V.cost('mid')}`,`${V.staffN('mid')}`]},
+  {id:'strong', name:'強',
+   up:[`指示に従う ＋${V.obeyUp('strong')}`],
+   down:[`ずれ ${V.ece('strong')}`,`安全 −${V.safeDn('strong')}`,
+         `出せる相手が 0% になります`,`${V.cost('strong')}`,`${V.staffN('strong')}`]}
+ ]},
+
+basis:{
+ lead:`好み訓練で答えを選ぶとき、<b>何を優先するか</b>を先に伝えます。<br>
+       原典を作ったチームは、その指示書を実際に書いています。<br>
+       指示書に何を書くかで、私の答え方が変わります。`,
+ def:`<b>役に立つことを最優先</b>　→　頼まれたことに、より従うようになります<br>
+      <span class="sm">ただし、断ったほうがよい場面でも従うようになります。
+      作ったチームは、これを自分たちの最大の限界だと書いています。</span><br>
+      <b>原典と同じ</b>　→　原典は3つを同時に指示しました<br>
+      <span class="sm">（役に立つこと・店員の基準・控えめであること）どちらにも傾けない選択です。</span><br>
+      <b>控えめであることを評価</b>　→　答えを1つに決めず、複数を並べるようになります<br>
+      <span class="sm">ただし、頼まれたことに従う度合いは下がります。</span>`,
+ note:`このカードは、好み訓練をやった場合にだけ選べます。<br>
+       <span class="sm">人に渡す指示書なので、渡す相手がいないと存在しません。</span>`,
+ ends:[
+  {id:'A', name:'有用性に寄せる',
+   up:[`指示に従う ＋${V.bA()}`],
+   down:[`安全 −${V.bA()}`]},
+  {id:'mid', name:'原典と同じ',
+   sub:`どちらにも傾けません`,
+   up:[`有用性に寄せる代償（安全）と、謙虚さに寄せる代償（指示に従う）を、どちらも払いません`],
+   down:[`有用性に寄せる効果と、謙虚さに寄せる効果も、どちらも入りません`]},
+  {id:'C', name:'謙虚さに寄せる',
+   up:[`答えの幅 ＋${V.bC()}`],
+   down:[`指示に従う −${V.bCdown()}`]}
+ ]},
+
+price:{
+ lead:`ここで初めて、値段を決めます。第1章と第2章に売値はありませんでした。<br>
+       製品が無かったので、売上が立たなかったからです。`,
+ def:`<b>高く売る</b>　→　1回あたりの利幅が増えます。ただし選ばれにくくなります<br>
+      <b>標準</b>　→　基準です<br>
+      <b>安く配る</b>　→　選ばれやすくなります。ただし1回あたりの利幅が半分になります`,
+ note:`安くしても赤字にはなりません。1回の原価は、売値よりずっと小さいからです。<br>
+       標準で売った場合より減るのは、利幅だけです。<br>
+       <span class="sm">このカードに原典はありません。売値はこのゲームのために置いた数字です。<br>
+       1回あたりの原価だけは、資料の数字から出しています。<br>
+       資料 §3-5（学習 ${LIT.days}）／§6.3（100ページの生成で ${LIT.kwh}）。<br>
+       1回使うコストは、学習のコストと桁が違います。</span>`,
+ ends:[
+  {id:'high', name:'高く売る',
+   sub:`1,000回で ${V.yen('high')}`,
+   up:[`1回あたりの利幅が増える`],
+   down:[`売値の安さ ${V.cheap('high')}（選ばれにくくなる）`]},
+  {id:'std', name:'標準',
+   sub:`1,000回で ${V.yen('std')}`,
+   up:[`基準（利幅と選ばれやすさが釣り合う）`],
+   down:[`どちらも最大にはならない`]},
+  {id:'low', name:'安く配る',
+   sub:`1,000回で ${V.yen('low')}`,
+   up:[`売値の安さ ${V.cheap('low')}（選ばれやすくなる）`],
+   down:[`1回あたりの利幅が半分になる`]}
+ ]},
+
+equip:{
+ lead:`ここまでは「AIを作る」お金の話でした。今年から「AIを使わせる」お金が出てきます。<br>
+       人に使ってもらうには、答えを返す設備が要ります。`,
+ def:`設備は<b>その年に捌く回数ぶん</b>を、毎年買います。<br>
+      去年買った分は、今年には残りません。毎年決め直します。<br>
+      <b>買わないと、1回も捌けません。製品があっても、その年の売上は0です。</b><br>
+      <b>買いすぎた分は、その年で消えます。</b>翌年に持ち越せません。`,
+ note:`どれだけ捌けるようにするかを、あなたが決めます。<br>
+       <span class="sm">1,000回を捌く容量あたり <b>${D.yen(D.set.equipX)}</b> です。
+       この単価は、AIの大きさによって変わりません。</span>`,
+ ends:[
+  {id:'buy', name:'多く買う',
+   sub:`買う量は、この上の欄で決めます`,
+   up:[`捌ける回数が増える（その回数まで売れる）`],
+   down:[`資金が減る`,`使われなかった分は、その年で消えます（翌年に持ち越せません）`]},
+  {id:'none',name:'買わない',
+   up:[`資金を使わない`],
+   down:[`1回も捌けません。その年の売上は0です`]}
+ ]}
+};
+
+function H(id){return {
+pref:{t:D.card('pref').name,b:`
+ <div class="fig">${F.pref(RUN.obey)}</div>
+ <p>この工程は、原典を作ったチームが最後に置いたものです。<br>
+ 見本を読ませるだけでは届かない水準がある、という順序が測られています。</p>
+ <p>そして自信の申告が壊れることも、同じAIの前後を比べて測られています。<br>
+ 生の数字は章末に出します。</p>`,
+ use:`AIが自信ありげかどうかを、正しさの根拠にしないでください。自信の度合いと、実際の正解率は
+      一致しません。この2つがどれくらい合っているかを「較正」と呼びます。
+      ずれが大きくなるのは、第3章でやる仕上げの工程です。`,
+ utag:'資料',
+ cites:[['先にこれをやった研究チームが書いていること',
+   '「プロンプト」＝ AIに渡す指示文のこと。<br><br>'+
+   'Ouyang et al. 2022「Training language models to follow instructions with human feedback」'+
+   'arXiv:2203.02155 §4.1<br>'+
+   '　「よく作られた少数例のプロンプトを使うことで大きな改善が得られ、次に見本による'+
+   '教師つき学習（SFT）で、最後に比較データを使った PPO による訓練で得られる」<br>'+
+   '　同 Figure 3 の比較の原点は 175B の見本モデル（SFT）です。だから見本より上だと言えます。'+
+   '<br><br>自信の申告のずれ　OpenAI 2023「GPT-4 Technical Report」arXiv:2303.08774 Figure 8<br>'+
+   '　同じモデルの前後を比べているので、この種の比較でいちばん強い形です。']],
+ doc:'#s7-3-calib',dt:'§7-3 較正（自信の正しさ）'}
+}[id]}
+
+const FACTS=[
+{t:'どれくらい強くなったのか',b:`
+ <p>これはゲームの数値ではありません。原典を作ったチームが測った数字です。</p>
+ <div class="def">人がどちらの答えを好むかを比べた勝率<br>
+  <span class="sm">　好み訓練したAI　対　素のAI　　　　　　　　　　<b>${LIT.win1}</b><br>
+  　好み訓練したAI　対　頼み方を工夫した素のAI　　<b>${LIT.win2}</b></span></div>
+ <p>どちらも「好み訓練 対 見本を読ませたAI」ではありません。<br>
+ 好み訓練が見本より上だと言えるのは、順序が測られているからです。数字ではありません。</p>
+ <div class="def">自信の申告のずれ（同じAIの前後を比べたもの）<br>
+  <span class="sm">　好み訓練の前　<b>${LIT.ece0}</b><br>
+  　好み訓練の後　<b>${LIT.ece1}</b>　← 約10倍</span></div>`,
+ use:`AIの性能を比べた数字を見たら、「何と比べたのか」を先に確かめてください。`,utag:'資料',
+ cite:'Ouyang et al. 2022, arXiv:2203.02155 §4.1（勝率2件）／'+
+      'OpenAI 2023「GPT-4 Technical Report」arXiv:2303.08774 Figure 8（自信の申告のずれ）　〔原典〕'},
+
+{t:'評価者は、何をする人か',b:`
+ <p>答えを選んだのは、雇われた人です。${LIT.labN}の人が、一致率${LIT.labA}で選んでいます。</p>`,
+ use:`AIの無難さと丁寧さは故障ではなく設計どおりです。尖った見解が要るなら、
+      質問に条件を足してください。`,utag:'資料',
+ cite:'Ouyang et al. 2022, arXiv:2203.02155 §3.4・Appendix B.3 ／ 資料 付録A　〔原典〕'},
+
+{t:'似たものばかり出るのは、故障ではない',b:`
+ <p>この章でやったのは、人の好みに寄せることです。<br>
+ 「そのせいで似た答えばかりになった」と読まれることがあります。<br>
+ 好みに寄せたせいで答えの幅が狭まったかどうかは、<br>
+ このゲームが確かめた論文32本の中では測られていません。</p>`,
+ use:`「無難で平均的な答えしか出ない」は故障ではありません。確率の高い語を選ぶ仕組みが、
+      そのとおり働いた結果です。別の答えが欲しいときは、条件を変えて聞き直してください。
+      なお「人の好みに合わせたせいで答えの幅が狭まった」かどうかは、
+      このゲームが確かめた論文32本の中では測られていません。`,utag:'資料',
+ cite:'資料 §3-3 デコーディング（softmax と貪欲法の定義から出る話です。'+
+      'この節に原典は挙げられていません）　〔教科書〕'},
+
+{t:'好みで整えるのは報酬モデル、正誤で鍛えるのはルール',b:`
+ <p>この章で私を整えたのは、人の好みを覚えた採点役です。<br>
+ 来年やるのは、機械の規則で正誤を採点する側です。</p>`,
+ use:`同じ会社が、同じ手順の中で、点数の出どころを2つに分けています。答えが決まる問題では、
+      正解かどうかと、決めた書き方を守れているかを、機械の規則で採点します。
+      答え方の好ましさは、人の好みを覚えた採点役（報酬モデル）が採点します。
+      「強化学習」の一語で中身を決めつけないでください。`,utag:'資料',
+ cite:'DeepSeek-AI 2025「DeepSeek-R1」arXiv:2501.12948 §2.2 ／ 資料 §5-1　〔原典〕'}
+];
+
+const SET={
+A:{head:'便利になりました。そのぶん、私の自信は当てにならなくなりました',
+   s2:R=>`指示に従う力が ${C.sign(R.obey-RUN.obey)} 上がりました。<br>
+    そして、自信の申告のずれが ${V.ece('none')} から ${V.ece(RUN.pref)} に広がりました。約10倍です。<br>
+    その結果、一人あたりの利用量が ${V.depth('none')} 倍から ${V.depth(RUN.pref)} 倍に下がっています。<br>
+    バーの上では ${C.n1(Math.abs((100-P('none').ece)-(100-P(RUN.pref).ece)))} しか
+    動いていませんが、売上への効き方はそれより大きいです。<br>
+    今年の粗利は 1,000回あたり ${D.yen(R.gross)} です。`,
+   s3label:'先にこれをやった研究チームが書いていること',
+   s3:`<p>この工程は、原典を作ったチームが最後に置いたものです。<br>
+    見本を読ませるだけでは届かない水準がある、という順序が測られています。<br>
+    そして自信の申告が壊れることも、同じAIの前後を比べて測られています。<br>
+    数字は章末に出します。</p>`,
+   s4:'Ouyang et al. 2022, arXiv:2203.02155 §4.1 ／ Figure 3（比較の原点は見本モデル）／'+
+      'OpenAI 2023「GPT-4 Technical Report」arXiv:2303.08774 Figure 8（自信の申告のずれ）'},
+B:{head:'私の自信は当てになります。ただし、言うことを聞く度合いは去年のままです',
+   s2:R=>`好み訓練をやりませんでした。<br>
+    自信の申告のずれは ${V.ece('none')} で、これが最小です。<br>
+    一人あたりの利用量は ${V.depth('none')} 倍で、これも最大です。<br>
+    ただし、指示に従う力は ${V.obeyCap()} で止まっています。<br>
+    人手も ${C.staffFree(RUN)}名 残っています。来年の工程に回せます。`,
+   s3label:'先にこれをやった研究チームが書いていること',
+   s3:`<p>原典を作ったチームは、この工程を最後に置きました。<br>
+    やらない選択は、その順序の途中で止まることを意味します。<br>
+    ただし、止まったぶん失っていないものがあります。</p>`,
+   s4:'Ouyang et al. 2022, arXiv:2203.02155 §4.1 ／ Figure 3'},
+fore:`来年は、答えの中身を鍛えます。人に選ばせるのではなく、機械に正誤を判定させます。`
+};
+
+/* ══════════ 状態と描画 ══════════ */
+let S={phase:'intro',ip:0,seen:[0],sel:'hire',hireN:10,equip:null,
+        hired:false};
+let lastSay=null;
+const devNow=()=>RUN.pref?P(RUN.pref).cost:0;
+const equipY=()=>RUN.capacity*D.set.equipX/1000/1e8;        // ★設備費（億円）。→ch3.data.js の eqY
+/* ★★上に出す資金は【設備費を引かない】（★2026-08-20。★実測して直した）
+   ★理由  ★★設備費は `ch3.data.js` が `fixed` に入れ、★★その年の売上と差し引きして `left` を出す。
+     ★★引いてから出すと、★売上が立つ前に「破産している」ように見える
+     （★実測：★必要ちょうどを買った時点で ★−3,666億 と出た。★実際の年末は ＋24,811億 である）。
+   ★★設備費は【設備のカードの中】と【決算】に出す。★上のバーは「いま使えるお金」の意味を保つ */
+const money=()=>D.set.budget-RUN.spent-devNow()-C.payroll(D,RUN)+(RUN.bonus||0);
+/* ★捌く回数の書き方（★大きい数なので兆と億で出す。★値は D から来る） */
+const times=n=>{n=Math.round(n);
+ return n>=1e12?(n/1e12).toFixed(2)+'兆回'
+      :n>=1e8 ?(n/1e8 ).toFixed(2)+'億回'
+      :n.toLocaleString()+'回'};
+/* ★★いまの選択で必要な容量（★D.settle が返す use。★容量に依存しない量である） */
+const needCap=()=>{
+ if(RUN.pref==null||RUN.price==null)return 0;
+ return Math.ceil(D.settle(C.stFor(D,RUN,{prevShare:RUN.share,capacity:0})).use);
+};
+/* ★選んだ端の名前（★名前の正本は ch3.data.js の opts[].name である） */
+const endName=id=>{
+ if(id==='hire')return RUN.staff+'名';
+ if(id==='equip')return S.equip==null?null
+  :(S.equip==='none'?'買わない':'多く買う（'+times(RUN.capacity)+'）');
+ const v=RUN[id]; if(v==null)return null;
+ const o=D.opt(id,v); return o?o.name:null;
+};
+const decided=id=>id==='hire'?true
+ :id==='basis'?(RUN.pref==='none'?true:RUN.basis!=null)
+ :id==='equip'?S.equip!=null
+ :RUN[id]!=null;
+const undecidedIds=()=>['pref','basis','price','equip'].filter(id=>!decided(id));
+const basisOpen=()=>RUN.pref!=null&&RUN.pref!=='none';
+/* ★★設備は【必要な容量が決まってから】選ぶ（★必要量は好み訓練と売値で決まる）。
+   ★理由  ★捌く回数は、好み訓練（使う深さ）と売値（選ばれやすさ）から出る。
+     ★★先に買わせると、あとで選択を変えたときに買った量が合わなくなる */
+const equipOpen=()=>RUN.pref!=null&&RUN.price!=null&&(RUN.pref==='none'||RUN.basis!=null);
+/* ★端ごとに押せない理由を返す（→C.ends の why） */
+const whyEnd=cardId=>e=>{
+ if(cardId!=='pref')return null;
+ const o=P(e.id);
+ if(o.staff>C.staffFree(RUN))return `人が足りない（${o.staff}名必要）`;
+ if(o.cost>money())return '資金が足りない';
+ return null;
+};
+const restLine=()=>{const n=undecidedIds().length;
+ return n?`<br><span style="color:#bcccdd">まだ選んでいないカードが ${n}枚 あります。</span>`
+        :`<br><span class="hl">選び終わりました。「${D.year}年目を締める」へ。</span>`};
+
+function paintTop(){
+ C.top(D,Math.round(money()),D.rival(D.year),{year:D.year+'年目',q:'／ 5年のうち'});
+}
+
+function paintMenu(){
+ if(S.phase==='intro'){
+  let h=`<div class="grpL ol">第3章 ── 麻衣の説明</div>`;
+  INTRO_T.forEach((t,i)=>{const sc=S.ip===i;
+   h+=`<div class="mi ${sc?'sel':''}" data-ip="${i}"><div class="t${sc?'':' ol'}">${i+1}. ${t}</div></div>`});
+  h+=`<div class="grpL ol">本編</div>
+   <div class="mi fin" data-id="__start"><div class="t ol">第3章をはじめる</div>
+    <div class="sub ol">好み訓練と売値を決める</div></div>`;
+  /* ★★序章の口は【章の説明の場面にも】置く（★決定10 の後半。★どちらの場面からでも開ける） */
+  h+=`<div class="grpL ol">説明</div>
+   <div class="mi" data-id="__intro"><div class="t ol">はじめの説明</div>
+    <div class="sub ol">序章 ── 麻衣の説明</div></div>`;
+  document.getElementById('menu').innerHTML=h;
+  document.querySelectorAll('.mi').forEach(el=>el.onclick=()=>{
+   const id=el.dataset.id;
+   if(id==='__intro'){C.openIntro();return}
+   id==='__start'?startGame():iGo(+el.dataset.ip)});
+  return}
+ let last='',h='';
+ D.cards.forEach(c=>{
+  if(c.grp!==last){h+=`<div class="grpL ol">${c.grp}</div>`;last=c.grp}
+  const sc=S.sel===c.id, o=sc?'':' ol', dn=decided(c.id);
+  const shut=(c.id==='basis'&&!basisOpen())||(c.id==='equip'&&!equipOpen());
+  const sub=c.id==='hire'?(S.hired?`${RUN.staff}名 ／ この章では雇い終わりました`
+    :`${RUN.staff}名 ／ あと${C.hireMax(D,RUN)}名`)
+   :(c.id==='basis'&&shut)?'好み訓練をやる場合だけ'
+   :(c.id==='equip'&&shut)?'好み訓練と売値を決めてから'
+   :dn?`${endName(c.id)||'選ばなくてよい'}`:'まだ選んでいません';
+  h+=`<div class="mi ${sc?'sel':''}${(c.id==='hire'?S.hired:dn)?' done':''}${shut?' gone':''}"
+   data-id="${c.id}"><div class="t${o}">${c.name}</div>
+   <div class="sub${o}">${sub}</div></div>`});
+ const nd=undecidedIds();
+ h+=`<div class="grpL ol">決算</div>
+  <div class="mi fin${nd.length?' gone':''}" data-id="__end"><div class="t ol">${D.year}年目を締める</div>
+   <div class="sub ol">${nd.length?`先に ${nd.length}枚 を選んでください`:'結果を見る'}</div></div>
+  <div class="grpL ol">説明</div>
+  <div class="mi" data-id="__chIntro"><div class="t ol">この章の説明</div>
+   <div class="sub ol">この章の入口にもどる</div></div>
+  <div class="mi" data-id="__intro"><div class="t ol">はじめの説明</div>
+   <div class="sub ol">序章 ── 麻衣の説明</div></div>
+  <div class="mi" data-id="__doc"><div class="t ol">資料を開く</div>
+   <div class="sub ol">AIの原理 ／ 原論文32本</div></div>`;
+ document.getElementById('menu').innerHTML=h;
+ document.querySelectorAll('.mi').forEach(el=>el.onclick=()=>{
+  const id=el.dataset.id;
+  if(id==='__end'){settle();return}
+  if(id==='__chIntro'){reIntro();return}
+  /* ★★序章を開く（★決定10 の後半。★土台が持つ。★戻り先は intro.html が ?from= で読む） */
+  if(id==='__intro'){C.openIntro();return}
+  if(id==='__doc'){C.openDoc('');return}
+  S.sel=id;paintPane();paintMenu()});
+}
+
+function paintIntro(){
+ const i=S.ip,last=i===INTRO.length-1;
+ document.querySelector('.panel').classList.add('full');
+ document.documentElement.classList.add('intro');
+ document.getElementById('pane').innerHTML=`
+  ${C.head(`${i+1}. ${INTRO_T[i]}`,[['第3章',i+1,'/ '+INTRO.length]])}
+  <div class="pc">
+   <div class="ibody">${INTRO[i]}</div>
+   <div class="row">
+    <button class="btn" ${i?'':'disabled'} onclick="iBack()">戻る</button>
+    <button class="btn go" onclick="iNext()">${last?'好み訓練を決める':'次へ'}</button>
+   </div></div>`;
+}
+function iGo(i){S.ip=i;if(!S.seen.includes(i))S.seen.push(i);
+ paintPane();paintMenu();const b=document.querySelector('.ibody');if(b)b.scrollTop=0}
+function iNext(){S.ip<INTRO.length-1?iGo(S.ip+1):startGame()}
+function iBack(){if(S.ip)iGo(S.ip-1)}
+function startGame(){S.phase='play';
+ document.querySelector('.panel').classList.remove('full');
+ document.documentElement.classList.remove('intro');
+ paintMenu();paintPane();say(null)}
+function reIntro(){S.phase='intro';iGo(0);say(null)}
+
+function paintPane(){
+ if(S.phase==='intro')return paintIntro();
+ S.hireN=Math.max(1,Math.min(C.hireMax(D,RUN),S.hireN));
+ const c=D.card(S.sel), t=TXT[c.id];
+ const cost=c.id==='hire'?S.hireN*D.set.staffPay
+  :c.id==='equip'?Math.round(equipY())
+  :(c.id==='pref'&&RUN.pref?P(RUN.pref).cost:0);
+ const body=c.id==='hire'
+  ? (S.hired
+   ? `<div class="note" style="border-left-color:#5ed093;color:#a9e8c4">
+      実施済み ── この章で雇えるのはこの1回だけです。<br>
+      いま雇っている <b>${RUN.staff}名</b>（うち未配属 ${C.staffFree(RUN)}名）／
+      5年間の枠の残りは <b>${C.hireMax(D,RUN)}名</b> です。</div>`
+   : `${C.stepper(D,RUN,S.hireN,'setN')}
+     <div class="row"><button class="btn go" ${C.hireMax(D,RUN)<1||S.hireN*D.set.staffPay>money()
+       ?'disabled':''} onclick="askHire()">${C.hireMax(D,RUN)<1?'これ以上は雇えません'
+       :(S.hireN*D.set.staffPay>money()?'資金が足りない':'この人数で雇う')}</button></div>`)
+  : (c.id==='basis'&&!basisOpen())
+  ? `<div class="note" style="border-left-color:#f5c14e;color:#ffdf9c">
+      いまは選べません。先に「好み訓練」で <b>やらない</b> 以外を選んでください。<br>
+      好み訓練を「やらない」にした場合、このカードは選ばなくてよいものになります。</div>`
+  : (c.id==='equip'&&!equipOpen())
+  ? `<div class="note" style="border-left-color:#f5c14e;color:#ffdf9c">
+      いまは決められません。先に「好み訓練」と「売値」を決めてください。<br>
+      捌く回数は、その2つから決まります。</div>`
+  : c.id==='equip'
+  ? `${capBox()}${C.ends(c.id,t.ends,S.equip)}`   /* ★量の欄は選んだ直後に見える位置に置く */
+  : C.ends(c.id,t.ends,RUN[c.id],whyEnd(c.id));
+ document.getElementById('pane').innerHTML=`
+  ${C.head(c.name,[['費用',D.oku(cost),'億円','y']])}
+  <div class="pc"><div class="cbody">
+   <p class="lead">${t.lead}</p>
+   <div class="def">${t.def}</div>
+   <div class="note">${t.note}</div>
+   ${body}
+   ${C.src(c.tag,c.cite)}
+  </div>
+  ${H(c.id)?`<div class="row"><button class="btn more" onclick="C.pop(H('${c.id}'))"
+    >くわしく知る</button></div>`:''}
+  </div>`;
+}
+/* ★★買う容量を決める欄（★「多く買う」を選んだときだけ出す）
+   ★必要な容量は D.settle が返す回数である。★★ボタンはその割合で動かす（★数字を書かない） */
+function capBox(){
+ if(S.equip!=='buy')return '';
+ const need=needCap(), cap=RUN.capacity, fee=equipY();
+ /* ★★出せる相手が 0% の年は、捌く回数そのものが無い（★正本の2文を並べた） */
+ if(need<=0)return C.note('出せる相手が 0% です。製品があっても、その年の売上は0です。');
+ const b=(v,l)=>`<button class="btn" style="min-width:64px;padding:8px 6px"
+   ${v===cap?'disabled':''} onclick="setCap(${v})">${l}</button>`;
+ /* ★★この容量で立つ売上を出す（★D.settle が返す。★新しい値ではない）。
+    ★理由  ★★設備費だけを出すと、★手元の資金より高い額になって「買えない」と読める。
+      ★★実際は【その年の売上から払う】（★`ch3.data.js` は fixed と rev を差し引いて left を出す） */
+ const R=D.settle(C.stFor(D,RUN,{prevShare:RUN.share,capacity:cap}));
+ return `<div class="def" style="border-color:#f5c14e;background:rgba(245,193,78,.08)">
+  ${C.mline('いまの選択で必要な容量',times(need))}
+  ${C.mline('買う容量',times(cap),cap<need?'#ff9d90':'#5ed093')}
+  ${C.mline('設備費',D.oku(Math.round(fee))+' 億円')}
+  ${C.mline('この容量で立つ売上',D.oku(Math.round(R.rev))+' 億円')}
+  ${C.msub('設備費は、その年の売上から払います。')}
+  <div class="row" style="flex-wrap:wrap;gap:6px">
+   ${b(Math.round(need*0.5),'必要の半分')}${b(need,'必要ちょうど')}
+   ${b(Math.round(need*1.5),'必要の1.5倍')}${b(Math.round(need*2),'必要の2倍')}</div>
+  ${C.note(cap<need
+   ?'足りない分は捌けません。捌けなかった回は売上になりません。'
+   :(cap>need?'余った分は、その年で消えます。':'必要な分だけ買っています。'))}
+ </div>`;
+}
+function setCap(v){RUN.capacity=Math.max(0,v);paintTop();paintMenu();paintPane();say('equip')}
+function setN(n){S.hireN=Math.max(1,Math.min(Math.max(1,C.hireMax(D,RUN)),n));paintPane()}
+function askHire(){
+ const cost=S.hireN*D.set.staffPay;
+ C.ask({title:'実行しますか',lead:D.card('hire').name,
+  body:`${C.mline('雇う人数',S.hireN+' 名')}
+   ${C.mline('人件費',D.oku(cost)+' 億円／年（5年で '+D.oku(cost*5)+' 億円）')}
+   ${C.mline('実行後の合計',(RUN.staff+S.hireN)+' 名')}
+   ${C.mline('あと雇える',(C.hireMax(D,RUN)-S.hireN)+' 名')}
+   ${C.msub('「あと雇える」は5年間の枠の残りです。')}
+   ${C.mline('実行後の予算の残り',D.oku(money()-cost)+' 億円')}
+   ${C.note('この章で雇えるのはこの1回だけです。人数はいま決めてください。')}`,
+  ok:'雇う',run:'doHire()'});
+}
+function doHire(){
+ if(S.hired)return;            /* ★★2回目は効かせない（★★画面からは押せないが、二重に塞ぐ） */
+ const n=Math.min(S.hireN,C.hireMax(D,RUN));
+ if(n<1)return;
+ RUN.staff+=n;
+ S.hired=true;
+ paintTop();paintMenu();paintPane();say('hire');
+}
+function pick(cardId,endId){
+ /* ★★押せない端は効かせない（★★`C.ends` の `why`（＝`whyEnd`）が既に押せなくしているが、二重に塞ぐ）
+    ★理由  ★★2026-08-21 に通しで走らせて見つけた：★★第1章で10名雇って見本に10名固定すると
+      ★空きは0名なので「好み訓練 弱」は押せない。★★ところが端を直接呼ぶと配属が雇用を超える
+      （★★雇用10名・配属20名）。★★画面からは押せないが、★超える形は残さない */
+ if(cardId==='pref'&&whyEnd('pref')({id:endId}))return;
+ if(cardId==='equip'){
+  /* ★★設備は「買う／買わない」を選んでから量を決める（★量は capBox の側） */
+  S.equip=endId;
+  RUN.capacity=(endId==='buy')?needCap():0;
+ }else{
+  RUN[cardId]=endId;
+  /* ★好み訓練を「やらない」に変えたら、渡す基準は選べない（★前提が消える） */
+  if(cardId==='pref'&&endId==='none')RUN.basis=null;
+  if(cardId==='pref')RUN.assigned=ASSIGNED0+P(endId).staff;      // ★その工程に固定される人員
+  /* ★★必要な容量は好み訓練と売値で変わる。★選び直したら買った量を戻す（★古い量を残さない） */
+  if(cardId!=='equip'&&S.equip!=null){S.equip=null;RUN.capacity=0}
+ }
+ paintTop();paintMenu();paintPane();say(cardId);
+}
+function say(last){
+ if(last!==undefined)lastSay=last;
+ if(S.phase==='intro'){
+  return C.say(`${C.menuSide()}のメニューから、いつでもこの説明に戻れます。<br>
+   読み終わったら <span class="hl">「好み訓練を決める」</span> を押してください。`)}
+ if(last==='__need'){
+  const nd=undecidedIds();
+  if(!nd.length)return say(null);
+  return C.say(`まだ選んでいないカードが ${nd.length}枚 あります。<br>
+   <span class="hl">${D.card(nd[0]).name}</span> を決めてください。`)}
+ if(!last){
+  const n=undecidedIds().length;
+  return C.say(n
+   ?`${C.menuSide()}のメニューから選んでください。<br>
+     <span style="color:#bcccdd">今年決めるのは <span class="hl">好み訓練</span> と
+     <span class="hl">売値</span> です。まだ選んでいないカードが ${n}枚 あります。</span>`
+   :`選び終わりました。<span class="hl">「${D.year}年目を締める」</span> に進んでください。<br>
+     <span style="color:#bcccdd">選び直しても構いません。結果は決算で分かります。</span>`)}
+ if(last==='hire'){
+  return C.say(`${RUN.staff}名 になりました。<br>
+   <span style="color:#bcccdd">未配属は ${C.staffFree(RUN)}名 です。人件費は5年目まで毎年かかります。<br>
+   この章で雇うのは、これで終わりです。</span>`+restLine())}
+ if(last==='pref'){
+  const o=P(RUN.pref);
+  return C.say((RUN.pref==='none'
+   ?`好み訓練はやりません。<span class="ok">自信の申告のずれは最小のままです。</span>`
+   :`好み訓練を <span class="hl">${o.name}</span> にしました。<br>
+     <span style="color:#bcccdd">指示に従う力が上がり、安全が下がります。</span>`)+restLine())}
+ if(last==='equip'){
+  const need=needCap();
+  return C.say((S.equip==='none'
+   ?`設備を買いません。<span class="ng">1回も捌けないので、その年の売上は0です。</span>`
+   :need<=0
+   ?`出せる相手が 0% です。<span class="ng">製品があっても、その年の売上は0です。</span>`
+   :`容量を <span class="hl">${times(RUN.capacity)}</span> 買いました。<br>
+     <span style="color:#bcccdd">必要なのは ${times(need)} です。${
+      RUN.capacity<need?'足りない分は捌けません。':
+      (RUN.capacity>need?'余った分はその年で消えます。':'ちょうどです。')}</span>`)+restLine())}
+ const o=D.opt(last,RUN[last]);
+ C.say(`${D.card(last).name}を <span class="hl">${o?o.name:''}</span> にしました。`+restLine());
+}
+
+function settle(){
+ const nd=undecidedIds();
+ if(nd.length){S.sel=nd[0];paintMenu();paintPane();return say('__need')}
+ /* ★prevShare は ch3.data.js が読む名前である（★C.stFor は share で渡すので足す） */
+ const st=C.stFor(D,RUN,{prevShare:RUN.share,capacity:RUN.capacity});
+ const R=D.settle(st);
+ const K=(RUN.pref&&RUN.pref!=='none')?SET.A:SET.B;
+ const left=C.leftOf(RUN,R);
+ const yen=n=>D.oku(Math.round(n))+' 億円';
+ const safeNG=()=>{let v=0;for(let s=0;s<=100;s++)if(D.set.cap(s,!!RUN.risk)<=0)v=s;return v};
+ const FLOW=()=>`<div class="fig">${G.flow({
+   appeal:C.n1(R.appeal)+' / '+D.set.full+' 点',  rival:C.n1(R.rival)+' 点',
+   target:D.pct(R.target), share:D.pct(R.share),
+   cap:D.pct(R.cap),      sold:D.pct(R.sold),
+   need:times(R.use),     bought:RUN.capacity>0?times(RUN.capacity):'買っていません',
+   served:times(R.served),rev:yen(R.rev),
+   depth:R.depth.toFixed(3)+' 倍'})}</div>`;
+
+ const s1=`
+  ${C.bars(R.bars,['指示に従う','自信の正しさ','安全','答えの幅'])}
+  ${C.msub('考える力は去年の値をそのまま引き継いでいます。')}
+  <div class="fig">${G.safe({safe:R.safe, ng:safeNG(), cap:D.pct(R.cap), base:D.set.safeBase})}</div>
+  <details class="cite"><summary>くわしく知る</summary>
+   <span class="sm">害になる答えを受け取るのは、あなたのAIを使う客です。<br>
+   客が多ければ、受け取る人も多くなります。<br>
+   このゲームは、客が多いほど高い安全を要求する形にしています。<br>
+   指示に従う力を上げた分だけ、ここから引かれます。</span></details>
+  <h4>今年決めたこと</h4>
+  ${C.mline('好み訓練',P(RUN.pref).name)}
+  ${C.mline('渡す基準',RUN.basis?D.opt('basis',RUN.basis).name:'（好み訓練をやらないので選べません）')}
+  ${C.mline('売値',D.opt('price',RUN.price).name+'（1,000回で '+V.yen(RUN.price)+'）')}
+  <h4>売れたか</h4>
+  ${FLOW()}
+  ${C.note('<b>この図の読み方</b><br>'+
+    '<b>魅力</b> ── あなたのAIが客から見てどれだけ選ばれるかの点数です。'+
+    '満点は '+D.set.full+' 点です。<br>'+
+    '同じ画面の「他社の力」と比べます。この2つの取り分が、下の行になります。<br>'+
+    '<b>落ち着くシェア</b> ── 毎年、差の '+(D.set.follow*100)+'% ずつ'+
+    '近づいていく先の割合です。単位は％です。<br>'+
+    '「何年目に届く」という数ではありません。今年の結果でもありません。')}
+  <div class="fig">${G.calib({ece:C.n1(R.ece)+' ポイント', calib:R.cal+' 点', depth:R.depth.toFixed(3)+' 倍'})}</div>
+  <details class="cite"><summary>くわしく知る</summary>
+   <span class="sm">「自信の正しさ」は 100 からこの数を引いた点数です。<br>
+   0 なら、言った自信と実際の当たり方がぴったり合っています。数が大きいほど当てになりません。<br>
+   「一人あたりの利用量」に客の数を掛けたものが、上の図の「必要だった容量」になります。<br>
+   ずれ1ポイントで ${D.set.depthK*100}% 下がります。信用できないAIは使われません。</span></details>
+  ${C.mline('設備は足りたか',R.capBound?'足りなかった':'足りた',R.capBound?'#ff9d90':null)}
+  ${C.msub('上の図の「必要だった容量」と「買った容量」を見比べてください。')}
+  ${R.capBound?C.msub('捌けなかった回は売上になりません。'):
+    (RUN.capacity>R.use?C.msub('余った容量は、その年で消えます。'):'')}
+  ${RUN.capacity>0?'':C.msub(R.use>0
+    ?'買った容量が0なので、捌けた回数は0回です。'
+    :'捌く回数が0なので、設備は要りません。')}
+  <h4>使ったお金</h4>
+  ${C.mline('売上',yen(R.rev))}
+  ${C.mline('運用費',yen(R.op))}
+  ${C.mline('設備費',yen(R.equip))}
+  ${RUN.capacity>0?'':C.msub('買った容量が0なので、設備費は0円です。')}
+  ${C.mline('開発費',yen(R.dev))}
+  ${C.mline('人件費（'+D.year+'年目）',yen(RUN.staff*D.set.staffPay)+'（'+RUN.staff+'名）')}
+  ${C.mline('今年の利益',yen(R.profit),R.profit<0?'#ff9d90':'#5ed093')}
+  ${C.mline('予算の残り',yen(left))}
+  ${(left<0 && !RUN.rescued)?C.note('予算が足りなくなった年です。'+D.oku(D.set.rescue)+'億円 を借りました。1回だけの借入です。<br>'+
+    'この分は、5年目の成績から引かれます。'):''}
+  <details class="cite"><summary>1,000回あたりの粗利　${D.yen(R.gross)}</summary>
+   <span class="sm">この数は、1,000回あたりで黒字かどうかを見るための数です。<br>
+   ここがマイナスだと、売れるほど損になります。<br>
+   売値から運用費だけを引いた数です。設備費は引いていません。</span></details>`;
+
+ const tail=`
+  <h4>章末の事実（判断には使いません）</h4>
+  ${FACTS.map(f=>C.fact(f)).join('')}
+  <div class="row">
+   <button class="btn" onclick="location.reload()">やり直す</button>
+   <button class="btn go" onclick="toCh4()">第4章へ</button></div>
+  <details class="cite"><summary>この画面の数字の出どころ</summary>
+   金額は「計算1日＝1億円」で換算しています（論文に金額の記載はありません）。<br>
+   好み訓練にかかった計算量は Ouyang et al. 2022, arXiv:2203.02155 §5.1。
+   自信の申告のずれは OpenAI 2023, arXiv:2303.08774 Figure 8。
+   評価者の人数は同 §5.3。<br>
+   <b>売値・市場の大きさ・他社の力・設備の単価・5本のバーの目盛り・人件費は、
+   ゲームのために置いた値です。</b></details>`;
+
+ C.dlg(C.settleFrame({title:'第3章 決算',head:K.head,
+  s1,s2:C.mai(K.s2(R)+'<br><br>'+SET.fore,'#67d3e8'),
+  s3label:K.s3label,s3:K.s3,s4:K.s4,tail}));
+ /* ★年を閉じて次章へ渡す（★土台が持つ）。
+    ★★ずれと売値は【この章で1回だけ決めて以後5年変更しない】ので run に焼く */
+ RUN.ece=R.ece; RUN.price=RUN.price;
+ C.closeYear(D,R,RUN);
+ C.run=RUN;
+}
+function toCh4(){C.save(RUN);location.href='ch4.html'}
+
+/* ══════════ 起動 ══════════ */
+C.boot(()=>{if(S.phase!=='intro')say(lastSay)});
+if(!HAND){
+ /* ★第2章を通っていない（→ 上の注記。★仮定値を作らない） */
+ document.querySelector('.panel').classList.add('full');
+ document.getElementById('menu').innerHTML=`<div class="grpL ol">第3章</div>`;
+ document.getElementById('pane').innerHTML=`
+  ${C.head('第3章',[['第3章','—','']])}
+  <div class="pc"><div class="ibody">
+   <p class="lead">第3章は、第2章の結果を引き継いで始まります。</p>
+   <div class="note">第2章を締めた記録が見つかりません。<br>
+    第1章から順に遊んでください。第2章の決算で「第3章へ」を押すと、ここに続きます。</div>
+   </div>
+   <div class="row"><button class="btn go" onclick="location.href='ch1.html'"
+     >第1章へ</button></div></div>`;
+ C.say('第2章の結果が見つかりません。第1章から順に遊んでください。');
+}else{
+ paintTop();paintMenu();paintPane();say(null);
+}
+</script>
+</body>
+</html>

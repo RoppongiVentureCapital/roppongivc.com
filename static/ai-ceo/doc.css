@@ -1,0 +1,70 @@
+/* ══════════════════════════════════════════════════════════
+   doc.css ── 資料専用の追加分だけ
+   質感は ui.css（ゲームと共通）に乗る。ここで新しい世界観を作らない。
+   ★「別のデザインを2つ持たない」（記録_2026-08-15 11-6 の教訓）
+   作成 2026-08-17
+   ══════════════════════════════════════════════════════════ */
+
+/* ── 着地カード：飛んできた人がまず読む3行。全アンカーに必須 ── */
+.land{margin:2px 0 15px;padding:11px 14px;position:relative;
+ background:linear-gradient(rgba(103,211,232,.15),rgba(103,211,232,.05));
+ border:1px solid rgba(103,211,232,.45);border-left:4px solid var(--cy);
+ box-shadow:0 2px 10px rgba(0,0,0,.45)}
+.land .lh{font-family:var(--dp);font-weight:900;font-size:11.5px;color:var(--cy);
+ letter-spacing:.1em;margin-bottom:5px}
+.land p{margin:3px 0;font-size:14px;line-height:1.85}
+.land b{color:#fff}
+
+/* ── ★の4分類。いまの資料は74個が全部同じ見え方をしている ── */
+.k{margin:13px 0;padding:9px 12px 10px;font-size:13px;line-height:1.85;
+ border:1px solid rgba(255,255,255,.09);border-left:3px solid #3f5f80;
+ background:rgba(255,255,255,.035)}
+.k .kh{display:block;font-family:var(--dp);font-weight:900;font-size:10.5px;
+ letter-spacing:.12em;margin-bottom:3px}
+.k b{color:#fff}
+.k.fix{border-left-color:var(--red);background:rgba(224,87,74,.08)}
+.k.fix .kh{color:#ff9d90}
+.k.how{border-left-color:var(--cy);background:rgba(103,211,232,.07)}
+.k.how .kh{color:#8fe4f5}
+.k.res{border-left-color:var(--amber);background:rgba(245,193,78,.07)}
+.k.res .kh{color:#ffdf9c}
+.k.str{border-left-color:var(--gr);background:rgba(94,208,147,.07)}
+.k.str .kh{color:#9ff0c4}
+
+/* ── 確信度バッジ ── */
+.cf{display:inline-block;font-family:var(--nm);font-size:11px;font-weight:700;
+ padding:0 6px;margin-right:6px;border:1px solid #000;background:#17324a;color:#a9cde4;
+ box-shadow:0 1px 0 rgba(255,255,255,.18) inset}
+.cf.a{background:#123a2a;color:#9ff0c4}
+.cf.b{background:#3b2f10;color:#ffdf9c}
+
+/* ── 式。等幅数字で組む ── */
+.fml{margin:11px 0;padding:11px 14px;background:rgba(0,0,0,.5);
+ border:1px solid rgba(255,255,255,.1);box-shadow:0 1px 0 rgba(255,255,255,.08) inset;
+ font-family:var(--nm);font-weight:500;font-size:14px;line-height:2.05;color:#dfeaf4}
+.fml em{font-style:normal;color:var(--amber)}
+
+/* ── 図の枠。ゲームの .fig に近いが、資料は図が主役なので余白を詰める ── */
+.dfig{margin:12px 0 14px;padding:10px 8px 6px;background:rgba(0,0,0,.4);
+ border:1px solid rgba(255,255,255,.09);box-shadow:0 2px 10px rgba(0,0,0,.4)}
+.dfig svg{width:100%;display:block}
+.dfig .cap{font-size:11.5px;color:var(--dim2);padding:4px 6px 2px;line-height:1.65}
+
+/* ── 本文 ── */
+.dbody{font-size:14px;line-height:1.9}
+.dbody p{margin:9px 0}
+.dbody b{color:#fff}
+.dbody h4{font-family:var(--dp);font-weight:900;font-size:14px;color:var(--amber);
+ margin:20px 0 7px;letter-spacing:.04em;text-shadow:0 1px 2px rgba(0,0,0,.6)}
+.src{margin-top:12px;padding-top:10px;border-top:1px solid rgba(255,255,255,.1);
+ font-size:11.5px;color:var(--dim2);line-height:1.75}
+.src b{color:var(--cy);font-weight:500}
+
+/* ── 節の末尾。ゲームへ戻す（双方向にする） ── */
+.dfoot{margin-top:18px;padding-top:12px;border-top:1px solid rgba(255,255,255,.12);
+ font-size:12px;color:var(--dim2);line-height:1.8}
+.dfoot .lb{color:#8fe4f5}
+
+/* ── 未変換の目次項目 ── */
+.mi.wip{cursor:not-allowed;filter:grayscale(.8) brightness(.62)}
+.mi.wip:hover{transform:none;filter:grayscale(.8) brightness(.62)}

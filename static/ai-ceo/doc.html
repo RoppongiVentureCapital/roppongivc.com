@@ -1,0 +1,2555 @@
+<!DOCTYPE html>
+<html lang="ja" class="doc">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex,nofollow,noarchive">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AIの原理 ── 原論文で確かめる</title>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Zen+Kaku+Gothic+New:wght@500;700;900&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+<!-- ★質感はゲームと共有する。資料専用のデザインを作らない -->
+<link rel="stylesheet" href="ui.css">
+<link rel="stylesheet" href="doc.css">
+</head>
+<body>
+<div id="fit"><div id="frame">
+
+<!-- 背景。ゲームと同じ画像。無ければCSSのグラデーションが出る -->
+<img id="bgimg" src="assets/bg_office.png" alt="" onerror="this.remove()">
+<img id="bgimg2" src="assets/bg_office_portrait.png" alt="" onerror="this.remove()">
+<div id="grade"></div>
+
+<!-- ══════════ 上部バー。ゲームと同じ形。中身だけ資料用に差し替える ══════════ -->
+<div class="topbar">
+ <div class="logo ol"><span>AI&nbsp;LAB</span></div>
+ <div class="when ol">
+  <span class="yr" id="tPart">第2部</span>
+  <span class="mo" id="tSec">7-4</span>
+  <span class="en" id="tEn">/ REF</span>
+  <span class="qq" id="tGrp">横断軸</span>
+ </div>
+ <div class="rival">
+  <span class="k ol">読了</span>
+  <span class="rbar"><i id="rv" style="width:0%"></i></span>
+ </div>
+ <div class="cash">
+  <span class="y ol">原</span><span class="v ol2" id="npaper">32</span><span class="u ol">本</span>
+ </div>
+</div>
+
+<div class="stage">
+ <div class="menu" id="menu"></div>
+ <div class="panel"><div id="pane"></div></div>
+</div>
+
+<div class="info">
+ <div class="infoH"><b>Information</b></div>
+ <div class="in">
+  <div class="bust">
+   <div class="ph"><div class="h"></div></div>
+   <img src="assets/secretary_bust.png" alt="" onerror="this.remove()">
+  </div>
+  <div class="said" id="said"></div>
+ </div>
+</div>
+
+<div class="veil" id="veil"><div class="dlg" id="dlg"></div></div>
+
+</div></div><!-- /#frame /#fit -->
+
+<script src="fig.js"></script>
+<script>
+/* ══════════════════════════════════════════════════════════
+   資料（層3）。ゲームの骨格をそのまま使う。
+   ・上部バー／左メニュー＝目次／右パネル＝本文／下部＝麻衣
+   ・図は fig.js の部品（G）で描く。ゲームと同じ絵柄
+   ★内容の正本は AI原理_一般向け解説.md。ここは変換先
+   ★2026-08-18 に §7-4 の6節＋追加70節＝76節。残りは 03_資料Web版.md §9 のとおり
+   ══════════════════════════════════════════════════════════ */
+
+/* ══════════ 図 ══════════ */
+
+
+const FIG={
+
+/* ① 効きの鈍さ。ゲームの dull 図を3段に伸ばした */
+dull:`<svg viewBox="0 0 640 262">
+ <text x="10" y="15" fill="#bcccdd" font-size="12">パラメータを増やすと、間違いはこれだけ減る</text>
+ <g font-size="12">
+  <text x="14" y="46" fill="#f5c14e">2倍</text>
+  ${G.money(58,40,1)}<text x="88" y="45" fill="#8a9db3" font-size="13">→</text>${G.money(110,40,2)}
+  <rect x="180" y="32" width="220" height="15" rx="3" fill="#8a9db3" opacity=".5"/>
+  <rect x="180" y="32" width="209" height="15" rx="3" fill="#5ed093"/>
+  <text x="408" y="44" fill="#5ed093" font-family="Oswald" font-size="13">95</text>
+  <text x="440" y="44" fill="#ff9d90" font-size="12">たった 5 しか減らない</text>
+
+  <text x="14" y="90" fill="#f5c14e">10倍</text>
+  ${G.money(58,84,1)}<text x="88" y="89" fill="#8a9db3" font-size="13">→</text>${G.money(110,84,4)}
+  <text x="180" y="89" fill="#f5c14e" font-size="11">…</text>
+  <rect x="196" y="76" width="204" height="15" rx="3" fill="#8a9db3" opacity=".5"/>
+  <rect x="196" y="76" width="171" height="15" rx="3" fill="#5ed093"/>
+  <text x="408" y="88" fill="#5ed093" font-family="Oswald" font-size="13">84</text>
+  <text x="440" y="88" fill="#ffdf9c" font-size="12">10倍払って 16 だけ</text>
+
+  <text x="14" y="134" fill="#f5c14e">1000倍</text>
+  ${G.money(72,128,1)}<text x="102" y="133" fill="#8a9db3" font-size="13">→</text>${G.money(124,128,6)}
+  <text x="228" y="133" fill="#f5c14e" font-size="11">…</text>
+  <rect x="244" y="120" width="156" height="15" rx="3" fill="#8a9db3" opacity=".5"/>
+  <rect x="244" y="120" width="92" height="15" rx="3" fill="#f5c14e"/>
+  <text x="408" y="132" fill="#f5c14e" font-family="Oswald" font-size="13">59</text>
+  <text x="440" y="132" fill="#ffdf9c" font-size="12">やっと4割</text>
+ </g>
+ <line x1="10" y1="152" x2="630" y2="152" stroke="#7590a8" stroke-dasharray="4 4"/>
+ <text x="10" y="174" fill="#bcccdd" font-size="12">式で書くとこうなっている</text>
+ <rect x="10" y="184" width="620" height="34" rx="4" fill="rgba(0,0,0,.45)" stroke="#3f5f80"/>
+ <text x="320" y="206" fill="#dfeaf4" font-family="Oswald" font-size="15" text-anchor="middle">
+  2 ^ (−0.076) = 0.95　　　10 ^ (−0.076) = 0.84　　　1000 ^ (−0.076) = 0.59</text>
+ <rect x="10" y="228" width="620" height="26" rx="4" fill="rgba(245,193,78,.13)" stroke="#f5c14e"/>
+ <text x="320" y="246" fill="#ffdf9c" font-size="13" text-anchor="middle">
+  だから、少し増やすだけでは意味がない。桁で増やすしかない</text>
+</svg>`,
+
+/* ② 両対数で直線になる */
+line:`<svg viewBox="0 0 640 244">
+ <text x="10" y="15" fill="#bcccdd" font-size="12">小さいAIを何体か作って測り、両対数のグラフに置くと直線に並ぶ</text>
+ <line x1="72" y1="30" x2="72" y2="186" stroke="#7590a8"/>
+ <line x1="72" y1="186" x2="600" y2="186" stroke="#7590a8"/>
+ <text x="10" y="50" fill="#bcccdd" font-size="10.5">たて＝</text>
+ <text x="10" y="64" fill="#bcccdd" font-size="10.5">間違い</text>
+ <text x="10" y="78" fill="#bcccdd" font-size="10.5">の量</text>
+ <text x="336" y="216" fill="#bcccdd" font-size="10.5" text-anchor="middle">よこ＝パラメータの数（右へ行くほど多い。目盛りは10倍ごと）</text>
+ <g stroke="#3f5f80" stroke-width=".8" opacity=".6">
+  <path d="M160 30v156M248 30v156M336 30v156M424 30v156M512 30v156"/></g>
+ <g fill="#7590a8" font-family="Oswald" font-size="10">
+  <text x="152" y="199">10⁶</text><text x="240" y="199">10⁷</text><text x="328" y="199">10⁸</text>
+  <text x="416" y="199">10⁹</text><text x="504" y="199">10¹⁰</text></g>
+ <line x1="90" y1="44" x2="292" y2="112" stroke="#67d3e8" stroke-width="2.8"/>
+ <line x1="292" y1="112" x2="586" y2="211" stroke="#f5c14e" stroke-width="2.2" stroke-dasharray="7 5"/>
+ <g fill="#67d3e8"><circle cx="96" cy="46" r="5.5"/><circle cx="194" cy="79" r="5.5"/><circle cx="290" cy="111" r="5.5"/></g>
+ <circle cx="530" cy="192" r="7" fill="none" stroke="#f5c14e" stroke-width="2.6"/>
+ <text x="100" y="38" fill="#67d3e8" font-size="10.5">測った点</text>
+ ${G.bub(378,58,178,26,'ここが学習前に読める','#f5c14e')}
+ <path d="M478 86l44 98" stroke="#f5c14e" stroke-width="1.3" stroke-dasharray="3 3"/>
+ <text x="10" y="238" fill="#5ed093" font-size="12">
+  適用範囲は 計算量で8桁 ／ パラメータの数で6桁 ／ 読ませる量で2桁</text>
+</svg>`,
+
+/* ③ 埋め込みを除く。これは図がないと伝わらない */
+embed:`<svg viewBox="0 0 640 210">
+ <rect x="6" y="6" width="308" height="176" rx="8" fill="rgba(224,87,74,.08)" stroke="rgba(224,87,74,.42)"/>
+ <text x="160" y="26" fill="#ff9d90" font-size="12.5" text-anchor="middle">埋め込みを含めて数えると</text>
+ <line x1="40" y1="42" x2="40" y2="150" stroke="#7590a8"/><line x1="40" y1="150" x2="296" y2="150" stroke="#7590a8"/>
+ <g stroke-width="2.2" fill="none">
+  <path d="M54 60L286 106" stroke="#ff9d90"/><path d="M54 78L286 128" stroke="#ffb3a8"/>
+  <path d="M54 96L286 142" stroke="#e0574a"/></g>
+ <g fill="#ffcfc7" font-size="10"><text x="292" y="104">6層</text><text x="292" y="128">12層</text><text x="292" y="145">24層</text></g>
+ <text x="160" y="170" fill="#ff9d90" font-size="13" text-anchor="middle">層の数ごとにバラバラ</text>
+ <text x="160" y="200" fill="#bcccdd" font-size="11.5" text-anchor="middle">「深さが効く」ように見えてしまう</text>
+
+ <rect x="326" y="6" width="308" height="176" rx="8" fill="rgba(94,208,147,.08)" stroke="rgba(94,208,147,.42)"/>
+ <text x="480" y="26" fill="#5ed093" font-size="12.5" text-anchor="middle">埋め込みを除いて数えると</text>
+ <line x1="360" y1="42" x2="360" y2="150" stroke="#7590a8"/><line x1="360" y1="150" x2="616" y2="150" stroke="#7590a8"/>
+ <path d="M374 62L606 132" stroke="#5ed093" stroke-width="3.4" fill="none"/>
+ <g fill="#c9f2dc"><circle cx="404" cy="71" r="4"/><circle cx="464" cy="89" r="4"/><circle cx="524" cy="107" r="4"/><circle cx="584" cy="125" r="4"/></g>
+ <text x="480" y="170" fill="#5ed093" font-size="13" text-anchor="middle">1本の線に収束する</text>
+ <text x="480" y="200" fill="#ffdf9c" font-size="11.5" text-anchor="middle">だから N は「埋め込みを除いた数」と定義されている</text>
+</svg>`,
+
+/* ④ 形はほとんど効かない。★パラメータは線の束で描く（ratio と同じ G.wire() を使う）
+   ★線の本数は左右そろえて 36本ずつ。左＝3本ずつの束を4つ重ねる（細くて深い）、
+     右＝6本ずつを1つ（浅くて広い）。列を並べるのが「深さ」、1列の点の数が「幅」 */
+shape:`<svg viewBox="0 0 640 208">
+ <text x="10" y="15" fill="#bcccdd" font-size="12">パラメータの総数を同じにして、形だけ変える</text>
+ ${[33,50,67,84].map(X=>G.wire(X-9,26,35,124,3,3,'#67d3e8')).join('')}
+ <text x="67" y="166" fill="#67d3e8" font-size="11.5" text-anchor="middle">細くて深い</text>
+ <text x="67" y="182" fill="#dfeaf4" font-family="Oswald" font-size="12" text-anchor="middle">48層 × 幅1600（GPT-2）</text>
+ <text x="150" y="94" fill="#8a9db3" font-size="18">vs</text>
+ ${G.wire(190,26,178,124,6,6,'#67d3e8',[[0,0,'0.31',.35],[4,5,'−0.86',.6]])}
+ <text x="279" y="166" fill="#67d3e8" font-size="11.5" text-anchor="middle">浅くて広い</text>
+ <text x="279" y="182" fill="#dfeaf4" font-family="Oswald" font-size="12" text-anchor="middle">6層 × 幅4288</text>
+ <rect x="392" y="40" width="240" height="52" rx="6" fill="rgba(94,208,147,.14)" stroke="#5ed093"/>
+ <text x="512" y="62" fill="#c9f2dc" font-size="12.5" text-anchor="middle">間違いの量の差は</text>
+ <text x="512" y="84" fill="#5ed093" font-family="Oswald" font-size="20" text-anchor="middle">3% 以内</text>
+ <rect x="392" y="104" width="240" height="72" rx="6" fill="rgba(245,193,78,.12)" stroke="#f5c14e"/>
+ <text x="512" y="124" fill="#ffdf9c" font-size="11.5" text-anchor="middle">図の中にだけ書かれた交換レート</text>
+ <text x="512" y="146" fill="#f5c14e" font-family="Oswald" font-size="15" text-anchor="middle">+22% の計算量</text>
+ <text x="512" y="166" fill="#ffdf9c" font-size="11.5" text-anchor="middle">＝ 1% の損失増を買い戻せる</text>
+ <text x="10" y="202" fill="#bcccdd" font-size="12">アスペクト比を40倍変えても、影響はわずか。★形は主役ではない</text>
+</svg>`,
+
+/* ⑤ Chinchilla の配分。★パラメータは線の束で描く（ゲーム側のダイヤルとは絵柄が分かれる） */
+ratio:`<svg viewBox="0 0 640 288">
+ <rect x="6" y="6" width="308" height="274" rx="9" fill="rgba(224,87,74,.09)" stroke="rgba(224,87,74,.45)"/>
+ <text x="160" y="26" fill="#ff9d90" font-size="12.5" text-anchor="middle">2020年の常識でつくったAI</text>
+ ${G.wire(28,40,152,116,6,6,'#67d3e8',[[0,0,'0.37',.3],[2,3,'−1.24',.5],[5,5,'0.08',.72]])}
+ <text x="104" y="174" fill="#67d3e8" font-size="11.5" text-anchor="middle">パラメータ 1,750億個</text>
+ ${G.books(250,156,3)}
+ <text x="250" y="174" fill="#7fb98f" font-size="11.5" text-anchor="middle">読ませた本</text>
+ <text x="160" y="204" fill="#ff9d90" font-size="14.5" text-anchor="middle">本が足りていない</text>
+ <rect x="26" y="216" width="264" height="26" rx="4" fill="rgba(0,0,0,.4)" stroke="#e0574a"/>
+ <text x="158" y="234" fill="#ffcfc7" font-family="Oswald" font-size="13" text-anchor="middle">
+  パラメータ1個あたり 1.7 語</text>
+ <text x="160" y="262" fill="#bcccdd" font-size="11.5" text-anchor="middle">パラメータの数字を決めるのが本なので、</text>
+ <text x="160" y="276" fill="#bcccdd" font-size="11.5" text-anchor="middle">本が少ないと数字が決まりきらない</text>
+
+ <rect x="326" y="6" width="308" height="274" rx="9" fill="rgba(94,208,147,.09)" stroke="rgba(94,208,147,.45)"/>
+ <text x="480" y="26" fill="#5ed093" font-size="12.5" text-anchor="middle">2022年に分かった、正しい配り方</text>
+ ${G.wire(350,56,104,84,3,4,'#67d3e8',[[0,0,'0.41',.42],[2,3,'−0.95',.62]])}
+ <text x="402" y="174" fill="#67d3e8" font-size="11.5" text-anchor="middle">パラメータ 512億個</text>
+ ${G.books(556,156,9)}
+ <text x="556" y="174" fill="#7fb98f" font-size="11.5" text-anchor="middle">読ませた本</text>
+ <text x="480" y="204" fill="#5ed093" font-size="14.5" text-anchor="middle">パラメータを 3.4分の1、本を 3.4倍</text>
+ <rect x="346" y="216" width="264" height="26" rx="4" fill="rgba(0,0,0,.4)" stroke="#5ed093"/>
+ <text x="478" y="234" fill="#c9f2dc" font-family="Oswald" font-size="13" text-anchor="middle">
+  パラメータ1個あたり 20 語</text>
+ <text x="480" y="262" fill="#bcccdd" font-size="11.5" text-anchor="middle">かかるお金は左とほぼ同じ。</text>
+ <text x="480" y="276" fill="#ffdf9c" font-size="11.5" text-anchor="middle">それでも、こちらの方が賢くなる</text>
+</svg>`,
+
+/* ⑥ 打ち止めの否定 */
+floor:`<svg viewBox="0 0 640 250">
+ <text x="10" y="15" fill="#bcccdd" font-size="12">損失の曲線は、ある高さ（削減不能な部分）に近づいていく</text>
+ <line x1="60" y1="28" x2="60" y2="112" stroke="#7590a8"/><line x1="60" y1="112" x2="360" y2="112" stroke="#7590a8"/>
+ <path d="M70 34 Q150 96 350 100" stroke="#67d3e8" stroke-width="2.8" fill="none"/>
+ <line x1="60" y1="102" x2="360" y2="102" stroke="#f5c14e" stroke-dasharray="5 4"/>
+ <text x="366" y="106" fill="#f5c14e" font-size="11">L∞（データ本来のエントロピー）</text>
+ ${G.bub(150,34,196,24,'見返りが減ると思う？','#ff9d90')}
+ <text x="10" y="132" fill="#ff9d90" font-size="12">→ ★原典はこの推論を明示的に退けている</text>
+ <line x1="10" y1="144" x2="630" y2="144" stroke="#7590a8" stroke-dasharray="4 4"/>
+ <text x="10" y="166" fill="#5ed093" font-size="12">実際に測ると：生成の損失が飽和しても、下流の能力は伸び続ける</text>
+ <line x1="60" y1="178" x2="60" y2="234" stroke="#7590a8"/><line x1="60" y1="234" x2="360" y2="234" stroke="#7590a8"/>
+ <path d="M70 226 L350 182" stroke="#5ed093" stroke-width="3" fill="none"/>
+ <g fill="#c9f2dc"><circle cx="110" cy="220" r="4"/><circle cx="180" cy="209" r="4"/>
+  <circle cx="250" cy="198" r="4"/><circle cx="330" cy="185" r="4"/></g>
+ <text x="366" y="196" fill="#5ed093" font-size="11.5">画像分類の性能は</text>
+ <text x="366" y="212" fill="#5ed093" font-size="11.5">別のべき乗則でなめらかに改善</text>
+ <text x="10" y="248" fill="#ffdf9c" font-size="12.5">
+  使える言い方は「打ち止め」ではなく「★方向を指定するのは人間」</text>
+</svg>`,
+
+/* ⑦ 外挿の危うさ */
+extra:`<svg viewBox="0 0 640 176">
+ <text x="10" y="15" fill="#bcccdd" font-size="12">実測はどこまでか。交点はどこか</text>
+ <line x1="40" y1="30" x2="40" y2="118" stroke="#7590a8"/><line x1="40" y1="118" x2="620" y2="118" stroke="#7590a8"/>
+ <rect x="40" y="30" width="150" height="88" fill="rgba(94,208,147,.13)"/>
+ <rect x="190" y="30" width="430" height="88" fill="rgba(224,87,74,.07)"/>
+ <path d="M52 44L186 92" stroke="#5ed093" stroke-width="3" fill="none"/>
+ <path d="M186 92L556 106" stroke="#f5c14e" stroke-width="2" stroke-dasharray="7 5" fill="none"/>
+ <g fill="#c9f2dc"><circle cx="70" cy="50" r="4"/><circle cx="110" cy="64" r="4"/><circle cx="150" cy="78" r="4"/><circle cx="184" cy="91" r="4"/></g>
+ <text x="115" y="140" fill="#5ed093" font-size="11.5" text-anchor="middle">実測はここまで</text>
+ <text x="115" y="156" fill="#c9f2dc" font-family="Oswald" font-size="12" text-anchor="middle">〜10² PF-days</text>
+ <text x="405" y="140" fill="#ff9d90" font-size="11.5" text-anchor="middle">ここから先は外挿</text>
+ <text x="405" y="156" fill="#ffcfc7" font-size="11.5" text-anchor="middle">2桁以上先にある</text>
+ <g><line x1="556" y1="42" x2="556" y2="106" stroke="#f5c14e" stroke-width="1.4" stroke-dasharray="3 3"/>
+  <circle cx="556" cy="106" r="6" fill="none" stroke="#f5c14e" stroke-width="2.4"/>
+  <rect x="470" y="34" width="164" height="24" rx="4" fill="rgba(245,193,78,.16)" stroke="#f5c14e"/>
+  <text x="552" y="51" fill="#ffdf9c" font-family="Oswald" font-size="12" text-anchor="middle">
+   C* ~10⁴ / L* ~1.7 nats</text></g>
+ <text x="10" y="172" fill="#ffdf9c" font-size="12.5">
+  原典自身が「数値は非常に不確かで、上下1桁変わりうる」と留保している</text>
+</svg>`
+};
+
+/* ══════════ 節 ══════════ */
+const CF={'◎':'a','○':'b','△':''};
+const SEC=[
+{id:'p0-marks',grp:'第1部 基礎編',t:'画面に出る印の読み方（【実測】【設定】ほか7種）',short:'印の読み方',
+ sec:'0',part:'第1部',gname:'基礎',cf:'—',
+ mai:'印は<span class="hl">その数や文がどこから来たか</span>を言っています。ここに7種類ぜんぶ並べました。',
+ land:['<b>【実測】</b>は論文が測った数、<b>【設定】</b>はこのゲームが置いた数です。ここが一番よく混ざります。',
+  '<b>【算術】</b>は、論文の数から計算して出した数です。論文にその数字は載っていません。',
+  '<b>〔原典〕〔資料〕〔導出〕〔教科書〕</b>の4つは、文がどこから来たかの印です。'],
+ b:`<p>ゲームの画面に出る数字と文には、<b>出どころの印</b>が付いています。
+  <b>7種類あります。</b>意味は下のとおりです。</p>
+ <div class="fml">印　　　　　　意味　　　　　　　　　　　　　　　　　　　このゲームの中の実物<br>
+  <em>【実測】</em>　　　論文が測った数である　　　　　　　　　　評価者 約40名／一致率 72.6%／周回数 3.4回<br>
+  <em>【設定】</em>　　　このゲームが置いた数である　　　　　　　1名 年1億円／上限40名／5本のバーの目盛り<br>
+  <em>【算術】</em>　　　論文の数から計算して出した数である　　　340億語（19＋12＋3）／約10倍（7.4÷0.7）<br>
+  〔原典〕　　　論文にそう書いてある　　　　　　　　　　「多少の過学習を受け入れて質を買う」<br>
+  〔資料〕　　　この資料が論文をまとめた分である　　　　「質の高いものは2〜3周」（丸めが入る）<br>
+  〔導出〕　　　論文の話から引き出した使い方である　　　「検算できる仕事はAIに任せる」<br>
+  〔教科書〕　　分野の教科書に載っている一般の話である　過学習の定義／softmax の定義</div>
+ <div class="k how"><span class="kh">★ 【実測】と【設定】をなぜ分けるか</span>
+  <b>この2つが混ざると、論文が言っていないことを論文のせいにできてしまいます。</b><br>
+  たとえば「評価者は約40名だった」は<b>論文が書いている数</b>です（【実測】）。
+  一方「1名につき年1億円」は<b>このゲームが遊べるように置いた数</b>で、
+  <b>論文に金額は1円も出てきません</b>（【設定】）。<br>
+  → だから<b>【設定】が付いている数は、現実の話として持ち出さないでください。</b>
+  逆に<b>【実測】が付いている数は、論文を開けば確かめられます</b>（出どころは各節の下に書いてあります）。</div>
+ <div class="k fix"><span class="kh">★ 【算術】は【実測】ではありません</span>
+  <b>論文の表から足し算・割り算をして出した数</b>には【算術】が付きます。
+  たとえば「厳選した側は340億語」は、<b>論文の表の 19＋12＋3 を足した数</b>です。
+  <b>論文にその340という数字は載っていません。</b><br>
+  → 引用するときは「論文の表から計算すると340億語」と書いてください。
+  <b>「論文に340億語と書いてある」は誤りになります。</b></div>
+ <div class="k str"><span class="kh">★ 〔導出〕は、このゲームが引き受けている責任です</span>
+  <b>「あなたが今日から使えること」の欄</b>に付く印です。
+  論文はそこまで書いていないので、<b>踏み外していたらこのゲームの責任です。</b><br>
+  だから<b>そのすぐ下に必ず出典が並んでいます</b>。元の論文が何を言っているかを見比べられる形にしてあります。</div>
+ <p class="src"><b>出典</b>　この節はこのゲームの決めごとです（論文ではありません）。
+  だから出典がありません。印の付け方そのものが、このゲームの約束です</p>`},
+
+/* ══════════════ 貼る位置 ①　第1部 §1 ══════════════ */
+{id:'p1-1-function',grp:'第1部 基礎編',t:'AIは「巨大な関数」を作る行為',short:'巨大な関数',
+ sec:'1',part:'第1部',gname:'基礎',cf:'◎',
+ mai:'「数字を少しずつ変える」という言い方の出どころです。<span class="hl">y = ax + b はパラメータ2個、LLMは数千億個。</span>桁は違いますが、やっている行為は同じです。',
+ land:['AIを作るとは、データに合わせて関数の中のパラメータを調整することです。',
+  '<b>中で行われている演算は、掛け算と足し算、そしてそれを確率に直す処理だけです。</b>',
+  '<b>ただし、その巨大な関数がなぜ賢く振る舞えるのかは証明されていません。</b>'],
+ b:`<p><span class="cf a">◎</span>入力 x を関数 f に入れて出力 y を得る、という形が全体です。
+  写真を入れて「猫」を出す、文章のここまでを入れて次に来る単語の確率を出す。
+  <b>学習＝データを使って f の中のパラメータを調整すること、利用＝できあがった f に新しい入力を入れるだけ</b>です。</p>
+ <p>y = ax + b は、パラメータが2個の関数です。大規模言語モデル（LLM）は、パラメータが<b>数千億個</b>あります。
+  桁は違いますが、「データに合わせてパラメータを調整する」という行為は同じです。</p>
+ <div class="k str"><span class="kh">★ 原典がそのまま書いていること</span>
+  「<b>現時点で我々は、提案したスケーリング則のいずれについても確固たる理論的理解を持っていない。
+  モデルサイズと計算量に関するスケーリング関係は特に謎（especially mysterious）である</b>」</div>
+ <h4>規模の実感</h4>
+ <p>GPT-3（1750億パラメータ）の学習には <b>3,640 petaflop/s-day</b>（＝3.14×10²³ 演算）が投じられました。
+  一方で同じ節は「学習後は驚くほど効率的で、<b>100ページ分の文章を生成するコストは約0.4 kW-h＝数セント</b>」と
+  書いています。</p>
+ <div class="k how"><span class="kh">★ 測り方の注意</span>
+  <b>AIを作るときに一度かかる費用と、使うたびに毎回かかる費用は、桁が違います。</b>環境負荷の話では、両者を分けてください。</div>
+ <div class="k res"><span class="kh">★ この節の位置づけ</span>
+  この資料の第1部は<b>機械学習の標準的な教科書レベル</b>で、原論文までは遡っていません。
+  この節で典拠が付いているのは、上の未解明の告白と規模の数値だけです。</div>
+ <p class="src"><b>出典</b>　Kaplan et al. 2020「Scaling Laws for Neural Language Models」
+  arXiv:2001.08361 Appendix C ／ Brown et al. 2020「Language Models are Few-Shot Learners」
+  arXiv:2005.14165 §6.3</p>`},
+
+/* ══════════════ 貼る位置 ②　第1部 基礎編 2 ══════════════ */
+{id:'p1-2-class-reg',grp:'第1部 基礎編',t:'関数で「分ける」と「当てる」',short:'分類と回帰',
+ sec:'2',part:'第1部',gname:'基礎',cf:'○',
+ mai:'LLMの「次の単語当て」は、<span class="hl">選択肢が数万個ある超巨大な分類</span>です。だから出力が確率の一覧になります。',
+ land:['機械学習の仕事は、LLMを説明する範囲では<b>分類</b>と<b>回帰</b>の2種類に絞れます。',
+  '<b>LLM の「次の単語当て」は、選択肢が数万個ある超巨大な分類です。</b>',
+  '<b>確率は生成AIに特有の話ではなく、分類をする関数はどれも確率を出しています。</b>'],
+ b:`<p><span class="cf b">○</span>分類は「どれか」を分けます（入力→猫90%／犬10%）。回帰は「数値」を当てます（入力→23.5度）。</p>
+ <ul>
+  <li><b>分類</b>：画像認識も分類です。入力が「画素の数値が数百万個並んだもの」になるだけです。</li>
+  <li><b>回帰</b>：数値そのものを出すので、確率の一覧は出ません。</li>
+  <li><b>LLM の「次の単語当て」は、選択肢が数万個ある超巨大な分類です。</b>
+   だから出力が「東京 82% / 大阪 11% / …」という確率の一覧になります。</li>
+ </ul>
+ <div class="k how"><span class="kh">★ 落とすと誤解が残る補足</span>
+  <b>決定木は勾配降下法で学習しません</b>（分岐条件を貪欲に選びます）。
+  これに触れないと「AIはすべて同じやり方で学習する」という誤解が残ります。
+  逆に言えば、<b>LLMを理解するために必要な機械学習は「勾配降下で学習する関数」だけ</b>です。</div>
+ <div class="k res"><span class="kh">★ ◎ にしていない理由（この資料が明記）</span>
+  <b>クラスタリングや強化学習を含めていない簡略化</b>であり、
+  「LLMを説明するために必要な範囲では2種類」という限定つきです。
+  ＊この資料の自己点検で ◎ から ○ に格下げされた項目です。</div>
+ <p class="src"><b>出典</b>　なし（教科書レベルの一般的な説明。この資料の第1部は原論文まで遡っていないと明記）</p>`},
+
+/* ══════════════ 貼る位置 ③　第1部 基礎編 3 ══════════════ */
+{id:'p1-3-learning',grp:'第1部 基礎編',t:'「学習」の正体 ── 誤差を測って、減る方へ少しずつ直す',short:'学習の正体',
+ sec:'3',part:'第1部',gname:'基礎',cf:'◎',
+ mai:'ここで一つだけ罠があります。<span class="ng">「誤差＝2乗和」は回帰の話です。</span>LLM の損失はクロスエントロピーです。',
+ land:['適当なパラメータで始め、データとのずれを測り、減る方へ数字を少しずつ変える。これを何十億回くり返します。',
+  'どちらへ回せば減るかを試さずに教えてくれるのが<b>微分</b>です。',
+  '<b>LLM の損失は2乗和ではなくクロスエントロピー（正解に与えた確率の対数）です。</b>'],
+ b:`<p><span class="cf a">◎</span>手順は3段です。①適当なパラメータで関数を引く。②データとのずれ（誤差）を測る。
+  ③パラメータの数字を少しずつ変えて測り直し、減る方へまた変える。これを何十億回くり返します。</p>
+ <p>パラメータが数千億個あると、「どのパラメータの数字をどちらへ変えれば誤差が減るか」を1個ずつ試す時間はありません。
+  試さずに教えてくれるのが<b>微分</b>です。</p>
+ <div class="k fix"><span class="kh">★ 通説の訂正</span>
+  「誤差＝ずれを2乗して全部足す」は<b>回帰の話</b>です。<b>LLM の損失はそれではありません。</b>
+  LLM は分類なので、<b>正解に与えた確率の対数</b>を使います（クロスエントロピー）。</div>
+ <div class="fml">L = − Σ<em>t</em> log p<em>θ</em>( x<em>t</em> | x<em>&lt;t</em> )<br>
+  例：p(東京) = 0.82 → 損失 −log(0.82) = 0.20　（よく当てた）<br>
+  　　p(東京) = 0.05 → 損失 −log(0.05) = 3.00　（外した）<br>
+  ＊log は自然対数、単位は nats。bits で言うなら log₂ をとって 0.286 / 4.32</div>
+ <div class="k str"><span class="kh">★ 原典に式がある</span>
+  この式は原論文にあります（GPT-1 Eq.1 ／ GPT-2 Eq.1）。
+  <b>回帰なら2乗和、分類ならクロスエントロピー。</b>混ぜないでください。
+  「誤差＝2乗和」と言い切ると、LLM の損失に繋がらなくなります。</div>
+ <p class="src"><b>出典</b>　Radford et al. 2018「Improving Language Understanding by Generative
+  Pre-Training」Eq.1 ／ Radford et al. 2019「Language Models are Unsupervised Multitask Learners」Eq.1
+  ／ 手順そのものは教科書レベルの一般的な説明（典拠なし）</p>`},
+
+/* ══════════════ 貼る位置 ④　第1部 基礎編 4 ══════════════ */
+{id:'p1-4-toolbox',grp:'第1部 基礎編',t:'数学の道具箱 ── 何が必要で、何が要らないか',short:'数学の道具箱',
+ sec:'4',part:'第1部',gname:'基礎',cf:'○',
+ mai:'よく見る「5つで足りる」という整理は<span class="ng">足りません。</span>KL・エントロピー・期待値が落ちています。',
+ land:['必要な道具は4つ：<b>微分・線形代数・確率（softmax）・情報量</b>。',
+  '情報量では <b>クロスエントロピー ＝ エントロピー ＋ KL</b> の分解を省略しないでください。',
+  '<b>「関数・損失・勾配降下・線形代数・softmax の5つで足りる」は足りません。</b>'],
+ b:`<p><span class="cf b">○</span>第2部を読むために必要な道具は4つです。</p>
+ <p><b>(1) 微分</b> ── いまいる場所の坂の傾き。傾きが分かれば、パラメータの数字を変える方向が決まります（勾配降下）。
+  ＊誤差逆伝播法の原典は Rumelhart, Hinton &amp; Williams 1986 (Nature) です。歴史として一行触れるだけで十分です。</p>
+ <p><b>(2) 線形代数</b> ── ベクトル＝数の並び、行列を掛ける＝変換。
+  「1個ずつ」ではなく「表ごと一気に」計算できるので、パラメータが数千億個でも動きます。</p>
+ <p><b>(3) 確率</b> ── softmax でスコアを合計1の確率に直します。
+  ＊起源はボルツマン分布、"softmax" の命名は Bridle 1990。引く必要はありません。</p>
+ <p><b>(4) 情報量</b> ── エントロピー＝「予測の難しさ」、KLダイバージェンス＝「2つの分布のずれ」。
+  <b>そして クロスエントロピー ＝ エントロピー ＋ KL という分解。</b>ここは省略しないでください。
+  スケーリング則で、損失が「これ以上下げられない部分」と「まだ下げられる部分」に分かれる話が、
+  この分解そのものだからです。</p>
+ <div class="k fix"><span class="kh">★ 通説の訂正</span>
+  <b>よくある「関数・損失・勾配降下・線形代数・softmax の5つで足りる」という整理は、足りません。</b>
+  <b>KLダイバージェンス・エントロピー・期待値</b>が落ちています。
+  KL は第2部で扱う3つの目的関数（RLHF・RLVR・拡散モデル）のすべてに出てきます。
+  エントロピーは、スケーリング則とトークナイズ理論の主結果に出てきます。</div>
+ <div class="k res"><span class="kh">★ ◎ にしていない理由（この資料が明記）</span>
+  「これだけ知っていれば読める」という<b>必要十分の判断</b>であって、原典に明記のある事実ではありません。
+  実際、初版の整理では KL・エントロピー・期待値が落ちていました。</div>
+ <p class="src"><b>出典</b>　なし（教科書レベルの一般的な説明）。
+  歴史の言及のみ：Rumelhart, Hinton &amp; Williams 1986 (Nature) ／ Bridle 1990</p>`},
+
+/* ══════════════ 貼る位置 ⑤　第1部 基礎編 5（前半） ══════════════ */
+{id:'p1-5-king-man',grp:'第1部 基礎編',t:'「王様 − 男 ＋ 女 ≒ 女王」の正確な扱い',short:'王様−男＋女',
+ sec:'5',part:'第1部',gname:'基礎',cf:'○',
+ mai:'この例はたいてい ◎ として出回っていますが、<span class="ng">正しくは ○ です。</span>基礎ほど誤りやすい、という実例です。',
+ land:['単語ベクトルには「意味の差が矢印として取り出せる」性質が<b>部分的に</b>あります。',
+  'word2vec（Skip-gram, 2013）の測定で、<b>意味的な類推の正答率は約55%</b>。約半分しか当たりません。',
+  '<b>これは word2vec という専用モデルの性質で、LLM の内部表現で同じ演算が成り立つかは別問題です。</b>'],
+ b:`<p>コンピュータは文字を直接扱えません。入口の作業は2つです。<b>区切る（トークナイズ）</b>と
+  <b>数値にする（埋め込み）</b>。各トークンを数百〜数千次元のベクトルに対応させます。</p>
+ <p>よく見る説明は「女王←王様」「女←男」の2本の矢印が同じ向き・同じ長さだから
+  王様 − 男 ＋ 女 ≒ 女王 になる、というものです。<b>これはたいてい ◎ として提示されますが、
+  <span class="cf b">○</span>です。</b>理由が3つあります。</p>
+ <h4>(1) 精度は「だいたい半分」です</h4>
+ <p>word2vec 原論文 Table 3 を、列を組み直して引きます。測り方は
+  <b>640次元・同一データ・Semantic-Syntactic Word Relationship test set</b> です。</p>
+ <div class="fml">モデル　　　　意味的類推 [%]　統語的類推 [%]<br>
+  RNNLM　　　　　　　　 9　　　　　　　36<br>
+  NNLM　　　　　　　　 23　　　　　　　53<br>
+  CBOW　　　　　　　　 24　　　　　　　64<br>
+  Skip-gram　　　　　 <em>55</em>　　　　　　　59</div>
+ <div class="k how"><span class="kh">★ 測り方の注意</span>
+  <b>この2つの列を並べて比較しないでください。土台が違います。</b>原典 Table 3 のキャプションは
+  「our Semantic-Syntactic Word Relationship test set, and on the syntactic relationship test set of [20]」。
+  つまり<b>意味的な列は著者らの自作テストセット、統語的な列は [20] のテストセット</b>です。
+  「意味的55%に対し統語的59%だから統語のほうが得意」という読み方はできません。<br>
+  ＊[20] は "king − man + woman" の例の出所と同じ論文です（Mikolov, Yih &amp; Zweig, NAACL HLT 2013。
+  この資料はこの論文の本文を取得していません）。</div>
+ <div class="k res"><span class="kh">★ 原典の留保</span>
+  「計算されたベクトルに最も近い単語が正解と厳密に一致した場合のみ正答とみなす。
+  <b>したがって同義語は誤りとして数えられる。これは 100% の精度に到達することがおそらく不可能であることも
+  意味する</b>」（同論文 §4.1）</div>
+ <h4>(2) 例の出所が、この論文の成果ではありません</h4>
+ <p>word2vec 論文の本文はこの例を<b>先行研究の引用として</b>紹介しています。引用元は
+  Mikolov, Yih &amp; Zweig「Linguistic Regularities in Continuous Space Word Representations」
+  NAACL HLT 2013 という<b>別の論文</b>です。そして引用文の言い方は
+  「<b>Queen の単語表現に最も近いベクトルになる</b>」であって、<b>「＝ Queen」ではありません。</b></p>
+ <h4>(3) LLM の内部表現で同じ演算が成り立つ保証はありません</h4>
+ <p>逆向きの報告が2本あります。分布仮説の原典は
+  「<b>文脈の類似性が信頼できる基準となるのは、意味が非常に似ている語のペアを検出する場合に限られる</b>」。
+  テキスト埋め込みを線形補間する手法は「この近接性が有意味な線形補間を可能にする。
+  <b>埋め込みが離れていると線形な振る舞いを示さない</b>」と書き、だから埋め込みの最適化を100ステップに留めています。</p>
+ <div class="k fix"><span class="kh">★ この例が教えていること</span>
+  <b>基礎ほど誤りやすい、ということの実例です。</b>難しい原論文の話ではなく、
+  誰でも知っている有名な例が、◎ と書かれて出回っています。</div>
+ <p class="src"><b>出典</b>　Mikolov et al. 2013「Efficient Estimation of Word Representations in
+  Vector Space」arXiv:1301.3781 Table 3, §4.1 ／ Rubenstein &amp; Goodenough 1965「Contextual Correlates
+  of Synonymy」（この資料は要旨のみ確認）／ Kawar et al. 2022「Imagic」arXiv:2210.09276 §3.2</p>`},
+
+/* ══════════════ 貼る位置 ⑥　第1部 基礎編 5（後半） ══════════════ */
+{id:'p1-5-no-chars',grp:'第1部 基礎編',t:'素のLLMは文字を見ていない',short:'文字を見ていない',
+ sec:'5',part:'第1部',gname:'基礎',cf:'◎',
+ mai:'ここは実数があります。<span class="hl">単語を逆から綴らせると 0.44%。</span>ただし機構の話と製品の実力の話は分けてください。',
+ land:['LLM が見ているのはトークンの塊で、文字ではありません。',
+  '<b>単語を逆から綴らせると、例を見せた状態でも 0.44%。</b>桁の足し算も桁数が増えると崩れます。',
+  '<b>ただし、いまの製品はツール呼び出しで補うので普段は間違えません。機構の話と製品の話は別です。</b>'],
+ b:`<p><span class="cf a">◎</span>実数があります。</p>
+ <ul>
+  <li>単語を逆から綴らせると、few-shot（例を見せた状態）でも <b>0.44%</b>。
+   同節の説明：BPEは1トークンあたり平均約0.7語を占めるので、この種のタスクは
+   「BPEトークンを操作するだけでなく、<b>その下部構造を理解して分解する</b>」ことを要します。</li>
+  <li>桁の足し算も同様に崩れます（few-shot）：
+   2桁加算 <b>100.0%</b> → 3桁加算 80.4% → 4桁 25.5% → 5桁 <b>9.3%</b>。</li>
+ </ul>
+ <div class="k how"><span class="kh">★ 混ぜないための注意</span>
+  <b>いまの製品は電卓やコード実行などのツール呼び出しで補う</b>ので、普段は間違えません。
+  <b>機構の話と製品の実力の話は分けてください。</b>「文字を見ていない」は機構の話です。</div>
+ <p class="src"><b>出典</b>　Brown et al. 2020「Language Models are Few-Shot Learners」
+  arXiv:2005.14165 §3.9.2, Table 3.9</p>`},
+
+/* ══════════════ 貼る位置 ⑦　第1部 基礎編 6 ══════════════ */
+{id:'p1-6-attention',grp:'第1部 基礎編',t:'注目（Attention）の仕組み',short:'注目の仕組み',
+ sec:'6',part:'第1部',gname:'基礎',cf:'◎',
+ mai:'差を生んだのは数式ではなく、<span class="hl">学習で決まった変換行列</span>です。ここに決定的な線があります。',
+ land:['各単語から q（問い）・k（見出し）・v（中身）を作り、①誰にどれだけ注目するか決め、②その重みで中身を混ぜます。',
+  '<b>演算は完全に分かっています</b>：行列積 ＋ softmax ＋ 加重和。それ以上でも以下でもありません。',
+  '<b>なぜ学習がその行列を見つけ、それが賢く働くのかは分かっていません。手では設計できません。</b>'],
+ b:`<p><span class="cf a">◎</span>各単語のベクトルから3つの役割ベクトルを作ります。
+  <b>q（問い）</b>＝私は何を探しているか。<b>k（見出し）</b>＝私は何の情報を持つか（図書館の背表紙）。
+  <b>v（中身）</b>＝実際に渡す情報（本の中身）。</p>
+ <div class="fml">α<em>ij</em> = softmax<em>j</em>( q<em>i</em> · k<em>j</em> / √d<em>k</em> )　# i が j に注目する度合い（合計1）<br>
+  z<em>i</em> = Σ<em>j</em> α<em>ij</em> · v<em>j</em>　　　　　　　　　　# 注目度で重みづけた中身の和</div>
+ <p>3つのトークン「猫 / が / それ」で、「それ」が誰を見るかを数値で追った例です
+  （説明のため2次元に縮めた<b>この資料の作例</b>。原論文の数値ではありません）。</p>
+ <div class="fml">学習前（q=k=v=x のまま）<br>
+  　スコアが全部 0.5 → softmax → [0.33, 0.33, 0.33]　＝横一線。何も区別できない<br>
+  学習後（q が [1.0, 0.0] になったとする）<br>
+  　スコア　　1.00 ,  0.00 ,  0.50<br>
+  　÷√2 →　 0.71 ,  0.00 ,  0.35<br>
+  　softmax → <em>0.46</em> ,  0.22 ,  0.32　←「それ」が「猫」に最も注目</div>
+ <div class="k str"><span class="kh">★ ここに決定的な線がある</span>
+  <b>演算は完全に分かっています</b>：行列積 ＋ softmax ＋ 加重和。<br>
+  <b>なぜ学習がその行列を見つけ、それが賢く働くのかは分かっていません。手では設計できません。</b></div>
+ <div class="k fix"><span class="kh">★ 通説の訂正</span>
+  <b>「it → animal」という注意の可視化例を「原論文の図」として出すのは誤りです。</b>
+  原論文 Fig.4 が示しているのは 'its' の照応で、対象語は head 5 が 'Law'、head 6 が 'application' です。
+  <b>"animal" という語は原論文に一度も出てきません（全文検索で0件）。</b>
+  よく見る図は、原論文の外で作られたデモ例です。</div>
+ <p class="src"><b>出典</b>　Vaswani et al. 2017「Attention Is All You Need」
+  arXiv:1706.03762 §3.2 Eq.1, Fig.4</p>`},
+
+/* ══════════════ 貼る位置 ⑧　第1部 まとめ ══════════════ */
+{id:'p1-sum',grp:'第1部 基礎編',t:'第1部のまとめ（ここまでで言えること）',short:'第1部のまとめ',
+ sec:'まとめ',part:'第1部',gname:'基礎',cf:'—',
+ mai:'第1部だけで止めるなら、<span class="hl">この一文</span>を持ち帰れば十分です。',
+ land:['主張ごとに確信度と種別（一般的な説明／原典）を分けた一覧です。',
+  '<b>「AIは巨大な関数で、次に来そうなものを確率で選んでいる。演算は全部分かるが、なぜ賢いかは分かっていない」</b>',
+  '第1部だけで完結して読めます。ただし第1部は原典照合を通していません。'],
+ b:`<div class="fml">主張　　　　　　　　　　　　　　　　　　　　　　　確信度　種別<br>
+  巨大な関数を作る行為／演算は掛け算・足し算・確率化だけ　◎　一般的な説明<br>
+  仕事は分類と回帰の2種類。次単語当ては超巨大な分類　　　○　一般的な説明（簡略化）<br>
+  学習＝誤差を測って減る方へ数字を少しずつ変える（勾配降下）　　　　　　◎　一般的な説明<br>
+  LLM の損失はクロスエントロピー（2乗和ではない）　　　 ◎　原典（GPT-1/GPT-2 Eq.1）<br>
+  「王様 − 男 ＋ 女 ≒ 女王」　　　　　　　　　　　　　　<em>○</em>　原典（意味的類推55%、限定つき）<br>
+  素のLLMは文字を見ていない（逆綴り 0.44%）　　　　　　 ◎　原典（GPT-3 §3.9.2）<br>
+  注意の演算内容（q·k を softmax して v を混ぜる）　　　 ◎　原典（Transformer §3.2 Eq.1）<br>
+  なぜその重みが賢く働くのか　　　　　　　　　　　　　<em>未解明</em>　原典が明言（Kaplan Appendix C）</div>
+ <div class="k str"><span class="kh">★ 一行で持ち帰る</span>
+  <b>「AIは巨大な関数で、次に来そうなものを確率で選んでいる。演算は全部分かるが、
+  なぜ賢いかは分かっていない」</b></div>
+ <div class="k res"><span class="kh">★ 第1部の位置づけ（この資料の警告ブロック）</span>
+  第1部は<b>機械学習の標準的な教科書レベル</b>で、原論文までは遡っていません。
+  理由は素材の不足ではなく構造的な事情で、関数・分類と回帰・勾配降下・線形代数は
+  19世紀の数学や教科書の記述であり、対応する原論文が存在しません。
+  <b>勾配降下法には典拠を付けません。付けられないからです。</b></div>
+ <p class="src"><b>出典</b>　表中に記載のとおり（Radford et al. 2018 Eq.1 ／ Radford et al. 2019 Eq.1 ／
+  Mikolov et al. 2013 arXiv:1301.3781 Table 3 ／ Brown et al. 2020 arXiv:2005.14165 §3.9.2 ／
+  Vaswani et al. 2017 arXiv:1706.03762 §3.2 ／ Kaplan et al. 2020 arXiv:2001.08361 Appendix C）</p>`}
+,
+
+/* ══════════════ 貼る位置 ⑨　第2部 §1 全体構造 ══════════════ */
+{id:'s1-map',grp:'§1 全体構造',t:'全体構造 ── 「作る工程」と「使い方」を分ける',short:'全体構造',
+ sec:'1',part:'第2部',gname:'全体構造',cf:'—',
+ mai:'最初に分けるのはここです。<span class="hl">いま A（作る工程）の話か、B（使い方）の話か。</span>ここを混ぜるのが最大の誤解源です。',
+ land:['AIの機構は1枚の理論では説明できませんが、「いまどの部分の話か」を分けると混乱がかなり消えます。',
+  '<b>【A】作る工程（L0器→L1事前学習→L2選好整合→L3検証可能報酬RL）と【B】できたモデルの使い方は、別物です。</b>',
+  '<b>横断軸（データ／トークナイズ／評価・較正／スケーリング則）は、そのすべてに効きます。</b>'],
+ b:`<p>よく見る「層を1本の縦軸に積み上げた図」には構造的な問題があります。
+  <b>訓練の工程と、できたモデルの使い方が1本の軸に混ざる</b>からです。分けるとこうなります
+  （この資料の構造図の内容を文で移したもの。図は転載していません）。</p>
+ <h4>横断軸 ── どの層にも属さないが、すべての層に効く</h4>
+ <p>① <b>データ</b>：何を食わせたかが全層を規定する。② <b>トークナイズ</b>：入口で決めて【凍結】され、
+  最終出力まで効く。③ <b>評価・較正</b>：どの層の成果も、測り方が決めてしまう。
+  ④ <b>スケーリング則</b>：規模と性能の関係。全層に共通の物差し。</p>
+ <h4>【A】モデルを作る工程 ── 順番があり、後戻りできない</h4>
+ <p><b>L0 アーキテクチャ</b>（→§2）＝Transformer。自己注意で全部を同時に混ぜる。演算は完全に追えるが、
+  なぜ賢いかは未解明。<br>
+  ↓<b>L1 事前学習</b>（→§3）＝次トークン予測でスケールさせる。知識獲得・文脈内学習・
+  「平均へ流れる」の発生源。<br>
+  ↓⚠️ここから先は差し引きがある。<b>L2 選好整合（RLHF）</b>（→§4）。
+  得るもの＝指示に従う・有用性（1.3B が 175B より好まれる）。
+  失うもの＝一部の能力が下がる／較正が壊れる（ECE 0.007 → 0.074）。<br>
+  ↓⚠️ここも差し引きがある。<b>L3 検証可能報酬RL</b>（→§5）。
+  得るもの＝検証可能な領域で AIME 15.6% → 77.9%。
+  失うもの＝人間の模範解答を挟むと AIME 77.9 → 59.0。<b>効くのは正誤が判定できる領域だけ。</b></p>
+ <h4>【B】できたモデルの使い方 ── 訓練工程ではない</h4>
+ <p>順番もなく、組み合わせます（→§6）。思考の誘導（Chain-of-Thought）／文脈に入れる（文脈内学習・
+  プロンプト）／サンプリングの制御（温度・top-p、画像なら guidance）／道具を呼ぶ・多段で実行する
+  （モデルの外側の足場）。<b>★L3 はCoTを訓練対象にしているので、CoT は「L3 の上の層」ではなく L3 と入れ子です。</b></p>
+ <div class="k fix"><span class="kh">★ 図について先に断っておくこと（3点）</span>
+  <b>(a) L3 と Chain-of-Thought は積み重なっていません。入れ子です。</b>
+  DeepSeek-R1 がやっているのは長い思考連鎖そのものを強化学習で伸ばすことで、CoT は <b>L3 の操作対象</b>です。
+  時系列も CoT(2022) → RLVR(2024-25) で逆になります。<br>
+  <b>(b) 矢印は一方向ではありません。後の層が前の層を減らすことがあります。</b>
+  人間の模範解答（cold-start SFT）を挟むと AIME が <b>77.9 → 59.0</b>／
+  選好整合で SQuAD・DROP・HellaSwag・WMT15 の性能が事前学習モデルより下がる／
+  言語の一貫性を報酬に入れると性能はわずかに劣化する（読みやすさのために受け入れている）。<br>
+  <b>(c) 「6層」のような数え方は説明上の便宜で、事実ではありません。</b>
+  入口（トークナイズ）は番号の外、道具使用はモデルの外側です。</div>
+ <div class="k str"><span class="kh">★ 一行版（口頭で説明するとき）</span>
+  <b>入口で言葉を数値に固定し（そして凍結し）、Transformer という器に、次単語予測で知識を詰め、
+  人の好みで形を整え（ここで較正を失い）、正誤で判定できる領域だけ推論を引き出す。
+  できたものを、思考の誘導・文脈・サンプリング・道具で使う。
+  何を食わせたか／どう測るかは、そのすべてを串刺しにする。</b></div>
+ <p class="src"><b>出典</b>　DeepSeek-AI 2025「DeepSeek-R1」arXiv:2501.12948 Table 3, §3.2.1 ／
+  Ouyang et al. 2022「Training language models to follow instructions with human feedback」
+  arXiv:2203.02155 §4.2 ／ OpenAI 2023「GPT-4 Technical Report」arXiv:2303.08774 Figure 8</p>`},
+
+/* ══════════════ 貼る位置 ⑩　§2-1 ══════════════ */
+{id:'s2-1-parallel',grp:'§2 L0 Transformer',t:'何を解いたか ── 精度ではなく「並列化」',short:'解いたのは並列化',
+ sec:'2-1',part:'第2部',gname:'L0 器',cf:'◎',
+ mai:'歴史的な意義は精度ではありません。<span class="hl">鎖を切ったこと</span>です。だから大規模化が物理的に可能になりました。',
+ land:['RNN / LSTM は単語を1個ずつ順に処理するので、GPUで並列化できませんでした。',
+  '<b>Transformer は全単語が同時に全単語を見るので、1回の行列積で一括計算できます。</b>',
+  '<b>意義は精度ではなく「鎖を切った」こと。だから大規模化が可能になり、スケーリング則が意味を持ちました。</b>'],
+ b:`<p><span class="cf a">◎</span>RNN（逐次）は前の計算が終わるまで次に進めません。
+  時間方向に依存の鎖があるので並列化できず、離れた語を結ぶのに何ステップも通過するため途中で薄れます。
+  Transformer（並列）は鎖がないので全位置を一括計算でき、<b>どの2単語も1ステップで直結します</b>（経路長が一定）。</p>
+ <div class="fml">　　　　　　逐次操作　　経路長　　　計算量<br>
+  RNN　　　　　O(n)　　　　O(n)　　　O(n·d²)<br>
+  Attention　　<em>O(1)</em>　　　　<em>O(1)</em>　　　O(n²·d)</div>
+ <div class="k str"><span class="kh">★ ここが歴史的な意義</span>
+  <b>精度ではなく、この「鎖を切った」ことです。</b>並列化できたから大規模化が物理的に可能になり、
+  規模と性能の関係（→§7-4）が意味を持ちました。</div>
+ <p>実測は WMT14 英独翻訳で <b>28.4 BLEU</b>、<b>8枚のGPUで約3.5日</b>。</p>
+ <p class="src"><b>出典</b>　Vaswani et al. 2017「Attention Is All You Need」
+  arXiv:1706.03762 Table 1, §5.2, Table 2</p>`},
+
+/* ══════════════ 貼る位置 ⑪　§2-2 ══════════════ */
+{id:'s2-2-overview',grp:'§2 L0 Transformer',t:'全体像 ── 横に混ぜる層と、縦に変換する層',short:'全体像',
+ sec:'2-2',part:'第2部',gname:'L0 器',cf:'—',
+ mai:'2種類の操作が交互に来ます。<span class="hl">自己注意は横（単語どうし）、FFN は縦（各単語の中）。</span>役割が直交しています。',
+ land:['トークン分割→埋め込み→位置エンコーディングを足す→ブロックをN段（原論文は6段）積む→語彙サイズに射影して softmax。',
+  '<b>自己注意は単語どうしで情報を混ぜ（横方向）、FFN は各単語の中だけで変換します（縦方向）。</b>',
+  'パラメータの約2/3は FFN 側に集中します。'],
+ b:`<p>入力文の処理は、①トークンに分割してID列に（→§7-2）、②埋め込み行列で各IDをd次元ベクトルに
+  （原論文は d=512）、③位置エンコーディングを足す（語順の情報）、という順です。
+  そのあとブロックを N段（原論文は6段）積みます。</p>
+ <div class="fml">x'  = LayerNorm( x  + 自己注意(x) )　← 位置をまたいで混ぜる<br>
+  x'' = LayerNorm( x' + FFN(x')      )　← 各位置の中で変換する</div>
+ <p>最後に④最終ベクトルを語彙サイズに線形射影して softmax、次の単語の確率分布を出します。</p>
+ <div class="k str"><span class="kh">★ 要点は「2種類が交互」</span>
+  <b>自己注意は単語どうしで情報を混ぜ（横方向）、FFN は各単語の中だけで変換します（縦方向）。</b>
+  役割が直交しています。</div>
+ <div class="k how"><span class="kh">★ 測り方の注意</span>
+  パラメータの約2/3は FFN 側に集中します（注意 4d² = 1,048,576 に対し FFN 2·d·d_ff = 2,097,152）。
+  <b>原典に明記はありませんが、原典の設定値から計算できます。</b></div>
+ <p class="src"><b>出典</b>　Vaswani et al. 2017 arXiv:1706.03762 §3.1, §3.3, Figure 1
+  （比率は原典の設定値からこの資料で計算）</p>`},
+
+/* ══════════════ 貼る位置 ⑫　§2-3 ══════════════ */
+{id:'s2-3-sqrt-dk',grp:'§2 L0 Transformer',t:'√d_k で割る理由 ── そして著者自身の保留',short:'√d_k で割る理由',
+ sec:'2-3',part:'第2部',gname:'L0 器',cf:'◎',
+ mai:'割る理由は学習を安定させる工夫です。<span class="ng">ただし著者自身が、内積が最適かどうかを保留しています。</span>',
+ land:['内積は次元 d_k が大きいほど値が大きくブレ、スコアが大きすぎると softmax が飽和して勾配がほぼ0になります。',
+  '<b>根拠は原典 §3.2.1 脚注4：「q, k の各成分が平均0分散1の独立確率変数なら、内積の分散は d_k」。</b>',
+  '<b>★ただし原典は、内積が最適だとは考えていません。</b>Table 3 行B の考察で保留しています。'],
+ b:`<p><span class="cf a">◎</span>スコアが大きすぎると softmax が一点集中し、勾配がほぼ0になって学習が止まります。</p>
+ <div class="fml">スコアが穏やか [0.6, 0.0, 0.1] → softmax → [0.464, 0.255, 0.281]　なだらか＝学習できる<br>
+  スコアが過大　 [60,  0,   10 ] → softmax → [1.000, 0.000, 0.000]　一点集中＝学習が止まる</div>
+ <p>（この資料の作例。上段は e^0.6=1.8221, e^0=1, e^0.1=1.1052、和 3.9273 から算出）</p>
+ <div class="k str"><span class="kh">★ 原典がそのまま書いていること</span>
+  §3.2.1 <b>脚注4</b>：「q, k の各成分が平均0分散1の独立確率変数なら、<b>内積の分散は d_k</b>」。
+  √d_k で割ると分散が約1に正規化されます。<b>学習を安定させる工夫です。</b></div>
+ <div class="k res"><span class="kh">★ 原典の留保</span>
+  <b>原典は、内積が最適だとは考えていません。</b>Table 3 行B で d_k を 64→16 にすると BLEU が 23.7 に
+  落ちることを示し、こう考察しています：「<b>互換性の判定は簡単ではなく、内積よりも高度な互換性関数が
+  有益かもしれない</b>」。<b>注意の中核である内積類似度が最適かどうかを、著者自身が保留しています。</b></div>
+ <p class="src"><b>出典</b>　Vaswani et al. 2017 arXiv:1706.03762 §3.2.1 脚注4, Table 3 行B</p>`},
+
+/* ══════════════ 貼る位置 ⑬　§2-4 ══════════════ */
+{id:'s2-4-multihead',grp:'§2 L0 Transformer',t:'Multi-Head ── 多ければ良い、ではない',short:'Multi-Head',
+ sec:'2-4',part:'第2部',gname:'L0 器',cf:'○',
+ mai:'ヘッドを増やせば良い、ではありません。<span class="ng">h=32 は h=8 に負けています。</span>役割分担の具体名も原典にはありません。',
+ land:['観点を1つに限らず h 組を並列に持ちます（原論文は h=8、各 d_k=64、合計 8×64=512）。',
+  '<b>動機は「単一ヘッドでは平均化がこれを阻害する」。＝加重平均であることの限界を原典が自ら書いています。</b>',
+  '<b>★h=32 では BLEU 25.4 < h=8 の 25.8。多すぎても品質は落ちます。</b>'],
+ b:`<p><span class="cf b">○</span>原典 §3.2.2 の動機：「<b>異なる表現部分空間の情報に同時に注目できる。
+  単一ヘッドでは平均化がこれを阻害する（averaging inhibits this）</b>」。
+  つまり<b>「自己注意は加重平均である」という限界を、原典が自ら平均化の問題として述べています。</b></p>
+ <div class="fml">Table 3 の実測（要点のみ）<br>
+  行A：単一ヘッドは最良設定より <em>0.9 BLEU 低下</em>　＝Multi-Head は実験で裏づけられている<br>
+  　　　h=32 では BLEU <em>25.4</em> ＜ h=8 の <em>25.8</em>　＝ヘッドが多すぎても品質は落ちる</div>
+ <div class="k fix"><span class="kh">★ 通説の訂正</span>
+  <b>「ヘッド1が係り受け、ヘッド3が時制」のような具体的な役割分担は原典に書かれていません。</b>
+  原典が図で示したのは Fig.4 の照応と Fig.5 の構造的振る舞いだけで、ヘッドにタスク名は付いていません。
+  根拠にできるのは §4末尾の一般的な言明です：「<b>個々の注意ヘッドが明確に異なるタスクを学び、
+  多くが文の統語的・意味的構造に関連した振る舞いを示す</b>」。
+  言えるのは「そういう分業が観測される」までです。</div>
+ <div class="k how"><span class="kh">★ 図から読める事実（キャプションには無い）</span>
+  Fig.4 は「照応解決に関与しているらしい2つのヘッド」を示していますが、実際の対象語は
+  <b>head 5 が 'its' → 'Law'、head 6 が 'its' → 'application'</b> で、
+  <b>照応解決が2ヘッドの分業として現れています。</b></div>
+ <p class="src"><b>出典</b>　Vaswani et al. 2017 arXiv:1706.03762 §3.2.2, Table 3 行A, §4, Fig.4, Fig.5</p>`}
+,
+
+/* ══════════════ 貼る位置 ⑭　§2-5 ══════════════ */
+{id:'s2-5-posenc',grp:'§2 L0 Transformer',t:'位置エンコーディング ── sin/cos が本質なのではない',short:'位置エンコーディング',
+ sec:'2-5',part:'第2部',gname:'L0 器',cf:'◎',
+ mai:'位置情報が要ることは本質です。<span class="ng">sin/cos でなければならない理由は、原典に書かれていません。</span>',
+ land:['自己注意は単語を入れ替えても結果が同じ（置換同変）なので、そのままでは語順を知りません。',
+  '<b>原典が正弦波を使った理由は「訓練より長い系列へ外挿できるかもしれない」から。</b>',
+  '<b>★同じ節が「学習型の位置埋め込みでもほぼ同一の結果だった」と明記しています。</b>'],
+ b:`<p><span class="cf a">◎</span>だから各位置に固有のベクトルを足します。</p>
+ <div class="fml">言えること　：位置情報がないと語順が分からない（これは本質）<br>
+  言えないこと：sin/cos でなければならない理由（学習型でも同じ結果）</div>
+ <div class="k fix"><span class="kh">★ 通説の訂正</span>
+  原典は正弦波を使いましたが、<b>その理由は「訓練より長い系列へ外挿できるかもしれない」からで、
+  しかも同じ節が「学習型の位置埋め込みでもほぼ同一の結果だった」と明記しています</b>（§3.5, Table 3 行E）。</div>
+ <div class="k str"><span class="kh">★ 独立な追認が3本</span>
+  GPT-1 は §4.1 で「原論文の正弦波版ではなく<b>学習型を使った</b>」と明記。
+  ViT も学習型の1次元で、方式を変えても差が出ません（ViT-B/16 の5-shot：
+  位置情報なし 0.614 ／ 1次元 0.642 ／ 2次元 0.640 ／ 相対位置 0.640）。
+  逆に DiT は正弦-余弦に戻しています。</div>
+ <p class="src"><b>出典</b>　Vaswani et al. 2017 arXiv:1706.03762 §3.5, Table 3 行E ／
+  Radford et al. 2018（GPT-1）§4.1 ／ Dosovitskiy et al. 2020「An Image is Worth 16x16 Words」
+  arXiv:2010.11929 Table 8 ／ Peebles &amp; Xie 2022「DiT」arXiv:2212.09748</p>`},
+
+/* ══════════════ 貼る位置 ⑮　§2-6 ══════════════ */
+{id:'s2-6-postln',grp:'§2 L0 Transformer',t:'ブロックの式 ── 原典は Post-LN',short:'原典は Post-LN',
+ sec:'2-6',part:'第2部',gname:'L0 器',cf:'◎',
+ mai:'よく見る <span class="ng">x + Attn(LN(x))</span> は原典の式ではありません。2019年以降に主流化した後年の形です。',
+ land:['原典の式は LayerNorm( x + Sublayer(x) )＝<b>Post-LN</b> です。式と図の両方で確認できます。',
+  '現代の標準形（Pre-LN）は <b>GPT-2 の改変</b>です。',
+  '<b>よく見る x + Attn(LN(x)) は2019年以降に主流化した後年の形で、原典の式ではありません。</b>'],
+ b:`<p><span class="cf a">◎</span>後年の常識とずれるので分けて書きます。</p>
+ <div class="fml">原典（Post-LN）　　　　： LayerNorm( x + Sublayer(x) )<br>
+  現代の標準形（Pre-LN）： x'  = x + 自己注意(LayerNorm(x))<br>
+  　　　　　　　　　　　　 x'' = x' + FFN(LayerNorm(x'))</div>
+ <p>原典 §3.1 の文言は LayerNorm(x + Sublayer(x)) で、Figure 1 の Add &amp; Norm ブロックも
+  サブレイヤーの<b>後</b>に置かれています。<b>式と図の両方で Post-LN です。</b></p>
+ <div class="k fix"><span class="kh">★ 通説の訂正</span>
+  Pre-LN は GPT-2 の改変です（§2.3：「Layer normalization を各サブブロックの<b>入力側に移した</b>。
+  さらに最終自己注意ブロックの後に LN を追加」。加えて残差層の重みを初期化時に 1/√N 倍）。
+  <b>よく見る x + Attn(LN(x)) は2019年以降に主流化した後年の形</b>で、原典の式ではありません。</div>
+ <p class="src"><b>出典</b>　Vaswani et al. 2017 arXiv:1706.03762 §3.1, Figure 1 ／
+  Radford et al. 2019「Language Models are Unsupervised Multitask Learners」§2.3</p>`},
+
+/* ══════════════ 貼る位置 ⑯　§2-7 ══════════════ */
+{id:'s2-7-causal',grp:'§2 L0 Transformer',t:'因果マスク（GPTがこれを使う）',short:'因果マスク',
+ sec:'2-7',part:'第2部',gname:'L0 器',cf:'—',
+ mai:'生成時に未来を見るのはカンニングです。だから<span class="hl">注意行列の上三角を −∞ にします。</span>',
+ land:['原論文は翻訳用でエンコーダ＋デコーダの2本立てですが、<b>GPTはデコーダだけ</b>を使います。',
+  '生成時は未来の単語を見てはカンニングなので、<b>注意行列の上三角を −∞ にします</b>（softmax 後に0）。',
+  'これで「左から1語ずつ生成する」自己回帰が成立します。'],
+ b:`<p>マスクの形は下三角です。1語目は自分だけ、2語目は1〜2語目、…と、
+  各行が自分より前の位置しか見られません。上三角にあたる未来の位置は −∞ にされ、
+  softmax を通ると重みが0になります。</p>
+ <p>これで「左から1語ずつ生成する」自己回帰が成立します（→§3）。</p>
+ <p class="src"><b>出典</b>　Vaswani et al. 2017 arXiv:1706.03762 §3.1, §3.2.3（マスクの図は
+  この資料がASCIIで描き直したもの。ここでは文で移した）</p>`},
+
+/* ══════════════ 貼る位置 ⑰　§2-8 ══════════════ */
+{id:'s2-8-limits',grp:'§2 L0 Transformer',t:'この層の限界',short:'L0 の限界',
+ sec:'2-8',part:'第2部',gname:'L0 器',cf:'—',
+ mai:'<span class="hl">賢さの源泉は L0 ではありません。</span>器の話と、賢さの話を分けてください。',
+ land:['<b>自己注意は「理解」ではなく「相関に基づく重み付き平均」です。</b>原典自身が平均化を問題として書いています。',
+  '<b>賢さの源泉は L0 ではなく L1 以降にあります。</b>構造を知ったことと、原理を理解したことは別です。',
+  '計算量は系列長の2乗 O(n²d)。これが長文の弱点で、疎な注意（→§7-5）を生みました。'],
+ b:`<ul>
+  <li><b>自己注意は「理解」ではなく「相関に基づく重み付き平均」です。</b>
+   原典自身が §3.2.2 で平均化を問題として書いています。<b>賢さの源泉は L0 ではなく L1 以降</b>にあります。</li>
+  <li><b>構造を知ったことと、原理を理解したことは別です。</b>なぜ汎化するかは未解明で、
+   原典も中核の設計（内積）が最適かどうか保留しています（Table 3 行B の考察）。</li>
+  <li><b>計算量は系列長の2乗</b> O(n²d)。これが長文の弱点で、疎な注意（→§7-5）を生みました。</li>
+ </ul>
+ <div class="k how"><span class="kh">★ 原論文の中の数値の不整合</span>
+  英仏の BLEU が Abstract と Table 2 では <b>41.8</b>、本文 §6.1 では <b>41.0</b>。
+  <b>論文は人間が書いたもので、誤りもあります。</b></div>
+ <p class="src"><b>出典</b>　Vaswani et al. 2017 arXiv:1706.03762 §3.2.2, Table 3 行B,
+  Abstract / Table 2 / §6.1</p>`}
+,
+
+/* ══════════════ 貼る位置 ⑱　§3-1 ══════════════ */
+{id:'s3-1-chain',grp:'§3 L1 事前学習',t:'確率の連鎖分解 ── 近似ではなく恒等式',short:'確率の連鎖分解',
+ sec:'3-1',part:'第2部',gname:'L1 事前学習',cf:'◎',
+ mai:'モデルがやっているのは<span class="hl">各時点で次の語の確率分布を出すこと</span>だけです。それで文全体の確率が書けます。',
+ land:['文の同時確率は、条件付き確率の積に<b>厳密に</b>分解できます。近似ではありません。',
+  '<b>だからモデルは「各時点で次の語の確率分布を出す」だけでよいことになります。</b>',
+  '「次の語当て」を極限まで上手くやろうとすると、文法・事実・推論・要約までが<b>圧縮の副産物として</b>獲得されます。'],
+ b:`<p><span class="cf a">◎</span>数学的な恒等式です。</p>
+ <div class="fml">p(x<em>1</em>, …, x<em>n</em>) = p(x<em>1</em>)·p(x<em>2</em>|x<em>1</em>)·p(x<em>3</em>|x<em>1</em>,x<em>2</em>)·… = Π<em>t</em> p(x<em>t</em> | x<em>&lt;t</em>)　← GPT-2 Eq.1</div>
+ <p>学習は、実際に来た語に高い確率を与えるようクロスエントロピーを下げます（→第1部§3、GPT-1 Eq.1）。
+  <b>「次の語当て」を極限まで上手くやろうとすると、文法・事実・推論・要約までが圧縮の副産物として
+  獲得されます。</b>明示的に教えていないのに、です。</p>
+ <p>生成は自己回帰、つまりこの分解を左から順に実行するだけです。
+  「日本の首都は」→次語分布→「東京」→「日本の首都は東京」→次語分布→「。」→…</p>
+ <p class="src"><b>出典</b>　Radford et al. 2019「Language Models are Unsupervised Multitask Learners」Eq.1 ／
+  Radford et al. 2018「Improving Language Understanding by Generative Pre-Training」Eq.1</p>`},
+
+/* ══════════════ 貼る位置 ⑲　§3-2 ══════════════ */
+{id:'s3-2-gap',grp:'§3 L1 事前学習',t:'原典の一番の発見は「175Bがすごい」ではない',short:'発見は傾きの差',
+ sec:'3-2',part:'第2部',gname:'L1 事前学習',cf:'◎',
+ mai:'覚えるのは点ではなく<span class="hl">傾きの差</span>です。そう覚えると、スケーリング則と自然に繋がります。',
+ land:['GPT-3 は 125M〜175B の<b>8サイズ</b>を訓練しました。',
+  '<b>zero-shot は緩やかに、few-shot は急速に伸び、両者のギャップが規模とともに広がります。</b>',
+  '原典の言い方は「大きいモデルがより優れた<b>メタ学習器</b>であることを示唆する」。'],
+ b:`<p><span class="cf a">◎</span>Figure 1.3 が示したのは、zero-shot（例なし）は規模とともに緩やかに伸び、
+  few-shot（例を数個）は急速に伸び、<b>両者のギャップが規模とともに広がる</b>ことです。</p>
+ <div class="k str"><span class="kh">★ 原典がそのまま書いていること</span>
+  「zero/one/few-shot 間の<b>ギャップがモデル容量とともに拡大する</b>傾向がある。
+  これは大きいモデルがより優れた<b>メタ学習器</b>であることを示唆する」（§1）。<br>
+  <b>点（175B）ではなく傾きの差</b>として覚えると、スケーリング則（→§7-4）と自然に繋がります。</div>
+ <div class="k how"><span class="kh">★ 芽は GPT-2 ではなく GPT-1 にある</span>
+  GPT-1 §5「Zero-Shot Behaviors」は、事前学習の更新回数に応じてゼロショット性能が単調に上がることを示し、
+  「<b>生成モデルは言語モデリング性能を上げるために評価タスク自体を解けるようになっていく</b>」という仮説を
+  立てています。アブレーション（Table 5）では、事前学習なしで平均 <b>14.8% 低下</b>、
+  Transformer を LSTM に置換して平均 <b>5.6ポイント低下</b>。
+  <b>規模だけでなく事前学習とアーキテクチャの両方が効いています。</b></div>
+ <div class="k res"><span class="kh">★ 原典は全勝を主張していない</span>
+  GPT-1 は RTE（2,490例の小データ）で <b>56.0%</b> と、先行の multi-task BiLSTM の <b>61.7%</b> に
+  負けています。<b>原典が正直に報告しています。</b></div>
+ <p class="src"><b>出典</b>　Brown et al. 2020「Language Models are Few-Shot Learners」
+  arXiv:2005.14165 §1, Figure 1.3 ／ Radford et al. 2018（GPT-1）§5, Table 5</p>`},
+
+/* ══════════════ 貼る位置 ⑳　§3-3 ══════════════ */
+{id:'s3-3-decoding',grp:'§3 L1 事前学習',t:'デコーディング ── 「平均へ流れる」の直接の出どころ',short:'デコーディング',
+ sec:'3-3',part:'第2部',gname:'L1 事前学習',cf:'◎',
+ mai:'「無難な答えしか出ない」は故障ではありません。<span class="hl">最頻値を探すデコーディングの正常動作</span>です。',
+ land:['モデルが出すのは分布です。そこから<b>どう1語を選ぶか</b>で出力の性格が決まります。',
+  '温度 T が分布の形を変えます（低温＝尖る、高温＝なだらか）。',
+  '<b>「無難で平均的な答えしか出ない」は故障ではなく、最頻値を探すデコーディングの正常動作です。</b>'],
+ b:`<p><span class="cf a">◎</span>分布の形を変えるのが<b>温度 T</b> です（p<em>i</em> = softmax(z<em>i</em> / T)）。
+  3択の生ロジット z=[3.0, 1.0, 0.5] での<b>この資料の作例</b>：</p>
+ <div class="fml">T=1.0 : [0.82, 0.11, 0.07]　そのまま<br>
+  T=0.5 : [0.98, 0.02, 0.01]　尖る＝最頻値に一点集中<br>
+  T=2.0 : [0.60, 0.22, 0.17]　なだらか＝裾が立つ</div>
+ <p>選び方の流派は2つです。<b>貪欲／低温</b>＝毎回いちばん高い語を選ぶ（安全だが<b>凡庸・無難</b>に寄る）。
+  <b>top-k / top-p（核サンプリング）</b>＝上位だけ残す（<b>低確率の裾を構造的に切り捨てる</b>）。</p>
+ <div class="k str"><span class="kh">★ ここが出どころ</span>
+  <b>「無難で平均的な答えしか出ない」は故障ではなく、最頻値を探すデコーディングの正常動作です。</b></div>
+ <p class="src"><b>出典</b>　softmax と温度の性質（計算はこの資料で検算した作例）／
+  Brown et al. 2020 arXiv:2005.14165 の生成設定</p>`}
+,
+
+/* ══════════════ 貼る位置 ㉑　§3-4 ══════════════ */
+{id:'s3-4-mean',grp:'§3 L1 事前学習',t:'「平均へ流れる」の機構は複数ある',short:'平均へ流れる機構',
+ sec:'3-4',part:'第2部',gname:'L1 事前学習',cf:'—',
+ mai:'層を分けずに「AIは平均に流れる」とだけ言うと、<span class="ng">「でも数学オリンピックを解くよ」で崩れます。</span>',
+ land:['機構は1つではなく4つあり、確信度も違います（◎から△まで）。',
+  '精密に条件づけると条件付き分布が作り替えられますが、<b>どの低確率領域が価値ある新規かを指定するのは人間</b>です。',
+  '<b>★ここまでは L1 の話です。検証可能な領域では L3 がこの引力を部分的に覆します（→§5）。</b>'],
+ b:`<div class="fml">機構　　　　　　　　　　　　　　　　　　　　　　　　　層　　　　　確信度<br>
+  次トークン予測＝尤度最大化（「次に来そう」を選ぶ）　　L1　　　　<em>◎</em><br>
+  雑なプロンプトだと確率質量が高頻度パターンに残る　　　L1　　　　<em>△</em><br>
+  デコーディングが高確率語＝最頻値に寄る　　　　　　　　L1／生成　<em>○</em><br>
+  選好整合がコンセンサスの平均へ寄せる（→§4）　　　　　L2　　　　<em>○</em></div>
+ <p>裏返すと、<b>精密に条件づけると条件付き分布 p(出力|文脈) が作り替えられ、平均の峰が削られて、
+  確率質量が狭い領域へ押し込まれます。</b>ただし<b>どの低確率領域が価値ある新規かを指定するのは人間</b>です。
+  しかも上限があります（→§6-2 の「事前バイアスは消えない」）。</p>
+ <div class="k fix"><span class="kh">★ 重要な但し書き</span>
+  <b>ここまでは L1 の話です。</b>検証可能な領域では L3 がこの引力を部分的に覆します（→§5）。
+  層を分けずに「AIは平均に流れる」とだけ言うと、<b>「でも数学オリンピックを解くよ」で崩れます。</b></div>
+ <p class="src"><b>出典</b>　表の各行の典拠は §3-1（訓練目的の定義）／§3-3（デコーディング）／
+  §4（Ouyang et al. 2022 arXiv:2203.02155）に対応。この資料の §3-4 の整理</p>`},
+
+/* ══════════════ 貼る位置 ㉒　§3-5 ══════════════ */
+{id:'s3-5-numbers',grp:'§3 L1 事前学習',t:'主な数値（測り方つき）',short:'主な数値',
+ sec:'3-5',part:'第2部',gname:'L1 事前学習',cf:'—',
+ mai:'数値は測り方とセットです。<span class="hl">作るのに 3,640 PF-days。できたものに100ページ書かせるのは数セント。</span>',
+ land:['言語のテストを集めたもの（SuperGLUE）で <b>71.8</b>。<b>例が8個に届かないうちに、そのテスト専用に訓練した BERT-Large（69.0）を超えます。</b>',
+  '作るのにかかった計算は <b>3,640 petaflop/s-day</b>。一方、できたものに100ページ書かせるのは約0.4 kW-h＝数セントです。',
+  '読ませた文章は <b>Common Crawl（web を大量に集めたもの）が60%</b>。<b>質の高いものは2〜3周（実値 3.4／2.9／1.9）、CC と Books2 は1周未満（0.44／0.43）</b>しか読ませていません。'],
+ b:`<div class="k how"><span class="kh">★ 先に言葉の意味（この節に出る5つ）</span>
+  <b>zero-shot</b>　例を1つも見せずに解かせること。／
+  <b>few-shot</b>　例をいくつか見せてから解かせること。<br>
+  <b>fine-tuned</b>　そのテスト専用に追加で訓練したもの。／
+  <b>BERT-Large</b>　原典がその比べる相手（baseline）に置いたモデルの名前です。<br>
+  <b>petaflop/s-day（略して PF-days）</b>　1秒に1,000兆回の計算を1日ぶん回した量。
+  計算の量を数える単位です。</div>
+ <ul>
+  <li><b>穴埋めのテスト（LAMBADA）</b>　例を1つも見せずに <b>76.2%</b>（それまでの最高は 68.0）</li>
+  <li><b>言語のテストを集めたもの（SuperGLUE）</b>　例をいくつか見せて <b>71.8</b>。
+   そのテスト専用に訓練した BERT-Large の <b>69.0</b> を上回ります。
+   <b>しかも例が8個に届かないうちに超えます。</b></li>
+  <li><b>言葉どうしの関係を当てるテスト（SATアナロジー）</b>　<b>65.2%</b>
+   （大学に出願する人の平均が 57%、あてずっぽうが 20%）</li>
+ </ul>
+ <div class="k str"><span class="kh">★ 作るときと、使うときで桁が違う</span>
+  作るのにかかった計算　<b>3,640 petaflop/s-day</b>（＝<b>3.14×10²³ 回</b>の演算。flops は演算の回数です）。<br>
+  使うときの電気　原典 §6.3「<b>100ページ分を書かせるのは約0.4 kW-h＝数セント</b>」。<br>
+  → <b>作るのは一度きりで高く、使うのは何度でも安い</b>、という形の費用です。</div>
+ <div class="fml">読ませた文章の内訳（Table 2.2）　　　量　　読ませた量に占める割合　周回数<br>
+  Common Crawl（フィルタ後）　　　　　410B　　　<em>60%</em>　　0.44<br>
+  WebText2　　　　　　　　　　　　　　 19B　　　 22%　　2.9<br>
+  Books1　　　　　　　　　　　　　　　 12B　　　  8%　　1.9<br>
+  Books2　　　　　　　　　　　　　　　 55B　　　  8%　　0.43<br>
+  Wikipedia　　　　　　　　　　　　　　 3B　　　  3%　　<em>3.4</em></div>
+ <p><b>「量」と「読ませた量に占める割合」は別のものです。</b>Common Crawl は量では大半を占めますが、
+  読ませた量に占める割合は 60% に抑えられています。<b>周回数</b>は、その文章を平均で何回読ませたかです。<br>
+  <span style="color:#8a9db3">このゲームの第2章では、この5つを
+  Wikipedia＝百科事典／WebText2＝厳選した web／Books1＝本（1）／Books2＝本（2）／
+  Common Crawl＝ざっと集めた web と呼んでいます。</span></p>
+ <div class="k how"><span class="kh">★ 測り方の注意</span>
+  <b>質の高いものは2〜3周、CC と Books2 は1周未満</b>しか読ませていません。
+  つまり<b>読ませる回数を、わざと量に比例させていません</b>（原典の語では「サンプリング比を歪める」）。
+  原典はその理由を「<b>多少の過学習を受け入れて質を買う</b>」と書いています。<br>
+  読ませた語数のうち <b>93% が英語</b>です。<br>
+  <b>「2〜3周」はこの資料が丸めた言い方です。</b>Table 2.2 の周回数の列は
+  <b>Wikipedia 3.4／WebText2 2.9／Books1 1.9／Books2 0.43／CC 0.44</b> で、上は <b>3.4 まで届きます</b>。
+  原典の表の説明文も「<b>あるデータセットは最大3.4回見られ、他は1回未満しか見られない</b>」と書いています。<br>
+  → <b>境界の値をこの丸めから取らないでください</b>（例：閾値を3に置くと Wikipedia が範囲の外に出ます）。</div>
+ <p class="src"><b>出典</b>　Brown et al. 2020 arXiv:2005.14165 §3, §6.3, Table 2.2</p>`},
+
+/* ══════════════ 貼る位置 ㉓　§3-6 ══════════════ */
+{id:'s3-6-limits',grp:'§3 L1 事前学習',t:'この層の限界（原典が自分で書いているもの）',short:'L1 の限界',
+ sec:'3-6',part:'第2部',gname:'L1 事前学習',cf:'—',
+ mai:'限界は外からの批判ではなく<span class="hl">原典が自分で書いている</span>ものです。だから強く使えます。',
+ land:['<b>真偽より「もっともらしさ」を優先する機械です。</b>自信のある誤りが原理的に出ます。',
+  '<b>★ただし文体で機械生成を見分けることはできません（175Bの判別は52%＝偶然と同等）。</b>',
+  '<b>★逆に「暗記だけ」でもありません。</b>3桁算術2,000件のうち訓練データと一致したのは17件（0.8%）。'],
+ b:`<p><b>(a) 真偽より「もっともらしさ」を優先する機械です。</b>「次に来そう」を選ぶので、
+  自信のある誤りが原理的に出ます。事実性は副産物で、保証ではありません。</p>
+ <div class="k fix"><span class="kh">★ 通説の訂正 ── (b) 文体では見分けられない</span>
+  約200語のニュース記事の判別実験（参加者621名）で、意図的に劣化させた対照モデルは正答率 <b>86%</b> で
+  見破られますが、<b>175B の判別は 52%＝偶然と同等</b>。約500語の長文でも <b>52%</b>（対照は88%）。
+  <b>モデルが大きいほど参加者は1問に時間をかけているのに正答率が落ちます</b>（Figure E.1）。<br>
+  見分けるなら<b>事実誤り・繰り返し・非論理の跳躍</b>です。<b>文体では無理です。</b></div>
+ <p><b>(c) 巨大化しても苦手なものがあります</b>（§5, §3.7）：
+  <b>WiC（同じ語が2文で同じ意味か）＝49.4%＝完全にランダム</b>（「多数の言い換えを試したがどれも駄目だった」）／
+  ANLI R1/R2 は 175B でもほぼランダム（32.0 / 33.9%）、R3 でようやく 40.2%／
+  「チーズを冷蔵庫に入れたら溶けるか」型の物理常識に弱い。
+  原典の推測は、自己回帰のみで<b>双方向性がない</b>こと（比較・穴埋め・読み返しに不利）です。</p>
+ <div class="k fix"><span class="kh">★ 通説の訂正 ── (d) 「暗記だけ」でもない</span>
+  3桁の算術問題2,000件を訓練データで検索したところ、一致したのは<b>加算17件（0.8%）・減算2件（0.1%）のみ</b>。
+  「誤答は<b>繰り上がりの1を忘れる</b>型が多く、表を暗記しているのではなく<b>実際に計算を試みている</b>ことを示唆」。
+  <b>「AIは検索しているだけ」への反証</b>になります。同時に、桁が増えると崩れます（→第1部§5）。</div>
+ <p><b>(e) 偏りについては、言い方が重要です。</b>§6.2 の実測：388職業のうち
+  <b>83%が男性を指す語に続きやすい</b>。しかも "The competent {職業} was a" にすると男性寄りがさらに強まる
+  （平均バイアス：中立 −1.11 → competent −2.14 → incompetent −1.15）／
+  女性の記述語は外見中心（beautiful 158回、gorgeous 28回 など）、男性は語彙の幅が広い（Table 6.1）／
+  宗教：Islam では violent / terrorism / terrorist が<b>上位40語に入る</b>（Table 6.2）。</p>
+ <div class="k res"><span class="kh">★ 原典の留保 ── 「大きいほど偏る」とは一概に言えない</span>
+  Winogender の代名詞解決で 175B が最高精度（64.17%）で、かつ<b>職業文で女性の精度が男性を上回った唯一の
+  モデル</b>でした。原典は「偏りに起因する誤りには大きいモデルの方が頑健」という予備的証拠だと述べています。
+  人種による差も大きいモデルではわずかに縮小します。
+  より行動可能な言い方は §8-5 にあります（<b>ラベルの選び方と閾値の決め方という、モデルの外側の設計が偏りを作る</b>）。</div>
+ <div class="k how"><span class="kh">★ (f) 汚染について、原典が自らバグを報告している</span>
+  13-gram重複で訓練データから評価問題を除去しようとしましたが、<b>バグで除去が不完全</b>でした。
+  「学習コストのため再訓練は不可能だった」と明記しています。
+  <b>Wikipedia系4つの言語モデルベンチマークと Children's Book Test は、訓練データにほぼ完全に含まれていたため
+  結果を報告しませんでした</b>（当初は報告する予定だった、と正直に書いています）。<br>
+  → 「汚染がある/ない」ではなく「<b>汚染をどう扱ったかが論文に書いてあるか</b>」を見るのが実務的です。</div>
+ <div class="k how"><span class="kh">★ (g) 較正の話で GPT-2 と GPT-3 を混ぜない</span>
+  GPT-3 §5末尾は「新規入力に対する予測は<b>必ずしもよく較正されていない</b>」と書き、
+  GPT-2 は狭い設定で「よく較正されている」と書いています。<b>測っている対象が違います。</b>
+  「事前学習は較正が良く、事後学習で崩れる」を主張するときは、
+  <b>同一モデルの前後比較である GPT-4 Figure 8 だけを根拠にする</b>のが正確です（→§7-3）。</div>
+ <div class="k str"><span class="kh">★ (h) 原典が RLHF を予告している</span>
+  §5：「現在の目的関数は<b>全トークンを等重みで扱い、何が重要かの概念がない</b>」
+  「有用な言語システムは予測ではなく<b>目標志向の行動</b>として捉えるべきかもしれない」。
+  有望な方向として「<b>人間から目的関数を学ぶ</b>」を挙げています。→ 次の層（§4）が、この予告どおりに来ます。</div>
+ <p class="src"><b>出典</b>　Brown et al. 2020 arXiv:2005.14165 §3.7, §3.9.1, §3.9.4, §4, §5, §6.2,
+  Table 6.1, Table 6.2, Figure E.1, Appendix C ／ Radford et al. 2019（GPT-2）</p>`}
+,
+
+/* ══════════════ 貼る位置 ㉔　§4-1 ══════════════ */
+{id:'s4-1-bt',grp:'§4 L2 選好整合',t:'何を解いたか ── 比較から報酬を学ぶ',short:'比較から報酬を学ぶ',
+ sec:'4-1',part:'第2部',gname:'L2 選好整合',cf:'—',
+ mai:'「人間の好みから報酬を学ぶ」と「人間の好みでモデルを順位づける」は、<span class="hl">同じ数式</span>です。あとで効きます。',
+ land:['正直さ・親切さ・安全さは式になりません。だから<b>報酬を定義する代わりに、人間の「どっちが良いか」から報酬を学習します。</b>',
+  '数理は <b>Bradley-Terry モデル</b>。原典自身が Elo との類比を書いています。',
+  '<b>★2017年の原型論文は言語モデルの論文ではありません。</b>Atari 7ゲームと MuJoCo 8タスクです。'],
+ b:`<div class="fml">P(A が B より好まれる) = σ( r(A) − r(B) )　σ はシグモイド<br>
+  r(A)=2.0, r(B)=0.5 → P = σ(1.5) = 0.82　　Aが82%好まれると予測<br>
+  人間が実際にAを選んだ → 損失 −log(0.82)=0.20 を小さくするよう r を学習</div>
+ <p>（この資料の作例。原典の式は Christiano et al. 2017 Eq.(1)）</p>
+ <div class="k str"><span class="kh">★ 原典がそのまま書いていること</span>
+  「2人のチェス選手のElo点差が勝率を推定するのと同様に、2つの軌跡区間の予測報酬の差が、
+  一方が選ばれる確率を推定する」。<br>
+  <b>「人間の好みから報酬を学ぶ」と「人間の好みでモデルを順位づける」は同じ数式です</b>（→§7-3）。</div>
+ <div class="k fix"><span class="kh">★ 通説の訂正</span>
+  <b>2017年の原型論文は言語モデルの論文ではありません。</b>対象は
+  <b>Atari 7ゲームと MuJoCo の物理シミュレーション8タスク</b>で、最も有名な成果は
+  <b>Hopperロボットのバックフリップ（900クエリ・1時間未満）</b>（Fig.4）。
+  最適化アルゴリズムも PPO ではなく Atari は A2C、MuJoCo は TRPO です。混ぜないでください。</div>
+ <div class="k str"><span class="kh">★ 驚くべき結果が1つ</span>
+  <b>1400ラベルでは、真の報酬で強化学習したときより性能がわずかに良かった。</b>
+  原典の推測は「学習された報酬関数の方が <b>shaping（形）が良い</b>」。<br>
+  → 「人間の選好報酬は真の報酬の劣化コピー」とは限りません。</div>
+ <p class="src"><b>出典</b>　Christiano et al. 2017「Deep Reinforcement Learning from Human Preferences」
+  arXiv:1706.03741 Eq.(1), §3.3, Fig.4 ／ Bradley &amp; Terry 1952</p>`},
+
+/* ══════════════ 貼る位置 ㉕　§4-2 ══════════════ */
+{id:'s4-2-3stage',grp:'§4 L2 選好整合',t:'3段ロケット（InstructGPT）と、錨の主役',short:'3段ロケット',
+ sec:'4-2',part:'第2部',gname:'L2 選好整合',cf:'—',
+ mai:'「KL項が要点」ではありません。<span class="ng">錨の主役は第3項（pretraining mix）</span>です。式を書くときに落とさないでください。',
+ land:['段1 SFT（13kプロンプト）→ 段2 報酬モデル（33kプロンプト、K=4〜9個を人間が順位づけ）→ 段3 PPO（31kプロンプト）。',
+  '<b>★報酬モデルは 6B のみ。175B は使っていません</b>（「175BのRM訓練は不安定になりうる」）。',
+  '<b>★目的関数は3項。性能劣化の回復には、KL係数を上げるより pretraining mix の方が有効です。</b>'],
+ b:`<p>段1 <b>SFT（教師あり微調整）</b>：人間が書いた模範回答で微調整（13k プロンプト）。<br>
+  段2 <b>報酬モデルの学習</b>：1問に K=4〜9 個の応答を出させ、人間が順位づけ（33k プロンプト）。
+  <b>★報酬モデルは 6B のみ。175B は使っていません</b>
+  （「175BのRM訓練は不安定になりうるため、RLの価値関数として不適だった」）。<br>
+  段3 <b>強化学習（PPO、31k プロンプト）</b>。</p>
+ <div class="fml">目的関数（原典 Eq.2）は【3項】<br>
+  E[ r<em>θ</em>(x,y) − β log( π^RL(y|x) / π^SFT(y|x) ) ] + γ·E<em>pretrain</em>[ log π^RL(x) ]<br>
+  　└ 報酬 ┘　└──── KL項（暴走抑制）────┘　└── 第3項＝pretraining mix ──┘<br>
+  ★γ&gt;0 のものが PPO-ptx で、原典が「InstructGPT」と呼ぶのはこれ</div>
+ <div class="k fix"><span class="kh">★ 通説の訂正</span>
+  <b>「KL項が要点」ではありません。</b>§4.2 の結論は
+  「<b>性能劣化の回復には、KL係数を上げるより pretraining mix の方が有効</b>」で、
+  「KL係数を上げると検証報酬が大きく下がり、DROP と SQuAD では完全には回復しない」（Fig.33/34）。
+  <b>錨の主役は第3項です。</b>式を書くときに落とさないでください。</div>
+ <p class="src"><b>出典</b>　Ouyang et al. 2022「Training language models to follow instructions with
+  human feedback」arXiv:2203.02155 §3, Eq.2, §4.2, Fig.33, Fig.34</p>`},
+
+/* ══════════════ 貼る位置 ㉖　§4-3 ══════════════ */
+{id:'s4-3-asym',grp:'§4 L2 選好整合',t:'効き方は方向ごとに非対称',short:'効き方は非対称',
+ sec:'4-3',part:'第2部',gname:'L2 選好整合',cf:'○',
+ mai:'象徴的な結果です。<span class="hl">1.3B の出力が、175B の事前学習モデルより人間に好まれました。</span>100倍以上小さいのに。',
+ land:['有用性・従順性には<b>絶大</b>に効き、<b>偏りには改善なし</b>、<b>素の能力は一部下がります</b>。',
+  '<b>★1.3B の出力が、175B の事前学習モデルより人間に好まれました。</b>',
+  '<b>★「能力が増えない」より強い事実＝一部の能力が下がる（alignment tax）。</b>'],
+ b:`<div class="fml">対象　　　　　　　　効き方<br>
+  有用性・従順性　　　<em>絶大</em>。175B InstructGPT は 175B 事前学習モデルに 85±3% の勝率<br>
+  真実性　　　　　　　TruthfulQA で真実かつ有益が約2倍。閉領域の幻覚 41%→21%（21%残る）<br>
+  毒性　　　　　　　　「敬意を持って」と指示したとき約25%減。指示を外すと優位が消える<br>
+  偏り　　　　　　　　<em>改善なし</em>（Winogender / CrowS-Pairs で変わらない）<br>
+  素の能力　　　　　　<em>一部は下がる</em>（下記）</div>
+ <div class="k res"><span class="kh">★ 原典の留保（毒性）</span>
+  「毒性のある出力を出せ」と明示的に指示すると、<b>事前学習モデルより遥かに毒性が高い</b>。</div>
+ <div class="k str"><span class="kh">★ 象徴的な結果と、コストの対比</span>
+  <b>1.3B の出力が、175B の事前学習モデルより人間に好まれました。</b>100倍以上小さいのに、です。
+  しかもコストが違います（§5.1）：175B の SFT が <b>4.9 PF-days</b>、PPO-ptx が <b>60 PF-days</b> に対し、
+  事前学習は <b>3,640 PF-days</b>。原典：「RLHFは<b>100倍のモデルサイズ増よりも</b>有用性向上に効果的」。</div>
+ <div class="k fix"><span class="kh">★ 通説の訂正</span>
+  <b>「能力が増えない」より強い事実があります＝一部の能力が下がる（alignment tax）。</b>
+  SQuAD / DROP / HellaSwag / WMT15 仏→英で、事前学習モデルより性能が低下します。<br>
+  ＊GPT-4 は逆に「事後学習はベースモデルの能力を実質的には変えない」と書いていますが、
+  <b>それは多肢選択問題に限った話</b>です（→§7-3）。「変えない」と「下がる」は測っている対象が違います。</div>
+ <p class="src"><b>出典</b>　Ouyang et al. 2022 arXiv:2203.02155 §4.2, §5.1 ／
+  OpenAI 2023「GPT-4 Technical Report」arXiv:2303.08774 Appendix B</p>`}
+,
+
+/* ══════════════ 貼る位置 ㉗　§4-4 ══════════════ */
+{id:'s4-4-tone',grp:'§4 L2 選好整合',t:'★ChatGPTのあの口調の出所は、付録に書かれている',short:'あの口調の出所',
+ sec:'4-4',part:'第2部',gname:'L2 選好整合',cf:'◎',
+ mai:'ここは推測ではありません。<span class="hl">評価者への指示文と評価者名簿のレベルで公開されています。</span>',
+ land:['境界事例の判定基準そのものが「<b>カスタマーアシスタント</b>」です（Figure 10）。',
+  '<b>はぐらかす挙動の原因を、著者自身が特定しています</b>（評価者に「認識的謙虚さを報酬せよ」と指示した）。',
+  '<b>「人間の好み」の実体は約40人で、その属性が分かっており、一致率は約73%です。</b>'],
+ b:`<p><span class="cf a">◎</span>推測ではなく、一次記述で辿れます。</p>
+ <div class="k str"><span class="kh">★ (a) 判定基準そのものが「カスタマーアシスタント」</span>
+  「境界事例を決める指導原理：<b>このタスクを手伝おうとしているカスタマーアシスタントから、
+  あなたはどちらの出力を受け取りたいか？</b>」（Figure 10 の最後）<br>
+  報酬の最終的な拠り所が「良質な顧客対応」である以上、出力が無難で礼儀正しく、
+  尖った見解を避ける方向へ寄るのは<b>設計どおり</b>です。</div>
+ <div class="k str"><span class="kh">★ (b) はぐらかす原因を著者自身が特定している</span>
+  「〔過剰なhedgingが〕生じるのは、<b>我々が評価者に "認識的謙虚さ（epistemic humility）を報酬せよ" と
+  指示した</b>ことが一因だと思われる。そのため評価者は<b>ぼかした出力を報酬しがちになり、
+  それが報酬モデルに拾われる</b>」（§4.3）<br>
+  <b>指示文 → 評価者 → 報酬モデル → 出力</b>という因果連鎖が、一次記述で辿れます。</div>
+ <div class="k how"><span class="kh">★ (c) 訓練時と評価時で優先順位が逆</span>
+  「<b>訓練データのラベル付けでは有用性を真実性・無害性より最優先</b>させた。一方、最終評価では
+  真実性と無害性を優先させた」（Appendix B.2）。→ §5.3 の
+  「<b>おそらく我々のモデルの最大の限界は、実世界で害に至りうる場合でもユーザーの指示に従ってしまうことだ</b>」
+  と直結します。</div>
+ <div class="k how"><span class="kh">★ (d) 「人間の好み」の実体は約40人で、属性が分かっている</span>
+  Appendix B.3, Table 12（任意アンケートに19名回答）：民族は<b>東南アジア系 52.6%</b>・白人 31.6%・
+  ラテン系 15.8%、国籍は<b>フィリピン22%・バングラデシュ22%・米国17%</b>、年齢は<b>75%が35歳未満</b>。
+  選抜基準（B.1）は「機密性の高い発話のフラグ付けとランキングで<b>研究者と75%以上一致</b>すること」。
+  <b>＝報酬モデルは研究者の判断に二重に整合させられています。</b></div>
+ <div class="k res"><span class="kh">★ (e) その「人間の好み」自体が約73%しか一致しない</span>
+  訓練評価者間の一致率 <b>72.6±1.5%</b>、held-out 評価者 77.3±1.3%。
+  報酬モデルの held-out 群への選好予測精度は 69.6±0.9%。
+  そして<b>コスト上の理由で、ほとんどの比較は1人しかラベルしていない</b>とも明記されています（§3.4）。</div>
+ <div class="k str"><span class="kh">★ (f) 誰に整合させているのかを原典が1節費やして限定している</span>
+  「<b>全員の選好に同時に整合したシステムを訓練することは不可能</b>であり、
+  全員がそのトレードオフを支持するようなものも作れない」（§5.2）<br>
+  → 「AIの価値観は誰のものか」は抽象論ではなく、<b>この約40人と、この一文（カスタマーアシスタント）</b>の
+  話にできます。</div>
+ <p class="src"><b>出典</b>　Ouyang et al. 2022 arXiv:2203.02155 Figure 10, §3.4, §4.3, §5.2, §5.3,
+  Appendix B.1, B.2, B.3, Table 12</p>`},
+
+/* ══════════════ 貼る位置 ㉘　§4-5 ══════════════ */
+{id:'s4-5-collapse',grp:'§4 L2 選好整合',t:'なぜ多様性が落ちるのか（mode collapse）',short:'多様性が落ちる',
+ sec:'4-5',part:'第2部',gname:'L2 選好整合',cf:'○',
+ mai:'報酬モデルは<span class="hl">「多くの人が好む無難な回答」</span>に高得点を与えます。それを最大化すれば、裾は痩せます。',
+ land:['報酬モデルは「多くの人が好む無難な回答」に高得点を与えがちです。',
+  '段3でその報酬を最大化すると、<b>確率質量が少数の「好まれる型」に集中します。</b>',
+  '選好整合前は多様な言い回し・尖った見解も裾に残りますが、整合後は裾が痩せます。'],
+ b:`<p><span class="cf b">○</span>分布の形で言うと、選好整合前は p(出力) が広く、
+  多様な言い回しや尖った見解も裾に残ります。整合後は<b>無難で礼儀正しい型に質量が集中し、裾が痩せます</b>
+  （この資料の模式図。分布の形は模式で、実測値ではありません）。</p>
+ <p class="src"><b>出典</b>　Ouyang et al. 2022 arXiv:2203.02155（報酬最大化の帰結としての整理。
+  分布の図はこの資料の模式）</p>`},
+
+/* ══════════════ 貼る位置 ㉙　§4-6 ══════════════ */
+{id:'s4-6-limits',grp:'§4 L2 選好整合',t:'この層の限界',short:'L2 の限界',
+ sec:'4-6',part:'第2部',gname:'L2 選好整合',cf:'—',
+ mai:'偏りは減らないのに<span class="ng">確信は上がります。</span>AIの自信は正しさの証拠ではありません。',
+ land:['<b>選好整合は知識・推論力を足しません。一部は下がります。</b>賢さの大半は L1 で決まります。',
+  '<b>★整合後のモデルは「自分の出力により確信的になる」</b>。偏りは減らないのに確信は上がります。',
+  '<b>報酬ハッキングへの対処は論文ごとに違います。</b>2017年の原型論文の対処はKL項ではありません。'],
+ b:`<ul>
+  <li><b>選好整合は知識・推論力を足しません。一部は下がります。</b>賢さの大半は L1 で決まり、
+   L2 は振る舞いの整形です。<br>
+   ＊「Superficial Alignment 仮説」という語は <b>この論文には出てきません</b>
+   （出所は LIMA, Zhou et al. 2023）。帰属を分けてください。</li>
+ </ul>
+ <div class="k str"><span class="kh">★ 整合後は「自分の出力により確信的になる」（§4.2）</span>
+  「respectful に振る舞えと指示すると<b>エントロピーが下がり、したがって偏りが増す</b>」
+  「指示チューニングされたモデルは、<b>出力がステレオタイプ的かどうかに関係なく、自分の出力により確信的</b>」。<br>
+  → <b>AIの自信は正しさの証拠ではありません</b>（→§7-3 で3本揃います）。</div>
+ <div class="k how"><span class="kh">★ 単純な失敗の実例（Figure 9）</span>
+  「瞑想後に靴下を食べることが重要なのはなぜですか？」に対して<b>偽の前提を疑わず長々と真面目に答えます</b>。
+  「カボチャに高速で砲弾を撃ち込むとどうなる？」には<b>過剰にはぐらかします</b>（実際は完全に破裂します）。<br>
+  ＊皮肉なのは、評価者への指示（Figure 10）に「<b>質問の偽の前提は否定する</b>」と書いてあるのに、
+  靴下の例では守られていないことです。<b>指示したのに学習されなかった</b>実例で、報酬モデル経由の学習の限界です。</div>
+ <div class="k fix"><span class="kh">★ 通説の訂正 ── 報酬ハッキングの対処</span>
+  2017年の原型論文の対処はKL項ではなく「<b>オンラインで人間のフィードバックを取り続けること</b>」でした。
+  §3.3 のアブレーションでは<b>オフラインで報酬予測器を訓練すると破綻し</b>、具体例として
+  「<b>Pongで『点を取られない』だけを学び、同じラリーを永遠に繰り返す</b>」が報告されています。</div>
+ <div class="k how"><span class="kh">★ 補足：公開ベンチマークは実利用を反映しない</span>
+  API利用の内訳（§4.1, Table 1）：生成 <b>45.6%</b>／Open QA 12.4%／ブレインストーミング 11.2%／
+  チャット 8.4%／書き換え 6.6%／要約 4.2%／分類 3.5%。
+  <b>分類とQAは約18%にすぎず、自由生成とブレインストーミングが約57%</b>です。</div>
+ <p class="src"><b>出典</b>　Ouyang et al. 2022 arXiv:2203.02155 §4.1, §4.2, Table 1, Figure 9, Figure 10 ／
+  Christiano et al. 2017 arXiv:1706.03741 §3.3</p>`}
+,
+
+/* ══════════════ 貼る位置 ㉚　§5-1 ══════════════ */
+{id:'s5-1-grpo',grp:'§5 L3 検証可能報酬RL',t:'何が違うか ── 報酬が主観ではなく正誤',short:'何が違うか',
+ sec:'5-1',part:'第2部',gname:'L3 検証RL',cf:'—',
+ mai:'報酬が正誤なので<span class="hl">嘘をつきません。</span>ただし、報酬の出どころは論文ごとに違います。',
+ land:['L2 の報酬は「人間がどっちを好むか」。<b>L3 の報酬は「答えが客観的に正しいか」</b>です。',
+  'GRPO はグループ内の相対評価だけで学習します（平均より良い解答を強化し、悪い解答を抑制）。',
+  '<b>★報酬の出どころは論文ごとに違います。「純粋な強化学習だけ」なのは R1-Zero だけです。</b>'],
+ b:`<p>数学の正解、コードが通るか。<b>報酬が主観ではなく正誤なので、嘘をつきません。</b></p>
+ <div class="fml">1つの数学問題に複数の解答を出させ、それぞれ採点する（この資料の作例）<br>
+  解答1: 正解 r=1　解答2: 誤り r=0　解答3: 正解 r=1　解答4: 誤り r=0<br>
+  グループ平均 mean=0.5,  母標準偏差 std=0.5<br>
+  アドバンテージ Â = (r − mean)/std = [ +1, −1, +1, −1 ]<br>
+  　└→ 平均より良い解答を強化し、悪い解答を抑制する</div>
+ <div class="k how"><span class="kh">★ 測り方の注意</span>
+  std は<b>母標準偏差</b>です。標本標準偏差（n−1で割る）だと 0.5774 になり、±0.866 になって上の数値になりません。<br>
+  <b>★2本の論文で GRPO の式の粒度が違います。</b>DeepSeekMath Eq.3 は<b>トークンレベル</b>
+  （出力長で正規化し各トークンにアドバンテージを割り当てる）、DeepSeek-R1 Eq.1 は<b>系列レベル</b>（1出力に1つ）です。
+  「GRPOの式」と一括りにできません。</div>
+ <div class="k fix"><span class="kh">★ 通説の訂正 ── 報酬の出どころも論文ごとに違う</span>
+  <b>DeepSeekMath（GRPO）</b>＝<b>学習された報酬モデル</b>（Table 10 の欄が "Model"）。
+  正誤で採点するのは同論文の Online RFT 設定。<br>
+  <b>R1-Zero / R1 の推論部</b>＝<b>ルールベース報酬のみ</b>（正答＋形式）。
+  「推論タスクにはニューラル報酬モデルを用いない。大規模RLでは<b>報酬ハッキングに脆弱</b>だと観察したため」。<br>
+  <b>R1 の一般データ部</b>＝<b>報酬モデルを使う</b>（有用性66,000ペア／安全性106,000プロンプト）。<br>
+  <b>「純粋な強化学習だけ」なのは R1-Zero だけです。</b></div>
+ <p class="src"><b>出典</b>　Shao et al. 2024「DeepSeekMath」arXiv:2402.03300 Eq.3, Table 10 ／
+  DeepSeek-AI 2025「DeepSeek-R1」arXiv:2501.12948 Eq.1, §2</p>`},
+
+/* ══════════════ 貼る位置 ㉛　§5-2 ══════════════ */
+{id:'s5-2-zero',grp:'§5 L3 検証可能報酬RL',t:'何が起きたか ── AIME 15.6% → 77.9%',short:'何が起きたか',
+ sec:'5-2',part:'第2部',gname:'L3 検証RL',cf:'◎',
+ mai:'<span class="hl">pass@1 の定義に注意してください。</span>「1発で78%当てる」と読むと誤りになります。',
+ land:['R1-Zero は人間の模範解答を<b>一切使わず</b>、ルールベース報酬だけで学習しました。',
+  '誰も教えていないのに、思考連鎖が長くなり、自己検証をし、戦略を切り替えました（"aha moment"）。',
+  '<b>AIME 2024 の pass@1 が 15.6% → 77.9%</b>、自己整合性デコーディング（cons@16）で <b>86.7%</b>。'],
+ b:`<p><span class="cf a">◎</span>報酬は2種で同じ重みです（正答＋&lt;think&gt;…&lt;/think&gt; に思考を入れる形式報酬）。</p>
+ <div class="k how"><span class="kh">★ 測り方の注意（pass@1）</span>
+  原典の定義は pass@1 = (1/k) Σ<em>i</em> p<em>i</em> で、これは <b>k個のサンプルの正答率の平均</b>です。
+  <b>「1回で当てた率」ではありません。</b>「1発で78%当てる」と読むと誤りになります。</div>
+ <div class="k str"><span class="kh">★ "aha moment" の定量的な実体</span>
+  <b>"wait" という語の使用頻度の急増です</b>（§2.3, Fig.9(b)）。
+  Table 2 のキャプションで原典自身が「モデルは<b>擬人的な口調</b>を使って再考することを学ぶ」と注記しています。
+  <b>擬人化への注意は、原典に支えられています。</b></div>
+ <div class="k res"><span class="kh">★ 原典の留保 ── 急ジャンプの一部は上限を上げたから</span>
+  「8.2kステップ以前は最大長32,768トークン、以後は65,536トークン。<b>その結果、R1-Zeroの性能と応答長の
+  両方が8.2kステップで顕著にジャンプする</b>」。
+  図を「自然に長く考えるようになった」だけで読まないでください。</div>
+ <p class="src"><b>出典</b>　DeepSeek-AI 2025「DeepSeek-R1」arXiv:2501.12948 §2.3, Table 2, Table 3,
+  Fig.9(b)</p>`},
+
+/* ══════════════ 貼る位置 ㉜　§5-3 ══════════════ */
+{id:'s5-3-select',grp:'§5 L3 検証可能報酬RL',t:'★強化学習は何をしているのか ── 原典の答えは「選び出している」',short:'選び出している',
+ sec:'5-3',part:'第2部',gname:'L3 検証RL',cf:'○',
+ mai:'ここが最も誤りやすい箇所です。<span class="ng">「原典が能力向上を否定した」と言うと、原典の自己限定を出されて崩れます。</span>',
+ land:['Maj@K（多数決の正答率）は強化学習で上がりますが、<b>Pass@K（上限）は上がりません。</b>',
+  '<b>★ただし原典は、この結果を自分たちの設定の限界に帰しています。</b>一般法則を主張していません。',
+  '<b>正しい言い方：潜在していた解候補から、検証可能な報酬で正しいものを選び出し、分布をそこへ集中させる。</b>'],
+ b:`<p><span class="cf b">○</span>DeepSeekMath §5.2.2「Why RL Works?」の測定（Fig.7）：
+  <b>Maj@K（K個サンプルして多数決した正答率）は強化学習で上がる。
+  Pass@K（K個のうち1個でも正解する確率＝上限）は上がらない。</b></p>
+ <div class="k str"><span class="kh">★ 原典がそのまま書いていること</span>
+  「これらの知見は、<b>RLは出力分布をより頑健にすることで全体性能を上げている</b>ことを示す。
+  言い換えれば、<b>改善は TopK の中から正しい応答を押し上げていることに起因し、
+  基礎的な能力の向上によるものではないように見える（it seems that）</b>」</div>
+ <div class="k res"><span class="kh">★ 原典の留保（落とすと過剰な一般化になる）</span>
+  同 §5.2.3：「本論文では<b>指示チューニング段階の問いと素朴な核サンプリングしか使っていない。我々は、これが
+  我々のRLパイプラインが Maj@K の性能しか改善しない潜在的な理由だと考えている</b>」<br>
+  つまり原典は「<b>強化学習では能力が上がらない</b>」という一般法則を主張していません。
+  <b>「原典が能力向上を否定した」と言うと、この節を出されて崩れます。</b></div>
+ <div class="k str"><span class="kh">★ 機構の説明は R1 側にある（Appendix A.1）</span>
+  「事前学習データには数学とコード関連の内容が大量に含まれ、ベースモデルは<b>推論トレースのデータに
+  相当量さらされている</b>。この広範な露出が<b>もっともらしい解候補を生成する能力</b>をモデルに与え、
+  <b>強化学習はそこから高品質な出力を識別して最適化できる</b>」<br>
+  R1 §6 の結論：「<b>事前学習済みチェックポイントが複雑な推論タスクに対する大きな潜在能力を本来的に
+  備えている</b>ことを示す。<b>この潜在能力を解き放つ鍵</b>は、大規模な人間の注釈ではなく、
+  難しい推論問題・<b>信頼できる検証器</b>・十分な計算資源の提供にある」</div>
+ <h4>だから、こう書くのが正確です</h4>
+ <div class="fml">✗　RLVR はモデルに新しい推論能力を足す<br>
+  ✓　RLVR は、事前学習で潜在していた「もっともらしい解候補を出す力」から、<br>
+  　　検証可能な報酬で「正しいもの」を選び出し、出力分布をそこへ集中させる</div>
+ <div class="k fix"><span class="kh">★ 逆方向の誤読も潰しておく</span>
+  <b>「分布を尖らせるだけだから大したことない」と読むのも誤りです。</b>
+  1回引いて当たる確率が 15.6% から 77.9% になるのは、使う側にとって決定的な差です。
+  <b>ただし「K回引けば当たる」の上限（Pass@K）は動いていません。</b></div>
+ <div class="k how"><span class="kh">★ 根拠の置き方の注意</span>
+  「原典は improve という語を一貫して避けている」は<b>誤り</b>です。
+  Abstract は蒸留について "<b>enhance the reasoning capabilities of smaller models</b>" と書いています。
+  根拠にすべきは<b>語彙の一貫性ではなく</b>、Abstract と §6 の定式化＋A.1 の機構説明＋
+  DeepSeekMath の Pass@K 測定の3点です。</div>
+ <p class="src"><b>出典</b>　Shao et al. 2024「DeepSeekMath」arXiv:2402.03300 §5.2.2, §5.2.3, Fig.7 ／
+  DeepSeek-AI 2025「DeepSeek-R1」arXiv:2501.12948 Abstract, §6, Appendix A.1</p>`}
+,
+
+/* ══════════════ 貼る位置 ㉝　§5-4 ══════════════ */
+{id:'s5-4-split',grp:'§5 L3 検証可能報酬RL',t:'★L2 と L3 が、同じ論文の中で数値的に分離されている',short:'L2とL3の分離',
+ sec:'5-4',part:'第2部',gname:'L3 検証RL',cf:'◎',
+ mai:'「人間が方向を供給する」の中身は<span class="hl">良い問いと検証の枠</span>です。<span class="ng">模範解答ではありません。</span>',
+ land:['推論指向のRLは推論能力を相当に高めますが、<b>ユーザー選好指向のベンチマークへの影響は限定的</b>です。',
+  '<b>★人間の模範解答（cold-start SFT）を入れると推論が落ちます（AIME 77.9 → 59.0）。</b>',
+  '<b>供給すべきは良い問いと検証の枠で、模範解答ではありません。</b>'],
+ b:`<div class="fml">段階　　　何をしたか　　　　　　　　　　　AIME　　　IF-Eval　　AlpacaEval2.0<br>
+  R1-Zero　純粋な強化学習　　　　　　　　　<em>77.9</em>　　低い　　　　低い<br>
+  Dev1　　 人間の模範解答（cold-start SFT）　<em>59.0</em>↓　46.6→71.7　24.7→50.1<br>
+  Dev2　　 推論の強化学習　　　　　　　　　<em>74.0</em>　　—　　　　　—<br>
+  R1（最終）選好の強化学習も入れる　　　　　僅かな改善　—　　　　　<em>+25%</em></div>
+ <p>原典の総括：「<b>推論指向のRLは推論能力を相当に高めるが、ユーザー選好指向のベンチマークへの影響は限定的</b>」。</p>
+ <div class="k str"><span class="kh">★ 原典がそのまま書いていること（Appendix A.2）</span>
+  「<b>SFT段階はモデルが有効な推論戦略を探索・開発する能力を妨げうる</b>。人間が与える応答はモデルの
+  学習にとって常に最適ではなく、<b>明示的な反省や検証のステップといった重要な推論要素を欠いていることが多い</b>」<br>
+  → 「人間が方向を供給する」の中身は、<b>良い問いと検証の枠</b>です。<b>模範解答ではありません。</b></div>
+ <p class="src"><b>出典</b>　DeepSeek-AI 2025「DeepSeek-R1」arXiv:2501.12948 Table 3, Appendix A.2</p>`},
+
+/* ══════════════ 貼る位置 ㉞　§5-5 ══════════════ */
+{id:'s5-5-boundary',grp:'§5 L3 検証可能報酬RL',t:'★効く境界は、原典の文言でそのまま書ける',short:'効く境界',
+ sec:'5-5',part:'第2部',gname:'L3 検証RL',cf:'◎',
+ mai:'この線引きは推測ではありません。<span class="hl">開発者と評価設計者自身の言葉</span>で書けます。',
+ land:['<b>純粋RLの成功は「信頼できる報酬信号」に依存します。</b>執筆のようなタスクではそのRMを作るのが難しい。',
+  '<b>★検証器で評価できるなら、人間にとってどれほど複雑でも解ける可能性がある</b>と原典は書いています。',
+  '評価の側からも同じ線が引けます（「決定的な正解の確立は困難で、時に達成不可能」）。'],
+ b:`<div class="k str"><span class="kh">★ 原典がそのまま書いていること（R1 §6）</span>
+  「純粋RLの成功は<b>信頼できる報酬信号</b>に依存する。…しかし<b>執筆のようなタスクでは、そのような信頼できる
+  RMを構築するのが難しい</b>。…したがって、<b>信頼できる報酬モデルで効果的に評価できない複雑なタスクについては、
+  純粋RL手法のスケールアップは未解決の課題である</b>」<br><br>
+  「<b>検証器によって効果的に評価できるタスクであれば、人間にとってどれほど複雑であっても解ける可能性がある。
+  …しかし、信頼できる報酬モデルの構築が本質的に難しいタスクについては課題が残る</b>」</div>
+ <p>評価の側からも同じ線が引けます：「多くの複雑なタスクでは、
+  <b>決定的な正解を確立することは困難であり、時に達成不可能（unattainable）</b>である」。
+  <b>この線引きは推測ではなく、開発者と評価設計者自身の言葉で書けます。</b></p>
+ <div class="fml">　　　　　　　報酬の出どころ　　　　　効果　　　　　　　　　　　　効く領域<br>
+  L2(RLHF)　　　人間の好み(主観)　　　　振る舞いの整形／較正の劣化　　ほぼ全般だが平均化する<br>
+  L3(RLVR)　　　正誤(客観・検証可能)　　潜在能力の解放と分布の集中　　正誤が判定できる領域のみ</div>
+ <p class="src"><b>出典</b>　DeepSeek-AI 2025「DeepSeek-R1」arXiv:2501.12948 §6 ／
+  Chiang et al. 2024「Chatbot Arena」arXiv:2403.04132 §1</p>`},
+
+/* ══════════════ 貼る位置 ㉟　§5-6 ══════════════ */
+{id:'s5-6-limits',grp:'§5 L3 検証可能報酬RL',t:'この層の限界（原典が列挙しているもの）',short:'L3 の限界',
+ sec:'5-6',part:'第2部',gname:'L3 検証RL',cf:'—',
+ mai:'<span class="ng">賢くなることは、危険が増えることでもあります。</span>これも原典が書いています。',
+ land:['<b>報酬信号は常に信頼できるわけではありません。</b>PRM800K でさえ約20%が誤った注釈を含みます。',
+  '<b>★推論モデルでは few-shot が逆効果になります。</b>zero-shot が推奨されています。',
+  '<b>★賢くなることは、危険が増えることでもあります</b>（推論能力の向上で、より実行可能性の高い計画を出せる）。'],
+ b:`<ul>
+  <li><b>報酬信号は常に信頼できるわけではありません。</b>DeepSeekMath：「訓練された注釈者が慎重に注釈した
+   <b>PRM800K でさえ約20%が誤った注釈</b>を含む」。<b>検証器の質が天井を決めます。</b></li>
+  <li><b>R1 ができないこと</b>（§6）：<b>道具を使えない</b>（検索や電卓で出力を改善できない）／
+   簡単な問いへの <b>overthinking</b> が残る／<b>ソフトウェア工学タスクは前世代から大きな改善がない</b>。</li>
+  <li><b>DeepSeekMath の限界</b>（§6）：幾何と定理証明が明確に弱く、
+   「<b>三角形と楕円に関する問題を扱えない</b>」。</li>
+  <li><b>「人間の手が入っていない」わけではありません。</b>R1 の全体パイプラインは
+   ベース →（cold-start長CoTのSFT）→（推論RL）→（サンプリング＋SFT）→（多様プロンプトRL）で、
+   cold-start データは人間とモデルでフィルタして作ります。<b>純粋な強化学習は R1-Zero のみです。</b></li>
+ </ul>
+ <div class="k fix"><span class="kh">★ 通説の訂正 ── 推論モデルでは few-shot が逆効果</span>
+  R1 §6：「<b>few-shot プロンプトは一貫して性能を悪化させる。zero-shot で直接問題を記述し
+  出力形式を指定することを推奨</b>」。<br>
+  → 「例を見せると良くなる」（→§6-2）の重要な例外です。<b>操作論はモデル世代で変わります。</b></div>
+ <div class="k res"><span class="kh">★ 原典の留保 ── 賢さと危険は同時に増える（R1 §5）</span>
+  jailbreak によって危険な計画を生成しうるうえ、
+  「<b>推論能力の向上によって、より実行可能性の高い計画を提供できる</b>」。
+  安全性水準は GPT-4o (2024-05-13) と同程度の「中程度」で、
+  リスク管理システムと組み合わせて初めて優れた水準になると原典は述べています。</div>
+ <div class="k how"><span class="kh">★ 補足（土台のモデル）</span>
+  DeepSeek-V3 は MoE で総パラメータ <b>671B</b>、1トークンにつき <b>37B だけ活性化</b>します。
+  ただし<b>2種類あります</b>：<b>共有エキスパートは全トークンで常時起動</b>し、
+  ルーティングされるエキスパートは上位K個だけ起動します。
+  <b>「ルータが振り分けて一部だけ起動」という説明は不完全です。</b></div>
+ <div class="k how"><span class="kh">★ 事前学習データ側の意外な知見（DeepSeekMath §5.1）</span>
+  <b>コード訓練は数学推論を改善する</b>が、<b>arXiv論文は改善に効かないように見える</b>
+  （2つのデータセットで「顕著な改善なし、あるいは悪化」）。
+  原典自ら「限界があり慎重に受け取るべき」と留保しています。</div>
+ <p class="src"><b>出典</b>　DeepSeek-AI 2025「DeepSeek-R1」arXiv:2501.12948 §5, §6 ／
+  Shao et al. 2024「DeepSeekMath」arXiv:2402.03300 §5.1, §6 ／
+  DeepSeek-AI 2024「DeepSeek-V3 Technical Report」arXiv:2412.19437</p>`}
+,
+
+/* ══════════════ 貼る位置 ㊱　§6-1 ══════════════ */
+{id:'s6-1-cot',grp:'§6 使い方',t:'思考の誘導（Chain-of-Thought）',short:'Chain-of-Thought',
+ sec:'6-1',part:'第2部',gname:'使い方',cf:'—',
+ mai:'モデルを変えず、プロンプトを変えるだけで<span class="hl">18 → 57</span>。学習も追加データも要りません。',
+ land:['途中の推論ステップを書いてから答えさせると正答率が跳ね上がります。学習も追加データも要りません。',
+  '<b>GSM8K：PaLM 540B + CoT 57 に対し、同じ PaLM 540B の標準プロンプトは 18。</b>',
+  'ただし <b>CSQA での改善は最小限</b>でした。'],
+ b:`<p>答えだけを出させるのではなく、<b>途中の推論ステップを書いてから</b>答えさせます
+  （例はこの資料の作例で、原論文の例文そのものではありません）。</p>
+ <div class="fml">【標準（答えだけ）】<br>
+  Q: りんごが23個。20個使い、6個買った。今いくつ？<br>
+  A: 27　　　　　　　　　　　　　　　← よく間違える<br><br>
+  【Chain-of-Thought（過程を書かせる）】<br>
+  A: 最初に23個。20個使うと 23−20=3個。6個買うと 3+6=9個。答えは9個。</div>
+ <div class="fml">GSM8K（Fig.2）　　　　　　　　　　　　　　　スコア<br>
+  PaLM 540B + CoT　　　　　　　　　　　　　　<em>57</em><br>
+  従来最良　　　　　　　　　　　　　　　　　　55<br>
+  微調整した175Bモデル（検証器つき）　　　　　 33<br>
+  同じ PaLM 540B の標準プロンプト　　　　　　 <em>18</em></div>
+ <p>＝<b>モデルを変えず、プロンプトを変えるだけで 18 → 57</b>。デコーディングは貪欲法です。
+  常識推論では StrategyQA <b>75.6%</b>（従来最良 69.4%）。ただし <b>CSQA での改善は最小限</b>でした。</p>
+ <p class="src"><b>出典</b>　Wei et al. 2022「Chain-of-Thought Prompting Elicits Reasoning in Large
+  Language Models」arXiv:2201.11903 Fig.2, §3</p>`},
+
+/* ══════════════ 貼る位置 ㊲　§6-1 なぜ効くか ══════════════ */
+{id:'s6-1-why',grp:'§6 使い方',t:'★なぜ効くかは、原典が答えを出していない',short:'なぜ効くかは未解明',
+ sec:'6-1',part:'第2部',gname:'使い方',cf:'◎',
+ mai:'「長く考えさせるから賢くなる」は、<span class="ng">原典が実験で退けた説明</span>です。ここは間違えやすい場所です。',
+ land:['「推論時の計算量を増やしている」という説明は広く流通していますが、<b>原典 §3.3 はこれを検証して退けています。</b>',
+  '<b>言えるのは、自然言語で・答えより先に・逐次的に書く必要がある、まで。</b>',
+  '<b>原典 §6：「ニューラルネットが実際に"推論"しているのかには答えていない。未解決の問いとして残す」。</b>'],
+ b:`<p><span class="cf a">◎</span>3つのアブレーションの結果です。</p>
+ <div class="fml">アブレーション　　　　　　　やること　　　　　　　　　　　　　　　　結果<br>
+  variable compute only　　　 必要な式の文字数と同じ個数のドットだけ出力　<em>ベースラインとほぼ同じ</em><br>
+  equation only　　　　　　　 中間の式だけを出力（自然言語なし）　　　　　<em>GSM8Kではほとんど効かない</em><br>
+  chain of thought after answer 答えを出した後に思考連鎖を書かせる　　　　 <em>ベースラインと同等</em></div>
+ <div class="k fix"><span class="kh">★ 通説の訂正</span>
+  原典の言葉：「この変種はベースラインとほぼ同じ性能であり、これは<b>可変計算それ自体がCoTの成功の理由ではない</b>
+  ことを示唆し、<b>中間ステップを自然言語で表現すること</b>に効用があるように見える」。<br>
+  <b>「長く考えさせるから賢くなる」は、原典が実験で退けた説明です。</b></div>
+ <div class="fml">言えること　：自然言語である必要がある（式だけでは足りない）<br>
+  　　　　　　　答えより前である必要がある（後付けでは効かない）<br>
+  　　　　　　　逐次的である必要がある（ドットの埋め草では効かない）<br>
+  言えないこと：なぜそれで賢くなるのか</div>
+ <div class="k str"><span class="kh">★ 原典がそのまま書いていること（§6）</span>
+  「思考連鎖は人間の推論者の思考過程を模倣するが、<b>ニューラルネットが実際に"推論"して
+  いるのかには答えていない。これは未解決の問いとして残す</b>」</div>
+ <div class="k str"><span class="kh">★ 画像側でも独立に同じ方向の実測</span>
+  「<b>サンプリング計算量のスケールアップはモデル計算量の不足を補えない</b>」（DiT §5.2）。
+  <b>推論時に計算を積めば小さいモデルで足りる、は成立していません。</b></div>
+ <p class="src"><b>出典</b>　Wei et al. 2022 arXiv:2201.11903 §3.3, §6 ／
+  Peebles &amp; Xie 2022「DiT」arXiv:2212.09748 §5.2</p>`},
+
+/* ══════════════ 貼る位置 ㊳　§6-1 効かない場合 ══════════════ */
+{id:'s6-1-robust',grp:'§6 使い方',t:'効かない場合・書き方への頑健性',short:'効かない場合',
+ sec:'6-1',part:'第2部',gname:'使い方',cf:'—',
+ mai:'書き方には<span class="ok">頑健</span>です。ここは通説と逆です。<span class="ng">ただし例外が1つあります。</span>',
+ land:['<b>★易しい問題では改善が負になります</b>（1ステップで解ける SingleOp）。',
+  '<b>★見せた例より長い系列には外挿できます</b>（2語の例で3〜4語をテストして機能する）。',
+  '<b>★書き方には頑健です。ここは通説と逆です。</b>ただし coin flip では28ポイント動く例外があります。'],
+ b:`<ul>
+  <li><b>★易しい問題では改善が負になります。</b>MAWPS の最も易しい部分集合 SingleOp（1ステップで解ける）では
+   改善が負またはごく僅か（Appendix Table 3）。<b>「常に段を踏ませればよい」ではありません。</b></li>
+  <li><b>★見せた例より長い系列には外挿できます</b>（§5, Fig.8）。
+   「Last letter concatenation」と「Coin flip」で、<b>2語の例しか見せずに3〜4語をテスト</b>すると、
+   標準プロンプトは<b>完全に失敗</b>しますが CoT は機能します。
+   → <b>「CoTは分布内しか無理」と一括りにできません。</b></li>
+  <li><b>小さいモデルでは効きません</b>（§3.3）。約100Bパラメータを超えて急に効き始めます。
+   小規模モデルは「<b>流暢だが非論理的な</b>思考連鎖を生成し、標準プロンプトより性能が下がった」。
+   <b>なぜその規模で出るのかは未解明</b>です（→§9）。<br>
+   <b>★この線は2022年時点の測定です。</b>この「ある規模で急に効き始める」こと自体への反論もあります
+   → <span style="color:#67d3e8;cursor:pointer;text-decoration:underline"
+      onclick="goId('s7-4-emergence')">§7-4 創発は予測できない</span>
+   （Schaeffer et al. 2023。★そちらの節に置いてあります）。</li>
+ </ul>
+ <div class="k fix"><span class="kh">★ 通説の訂正 ── 書き方には頑健（§3.4）</span>
+  共著者3人が独立に思考連鎖を書いた版、簡潔な文体に書き直した版、訓練セットから無作為抽出した8例の組を
+  3セット、いずれも「<b>標準プロンプトを大差で上回った</b>」「<b>CoTの成功は特定の言語的スタイルに依存しない</b>」。<br>
+  <b>★ただし例外があります</b>：<b>coin flip タスクでは注釈者によって 99.6% → 71.4% と28ポイント動きます。</b>
+  「頑健」を無条件に言わないでください。</div>
+ <div class="k fix"><span class="kh">★ 帰属の訂正（faithfulness問題）</span>
+  <b>「書かれた推論過程が本当の根拠とは限らない」は、この論文の内容ではありません。</b>
+  原典 §3.2 の手動検査は<b>むしろ逆</b>で、正答した50例のうち48例は思考連鎖も正しく、
+  誤答した50例では<b>46%が「ほぼ正しい」</b>（電卓ミス・記号対応ミス・1ステップ欠落）でした。
+  警告そのものは妥当ですが、出所は後続研究（Ye &amp; Durrett 2022 ／ Turpin et al. 2023）です。<br>
+  なお原典自身は NeurIPS チェックリストで
+  「<b>生成された思考連鎖は常に事実とは限らないため、事実として使うことは推奨しない</b>」と書いています。</div>
+ <p class="src"><b>出典</b>　Wei et al. 2022 arXiv:2201.11903 §3.2, §3.3, §3.4, §5, Fig.8,
+  Appendix Table 3, NeurIPS チェックリスト</p>`}
+,
+
+/* ══════════════ 貼る位置 ㊴　§6-2 ══════════════ */
+{id:'s6-2-icl',grp:'§6 使い方',t:'文脈に入れる（文脈内学習）── 擬似勾配降下説の前提',short:'文脈内学習',
+ sec:'6-2',part:'第2部',gname:'使い方',cf:'△',
+ mai:'「AIは文脈内で学習している」と<span class="ng">断定すると言い過ぎ</span>になります。ここは未決着です。',
+ land:['重みを1ミリも更新せず、プロンプトの数個の例だけで新しいタスクを解く現象です。',
+  '有力な見通しの1つは「順伝播の中で<b>擬似的な勾配降下</b>を走らせているとみなせる」というもの（△。定理ではありません）。',
+  '<b>★この等価性の前提は3つとも強いので、外して引用しないでください。</b>'],
+ b:`<p><span class="cf">△</span>通常の学習（fine-tuning）はデータで勾配を計算して重みを恒久的に書き換えるので、
+  次回も賢いままです。文脈内学習はプロンプトに例を並べるだけで、<b>重みは不変</b>。
+  プロンプトが消えれば元に戻ります。</p>
+ <p><b>有力な見通しの1つ</b>（定理ではありません）は、「モデルが順伝播の中で、プロンプトの例に対する
+  <b>擬似的な勾配降下</b>を走らせているとみなせる」というものです（Dai et al. 2022 Eq.(12)）。</p>
+ <div class="k res"><span class="kh">★ 原典の留保 ── 前提が3つとも強い</span>
+  1. 導出は <b>softmax とスケーリング係数 √d の両方を外した「緩和線形注意」</b>で行われています。
+  原典 Limitations：「<b>近似なしの標準的な注意の機構はより複雑かもしれない</b>」<br>
+  2. 比較対象の微調整に制約を課しています（更新するのは<b>KとVの射影行列のみ</b>、各例を1ステップ・1エポックのみ）<br>
+  3. 検証は <b>GPT 1.3B と 2.7B の分類タスク6件のみ</b>。「記録すべき中間結果の量と計算コストのため
+  <b>2.7Bまでしか分析していない</b>」。→ <b>175B への適用は外挿です。</b></div>
+ <div class="k how"><span class="kh">★ 測り方の注意 ── 経験的証拠は「同じ方向」まで</span>
+  微調整が正解にした例のうちICLも正解にした割合 <b>85.6% / 89.4%</b>（1.3B / 2.7B）、
+  注意出力の更新方向のコサイン類似度 <b>0.186 / 0.225</b>（ランダム更新は 0.002 / −0.001）。
+  <b>有意ですが絶対値は小さい。</b>「AIは文脈内で学習している」と<b>断定すると言い過ぎ</b>になります。</div>
+ <div class="k res"><span class="kh">★ 競合する仮説が複数ある（Survey §5.2.2）</span>
+  ベイズ推論説（Xie et al. 2022）、勾配降下説、カーネル回帰説、ベイズモデル平均、アルゴリズム選択、情報理論。
+  明確な反論もあります（Fu et al. 2023「Transformerは勾配降下ではなく<b>より高次の最適化手法</b>でICLを行っている」）。
+  Survey 自身の総括：「これらの分析研究は重要な一歩だが、<b>その大半は単純なタスクと小さいモデルに焦点を
+  当てている</b>」。<b>ここは未決着です。</b></div>
+ <p class="src"><b>出典</b>　Dai et al. 2022「Why Can GPT Learn In-Context?」arXiv:2212.10559
+  Eq.(12), §3.1, §3.2, Limitations ／ Dong et al. 2023「A Survey on In-context Learning」
+  arXiv:2301.00234 §5.2.2</p>`},
+
+/* ══════════════ 貼る位置 ㊵　§6-2 脆さ ══════════════ */
+{id:'s6-2-fragile',grp:'§6 使い方',t:'文脈内学習は脆い（実務的にはここが重要）',short:'文脈内学習は脆い',
+ sec:'6-2',part:'第2部',gname:'使い方',cf:'○',
+ mai:'<span class="ng">「長い資料を丸ごと渡せばよい」</span>という楽観への留保です。例は増やせば良いとは限りません。',
+ land:['例の<b>選び方・順序・フォーマット・ラベル空間</b>に強く依存します。',
+  '<b>★例を増やすことは必ずしも性能を上げず、むしろ有害になりうる</b>と原典が書いています。',
+  '<b>★「ラベルが間違っていても効く」は覆されています。</b>対応の正しさは効きます。'],
+ b:`<ul>
+  <li><span class="cf b">○</span>例の<b>選び方・順序・フォーマット・ラベル空間</b>に強く依存します。</li>
+  <li><b>例を増やせば良いとは限りません</b>（§7）：「デモ数を増やすことは必ずしも性能を上げず、
+   <b>むしろ有害になりうる</b>」。→ <b>「長い資料を丸ごと渡せばよい」という楽観への留保</b>になります。</li>
+  <li><b>例の選択手法の優劣はモデル依存</b>です（Survey 独自実験 Table 2）。
+   <b>「良いプロンプト技法」に普遍解はありません。</b></li>
+  <li><b>強い事前バイアスは消えません</b>（Kossen et al. 2023）：「<b>強い事前バイアスを克服し、文脈情報すべてに
+   等しい重みを与えさせることは未解決の課題</b>」。→ <b>精密に条件づけても、分布を尖らせられるだけで消せません。</b></li>
+ </ul>
+ <div class="k fix"><span class="kh">★ 通説の訂正（Survey §5.1.2）</span>
+  「Min et al. (2022c) の結論<b>とは反対に</b>、その後の研究は<b>正確な入力-ラベル対応がICL性能に有意に影響する</b>
+  ことを示した。さらに Wei et al. (2023b) は、<b>反転した／意味的に無関係な入力-ラベル対応も学習されうる</b>と
+  指摘した」<br>
+  実態は「<b>対応の正しさは効く。そのうえで、間違った対応を渡せば忠実に間違える</b>」です。
+  <b>「AIは正しさを読んでいない」という論法は使えません。</b><br>
+  ＊ただし Min et al. の全部が否定されたわけではありません。<b>形式・ラベル空間・入力分布が効く</b>という
+  知見は Survey が肯定的に引いています。否定されたのは「対応の正しさは効かない」という部分だけです。</div>
+ <p class="src"><b>出典</b>　Dong et al. 2023「A Survey on In-context Learning」arXiv:2301.00234
+  §5.1.2, §7, Table 2 ／ Kossen et al. 2023</p>`},
+
+/* ══════════════ 貼る位置 ㊶　§6-3 ══════════════ */
+{id:'s6-3-sampling',grp:'§6 使い方',t:'サンプリングの制御 ── 多様性と創造性を混同しない',short:'サンプリングの制御',
+ sec:'6-3',part:'第2部',gname:'使い方',cf:'—',
+ mai:'温度を上げて「創造的に見える」のは、<span class="ng">分布の裾を拾っているだけ</span>です。',
+ land:['温度・top-k / top-p の話は §3-3 にあります。ここは注意点だけです。',
+  '<b>温度や top-p をいじると「創造的に見える」のは、分布の裾を拾っているだけです。</b>',
+  '<b>それは分布の内側の低確率語であって、方向性のある新規ではありません。</b>'],
+ b:`<div class="k fix"><span class="kh">★ 通説の訂正</span>
+  <b>温度や top-p をいじると「創造的に見える」のは、分布の裾を拾っているだけです。</b>
+  それは分布の内側の低確率語であって、方向性のある新規ではありません。
+  <b>デコーディングの多様性と創造性を混同しないでください。</b></div>
+ <p class="src"><b>出典</b>　温度・top-p の性質は §3-3 と同じ（softmax の性質）</p>`},
+
+/* ══════════════ 貼る位置 ㊷　§6-4 ══════════════ */
+{id:'s6-4-tools',grp:'§6 使い方',t:'道具を呼ぶ・多段で実行する',short:'道具を呼ぶ',
+ sec:'6-4',part:'第2部',gname:'使い方',cf:'—',
+ mai:'「AIが道具を使う」は、モデルの能力ではなく<span class="hl">その外側の設計</span>の話です。',
+ land:['これはモデルの外側の足場です。このゲームが確かめた論文32本の外なので、この資料では扱っていません。',
+  '<b>1点だけ確認できます：R1 は道具を使えません</b>（検索エンジンや電卓で出力を改善できない）。',
+  '<b>「AIが道具を使う」は、モデルの能力ではなくその外側の設計の話です。</b>'],
+ b:`<p>これはモデルの外側の足場です。<b>このゲームが確かめた論文32本の外なので、この資料では扱っていません。</b></p>
+ <div class="k str"><span class="kh">★ 原典から確認できる1点</span>
+  <b>R1 は道具を使えません</b>（R1 §6：検索エンジンや電卓を利用して出力を改善できない）。
+  <b>「AIが道具を使う」は、モデルの能力ではなくその外側の設計の話です。</b></div>
+ <p class="src"><b>出典</b>　DeepSeek-AI 2025「DeepSeek-R1」arXiv:2501.12948 §6</p>`}
+,
+
+/* ══════════════ 貼る位置 ㊸　§7-1 ══════════════ */
+{id:'s7-1-data',grp:'§7 横断軸',t:'データ ── どの層にも属さないのに全層を規定する',short:'データ',
+ sec:'7-1',part:'第2部',gname:'横断軸',cf:'—',
+ mai:'<span class="hl">コード訓練は数学推論を改善するのに、arXiv論文は効かないように見える。</span>データの効き方は直感と違います。',
+ land:['<b>コード訓練は数学推論を改善するが、arXiv論文は効かないように見える</b>（原典自ら慎重に受け取るべきと留保）。',
+  'GPT-3 は Common Crawl 60% で、<b>質の高いものは2〜3周</b>サンプリングします（実値と丸めの断りは →§3-5）。',
+  'CLIP は既存データセットを使わず<b>独自に4億組</b>を集めました。'],
+ b:`<ul>
+  <li><b>コード訓練は数学推論を改善するが、arXiv論文は効かないように見える</b>
+   （原典自ら「限界があり慎重に受け取るべき」と留保）。同論文のコーパスの中核は
+   <b>Common Crawl 由来の120B 数学トークン</b>で、「<b>Webページは高品質な数学データの大きな可能性を持つ一方、
+   arXivは期待したほど有益でない</b>」。</li>
+  <li>GPT-3 は Common Crawl 60% で、<b>質の高いものは2〜3周</b>サンプリングする
+   （<b>「2〜3周」は丸めです。</b>実値と断りは →§3-5）。</li>
+  <li>CLIP は既存データセットを使わず<b>独自に4億組</b>を集めた（→§8-4）。</li>
+ </ul>
+ <p class="src"><b>出典</b>　Shao et al. 2024「DeepSeekMath」arXiv:2402.03300 §5.1 ／
+  Brown et al. 2020 arXiv:2005.14165 Table 2.2 ／
+  Radford et al. 2021「CLIP」arXiv:2103.00020 §2.2</p>`},
+
+/* ══════════════ 貼る位置 ㊹　§7-2 BPE ══════════════ */
+{id:'s7-2-bpe',grp:'§7 横断軸',t:'BPE を手で回す ── 入口は圧縮アルゴリズムだった',short:'BPE を手で回す',
+ sec:'7-2',part:'第2部',gname:'横断軸',cf:'◎',
+ mai:'元はデータ圧縮です。<span class="hl">頻出する綴りが1トークンになる</span>のは、その副産物です。',
+ land:['「<b>最も頻繁に出現する隣接ペアを、元のデータに存在しなかった記号で置き換える</b>」の繰り返しです。',
+  'Sennrich (2015) がこれを翻訳の語彙作りに転用しました。',
+  '<b>★この統合順は「語末記号を統合対象にしない」という簡略ルールでのみ成立します。</b>'],
+ b:`<p><span class="cf a">◎</span>語を「文字＋語末記号 ·」に分解し（語の頻度つき）、隣接ペアの出現回数を
+  頻度で重みづけて数え、多い順に統合していきます。</p>
+ <div class="fml">low · ×5　　lower · ×2　　newest · ×6　　widest · ×3<br><br>
+  隣接ペアの出現回数<br>
+  (e,s)=9  (s,t)=9  (t,·)=9　← 9で三つ巴<br>
+  (w,e)=8　(l,o)=7  (o,w)=7　(e,w)=6  (n,e)=6<br>
+  (w,·)=5  (d,e)=3  (i,d)=3  (w,i)=3  (e,r)=2  (r,·)=2<br><br>
+  統合① (e,s) → es　　 n e w es t ·　　w i d es t ·<br>
+  統合② (es,t) → est　 n e w est ·　　 w i d est ·<br>
+  統合③ (l,o) → lo　　 lo w ·　　　　　lo w e r ·</div>
+ <div class="k how"><span class="kh">★ 測り方の注意（教材として使うなら必要な断り）</span>
+  <b>この統合順は「語末記号 · を統合対象にしない」という簡略ルールでのみ成立します。</b>
+  原典 Algorithm 1 をそのまま（語末記号もトークンとして扱って）回すと、手3が (est,·) になります。
+  また手1では3つのペアが同じ9で並ぶので、<b>実装の都合で選ばれます。</b></div>
+ <p>結果として<b>頻出する綴り est は1トークン</b>になり、稀な語は複数サブワードの合成になります。
+  <b>未知語を既知サブワードの組合せで表せる</b>のが利点です。</p>
+ <p class="src"><b>出典</b>　Gage 1994「A New Algorithm for Data Compression」(C Users Journal 2月号) ／
+  Sennrich et al. 2015「Neural Machine Translation of Rare Words with Subword Units」
+  arXiv:1508.07909 Algorithm 1</p>`},
+
+/* ══════════════ 貼る位置 ㊺　§7-2 Gage ══════════════ */
+{id:'s7-2-gage',grp:'§7 横断軸',t:'★Gage の核心は「ペアコードの入れ子」＝指数的な適応',short:'ペアコードの入れ子',
+ sec:'7-2',part:'第2部',gname:'横断軸',cf:'◎',
+ mai:'「頻出綴りが1トークンになる」だけでは、<span class="ng">なぜ効率的なのかを説明できません。</span>',
+ land:['原典の一番強い主張は、平坦なマージの話ではありません。',
+  '<b>「ペアの両方のバイトが、以前に定義されたペアコードを表しうる」＝入れ子こそが真の力。</b>',
+  '<b>★「なぜ効くのか」への驚きは、1994年に著者自身が表明しています。</b>'],
+ b:`<div class="k str"><span class="kh">★ 原典がそのまま書いていること</span>
+  「LZWは頻出パターンに<b>線形に</b>適応する。BPEは<b>指数的に</b>適応する。なぜならペアの<b>両方のバイトが、
+  以前に定義されたペアコードを表しうる</b>からだ。…<b>このペアコードの入れ子こそがアルゴリズムの真の力である</b>」</div>
+ <div class="fml">ABABCABCD ──(AB→X)──▶ XXCXCD ──(XC→Y)──▶ XYYD<br>
+  極端な例：1024個の同一バイトの連続は、わずか10回のペア置換で1バイトになる</div>
+ <p>現代のトークナイザで un + believ + able のように階層が積み上がるのは、この性質です。
+  <b>「頻出綴りが1トークンになる」だけでは、なぜ効率的なのかを説明できません。</b></p>
+ <div class="k str"><span class="kh">★ 同じ形の自白（Gage 自身の締めの一文）</span>
+  「BPEが<b>これほどうまく機能するのは驚きである</b>。
+  以前のデータの情報をすべて捨て、可変長ビットコードを使わないことを考えれば」。
+  <b>「なぜ効くのか」への驚きは、1994年に著者自身が表明しています。</b></div>
+ <p class="src"><b>出典</b>　Gage 1994「A New Algorithm for Data Compression」(C Users Journal 2月号)</p>`}
+,
+
+/* ══════════════ 貼る位置 ㊻　§7-2 系譜 ══════════════ */
+{id:'s7-2-lineage',grp:'§7 横断軸',t:'系譜と、それぞれの必然性',short:'系譜と必然性',
+ sec:'7-2',part:'第2部',gname:'横断軸',cf:'—',
+ mai:'どれも<span class="hl">前の手法の限界から生まれています。</span>「改良の積み上げ」ではなく別系統もあります。',
+ land:['<b>Sennrich が BPE を選んだのは比較の結果です</b>（他手法は未知語問題を解決しないとして退けた）。',
+  '<b>Subword Regularization（unigram）は BPE の改良ではなく別系統</b>です（BPEは確率つきの複数分割を出せない）。',
+  '<b>SentencePiece の中核は lossless tokenization</b>。空白をメタ記号 ▁ にエスケープします。'],
+ b:`<ul>
+  <li><b>Sennrich が BPE を選んだのは比較の結果です。</b>頻度ベースの複合語分割、規則ベースのハイフネーション、
+   Morfessor をいずれも「語彙サイズを<b>中程度しか減らせず、未知語問題を解決しない</b>」として退けています。
+   成果は WMT15 の英独・英露で、バックオフ辞書ベースラインに対し <b>最大（up to）+1.1 / +1.3 BLEU</b>。<br>
+   ＊原文は "by <b>up to</b> 1.1 and 1.3 BLEU" で、本文の実測幅は 0.3〜1.3 です。
+   <b>断定形で「+1.1」と書かないでください。</b></li>
+  <li><b>Subword Regularization（unigram言語モデル）は BPE の限界から生まれました</b>（原典 §3.1）：
+   「BPEは<b>貪欲かつ決定的な記号置換</b>に基づくため、<b>確率つきの複数分割を提供できない</b>」。
+   → SentencePiece の "unigram" モデルの出所はここで、<b>BPEの改良ではなく別系統</b>です。</li>
+ </ul>
+ <div class="k str"><span class="kh">★ SentencePiece の中核は lossless tokenization</span>
+  Decode(Encode(Normalize(text))) = Normalize(text) を保証します。実現方法が肝で、
+  <b>空白をメタ記号 ▁（U+2581）にエスケープ</b>します。</div>
+ <div class="fml">"Hello world."　→　"Hello▁world."　→　[Hello][▁wor][ld][.]<br>
+  復元は  ''.join(tokens).replace('▁',' ')  だけ</div>
+ <div class="k how"><span class="kh">★ 動機が示唆的</span>
+  「<b>前処理スキームの微妙な違いがBLEUスコアを大きく変えうる</b>」から、
+  モデルファイルに正規化用のコンパイル済みFSTまで含めて外部依存を消し、<b>完全な再現性</b>を保証する設計にした。
+  ＝<b>検証可能性を設計で担保する</b>という発想です。</div>
+ <p><b>GPT-2 はバイトレベルBPE、語彙 50,257</b>（§2.3）。どんな文字列も必ず表せます。<br>
+  ＊Transformer 原論文の時点で既に BPE が使われています（英独で約37,000トークンを共有、§5.1）。<br>
+  ＊CLIP のテキスト側も小文字BPE・語彙49,152 です。<b>画像モデルの中にもBPEが入っています。</b></p>
+ <p class="src"><b>出典</b>　Sennrich et al. 2015 arXiv:1508.07909 ／
+  Kudo 2018「Subword Regularization」arXiv:1804.10959 §3.1 ／
+  Kudo &amp; Richardson 2018「SentencePiece」arXiv:1808.06226 ／
+  Radford et al. 2019（GPT-2）§2.3 ／ Vaswani et al. 2017 arXiv:1706.03762 §5.1 ／
+  Radford et al. 2021「CLIP」arXiv:2103.00020</p>`},
+
+/* ══════════════ 貼る位置 ㊼　§7-2 理論 ══════════════ */
+{id:'s7-2-theory',grp:'§7 横断軸',t:'★トークナイズは本当に必要か（2024年の理論）',short:'トークナイズは必要か',
+ sec:'7-2',part:'第2部',gname:'横断軸',cf:'○',
+ mai:'<span class="ng">「理論的に正当化された」を「実世界のLLMで証明された」と読まないでください。</span>実験は単純な確率源です。',
+ land:['k次マルコフ過程（k&gt;1）のデータでは、<b>トークナイズ無しだと Transformer は unigram モデルに潰れます。</b>',
+  '骨格は2本の式（Theorem 2.1）。<b>トークナイズしないと m·H(π) より下がれません。</b>',
+  '<b>★ただし実験は単純な確率源に対するもので、原典自身が「一般化が最も困難な障害」と明言しています。</b>'],
+ b:`<p><span class="cf b">○</span>トークナイズ無しだと Transformer は正しい分布を学べず、
+  unigram（各文字の頻度）モデルに潰れます。有りだと、同じデータを小さいクロスエントロピーで
+  モデル化できます。</p>
+ <div class="fml">min<em>Q</em> L<em>m</em>(Q) = H(P)　　制約なしの最適モデルの損失＝データ源の真のエントロピー<br>
+  L<em>m</em>(Q) ≥ m·H(π)　　任意のunigramモデルの損失の下限（π は定常分布、m は列長）<br>
+  ＝トークナイズしないと m·H(π) より下がれない。これが「unigramに潰れる」の正体</div>
+ <div class="k how"><span class="kh">★ 測り方の注意（この数値表は原典にない）</span>
+  原典は H(P) と m·H(π) の比が「Figure 1 の switching Markov 連鎖で切替確率を0または1に近づけることで
+  <b>いくらでも大きくできる</b>」と述べています。実際の倍率にすると次のようになります。</div>
+ <div class="fml">切替確率 δ　　比（log2 / H_Ber(δ)）<br>
+  0.5　　　　　　1.0 倍<br>
+  0.1　　　　　　2.1 倍<br>
+  0.01　　　　　12.4 倍<br>
+  0.001　　　　 87.7 倍<br>
+  0.0001　　　 679　 倍　→ δ→0 で発散する</div>
+ <p><b>（この資料で Theorem 2.1 から計算。原典にこの数値表はありません。</b>
+  原典にあるのは「いくらでも大きくできる」という定性的な言明です）</p>
+ <div class="k res"><span class="kh">★ 原典の留保 ── 適用範囲を広げすぎない</span>
+  実験は<b>k次マルコフ過程という単純な確率源</b>に対するものです。
+  原典自身が「<b>一般化が本枠組みで最も困難な障害</b>」と明言しています。
+  <b>「トークナイズが理論的に正当化された」を「実世界のLLMで証明された」と読まないでください。</b></div>
+ <p class="src"><b>出典</b>　Rajaraman, Jiao &amp; Ramchandran 2024, arXiv:2404.08335 Theorem 2.1, Figure 1
+  （NeurIPS 2025 に別タイトルで採録。倍率の表はこの資料の計算）</p>`},
+
+/* ══════════════ 貼る位置 ㊽　§7-2 限界 ══════════════ */
+{id:'s7-2-limits',grp:'§7 横断軸',t:'この横断軸の限界と、実務的な帰結',short:'入口の限界',
+ sec:'7-2',part:'第2部',gname:'横断軸',cf:'—',
+ mai:'<span class="hl">入口が最適でないまま、その上に全部が建っています。</span>そして入口の選択は最終出力に出ます。',
+ land:['<b>★トークナイザは最適化されずに凍結されています</b>（同時最適化は鶏と卵の問題）。',
+  '<b>★「圧縮率が良いトークナイザ＝良いトークナイザ」ではありません。</b>',
+  '<b>★入口の選択が最終出力に出ます。画像生成の綴り崩れも同じ根です。</b>'],
+ b:`<ul>
+  <li><b>★トークナイザは最適化されずに凍結されています。</b>「トークナイザとTransformerを同時に最適化するのが
+   理想だが、<b>T と Q の同時最適化は一般に鶏と卵の問題</b>なので、トークナイザは先に適合させて<b>凍結される</b>」。
+   ＝<b>入口が最適でないまま、その上に全部が建っています。</b></li>
+  <li><b>★「圧縮率が良いトークナイザ＝良いトークナイザ」ではありません</b>：
+   「<b>訓練データセットを短いトークン列に圧縮できるのに、新しい列には完全に一般化できないトークナイザが存在する</b>」。</li>
+ </ul>
+ <div class="k str"><span class="kh">★ 入口の選択が最終出力に出る（画像生成でも起きている）</span>
+  「<b>一貫したテキストを生成するのに苦戦する</b>。…この問題は
+  <b>BPE符号化がキャプションの単語の綴りをモデルから隠すため、さらに悪化していると思われる</b>」（unCLIP §7）。<br>
+  → 第1部§5の「逆から綴らせると0.44%」と<b>同じ根</b>です。</div>
+ <div class="k how"><span class="kh">★ 印象論で語らずに済む指標名がある</span>
+  「日本語は英語より多くトークンを食う」には <b>parity</b>（異なる言語の同じ意味の文が同程度のトークン数に
+  分割されるか。Petrov et al. 2023）という指標名があります。
+  他に平均圧縮系列長、Rényi効率（Zouhar et al. 2023a）、fertility（Gallé 2019）。</div>
+ <div class="k res"><span class="kh">★ 原典の留保 ── 分布仮説は「意味の全て」ではない</span>
+  「<b>文脈の類似性が信頼できる基準となるのは、意味が非常に似ている語のペアを検出する場合に限られる</b>」
+  （Rubenstein &amp; Goodenough 1965。この資料は要旨のみ確認）。</div>
+ <p class="src"><b>出典</b>　Rajaraman, Jiao &amp; Ramchandran 2024 arXiv:2404.08335 ／
+  Ramesh et al. 2022「Hierarchical Text-Conditional Image Generation with CLIP Latents」
+  arXiv:2204.06125 §7 ／ Petrov et al. 2023 ／ Zouhar et al. 2023a ／ Gallé 2019 ／
+  Rubenstein &amp; Goodenough 1965</p>`}
+,
+
+/* ══════════════ 貼る位置 ㊾　§7-3 評価の地図 ══════════════ */
+{id:'s7-3-map',grp:'§7 横断軸',t:'評価の地図は1軸ではなく2軸4分類',short:'評価の地図',
+ sec:'7-3',part:'第2部',gname:'横断軸',cf:'◎',
+ mai:'「Arena＝好み／HLE＝正誤」だと<span class="ng">静的か生きているかの軸が落ちます。</span>そこが効きます。',
+ land:['軸は2本：<b>正解で評価するか／人間の選好で評価するか</b>と、<b>静的な問題か／生きた問題か</b>。',
+  '<b>汚染・飽和・過適合はすべて「静的」であることから来ます。</b>',
+  '<b>★「多くの複雑なタスクでは、決定的な正解を確立することは困難であり、時に達成不可能」。</b>'],
+ b:`<p><span class="cf a">◎</span>原典 Figure 1 の分類そのものです。</p>
+ <div class="fml">　　　　　　　正解（Ground Truth）で評価　　　人間の選好で評価<br>
+  静的な問題　　MMLU, HellaSwag, GSM-8K, <em>HLE</em>　 MT-Bench, AlpacaEval<br>
+  生きた問題　　Codeforces Weekly Contests　　　　　<em>Chatbot Arena</em></div>
+ <div class="k how"><span class="kh">★ 測り方の注意</span>
+  「Arena＝好み／HLE＝正誤」という1軸の対比だと、<b>静的か生きているかの軸が落ちます。</b>
+  この軸が重要なのは、<b>汚染・飽和・過適合はすべて「静的」であることから来る</b>からです。</div>
+ <div class="k str"><span class="kh">★ 原典がそのまま書いていること（§1）</span>
+  静的ベンチマークの問題を4つ挙げ（<b>汚染／飽和／過適合／人間との整合の欠如</b>）、
+  5つ目として決定的な一文を書いています：「多くの複雑なタスクでは、
+  <b>決定的な正解を確立することは困難であり、時に達成不可能（unattainable）</b>である」</div>
+ <p class="src"><b>出典</b>　Chiang et al. 2024「Chatbot Arena」arXiv:2403.04132 Figure 1, §1</p>`},
+
+/* ══════════════ 貼る位置 ㊿　§7-3 Arena ══════════════ */
+{id:'s7-3-arena',grp:'§7 横断軸',t:'Arena が測っているものの範囲',short:'Arena の範囲',
+ sec:'7-3',part:'第2部',gname:'横断軸',cf:'○',
+ mai:'測っているのは<span class="hl">「1.3往復・約95トークンの質問に対する好み」</span>です。それ以上ではありません。',
+ land:['集計は Elo / Bradley-Terry です（<b>選好整合と同じ数式</b>。→§4-1）。',
+  '<b>★平均ターン数 1.3、プロンプト平均 94.9トークン、応答平均 269.0トークン。</b>',
+  '<b>「人類の好み」ではなく「そのプラットフォームに来た約9万人の好み」です。</b>'],
+ b:`<div class="fml">P(A が B に勝つ) = 1 / ( 1 + 10^((R<em>B</em> − R<em>A</em>)/400) )<br>
+  R<em>A</em>=1200, R<em>B</em>=1000（差200）→ 1/(1+10^−0.5) = 0.76　＝200点差は「76%勝つ」</div>
+ <p>（この資料の作例）規模（2024年1月時点）：<b>約240K票／約90,051人のユーザー／149言語</b>
+  （Table 1。本文は "more than 100 languages"）、50以上のモデル。会話の <b>77%が英語</b>で、他は各2%未満です。</p>
+ <div class="k how"><span class="kh">★ 測り方の注意（Table 1 に出ている限定）</span>
+  平均ターン数 <b>1.3</b>、プロンプト平均 <b>94.9トークン</b>、応答平均 <b>269.0トークン</b>。<br>
+  → <b>「1.3往復・約95トークンの質問に対する好み」</b>を測っています。
+  長い協働・深い検証・多段の議論の質は、この設計では測れません。
+  そして「人類の好み」ではなく「<b>そのプラットフォームに来た約9万人の好み</b>」です。
+  ＝§4-4(d) の「誰に整合させているのか」と同型の問題が、評価側にもあります。</div>
+ <p class="src"><b>出典</b>　Chiang et al. 2024「Chatbot Arena」arXiv:2403.04132 §3, Table 1</p>`},
+
+/* ══════════════ 貼る位置 51　§7-3 HLE ══════════════ */
+{id:'s7-3-hle',grp:'§7 横断軸',t:'HLE ── 低スコアは部分的に設計の帰結',short:'HLE は設計の帰結',
+ sec:'7-3',part:'第2部',gname:'横断軸',cf:'◎',
+ mai:'「AIは専門難問が解けない」の論拠に使うときは、<span class="ng">「解ける問題は除外されている」を必ず添えてください。</span>',
+ land:['<b>2,500問</b>を約1000名の専門家寄稿者（50か国・500以上の機関）が作成。100以上の科目。',
+  '<b>★投稿前に最先端LLMでテストし、LLMが正答できる問題は却下されます。</b>',
+  '<b>★原典自身が「これらの低スコアは部分的に設計によるもの（partially by design）」と書いています。</b>'],
+ b:`<p><span class="cf a">◎</span>各問は「答えが一意で検証可能、だがネット検索では即答できない」設計で、
+  自動採点できます。問題の選抜プロセスは次のとおりです（§3.2）。</p>
+ <div class="fml">1. 投稿前に各問題を最先端LLMに対してテストし、【LLMが正答できる問題は却下される】<br>
+  2. 複数の大学院レベル査読者によるフィードバック<br>
+  3. 主催者と専門家査読者の承認<br>
+  4. 公開後の公開レビュー期間で誤りを修正</div>
+ <div class="k str"><span class="kh">★ 原典がそのまま書いていること（§ Accuracy）</span>
+  「<b>これらの低スコアは部分的に設計によるものである（partially by design）</b>——データ収集プロセスが
+  <b>既存モデルが正答できる問題を除外しようと試みる</b>からだ。…<b>このデータセット上の最前線モデルの
+  真の能力の下限は未解決の問いのままである</b>ことを強調する」</div>
+ <div class="k how"><span class="kh">★ 使うときの注意</span>
+  <b>「AIは専門難問が解けない」の論拠に使うときは、「解ける問題は除外されている」を必ず添えてください。</b>
+  これは外部からの批判ではなく原典自身の記述なので、添えた方がむしろ強くなります。
+  HLE の価値は絶対的な能力測定ではなく、<b>天井を強制的に上げ続ける仕組み</b>にあります。</div>
+ <div class="k res"><span class="kh">★ 原典の留保（主張範囲の自己限定）</span>
+  「HLEで高い性能を示すことは、<b>閉じた学術的問題における専門家レベルの能力</b>を示唆する」
+  「<b>開放的な領域における高度な能力の評価を補完する</b>」。</div>
+ <p class="src"><b>出典</b>　Phan et al. 2025「Humanity's Last Exam」arXiv:2501.14249 §3.2, § Accuracy</p>`}
+,
+
+/* ══════════════ 貼る位置 52　§7-3 較正 ══════════════ */
+{id:'s7-3-calib',grp:'§7 横断軸',t:'★較正（自信の正しさ）── 3本の一次資料が揃う',short:'較正',
+ sec:'7-3',part:'第2部',gname:'横断軸',cf:'◎',
+ mai:'<span class="hl">AIの自信は正しさの証拠ではありません。</span>時期も測り方も違う3本で言えます。',
+ land:['理想的な較正は「80%自信ある」と言った答えが実際に約80%正しいこと。現実は<b>高い確信度で誤答します。</b>',
+  '<b>★GPT-4 の ECE は事前学習 0.007 → 事後学習 0.074（約10倍悪化）。同一モデルの前後比較です。</b>',
+  '<b>HLE では最先端モデルの RMS較正誤差が全モデルで70%超。</b>'],
+ b:`<p><span class="cf a">◎</span>3本の一次資料が揃います。</p>
+ <div class="fml">出所　　　　　　　　測定　　　　　　　　　　　　　　　　　　　　値<br>
+  GPT-4 Figure 8　　　同一モデルの事前学習→事後学習の ECE　　　　<em>0.007 → 0.074</em>（約10倍悪化）<br>
+  HLE　　　　　　　　 最先端モデルの RMS較正誤差（専門難問）　　　<em>全モデルで70%超</em><br>
+  InstructGPT §4.2　　選好整合後の確信度　　　　　　　　　　　　「自分の出力により確信的」</div>
+ <div class="k str"><span class="kh">★ 原典がそのまま書いていること</span>
+  GPT-4 Figure 8 のキャプション：「事後学習は較正を著しく損なう」。本文：「興味深いことに、
+  <b>事前学習モデルは高度に較正されている。しかし事後学習の過程を経ると較正は低下する</b>」。<br>
+  HLE：「モデルは、これらの困難な問いに対して<b>不確実性を認めるのではなく、高い確信度で誤った答えを出す</b>」。</div>
+ <div class="k how"><span class="kh">★ 測り方の注意</span>
+  <b>時期も測り方も違う3本で「AIの自信は正しさの証拠ではない」と言えます。</b>
+  しかも GPT-4 のものは<b>同一モデルの前後比較</b>なので、因果として最も強いものです
+  （ECE は MMLU の部分集合上の測定）。</div>
+ <p class="src"><b>出典</b>　OpenAI 2023「GPT-4 Technical Report」arXiv:2303.08774 Figure 8 ／
+  Phan et al. 2025「Humanity's Last Exam」arXiv:2501.14249 ／
+  Ouyang et al. 2022 arXiv:2203.02155 §4.2</p>`},
+
+/* ══════════════ 貼る位置 53　§7-3 事後学習の範囲 ══════════════ */
+{id:'s7-3-posttrain',grp:'§7 横断軸',t:'「事後学習は能力を変えない」の正確な範囲',short:'能力を変えない？',
+ sec:'7-3',part:'第2部',gname:'横断軸',cf:'○',
+ mai:'<span class="ng">「変えない」と「下がる」は測っている対象が違います。</span>混ぜないでください。',
+ land:['GPT-4：<b>多肢選択問題では ベース 73.7% / RLHF 74.0%</b>。ほぼ変わりません。',
+  '<b>★ただし自由記述は、原典が「対等な条件で比較することは難しい」として比較から除外しています。</b>',
+  '一方 InstructGPT は「<b>下がる</b>」と報告しています（→§4-3）。'],
+ b:`<p><span class="cf b">○</span>GPT-4 は Appendix B と Table 8 でこう書いています：
+  「<b>試験ベンチマークの多肢選択問題の部分</b>を両モデルで走らせた。…全試験で平均すると、
+  ベースモデルは 73.7%、RLHFモデルは 74.0% を達成し、事後学習がベースモデルの能力を実質的には
+  変えないことを示唆する」</p>
+ <div class="k res"><span class="kh">★ 原典の留保（ここが決定的）</span>
+  「<b>自由記述問題については、ベースモデルとRLHFモデルを対等な条件で比較することは難しい。
+  我々の自由記述回答のサンプリング手法は、モデルの指示追従能力から恩恵を受けている可能性が高いため</b>である」<br>
+  → 正確には「<b>多肢選択試験では 73.7% → 74.0% でほぼ変わらない。自由記述は原典が比較から除外している</b>」です。
+  一方 InstructGPT は「<b>下がる</b>」と報告しています（→§4-3）。<b>測っている対象が違うので混ぜないでください。</b></div>
+ <div class="k how"><span class="kh">★ 逆に効く例と、その注記</span>
+  TruthfulQA では逆に選好整合が大きく効きます（GPT-4 Fig.7）。ただし<b>脚注9で正直に</b>
+  「<b>RLHF事後学習データについて TruthfulQA との汚染を確認していない</b>」と書いています。</div>
+ <p class="src"><b>出典</b>　OpenAI 2023「GPT-4 Technical Report」arXiv:2303.08774 Appendix B, Table 8,
+  Fig.7 脚注9 ／ Ouyang et al. 2022 arXiv:2203.02155 §4.2</p>`},
+
+/* ══════════════ 貼る位置 54　§7-3 実務的な注意 ══════════════ */
+{id:'s7-3-practice',grp:'§7 横断軸',t:'評価についての実務的な注意',short:'評価の実務',
+ sec:'7-3',part:'第2部',gname:'横断軸',cf:'—',
+ mai:'見るべきは「汚染があるか」ではなく<span class="hl">「汚染をどう扱ったかが論文に書いてあるか」</span>です。',
+ land:['<b>どんなベンチマークも飽和し、汚染されます。</b>見るのは「どう扱ったかが書いてあるか」。',
+  '<b>★評価方法は「何を測るか」だけでなく「何を隠すか」で選ぶべきです</b>（微調整は失敗を隠しうる）。',
+  '<b>★測り方が違う数値を並べないでください。</b>「評価の最後は人間」は言語だけの話ではありません。'],
+ b:`<ul>
+  <li><b>どんなベンチマークも飽和し、汚染されます。</b>「汚染がある/ない」ではなく
+   「<b>汚染をどう扱ったかが論文に書いてあるか</b>」を見てください。
+   GPT-3 は除去のバグを報告し（→§3-6）、GPT-4 は「試験問題を除いた変種も走らせ、
+   <b>2つのうち低いスコアを報告する</b>」（Appendix C）と保守的に処理しています。</li>
+ </ul>
+ <div class="k how"><span class="kh">★ 「何を隠すか」で選ぶ（CLIP §3.2）</span>
+  「<b>微調整は事前学習段階で一般的で頑健な表現を学習し損ねたことを補償し、隠してしまう可能性がある。
+  線形分類器は柔軟性が限られているためにむしろこれらの失敗を浮き彫りにする</b>」</div>
+ <div class="k how"><span class="kh">★ 測り方が違う数値を並べない</span>
+  DDPM は「FIDは慣例どおり訓練集合に対して計算した。<b>テスト集合に対してだと 5.24 になる</b>」と
+  注記しています。</div>
+ <div class="k str"><span class="kh">★ 「自動指標が信用できないから人間に聞く」は画像側でも起きている</span>
+  「<b>CLIPスコアと LPIPS は…不精確な尺度であり、編集手法の性能を忠実に評価することもできない</b>」（Imagic §4.4）。
+  だから独自ベンチマークを新設し、<b>2択強制選択9,213件</b>を集めています。
+  <b>「評価の最後は人間」は言語だけの話ではありません。</b></div>
+ <p class="src"><b>出典</b>　Brown et al. 2020 arXiv:2005.14165 Appendix C ／
+  OpenAI 2023 arXiv:2303.08774 Appendix C ／ Radford et al. 2021「CLIP」arXiv:2103.00020 §3.2 ／
+  Ho et al. 2020「DDPM」arXiv:2006.11239 ／ Kawar et al. 2022「Imagic」arXiv:2210.09276 §4.4</p>`},
+
+/* ══════════════ 貼る位置 55　§7-4 創発（既存5節の続き） ══════════════ */
+{id:'s7-4-power-law',grp:'§7-4 スケーリング則',t:'べき乗則 ── 効くが、驚くほど鈍い',short:'べき乗則',
+ sec:'7-4',part:'第2部',gname:'横断軸',cf:'◎',where:'第1章「たくさん読ませる」／「効きが鈍い」／決算',
+ mai:'ここが第1章の「効きが鈍い」の出どころです。<span class="hl">2倍にして0.95倍</span>。この一文が、各社が桁で金をかける理由を説明します。',
+ land:['規模を増やすと、間違いの量がなめらかなべき乗則で下がります。',
+  '<b>効くが、驚くほど鈍い。2倍で0.95倍、10倍でも0.84倍。</b>だから桁で増やすしかありません。',
+  'そして<b>なぜそうなるのかは、誰も分かっていません。</b>'],
+ b:`<p><span class="cf a">◎</span>パラメータの数 N・読ませる量 D・計算量 C を増やすと、
+  間違いの量（テスト損失）が何桁にもわたって<b>予測できる形で</b>下がります。</p>
+ <div class="fml">L(N) ≈ (N<em>c</em> / N)^α<em>N</em>　　α<em>N</em> ≈ 0.076<br>
+  L(D) ≈ (D<em>c</em> / D)^α<em>D</em>　　α<em>D</em> ≈ 0.095<br>
+  L(C) ≈ (C<em>c</em> / C)^α<em>C</em>　　α<em>C</em> ≈ 0.050</div>
+ <div class="dfig">${FIG.dull}
+  <div class="cap">図は原典の値から本資料で作図。金額は説明のための絵です。</div></div>
+ <div class="k str"><span class="kh">★ 原典がそのまま書いていること</span>
+  「<b>パラメータ数を2倍にすると、損失は 2^(−0.076) = 0.95 倍だけ小さくなる</b>」。
+  <b>この一文が、投資規模の理由を一言で説明します。</b></div>
+ <h4>両対数にすると直線なので、作る前に読める</h4>
+ <div class="dfig">${FIG.line}
+  <div class="cap">3点を測って直線を伸ばすと、まだ作っていない大きいモデルの損失が読めます。</div></div>
+ <div class="k how"><span class="kh">★ 測り方の注意</span>
+  <b>N は「埋め込みを除いた」パラメータの数です。これは飾りではなく、法則が成立する条件です。</b></div>
+ <div class="dfig">${FIG.embed}
+  <div class="cap">原典 Figure 6。定義を落とすと法則そのものが崩れます。</div></div>
+ <div class="k how"><span class="kh">★ 測り方の注意</span>
+  <b>N_c・D_c・C_c の数値には本質的な意味がないと原典が明記しています。</b>
+  「語彙サイズとトークナイズに依存し、したがって本質的な意味を持たない」。
+  意味を持つのは<b>指数 α</b> だけです。</div>
+ <p class="src"><b>出典</b>　Kaplan et al. 2020「Scaling Laws for Neural Language Models」
+  arXiv:2001.08361 Eq.1.1-1.3 / 本文 / Figure 6</p>`},
+
+{id:'s7-4-actually-used',grp:'§7-4 スケーリング則',t:'これは比喩ではなく、実際に使われた',short:'実際に使われた',
+ sec:'7-4',part:'第2部',gname:'横断軸',cf:'◎',where:'第1章「たくさん読ませる」／「効きが鈍い」／決算',
+ mai:'第1章で「小さく試す」を選んだとき、あなたがやったのはこれです。<span class="ok">実在の手順です。</span>',
+ land:['GPT-3 の貢献者欄に「スケーリング則を意思決定の指針として適用した」と明記されています。',
+  'GPT-4 は<b>最大10,000倍少ない計算量</b>のモデル群から<b>間違いの量（損失）</b>を予測しました。',
+  'しかも「<b>訓練開始直後に、途中結果を一切使わずに</b>」行われています。'],
+ b:`<div class="k str"><span class="kh">★ 原典がそのまま書いていること</span>
+  GPT-3 論文の Contributions 欄：「<b>Jared Kaplan と Sam McCandlish</b> は…
+  <b>スケーリング則をモデル規模とデータ規模の意思決定の予測・指針として適用した</b>」</div>
+ <p>つまり、<b>3,640億円ぶんの判断は、勘ではなく測って決められています。</b>
+  そしてその測定は、本番の1万分の1の計算量で足ります。</p>
+ <div class="k res"><span class="kh">★ 原典の留保 ── 予測できたのは「間違いの量」まで</span>
+  <b>能力そのものの予測は、当たっていません。</b>GPT-4 は
+  「<b>特定の能力は依然として予測が難しい</b>」と書き、能力予測では
+  「<b>最も易しいバケットで予測を下回った</b>」とも報告しています。<br>
+  ★「小さく試せば最終的な賢さが分かる」とは読めません。分かるのは間違いの量です。</div>
+ <p class="src"><b>出典</b>　OpenAI 2023「GPT-4 Technical Report」arXiv:2303.08774 ／
+  Brown et al. 2020 arXiv:2005.14165 Contributions 欄</p>`},
+
+{id:'s7-4-shape',grp:'§7-4 スケーリング則',t:'モデルの「形」はほとんど効かない',short:'形は効かない',
+ sec:'7-4',part:'第2部',gname:'横断軸',cf:'◎',where:'第1章「たくさん読ませる」／「効きが鈍い」／決算',
+ mai:'ゲームで形を選ばせていないのは、これが理由です。<span style="color:#bcccdd">選ぶ意味がないので、選択肢にしていません。</span>',
+ land:['パラメータの総数を固定すると、層の深さと幅の比を変えても<b>損失は数%しか変わりません。</b>',
+  'アスペクト比を40倍変えても影響はわずかです。',
+  'そして<b>「形を外して増えた損失は、計算量22%で買い戻せる」</b>という交換レートが図中にあります。'],
+ b:`<div class="dfig">${FIG.shape}
+  <div class="cap">原典 §3.1 Fig.5 の実測値から本資料で作図。</div></div>
+ <div class="k how"><span class="kh">★ 測り方の注意</span>
+  <b>Fig.5 の「図の中」に、キャプションにない交換レートが書き込まれています。</b>
+  「22%の追加計算量が1%の損失増を補償する」。<br>
+  → 「形を最適から外して損失が n% 増えた」を「計算量 22n% で買い戻せる」と換算できます。</div>
+ <div class="k str"><span class="kh">★ 3本が一致している</span>
+  画像側でも独立に同じ結論が出ています。ViT は「パラメータ数より計算量のほうが良い予測子」、
+  DiT は「<b>Gflops と FID の相関 −0.93</b>、パラメータ数は貧しい代理指標」。</div>
+ <p class="src"><b>出典</b>　Kaplan et al. 2020 arXiv:2001.08361 §3.1, Fig.5 ／
+  Dosovitskiy et al. 2020 arXiv:2010.11929 Appendix D.2 ／
+  Peebles &amp; Xie 2022 arXiv:2212.09748 §5, Fig.8</p>`},
+
+{id:'s7-4-chinchilla',grp:'§7-4 スケーリング則',t:'計算予算の配分と、その後の修正',short:'配分と、その後の修正',
+ sec:'7-4',part:'第2部',gname:'横断軸',cf:'○',where:'第1章「たくさん読ませる」／「効きが鈍い」／決算',
+ mai:'第1章の決算で「2年間、誰も気づかなかった」と申し上げたのは、この話です。',
+ land:['2020年の結論は「予算が増えたら、主にモデルを大きくすべき」でした。',
+  '2022年に <b>N と D はほぼ同率で増やすのが計算最適＝パラメータ1個あたり約20語</b>と修正されました。',
+  'GPT-3 の配分は<b>パラメータ1個あたり1.7語。目安の12分の1</b>でした。'],
+ b:`<div class="dfig">${FIG.ratio}
+  <div class="cap">原典の構成値から本資料で作図。本の絵は説明のためのものです。</div></div>
+ <p><span class="cf b">○</span>Kaplan の主張は「計算予算が増えるとき、それは<b>主にモデルを
+  大きくすることに使われるべき</b>」で、節の見出しは "Big models may be more important than
+  big data"。固定予算では「<b>非常に大きなモデルを訓練し、収束のかなり手前で止める</b>」のが
+  最適とされました。<b>GPT-3 が 1,750億を 3,000億語だけで訓練した理由がこれです。</b></p>
+ <div class="k fix"><span class="kh">★ 通説の訂正</span>
+  <b>当時の2本ともデータを緩く増やす側でした</b>（Kaplan は D ∝ N^0.74、
+  Henighan は D ∝ N^0.4）。<b>Chinchilla が覆したのはこの共通見解です。</b>
+  「Kaplan が間違っていた」ではなく「<b>当時の共通見解が修正された</b>」が正確です。</div>
+ <div class="k res"><span class="kh">★ 原典の留保</span>
+  <b>数値は版で変わりますが、「べき乗則で予測可能」という構造は揺らぎません。</b>
+  だからこの節の確信度は ◎ ではなく ○ です。</div>
+ <p class="src"><b>出典</b>　Kaplan et al. 2020 arXiv:2001.08361 §6 ／
+  Hoffmann et al. 2022「Training Compute-Optimal Large Language Models」arXiv:2203.15556
+  （このゲームが確かめた論文32本の外です）／
+  Brown et al. 2020 arXiv:2005.14165（1,750億／3,000億語）</p>`},
+
+{id:'s7-4-floor',grp:'§7-4 スケーリング則',t:'「打ち止め」は、原典が退けている',short:'「打ち止め」の否定',
+ sec:'7-4',part:'第2部',gname:'横断軸',cf:'◎',where:'第1章「たくさん読ませる」／「効きが鈍い」／決算',
+ mai:'よく聞く「そろそろ限界」という話は、<span class="ng">原典が明示的に退けています。</span>ここは間違えやすい場所です。',
+ land:['損失は「規模で消せる部分」と「消せない部分（L∞）」に分かれます。',
+  '<b>L∞ に近づくから収穫逓減、という推論を原典は退けています。</b>',
+  '実測でも、生成の損失が飽和しても<b>下流の能力は別のべき乗則で伸び続けます。</b>'],
+ b:`<div class="fml">L(x) = L∞ + (x<em>0</em> / x)^α<br>
+  　　　　│　　　　└─ 削減できる部分（規模で消せる）<br>
+  　　　　└─ 削減できない部分（データ本来のエントロピー）</div>
+ <div class="dfig">${FIG.floor}
+  <div class="cap">原典 §3, §3.4 の記述から本資料で作図。</div></div>
+ <div class="k fix"><span class="kh">★ 通説の訂正</span>
+  「L(x) 曲線が曲がって損失が L∞ に近づくと、見返りは逓減すると推測したかもしれない。
+  しかし削減可能な損失を D_KL と同一視すると、<b>必ずしもそうではないことが示唆される</b>。
+  さらなる規模の増加は、<b>依然として重要な追加的な意味情報をもたらしうる</b>」<br>
+  → 使える言い方は「打ち止め」ではなく「<b>方向を指定するのは人間</b>」です。</div>
+ <h4>ただし、外挿を信じてよいわけではない</h4>
+ <div class="dfig">${FIG.extra}
+  <div class="cap">原典 §6.3 の交点と、実測データの範囲を対比。本資料で作図。</div></div>
+ <div class="k res"><span class="kh">★ 原典の留保</span>
+  床（L∞）の見積もりは Kaplan §6.3 にもあり、L* ~ 1.7 nats/token を
+  「自然言語のトークンあたりエントロピーの粗い見積もり」として出しています。<br>
+  <b>ただしこの交点は実測の2桁以上先です。</b>原典自身も「数値は非常に不確かで、
+  上下1桁変わりうる」と留保しています。<b>「外挿できる」と「外挿を信じてよい」は別です。</b></div>
+ <p class="src"><b>出典</b>　Henighan et al. 2020「Scaling Laws for Autoregressive
+  Generative Modeling」arXiv:2010.14701 §3, §3.4 ／
+  Kaplan et al. 2020 arXiv:2001.08361 §6.3</p>`},
+
+{id:'s7-4-emergence',grp:'§7-4 スケーリング則',t:'創発は予測できない',short:'創発は予測できない',
+ sec:'7-4',part:'第2部',gname:'横断軸',cf:'△',
+ mai:'なめらかなべき乗則とは<span class="ng">別の謎</span>として残っています。ここは △ です。',
+ land:['「規模を超えると質的に新能力が突然出る」現象は、なめらかなべき乗則とは別の謎として残っています。',
+  '<b>「この規模で何の能力が出るか」を事前に言う理論はまだありません。</b>',
+  '<b>★ただし Kaplan §8 が2020年に予告していました：「more is different」。</b>'],
+ b:`<p><span class="cf">△</span>CoTが効き始めるなどの現象です。
+  <b>創発自体が評価指標の不連続性によるアーティファクトだという反論もあります</b>（Schaeffer et al. 2023）。</p>
+ <div class="k str"><span class="kh">★ 原典がそのまま書いていること（Kaplan §8、2020年の予告）</span>
+  「<b>滑らかな量的変化は、大きな質的改善を隠しうる："more is different"</b>。…
+  <b>言語モデル損失の滑らかな改善は、一見質的な能力の変化を隠しているかもしれない</b>」</div>
+ <div class="k res"><span class="kh">★ 原典の留保（GPT-4 の一次記述）</span>
+  「<b>特定の能力は依然として予測が難しい</b>」。
+  さらに <b>Inverse Scaling Prize（規模とともに悪化するタスク）を GPT-4 が反転させた</b>という現象があり
+  （Fig.3）、逆に能力予測では「<b>最も易しいバケットで GPT-4 が予測を下回った</b>」とも報告しています。</div>
+ <p class="src"><b>出典</b>　Kaplan et al. 2020「Scaling Laws for Neural Language Models」
+  arXiv:2001.08361 §8 ／ OpenAI 2023「GPT-4 Technical Report」arXiv:2303.08774 Fig.3 ／
+  Schaeffer et al. 2023</p>`},
+
+/* ══════════════ 貼る位置 56　§7-5 ══════════════ */
+{id:'s7-5-sparse',grp:'§7 横断軸',t:'＊補足：効率化とブラックボックス化',short:'効率化と非公開',
+ sec:'7-5',part:'第2部',gname:'横断軸',cf:'—',
+ mai:'疎にしてよい根拠は思いつきではありません。<span class="hl">密な注意が自ら疎になっていました。</span>',
+ land:['自己注意の O(n²) を、注意を疎に間引いて <b>O(n√n)</b> に下げた仕事です。',
+  '<b>★「疎にしてよい」は思いつきではありません。密な注意が自ら疎になっていました。</b>',
+  '<b>そして GPT-4 で「最前線モデルは中身非公開」が常態化しました。</b>'],
+ b:`<p>マス数の比は 1/√n なので、<b>n=4,096 でマス数が約1/64</b>、n=65,536 で約1/256 になります
+  （比はこの資料の計算）。</p>
+ <div class="k str"><span class="kh">★ 原典がそのまま書いていること（§4.1, Fig.2）</span>
+  CIFAR-10 で128層のフル注意を訓練して可視化すると：初期層は畳み込みに似た局所結合、
+  <b>19〜20層で行方向と列方向に分裂（＝大域的注意を自分で因数分解していた）</b>、深層では高い疎性。
+  <b>Sparse Transformer の疎パターンは、密な注意が自ら学んだ構造の模倣です。</b></div>
+ <div class="k res"><span class="kh">★ 原典の留保</span>
+  「<b>あらかじめ決めた疎性パターンを全注意行列に導入すると影響を受ける</b>」
+  ＝事前に決めたパターンでは同じ写像を学べないと認めています。<b>効率化はトレードオフです。</b></div>
+ <div class="k how"><span class="kh">★ そしてブラックボックス化（GPT-4 §2）</span>
+  「<b>アーキテクチャ（モデルサイズを含む）、ハードウェア、訓練計算量、データセット構築、訓練手法…について、
+  これ以上の詳細を含まない</b>」。<b>外から中身を完全には検証できません。</b>
+  原典自身も将来課題として「<b>解釈可能性・説明可能性・較正</b>——現在のブラックボックス的性質に対処するため」を
+  挙げています。</div>
+ <p>GPT-4 が挙げる限界（そのまま使えます）：事前学習データの大部分が<b>2021年9月</b>で切れている／
+  <b>経験から学習しない</b>／「多くの領域での能力と釣り合わないような、<b>単純な推論の誤り</b>を時に犯す」／
+  「ユーザーの<b>明らかに偽の主張を過度に信じ込む（overly gullible）</b>ことがある」／
+  「<b>自信を持って誤ることがあり、間違えそうなときに見直しをしない</b>」。</p>
+ <p class="src"><b>出典</b>　Child et al. 2019「Generating Long Sequences with Sparse Transformers」
+  arXiv:1904.10509 §4.1, Fig.2 ／ OpenAI 2023「GPT-4 Technical Report」arXiv:2303.08774 §2, §Limitations
+  （マス数比はこの資料の計算）</p>`}
+,
+
+/* ══════════════ 貼る位置 57　§8-1 ══════════════ */
+{id:'s8-1-vit',grp:'§8 画像',t:'画像でも L0 は Transformer、L1 は事前学習（ViT）',short:'ViT',
+ sec:'8-1',part:'第2部',gname:'画像',cf:'—',
+ mai:'「データが少ないとCNNに負ける」の正体は<span class="hl">「大きいモデルほど早く損をする」</span>です。',
+ land:['画像を16×16のパッチに割り、"単語の列"のように扱って Transformer に入れます。',
+  '原典の言い方は「<b>大規模訓練は帰納バイアスに勝る</b>」。閾値は具体的に書かれています。',
+  '<b>★帰納バイアスは消えたのではなく、学習されています</b>（低層に局所的な注意ヘッドが自然発生）。'],
+ b:`<div class="fml">事前学習データ　　　枚数　　結果<br>
+  ImageNet　　　　　　1.3M　　<em>大きいモデルが小さいモデルに負ける</em>（76.5 &lt; 77.9）。CNN系にも負ける<br>
+  ImageNet-21k　　　　14M　　 大小ほぼ同等（85.2 vs 84.0）<br>
+  JFT　　　　　　　　 <em>303M</em>　 大きいモデルの利点が全部出る（87.1 vs 84.2）。最良で ImageNet <em>88.55%</em></div>
+ <div class="k fix"><span class="kh">★ 通説の訂正</span>
+  「データが少ないとCNNに負ける」の正体は「<b>大きいモデルほど早く損をする</b>」です。<br>
+  ＊88.55% を出した最良モデルは <b>14×14パッチ</b>です。タイトルの "16x16" は最良構成ではありません。</div>
+ <div class="k str"><span class="kh">★ 帰納バイアスは消えたのではなく、学習されている（§4.5, Fig.7右）</span>
+  最下層でも画像のほとんどに注意するヘッドがある一方、<b>低層で一貫して小さい注意距離を持つヘッド</b>もあり、
+  <b>畳み込みのような局所性を自力で獲得</b>しています。前にCNNを置くと<b>この局所化が弱まる</b>ので、原典は
+  「CNNの初期畳み込み層と同じ機能を果たしているらしい」と述べています。<br>
+  <b>これは§7-5（密な注意が自ら疎構造を学ぶ）と同じ構図で、3本で確認されています</b>
+  （Sparse Transformers §4.1 ／ ViT §4.5 ／ Transformer の学習済み重み）。
+  <b>AIの内部は設計ではなく学習の産物で、人間が後から気づいて真似した</b>という順番です。</div>
+ <p class="src"><b>出典</b>　Dosovitskiy et al. 2020「An Image is Worth 16x16 Words」
+  arXiv:2010.11929 Table 5, §4.5, Fig.7 ／ Child et al. 2019 arXiv:1904.10509 §4.1</p>`},
+
+/* ══════════════ 貼る位置 58　§8-2 ══════════════ */
+{id:'s8-2-ddpm',grp:'§8 画像',t:'拡散モデル ── 壊して、逆にたどる',short:'拡散モデル',
+ sec:'8-2',part:'第2部',gname:'画像',cf:'—',
+ mai:'<span class="hl">「良い画像を作るモデル」と「データ分布を正しく表すモデル」は別です。</span>原典が正直に書いています。',
+ land:['前向き（固定・学習しない）でノイズを加え、逆向き（これを学習）で加えたノイズ ε を当てます。',
+  '<b>「単純にした」の中身は2つで、片方だけでは効きません</b>（ε予測＋小さい t の項を軽くする）。',
+  '<b>★尤度の悪化は 0.05 bits/dim だけで、FIDは約4分の1。トレードオフは存在するが小さい、が正確な読みです。</b>'],
+ b:`<div class="fml">前向き（固定・学習しない）: x<em>0</em>(元画像) → x<em>1</em> → … → x<em>T</em>(ほぼ純ノイズ)<br>
+  　q(x<em>t</em>|x<em>t−1</em>) = N( √(1−β<em>t</em>)·x<em>t−1</em>, β<em>t</em>·I )　　← DDPM Eq.2<br>
+  　一発で書ける: x<em>t</em> = √(ᾱ<em>t</em>)·x<em>0</em> + √(1−ᾱ<em>t</em>)·ε　　← DDPM Eq.4<br><br>
+  逆向き（これを学習）: 各ステップで加えたノイズ ε を当てるネットワーク<br>
+  　L<em>simple</em> = E[ ‖ ε − ε<em>θ</em>(x<em>t</em>, t) ‖² ]　　　← DDPM Eq.14</div>
+ <div class="k str"><span class="kh">★ 「単純にした」の中身は2つ（片方だけでは効かない）</span>
+  (1) 予測対象を ε にした、(2) L_simple は重みを捨てた変分下界で、小さい t の項を軽くしている。
+  原典 §3.4：「<b>軽くして、より大きい t の難しいデノイズにネットワークが集中できるようにするのが有益</b>」。
+  この組み合わせで <b>FID 13.51 → 3.17</b>（Table 2）。</div>
+ <p>＊設定値（全部原典）：T=1000（「スイープなしで設定した」）、β は 10⁻⁴ → 0.02 の線形増加、
+  CIFAR10モデルは 3570万パラメータで <b>10.6時間</b>の学習、256×256 モデルは128枚の生成に <b>300秒</b>。</p>
+ <div class="k res"><span class="kh">★ 原典の留保 ── 良い画像と正しい分布は別</span>
+  「真の変分下界で訓練すると単純化目的関数より良い符号長が得られる。<b>しかし後者のほうが最良のサンプル品質を
+  与える</b>」。</div>
+ <div class="fml">訓練目的　　　　　　　　　　　　　FID（訓練集合基準）　負の対数尤度<br>
+  変分下界（固定等方共分散）　　　　13.51　　　　　　　　≤3.70<br>
+  L<em>simple</em>　　　　　　　　　　　　　 <em>3.17</em>　　　　　　　　 ≤3.75</div>
+ <div class="k how"><span class="kh">★ 測り方の注意</span>
+  <b>尤度の悪化は 0.05 bits/dim だけで、FIDは約4分の1になっています。</b>
+  トレードオフは存在しますが小さい、が正確な読みです。
+  「尤度を大きく犠牲にして画質を買った」という読み方はできません。<br>
+  一方で「<b>無損失符号長の半分以上が知覚できない歪みの記述に費われている</b>」（§4.3、
+  rate 1.78 / distortion 1.97 bits/dim）は独立した事実で、
+  <b>こちらが「FIDが良い＝分布を正しく学んだ、ではない」の本体</b>です。</div>
+ <div class="k fix"><span class="kh">★ 歴史的な帰属に注意が2つ</span>
+  <b>(a) 「拡散はスコア（∇log q）を学んでいる」は DDPM 原典の記述ではありません。</b>
+  DDPM に ∇log の式はなく（HTML版の数式で \\nabla を含むのは Algorithm 1 のパラメータ勾配だけ）、
+  あるのは "resembles" という言明と、§3.2 の「<b>とはいえ、これは p_θ の別のパラメータ化にすぎない</b>」です。
+  ∇<em>x</em> log p(x|c) を明示的に書いたのは <b>DiT §3.1</b>（classifier-free guidance の導出）です。<br>
+  <b>(b) 「拡散の逆もまた拡散」が1949年に証明済み、とは書けません。</b>
+  2015年の論文が根拠として Feller 1949 を引いたのは事実ですが、Feller が拡散を扱うのは
+  <b>最終節 §10（pp.427-431、論文全体は pp.403-432）のみ</b>で、そこにあるのは
+  「前向き方程式と後ろ向き方程式が同じ係数で書ける」（Eq.76/77、脚注21）です。
+  Feller の "backward equation" は<b>随伴方程式</b>で、§4（頁416）に
+  「<b>これらの系のそれぞれが他方の随伴（the adjoint of the other）である</b>」とあります。<br>
+  → 正確には「<b>2015年の論文が根拠として Feller を引いた</b>」です。</div>
+ <p class="src"><b>出典</b>　Ho et al. 2020「DDPM」arXiv:2006.11239 Eq.2, Eq.4, Eq.14, §3.2, §3.4, §4.3,
+  Table 1, Table 2 ／ Sohl-Dickstein et al. 2015 arXiv:1503.03585 ／ Feller 1949 §4, §10 ／
+  Peebles &amp; Xie 2022「DiT」arXiv:2212.09748 §3.1</p>`},
+
+/* ══════════════ 貼る位置 59　§8-3 ══════════════ */
+{id:'s8-3-dit',grp:'§8 画像',t:'拡散の中身も Transformer に（DiT）',short:'DiT',
+ sec:'8-3',part:'第2部',gname:'画像',cf:'—',
+ mai:'<span class="hl">条件づけ機構がモデル品質を決定的に左右する</span>と原典が書いています。初期化も重要です。',
+ land:['ノイズ予測器を U-Net（CNN）から Transformer に置換したものです。',
+  '条件の注入方式は<b>4案が比較され</b>、最良は <b>adaLN-Zero</b>でした。',
+  '<b>★ただし DiT でも CNN は消えていません</b>（原典自ら「ハイブリッドなアプローチ」と書いています）。'],
+ b:`<p>原典：「<b>条件づけ機構がモデル品質を決定的に左右する</b>」「<b>初期化も重要</b>」（§3.2, Fig.5）。</p>
+ <div class="fml">adaLN-Zero の構造（図は転載せず、原典 Figure 3 の内容を文と式で移した）<br>
+  条件（時刻tとクラスcの埋め込みの和）から6つのパラメータ γ₁ β₁ α₁ γ₂ β₂ α₂ を回帰する<br><br>
+  x → LN → scale,shift(γ₁,β₁) → 自己注意 → ×α₁ → ⊕(残差)<br>
+  　→ LN → scale,shift(γ₂,β₂) → FFN　　 → ×α₂ → ⊕(残差)<br><br>
+  α をゼロ初期化 ⇒ ブロックの寄与が0 ⇒ ブロック全体が恒等写像として始まる<br>
+  ＝「α をゼロにする」から adaLN-Zero。γ・β をゼロにするのではない</div>
+ <div class="k fix"><span class="kh">★ 通説の訂正</span>
+  <b>DiT でも CNN は消えていません。</b>DiT は潜在拡散で、既製の畳み込みVAEで
+  256×256×3 → 32×32×4 に落としてから拡散します。
+  <b>原典自ら「我々の画像生成パイプラインはハイブリッドなアプローチである」と書いています。</b></div>
+ <div class="k how"><span class="kh">★ 測り方の注意</span>
+  結果は ImageNet 256×256 で <b>FID 2.27</b>。ただし <b>guidance なしでは 9.62</b> で、
+  改善の大半は classifier-free guidance によるものです。</div>
+ <p class="src"><b>出典</b>　Peebles &amp; Xie 2022「DiT」arXiv:2212.09748 §3.1, §3.2, Fig.3, Fig.5, §5</p>`}
+,
+
+/* ══════════════ 貼る位置 60　§8-4 ══════════════ */
+{id:'s8-4-clip',grp:'§8 画像',t:'言葉と画像を同じ空間に乗せる（CLIP）',short:'CLIP',
+ sec:'8-4',part:'第2部',gname:'画像',cf:'—',
+ mai:'プロンプト設計は後付けの小技ではありません。<span class="hl">手法図の段階から設計に組み込まれていました。</span>',
+ land:['正しいペアは近く、間違ったペアは遠くなるよう学習します（対照学習）。',
+  '<b>★キャプション生成ではなく対照学習にしたのは効率です</b>（合計約12倍速い）。',
+  '<b>★プロンプトが約5%効きます。</b>そしてゼロショットが少数ショットに勝ちます。'],
+ b:`<p>N組の(画像, キャプション)で、行列の<b>対角（正しいペア）のコサイン類似度を最大化し、
+  N²−N 個の誤ったペアを最小化</b>します（原典 Figure 1 のパネル(1)に対応する構図。図は転載していません）。</p>
+ <div class="k str"><span class="kh">★ なぜ対照学習か＝効率（§2.3, Fig.2）</span>
+  キャプションを予測させると Bag-of-Words 予測より<b>3倍遅く</b>、予測目的を対照目的に替えると<b>さらに4倍</b>、
+  合計約<b>12倍</b>。「キャプションの正確な単語」ではなく「<b>テキスト全体としてどれがどの画像と対か</b>」という
+  易しい代理タスクに替えています。</div>
+ <p>規模：<b>4億組</b>の自作データセット。ImageNet ゼロショットで <b>76.2%</b>（top-5 95%）＝
+  <b>128万件のラベルを一切使わずに、元のResNet-50に一致</b>。訓練コストは最大モデルで V100×592台で18日。</p>
+ <div class="k str"><span class="kh">★ プロンプトが5%効く（§3.1.4）</span>
+  クラス名だけだと多義性で失敗します（ImageNet は建設用クレーンと飛ぶ鶴の両方を含む）。
+  "A photo of a {label}." だけで <b>+1.3%</b>、<b>80個の文脈プロンプトのアンサンブル</b>
+  （埋め込み空間で平均するので追加コストは実質ゼロ）で <b>+3.5%</b>、合計 <b>ほぼ+5%</b>。
+  原典 Fig.4 の言い方：「これは<b>ベースライン手法で4倍の計算量を使うのと同程度の利得</b>だが、無料」。<br>
+  ＊しかもこのテンプレートは <b>Figure 1 の図中に描かれています</b>（キャプションには書かれていません）。
+  <b>プロンプト設計は後付けの小技ではなく、手法図の段階から設計に組み込まれていました。</b></div>
+ <div class="k str"><span class="kh">★ ゼロショットが少数ショットに勝つ（§3.1.5, Fig.6）</span>
+  ゼロショットCLIP ≒ 同じ特徴空間の <b>4-shot ロジスティック回帰</b> ≒ 公開最良モデルの <b>16-shot 分類器</b>。
+  原典の説明：「<b>ゼロショット分類器は自然言語を通じて生成されるので視覚概念を直接"伝達"できる。
+  通常の教師あり学習は訓練例から間接的に推論しなければならない</b>」。</div>
+ <p class="src"><b>出典</b>　Radford et al. 2021「CLIP」arXiv:2103.00020 §2.2, §2.3, §3.1.4, §3.1.5,
+  Figure 1, Fig.2, Fig.4, Fig.6</p>`},
+
+/* ══════════════ 貼る位置 61　§8-5 ══════════════ */
+{id:'s8-5-bias',grp:'§8 画像',t:'★偏りは「引き継ぐ」のではなく、モデルの外側の設計が作る',short:'偏りは設計が作る',
+ sec:'8-5',part:'第2部',gname:'画像',cf:'◎',
+ mai:'これは画像側で最も<span class="ok">行動可能</span>な知見です。<span class="hl">ラベルを1つ足すだけで誤分類が激減します。</span>',
+ land:['FairFace 1万枚のゼロショット分類で、<b>非人間クラスへの誤分類 4.9%（Black は約14%、0-20歳が14%）。</b>',
+  '<b>★ラベル集合に child を1つ足すだけで、0-2歳の誤分類が 30.3% → 2.3% になります。</b>',
+  '<b>「AIが偏見を引き継ぐ」ではなく「ラベルの選び方と閾値の決め方が偏りを作る」のほうが正確です。</b>'],
+ b:`<p><span class="cf a">◎</span>実測です。</p>
+ <ul>
+  <li>非人間クラスへの誤分類 <b>4.9%</b>。人種別では <b>Black が約14%</b>、他は8%未満。<b>0-20歳が14%</b></li>
+  <li>犯罪関連クラス：<b>男性16.5% vs 女性9.8%</b>。<b>0-20歳が約18%</b>、<b>70歳超は0%</b></li>
+  <li><b>★ラベル集合に child を1つ足すだけで、20歳未満の誤分類が激減します</b>：
+   0-2歳 <b>30.3% → 2.3%</b>、3-9歳 35.0% → 4.3%</li>
+  <li>米議会議員画像では性別分類は100%正解。しかし<b>閾値を4.0%から0.5%に下げると</b>
+   女性に nanny / housekeeper、<b>男性に prisoner / mobster</b> が現れます</li>
+ </ul>
+ <div class="k str"><span class="kh">★ 原典の結論</span>
+  「<b>モデル構築のあらゆる段階での設計判断が偏りの現れ方に影響する</b>。…<b>クラス設計のような決定は、
+  モデル性能だけでなく、モデルの偏りがどのように、どの文脈で現れるかの主要な決定要因である</b>」</div>
+ <div class="k res"><span class="kh">★ 原典の留保（併せて引くべき）</span>
+  「<b>ベンチマーク上の精度はアルゴリズム的公平性の一つの近似にすぎず、
+  現実世界の文脈では公平性の有意味な尺度としてしばしば失敗する</b>」</div>
+ <div class="k fix"><span class="kh">★ 通説の訂正</span>
+  <b>「AIが偏見を引き継ぐ」ではなく「ラベルの選び方と閾値の決め方という、モデルの外側の設計が偏りを作る」</b>
+  のほうが正確で、しかも<b>やるべきことが決まります。</b></div>
+ <p class="src"><b>出典</b>　Radford et al. 2021「CLIP」arXiv:2103.00020 §7.1</p>`},
+
+/* ══════════════ 貼る位置 62　§8-6 ══════════════ */
+{id:'s8-6-mnist',grp:'§8 画像',t:'★「理解していない」ことの最も強い証拠',short:'MNIST 88%',
+ sec:'8-6',part:'第2部',gname:'画像',cf:'◎',
+ mai:'<span class="ng">生ピクセルのロジスティック回帰に負けます。</span>原典がそう書いています。',
+ land:['<b>MNIST（手書き数字）で 88% しか出ません。</b>生ピクセル上のロジスティック回帰に負けます。',
+  '原典：<b>CLIP は「脆い汎化という根底の問題にほとんど対処していない」。</b>',
+  '<b>★人間との比較も示唆的です：AIはゼロショットで圧勝しますが、1例からの学習では人間に遠く及びません。</b>'],
+ b:`<div class="k str"><span class="kh">★ 原典がそのまま書いていること（§6）</span>
+  「<b>恥ずかしいほど単純な、生ピクセル上のロジスティック回帰がゼロショットCLIPを上回る</b>。
+  …事前学習データセットにMNISTの数字に似た画像はほとんど無い。これは <b>CLIPが深層学習モデルの
+  脆い汎化という根底の問題にほとんど対処していない</b>ことを示す。代わりにCLIPは問題を<b>回避しようとし、
+  これほど大きく多様なデータセットで訓練すればすべてのデータが実質的に分布内になることを期待している。
+  これは素朴な仮定であり、MNISTが示すように容易に破られる</b>」</div>
+ <p>加えて、細粒度分類が弱い、<b>物体を数えるのが苦手</b>、
+  「<b>ゼロショット性能が偶然水準に近いタスクがまだ多く、非常に多くあると確信している</b>」、
+  「全体のSOTAに達するには約1000倍の計算量増加が必要で、<b>現在のハードウェアでは訓練不可能</b>」。</p>
+ <div class="k str"><span class="kh">★ 人間との比較（§4, Table 2, Oxford Pets）</span>
+  ゼロショットで人間 53.7% に対し <b>CLIP 93.5%</b>。
+  しかし<b>人間は1例で54%→76%に上がり、2例目の利得はほぼゼロ</b>。
+  原典：「<b>ゼロから1ショットへの利得はほぼ完全に人間が不確かだった画像に集中している。
+  これは人間が"自分が知らないことを知っている"ことを示唆する</b>」。<br>
+  → <b>AIはゼロショットで圧勝しますが、1例からの学習では人間に遠く及びません。この非対称が本質です。</b></div>
+ <p class="src"><b>出典</b>　Radford et al. 2021「CLIP」arXiv:2103.00020 §4, §6, Table 2</p>`},
+
+/* ══════════════ 貼る位置 63　§8-7 ══════════════ */
+{id:'s8-7-limits',grp:'§8 画像',t:'画像側の限界（そのまま使えるもの）',short:'画像側の限界',
+ sec:'8-7',part:'第2部',gname:'画像',cf:'—',
+ mai:'編集は「AIがやった」のではなく<span class="hl">「AIの候補から人が選んだ」</span>ものです。',
+ land:['<b>拡散は「描く」のではなく「学習した分布からサンプルしている」だけです。</b>',
+  '<b>属性と物体の結合が保持されていません</b>（"a red cube on top of a blue cube" で失敗）。',
+  '<b>★編集は1画像あたり約8分の最適化＋8つのシードから人が最良を選ぶ、という手順です。</b>'],
+ b:`<ul>
+  <li><b>拡散は「描く」のではなく「学習した分布からサンプルしている」だけです。</b>
+   DDPM の Broader Impact も「<b>生成モデルは訓練データセットの偏りを反映する</b>」と書いています。</li>
+  <li><b>属性と物体の結合が保持されていません</b>（unCLIP §7）：「<b>unCLIP は対応するモデルより属性を物体に
+   結びつけるのが下手</b>」で、"a red cube on top of a blue cube" で失敗します。
+   原典の仮説：「<b>CLIP埋め込み自体が属性を物体に明示的に結びつけていないために起こる</b>」。</li>
+  <li><b>綴りが符号化されていません</b>（同 §7）。→ 入口のトークナイズ由来です（→§7-2）。</li>
+  <li><b>編集は「AIがやった」のではなく「AIの候補から人が選んだ」ものです</b>（Imagic §4.1, §4.5）：
+   1画像あたり<b>約8分</b>の最適化を行い、<b>8つのランダムシードから人が最良を選びます</b>。
+   原典も「<b>最適化は遅く、ユーザ向けアプリケーションへの直接の展開を妨げるかもしれない</b>」と書いています。</li>
+  <li><b>★埋め込み空間は局所的にだけ線形です</b>（Imagic §3.2）：「この近接性が有意味な線形補間を可能にする。
+   <b>埋め込みが離れていると線形な振る舞いを示さない</b>」。→ 第1部§5の「王様−男＋女」と同じ論点です。</li>
+ </ul>
+ <div class="k str"><span class="kh">★ 3本すべてが同じ懸念を書いている（DDPM / unCLIP / Imagic）</span>
+  unCLIP §7：「<b>技術が成熟するにつれ、出力がAI生成であるという痕跡や指標が少なくなり、生成画像を本物と、
+  本物を生成画像と取り違えやすくなる</b>」</div>
+ <div class="k how"><span class="kh">★ 図の読み方の注意</span>
+  Imagic Fig.9 は<b>左右の軸のスケールが全く違います</b>（忠実性は幅0.5、整合性は幅0.03）。
+  <b>2曲線の「交差点」は軸の取り方で自由に動くので意味を持ちません。</b>
+  補間係数の推奨値（0.6〜0.8）を「2曲線が交わる点」として説明しないでください。</div>
+ <p class="src"><b>出典</b>　Ho et al. 2020「DDPM」arXiv:2006.11239 Broader Impact ／
+  Ramesh et al. 2022「unCLIP」arXiv:2204.06125 §7 ／
+  Kawar et al. 2022「Imagic」arXiv:2210.09276 §3.2, §4.1, §4.5, Fig.9</p>`}
+,
+
+/* ══════════════ 貼る位置 64　§9-2 ══════════════ */
+{id:'s9-1-mystery',grp:'§9 何が分かっていないか',t:'そして、なぜそうなるのかは分かっていない',short:'なぜかは分かっていない',
+ sec:'9-1',part:'第2部',gname:'未解明',cf:'◎',where:'第1章「たくさん読ませる」／「効きが鈍い」／決算',
+ mai:'ここが、この資料でいちばん強く言える場所です。<span class="hl">作った本人たちが、自分の論文にそう書いています。</span>',
+ land:['演算は完全に分かっています。行列積・softmax・勾配降下・サンプリング。すべて追えます。',
+  '<b>なぜそれが賢く働くのかは分かっていません。</b>',
+  'これは推測ではなく、<b>スケーリング則を見つけた研究者たちが自分の論文に書いています。</b>'],
+ b:`<div class="k str"><span class="kh">★ 原典がそのまま書いていること</span>
+  「<b>現時点で我々は、提案したスケーリング則のいずれについても確固たる理論的理解を
+  持っていない。モデルサイズと計算量に関するスケーリング関係は特に謎である。</b>
+  …理論、あるいはスケーリング則への補正の体系的理解がなければ、どのような状況で
+  それらを信頼できるかを判定することは難しい」<br>
+  <span style="color:#8a9db3">── Kaplan et al. 2020, arXiv:2001.08361 Appendix C（Caveats）</span></div>
+ <p>同じ論文の §8 は、求めている方向まで書いています。「これらの関係を<b>理想気体の状態方程式
+  の類比</b>として解釈できるかもしれない。…<b>我々が観測した“熱力学”の背後にある“統計力学”</b>
+  にあたる、スケーリング関係を導出できる理論的枠組みを見つけられれば刺激的だろう」</p>
+ <p><b>気体の法則は分かったが、裏の分子の運動が分からない状態です。</b>
+  理論の候補は乱立していて（NTK／平均場／NNGP／情報ボトルネック／特異学習理論／統計力学的アプローチ）、
+  <b>どれも部分的で、統一されていません。</b></p>
+ <div class="k str"><span class="kh">★ 同じ形の自白が他にもある</span>
+  Transformer：「内積よりも高度な互換性関数が有益かもしれない」＝注意の中核が最適か保留<br>
+  Chain-of-Thought：「ニューラルネットが実際に“推論”しているのかには答えていない」<br>
+  BPE（Gage 1994）：「BPEがこれほどうまく機能するのは驚きである」</div>
+ <p class="src"><b>出典</b>　Kaplan et al. 2020 arXiv:2001.08361 Appendix C, §8 ／
+  Vaswani et al. 2017 arXiv:1706.03762 Table 3 行B ／
+  Wei et al. 2022 arXiv:2201.11903 §6 ／ Gage 1994</p>`},
+
+/* ══════════════ 貼る位置 ①　第1部 基礎編 1 ══════════════ */
+{id:'s9-2-list',grp:'§9 何が分かっていないか',t:'「なぜ効くか分かっていない」を原典が書いている箇所の一覧',short:'自白の一覧',
+ sec:'9-2',part:'第2部',gname:'未解明',cf:'—',
+ mai:'これは外からの批判ではありません。<span class="hl">7本の論文が自分でそう書いています。</span>',
+ land:['Transformer は「内積よりも高度な互換性関数が有益かもしれない」＝注意の中核が最適か分からない。',
+  'CoT は素朴な説明を全部退けたうえで「<b>推論しているのかには答えていない。未解決の問いとして残す</b>」。',
+  'BPE は「<b>これほどうまく機能するのは驚きである</b>」。'],
+ b:`<div class="k str"><span class="kh">★ 原典が自分で書いている箇所</span>
+  <b>Transformer</b>：Table 3 行B の考察「<b>内積よりも高度な互換性関数が有益かもしれない</b>」
+  ＝注意の中核が最適か分からない<br><br>
+  <b>Chain-of-Thought</b>：§3.3 の3つのアブレーションが素朴な説明を全部退けており、
+  <b>肯定的な機構は示されていない</b>。§6「<b>ニューラルネットが実際に"推論"しているのかには答えていない。
+  未解決の問いとして残す</b>」<br><br>
+  <b>BPE（Gage 1994）</b>：「BPEが<b>これほどうまく機能するのは驚きである</b>」<br><br>
+  <b>文脈内学習</b>：Survey §5.2.2 が理論解釈を6系統列挙し、勾配降下説への明確な反論もある。
+  Survey 自身「<b>その大半は単純なタスクと小さいモデルに焦点を当てている</b>」<br><br>
+  <b>Sparse Transformers</b>：§4.1 で密な注意の疎構造を模倣したが
+  「<b>あらかじめ決めた疎性パターンを導入すると影響を受ける</b>」＝同じ写像は学べないと認めている<br><br>
+  <b>トークナイズ理論</b>：「<b>一般化が本枠組みで最も困難な障害</b>」
+  「T と Q の同時最適化は<b>鶏と卵の問題</b>」<br><br>
+  <b>スケーリング則</b>：Appendix C（→ 既存節「そして、なぜそうなるのかは分かっていない」）</div>
+ <p class="src"><b>出典</b>　Vaswani et al. 2017 arXiv:1706.03762 Table 3 行B ／
+  Wei et al. 2022 arXiv:2201.11903 §3.3, §6 ／ Gage 1994 ／
+  Dong et al. 2023 arXiv:2301.00234 §5.2.2 ／ Child et al. 2019 arXiv:1904.10509 §4.1 ／
+  Rajaraman et al. 2024 arXiv:2404.08335 ／ Kaplan et al. 2020 arXiv:2001.08361 Appendix C</p>`},
+
+/* ══════════════ 貼る位置 65　§9-3 ══════════════ */
+{id:'s9-3-line',grp:'§9 何が分かっていないか',t:'検証可能な領域と、そうでない領域の線',short:'検証可能かの線',
+ sec:'9-3',part:'第2部',gname:'未解明',cf:'—',
+ mai:'よく使われる2つの言い方のうち、<span class="ng">「AIは外挿できない」は原典に潰されます。</span>使えるのは「方向を選べない」です。',
+ land:['伸び続ける側＝正誤が機械的に判定でき、検証器を書ける領域（数学・コード・閉じた学術問題）。',
+  '人間の判断が残る側＝信頼できる報酬モデルを作れない領域（執筆・価値判断・何に賭けるか）。',
+  '<b>★「AIは外挿できない」は原典に潰されます。使えるのは「AIは方向を選べない」です。</b>'],
+ b:`<div class="fml">AIが伸び続ける側　　　　　　　　　　　人間の判断が残る側<br>
+  正誤が機械的に判定できる　　　　　　　信頼できる報酬モデルを作れない<br>
+  検証器を書ける　　　　　　　　　　　　決定的な正解を確立できない／時に達成不可能<br>
+  例: 数学・コード・閉じた学術問題　　　例: 執筆・価値判断・何に賭けるか</div>
+ <p>R1 §6：「<b>検証器によって効果的に評価できるタスクであれば、人間にとってどれほど複雑であっても
+  解ける可能性がある。…しかし、信頼できる報酬モデルの構築が本質的に難しいタスクについては課題が残る</b>」。
+  Chatbot Arena §1：「多くの複雑なタスクでは、<b>決定的な正解を確立することは困難であり、
+  時に達成不可能である</b>」。<br>
+  そして<b>検証不能領域では、いまも人間の注釈に戻っています</b>（R1 §6：信頼できる信号を得られないタスクでは
+  人間の注釈で教師データを作り、強化学習は数百ステップだけ行う）。</p>
+ <div class="k fix"><span class="kh">★ 通説の訂正 ── 片方は原典に潰される</span>
+  ✗ 「AIは外挿できない／学習分布の内側しか無理」<br>
+  　→ CoT 原典 §5 が系列長の外挿を示している（2語の例で3〜4語をテストして機能する）<br>
+  　→ Henighan §3 が「L∞ に近づいても見返りは逓減しない」と明示的に退けている<br>
+  ✓ 「AIは方向を選べない」（何を価値とするか・どこへ跳ぶかの指定ができない）<br>
+  　→ こちらは原典と衝突しない</div>
+ <div class="k how"><span class="kh">★ 「人間が方向を供給する」の中身も精密に</span>
+  供給すべきは<b>良い問いと検証の枠</b>です。<b>模範解答ではありません</b>
+  （人間の模範解答を挟むと AIME が 77.9 → 59.0 に下がっています）。</div>
+ <p class="src"><b>出典</b>　DeepSeek-AI 2025「DeepSeek-R1」arXiv:2501.12948 §6, Table 3 ／
+  Chiang et al. 2024「Chatbot Arena」arXiv:2403.04132 §1 ／
+  Wei et al. 2022 arXiv:2201.11903 §5 ／
+  Henighan et al. 2020「Scaling Laws for Autoregressive Generative Modeling」arXiv:2010.14701 §3</p>`},
+
+/* ══════════════ 貼る位置 66　§9-4 ══════════════ */
+{id:'s9-4-selffound',grp:'§9 何が分かっていないか',t:'「学習が自分で構造を見つける」ことの実例（3分野で独立に確認）',short:'学習が構造を見つける',
+ sec:'9-4',part:'第2部',gname:'未解明',cf:'—',
+ mai:'<span class="hl">重みは学習が見つけたもので、手では設計できません。</span>その実測です。',
+ land:['<b>Sparse Transformers</b>：128層のフル注意が、<b>大域的注意を自分で行方向と列方向に因数分解していた。</b>',
+  '<b>ViT</b>：帰納バイアスを入れていないのに、<b>低層に一貫して局所的な注意ヘッドが自然発生する。</b>',
+  '<b>ViT の位置埋め込み</b>：手作りの2D埋め込みが効かない理由は、学習された1D埋め込みが自分で行・列構造を獲得しているから。'],
+ b:`<ul>
+  <li><b>Sparse Transformers</b> §4.1：128層のフル注意を可視化したら、初期層は畳み込みに似た局所結合、
+   19〜20層で行方向と列方向に分裂＝<b>大域的注意を自分で因数分解していた</b></li>
+  <li><b>ViT</b> §4.5：帰納バイアスを入れていないのに、<b>低層に一貫して局所的な注意ヘッドが自然発生する</b></li>
+  <li><b>ViT の位置埋め込み</b>：手作りの2D埋め込みが効かない理由は、
+   <b>学習された1D埋め込みが自分で行・列構造を獲得しているから</b></li>
+ </ul>
+ <div class="k str"><span class="kh">★ ここから言えること</span>
+  <b>「重みは学習が見つけたもので、手では設計できない」の実測です。</b>
+  これは未解明領域の入口としても使えます。</div>
+ <p class="src"><b>出典</b>　Child et al. 2019「Generating Long Sequences with Sparse Transformers」
+  arXiv:1904.10509 §4.1 ／ Dosovitskiy et al. 2020 arXiv:2010.11929 §4.5</p>`},
+
+/* ══════════════ 貼る位置 67　付録A ══════════════ */
+{id:'sa-strong',grp:'付録',t:'付録A：そのまま強く言ってよいこと',short:'強く言ってよいこと',
+ sec:'付録A',part:'付録',gname:'付録',cf:'◎',
+ mai:'留保の話が続きましたが、<span class="ok">ここは根拠が固いので前に出せます。</span>すべて一次記述です。',
+ land:['<b>ChatGPTのあの口調の出所は、評価者への指示文（Figure 10）です。</b>',
+  '<b>事後学習で較正が壊れる：ECE 0.007 → 0.074（同一モデルの前後比較なので最も強い）。</b>',
+  '<b>CLIP は MNIST で 88% しか出ず、生ピクセルのロジスティック回帰に負けます。</b>'],
+ b:`<p><span class="cf a">◎</span>すべて一次記述です（11項目）。</p>
+ <ul>
+  <li>ChatGPTのあの丁寧な口調の出所は、評価者への指示文「境界事例を決める指導原理：
+   <b>このタスクを手伝おうとしているカスタマーアシスタントから、あなたはどちらの出力を受け取りたいか？</b>」
+   ── InstructGPT (arXiv:2203.02155) Figure 10</li>
+  <li>はぐらかす理由は「<b>我々が評価者に"認識的謙虚さを報酬せよ"と指示した</b>ことが一因」── 同 §4.3</li>
+  <li>「人間の好み」の実体は約40人、一致率 <b>72.6%</b>、<b>ほとんどの比較は1人しかラベルしていない</b>。
+   「<b>全員の選好に同時に整合したシステムを訓練することは不可能</b>」── 同 §3.4, §5.2, Appendix B.3</li>
+  <li>事後学習で較正が壊れる：<b>ECE 0.007 → 0.074</b>（同一モデルの前後比較なので最も強い）
+   ── GPT-4 (arXiv:2303.08774) Figure 8</li>
+  <li>理論がないこと：「<b>確固たる理論的理解を持っていない。特に謎である</b>」
+   ── Kaplan (arXiv:2001.08361) Appendix C</li>
+  <li>AIが理解していないこと：CLIP は <b>MNIST で 88%</b> しか出ず、
+   <b>生ピクセルのロジスティック回帰に負ける</b> ── CLIP (arXiv:2103.00020) §6</li>
+  <li>文字を見ていないこと：<b>単語を逆から綴らせると 0.44%</b>（few-shot）
+   ── GPT-3 (arXiv:2005.14165) §3.9.2</li>
+  <li>文体では真贋を見分けられないこと：175B生成のニュース記事の判別は <b>52%＝偶然</b>（対照モデルは86%）
+   ── 同 §3.9.4</li>
+  <li>ラベル設計で判定が激変する：child を1つ足すと0-2歳の誤分類が <b>30.3% → 2.3%</b> ── CLIP §7.1</li>
+  <li>自信満々に間違える：専門難問での <b>RMS較正誤差が全モデルで70%超</b> ── HLE (arXiv:2501.14249)</li>
+  <li>検証可能なら人間を超えうるが、そうでない領域は未解決：「<b>信頼できる報酬モデルで効果的に評価できない
+   複雑なタスクについては、純粋RL手法のスケールアップは未解決の課題である</b>」
+   ── DeepSeek-R1 (arXiv:2501.12948) §6</li>
+ </ul>
+ <p class="src"><b>出典</b>　各項目に併記のとおり（arXiv番号＋節・図番号）</p>`},
+
+/* ══════════════ 貼る位置 68　付録B ══════════════ */
+{id:'sb-avoided',grp:'付録',t:'付録B：この資料で意識的に避けた言い方（と、その理由）',short:'避けた言い方',
+ sec:'付録B',part:'付録',gname:'付録',cf:'—',
+ mai:'ここは<span class="ng">崩される言い方</span>の一覧です。18行あります。使う前に照合してください。',
+ land:['避けた言い方／採った言い方／崩される原典、の3列で18行あります。',
+  '例：「AIは<b>外挿できない</b>」→「AIは<b>方向を選べない</b>」（CoT §5 ／ Henighan §3 で崩れる）。',
+  '例：「AIは偏見を<b>引き継ぐ</b>」→「<b>ラベルの選び方と閾値の決め方という、モデルの外側の設計が偏りを作る</b>」。'],
+ b:`<div class="k fix"><span class="kh">★ 避けた言い方 → 採った言い方（崩される原典）</span>
+  RLVRで<b>能力が底上げ</b>された → <b>潜在能力が引き出され、分布が正しい方へ寄った</b>
+  （15.6%→77.9% は決定的だが Pass@K の上限は動いていない）── DeepSeekMath §5.2.2 ／ R1 §6<br><br>
+  AIは<b>外挿できない</b> → AIは<b>方向を選べない</b> ── CoT §5 ／ Henighan §3<br><br>
+  AIは偏見を<b>引き継ぐ</b> → <b>ラベルの選び方と閾値の決め方という、モデルの外側の設計が偏りを作る</b> ── CLIP §7.1<br><br>
+  CoTは<b>推論時の計算量を増やす</b>から効く → <b>自然言語で・答えより先に・逐次的に</b>書く必要がある、まで。
+  <b>なぜ効くかは原典も答えていない</b> ── CoT §3.3<br><br>
+  ラベルが<b>間違っていても効く</b>から、AIは正しさを読んでいない → <b>対応の正しさは効く</b>。
+  そのうえで<b>間違った対応を渡せば忠実に間違える</b> ── ICL Survey §5.1.2<br><br>
+  AIの文章は<b>文体で見分けられる</b> → 文体では無理（判別52%）。
+  <b>事実誤り・繰り返し・非論理の跳躍</b>で見分ける ── GPT-3 §3.9.4<br><br>
+  専門難問は<b>AIが解けない</b> → <b>解ける問題を除外して作られている</b>（原典自ら "partially by design"）
+  ── HLE § Accuracy, §3.2<br><br>
+  AIは<b>暗記しているだけ</b> → 算術は<b>実際に計算を試みている</b>
+  （3桁2,000問中、訓練データと一致は17問=0.8%）── GPT-3 §3.9.1<br><br>
+  Transformer のブロックは x + Attn(LN(x)) → 原典は <b>Post-LN</b>。Pre-LN は <b>GPT-2 の改変</b>
+  ── Vaswani §3.1, Figure 1 ／ GPT-2 §2.3<br><br>
+  位置エンコーディングは <b>sin/cos が本質</b> → <b>学習型でもほぼ同一結果</b>。
+  正弦波は外挿への期待で選ばれた ── Vaswani Table 3 行E ／ ViT Table 8<br><br>
+  拡散は<b>スコア（∇log q）を学んでいる</b> → DDPM原典に ∇log の式はない（"resembles" のみ）。
+  ∇log を書いたのは <b>DiT §3.1</b> ── DDPM §3.2<br><br>
+  「拡散の逆もまた拡散」は<b>1949年に証明済み</b> → <b>2015年の論文が根拠として Feller を引いた</b>。
+  Feller の backward equation は<b>随伴方程式</b> ── Feller 1949 §4, §10<br><br>
+  <b>RLHFは能力を足さないだけ</b> → 一部は<b>下がる</b>（alignment tax）。GPT-4 の「変えない」は
+  <b>多肢選択のみ</b>で、自由記述は原典が比較から除外 ── InstructGPT §4.2 ／ GPT-4 Appendix B<br><br>
+  推論時計算を増やせば<b>小さいモデルで足りる</b> → <b>補えない</b>。小さいモデルは高いFIDで平坦化して
+  <b>そもそも届かない</b> ── DiT §5.2, Fig.10<br><br>
+  「AIは平均に流れる」と言い切る → <b>L1 限定</b>。L3 が検証可能領域では覆す ── この資料の §3-4, §5<br><br>
+  規模を上げても<b>平均の解像度が上がるだけ</b> → 生成損失が飽和しても<b>下流の能力は伸び続ける</b>
+  ── Henighan §3, §3.4</div>
+ <p class="src"><b>出典</b>　各行に併記のとおり（この資料の付録B・18行の一覧）</p>`},
+
+/* ══════════════ 貼る位置 69　付録C ══════════════ */
+{id:'sc-limits',grp:'付録',t:'付録C：この資料の限界',short:'この資料の限界',
+ sec:'付録C',part:'付録',gname:'付録',cf:'—',
+ mai:'<span class="ng">「もう誤りはない」とは書けません。</span>独立監査を2回通して、2回とも誤りが見つかっています。',
+ land:['<b>第1部は原典照合を通していません。</b>教科書レベルの一般知識です。',
+  '<b>1本の原論文は本文を取得できていません</b>（Rubenstein &amp; Goodenough 1965。要旨のみ）。',
+  '<b>「もう誤りはない」とは書けません。</b>独立監査2回で、1回目3件・2回目4件の誤りが見つかっています。'],
+ b:`<ul>
+  <li><b>第1部は原典照合を通していません。</b>教科書レベルの一般知識です。</li>
+  <li><b>1本の原論文は本文を取得できていません</b>（Rubenstein &amp; Goodenough 1965。要旨のみで確認）。</li>
+  <li>「王様−男＋女」の例の<b>一次出所（Mikolov, Yih &amp; Zweig, NAACL HLT 2013）の本文は取得していません。</b>
+   引用したのは word2vec 論文が<b>先行研究として紹介している箇所</b>です。</li>
+  <li><b>一部の論文には未読部分があります</b>（GPT-4 の試験結果の表・安全性の実例／
+   DeepSeek-V3 のインフラ節／InstructGPT の付録D/E）。
+   <b>未読部分から既存記述の訂正が出る可能性があります。</b></li>
+  <li>ベンチマークのスコアは時間とともに上がります。<b>数値を引くときは日付を添えてください。</b></li>
+ </ul>
+ <div class="k res"><span class="kh">★ 「もう誤りはない」とは書けない</span>
+  この資料の素材は独立監査を2回通しており、<b>2回とも誤りが見つかっています</b>（1回目3件、2回目4件）。
+  実績が「毎回出る」なのに「次は出ない」と予測するのは、それ自体がこの資料が避けている
+  <b>「根拠より強い断定」</b>です。見つかった誤りは「嘘」ではなく、<b>原典より一段強い形</b>が大半でした。</div>
+ <p class="src"><b>出典</b>　この資料の付録C（この資料自身についての記述）</p>`},
+
+/* ══════════════ 貼る位置 70　自己点検 ══════════════ */
+{id:'sd-selfcheck',grp:'付録',t:'自己点検 ── 7項目の照合と、そこで見つかった誤り',short:'自己点検7項目',
+ sec:'自己点検',part:'付録',gname:'付録',cf:'—',
+ mai:'点検で<span class="ng">1件、原典に存在しない数値表</span>が見つかりました。①を通っていても②で落ちる数値があります。',
+ land:['◎ を機械的に全数抽出し、原典に留保がないかを1つずつ確認しています。',
+  '<b>★数値の点検は2段（①再計算 ②原典に存在するかの検索）。片方では他方が見つかりません。</b>',
+  '<b>★②で1件、原典に存在しない数値表が見つかりました（トークナイズ理論の倍率）。</b>'],
+ b:`<p>指示された7項目について、この資料を1つずつ照合した記録です。</p>
+ <h4>1. 崩される言い方（✗側）を使っていないか</h4>
+ <p>✗側の表現は使っていません。該当箇所と採った言い方は<b>付録B</b>に一覧化（18行）。
+  頻出の3つは §5-3（潜在能力の解放と分布の集中。DeepSeekMath §5.2.3 の自己限定も明記）、
+  §9-3（AIは方向を選べない）、§8-5（モデルの外側の設計が偏りを作る）です。</p>
+ <h4>2. ◎ に原典の留保がないことを確認したか</h4>
+ <p><b>◎ を機械的に全数抽出し、ラベルとして使った箇所と、ラベルの説明・他者の用法への言及を分けました。</b>
+  そのうえで、留保がある場合は本文にその留保を書いています（例：√d_k は根拠が明記だが「内積が最適」には
+  原典の保留があるので併記）。<br>
+  <b>第1部で ◎ を落として ○ にしたもの</b>：分類と回帰の2種類（簡略化）、必要な数学は4つ（必要十分の判断）。
+  <b>迷ったものは ○ にしています。</b></p>
+ <h4>3. 数値はすべて素材由来か。測り方を添えたか</h4>
+ <p><b>点検を2段で行いました。</b>①計算が合っているか（再計算）と ②原典にその数値があるか（該当箇所の検索）。
+  <b>片方の点検では他方が見つからない</b>ため、両方を通しました。<b>記憶で書いた数値はありません。</b></p>
+ <div class="k how"><span class="kh">★ 測り方を添えた主なもの</span>
+  pass@1 は<b>k個のサンプルの正答率の平均</b>（§5-2）／意味的類推55%は<b>Skip-gram行・640次元・
+  同義語を誤りと数える基準</b>、かつ<b>意味的と統語的でテストセットが違う</b>（第1部§5）／
+  FID は DDPM の場合<b>訓練集合基準。テスト集合では5.24</b>／尤度の悪化は<b>0.05 bits/dim</b>／
+  Arena は<b>平均1.3ターン・約95トークンの好み</b>／GPT-4 の「能力を変えない」は<b>多肢選択のみ</b>／
+  Sennrich の BLEU は<b>"up to" 1.1 / 1.3（実測幅0.3〜1.3）</b>／
+  Kaplan の L* ≈ 1.7 nats/token は<b>実測の2桁以上先の外挿値</b>／
+  Arena の言語数は<b>Table 1 が149、本文は "more than 100"</b>／
+  Kaplan Fig.5 の22%は<b>図中の注記</b>でキャプションにはない。</div>
+ <div class="k res"><span class="kh">★ ②の点検で1件、原典に存在しない数値表が見つかった</span>
+  §7-2 のトークナイズ理論の倍率（δ=0.01 で 12.4倍、δ=0.001 で 87.7倍 など）です。
+  <b>計算は Theorem 2.1 から正しく導けますが、この数値表は原典にありません</b>
+  （原典にあるのは「いくらでも大きくできる」という定性的な言明のみ）。
+  本文に「<b>この資料で Theorem 2.1 から計算。原典にこの数値表はありません</b>」と明記しました。
+  ＝<b>①を通っていても②で落ちる数値がある</b>という実例です。</div>
+ <p>この資料で計算した箇所は明記されています（softmax の3例、Elo の勝率、BPEのペア頻度、
+  GRPOのアドバンテージ、FFNと注意のパラメータ比、疎注意のマス数比、トークナイズ理論の倍率）。</p>
+ <h4>4〜7. 構造図・第1部の位置づけ・典拠の分離・出典書式</h4>
+ <ul>
+  <li><b>構造図は改訂版</b>：AとBを別ブロックに分け、CoT を【B】に置いて入れ子と明記し、
+   矢印に「差し引きがある」を入れ、横断軸を4本にしました。「6層」が便宜であることも明記。</li>
+  <li><b>第1部の位置づけ</b>：冒頭と第1部直下の2箇所に、教科書レベルであることと理由を書いています。</li>
+  <li><b>教科書由来と原典由来の分離</b>：典拠がある記述には「（→ 論文名 §番号）」を付け、
+   一般的な説明には<b>何も付けていません</b>。誤差逆伝播・softmax の命名は<b>歴史の言及として名前だけ</b>で、
+   節番号つきの典拠としては扱っていません。</li>
+  <li><b>出典書式</b>：初出時に著者＋年＋論文タイトル＋arXiv ID、引用ごとに<b>節・式・表・図の番号</b>。
+   <b>書籍名・内部資料名は出していません。</b>図は原論文の図版を転載せず<b>すべて描き直し</b>、
+   原典の図を元にしたものは「（原典 Figure 3 を元に作図）」等と明記。
+   作例には「（本資料の作例）」と明記し、<b>原典に存在しない導出値にも同じ強さの印</b>を付けました。</li>
+ </ul>
+ <div class="k res"><span class="kh">★ 点検の結果として残る弱点</span>
+  <b>付録C</b>のとおりです。第1部は原典照合を通しておらず、1本の原典は要旨のみ、
+  「王様−男＋女」の一次出所は未取得、いくつかの論文に未読部分があります。
+  <b>未読部分から既存記述の訂正が出る可能性があります。</b></div>
+ <p class="src"><b>出典</b>　この資料の自己点検（7項目）および 付録B・付録C</p>`}
+
+];
+
+/* 目次に出すが、まだ変換していないもの */
+const WIP=[
+ ['今日から使えること',[
+  ['第1章　規模の効きは鈍い','この5節がそれです',1],
+  ['第2章　日本語はトークンを食う','未変換',0],
+  ['第3章　丁寧さは仕様。AIの自信は根拠にならない','未変換',0],
+  ['第4章　検算器が作れる仕事と、そうでない仕事','未変換',0],
+  ['第5章　長く書くと薄まる。だから削る','未変換',0]]],
+ ['第1部 基礎編',[
+  ['1 AIは「巨大な関数」を作る行為','変換済み',1],
+  ['3 「学習」の正体','変換済み',1],
+  ['5 言葉を数値にする','変換済み',1],
+  ['6 注目（Attention）の仕組み','変換済み',1]]],
+ ['第2部 その他の節',[
+  ['§1 全体構造','変換済み',1],['§2 Transformer','変換済み',1],
+  ['§3 事前学習','変換済み',1],['§4 選好整合（RLHF）','変換済み',1],
+  ['§5 検証可能報酬RL','変換済み',1],['§6 使い方','変換済み',1],
+  ['§8 画像','変換済み',1],['§9 何が分かっていないか','変換済み',1]]],
+ ['付録',[
+  ['避けた言い方（付録B・18行）','変換済み',1],
+  ['強く言ってよいこと（付録A・11行）','変換済み',1],
+  ['よく聞かれるが範囲外','未変換',0],
+  ['この資料の作り方と誤り7件','変換済み',1]]]
+];
+
+/* ══════════ 状態 ══════════ */
+/* open＝いま開いている grp。null なら全部閉じる（初期は読んでいる節のグループだけ開く） */
+let S={i:0,seen:[0],open:null};
+
+const BACK=(function(){
+ const q  =(location.search.match(/[?&]from=(ch\d+)\.html/)||[])[1];
+ const ref=(document.referrer.match(/(ch\d+)\.html/)||[])[1];
+ const ch =q||ref||'ch1';
+ const n  =(ch.match(/ch(\d+)/)||[])[1]||'1';
+ const opened=!!(window.opener&&!window.opener.closed);
+ return{url:ch+'.html',
+        label:opened?'ゲームにもどる':('第'+n+'章にもどる'),
+        sub  :opened?'開いていたタブに戻ります':'この話を体験する'};
+})();
+function backToGame(url){
+ if(window.opener && !window.opener.closed){
+  try{window.opener.focus()}catch(e){}
+  window.close();
+  return;
+ }
+ location.href=url||BACK.url;
+}
+
+/* ══════════ 額縁（ch1.html と同じ規則。閾値も同じ1箇所） ══════════ */
+function fit(){
+ const fluid=innerWidth<820||innerHeight<615, r=document.documentElement;
+ r.classList.toggle('fluid',fluid);
+ r.classList.toggle('narrow',fluid&&innerWidth<400);
+ r.classList.toggle('side',fluid&&innerWidth>=620&&innerWidth>innerHeight);
+ r.style.setProperty('--s',fluid?1:Math.min(innerWidth/1024,innerHeight/768));
+ padStage();
+}
+function padStage(){
+ const st=document.querySelector('.stage'),inf=document.querySelector('.info');
+ if(!st||!inf)return;
+ const fluid=document.documentElement.classList.contains('fluid');
+ st.style.paddingBottom=fluid?(inf.offsetHeight+12)+'px':'';
+ document.documentElement.style.setProperty('--infoH',inf.offsetHeight+'px');
+}
+addEventListener('resize',fit);addEventListener('orientationchange',fit);
+
+function paintTop(){
+ const s=SEC[S.i];
+ document.getElementById('tPart').textContent=s.part;
+ document.getElementById('tSec').textContent=s.sec;
+ document.getElementById('tGrp').textContent=s.gname;
+ document.getElementById('rv').style.width=Math.round(S.seen.length/SEC.length*100)+'%';
+}
+function paintMenu(){
+ /* ★メニューに並べるのは押せるものだけ。未変換21項目を並べたら
+    項目が小さくなりすぎて読めなくなった（2026-08-17 指摘） */
+ /* ★76節を全部並べたら同じことが起きた（2026-08-18 指摘）。
+    そこで折りたたみ式にする。並ぶのは grp の見出し12本だけで、
+    開いているグループ（S.open）の節だけを中に出す。見出しを押すと開閉する */
+ /* ★見出しは固定文字列をやめ、各節の grp でグループ分けする（2026-08-18 76節化）。
+    grp の並び順は SEC の中で最初に出てきた順。同じ grp の節が離れていても1つに束ねる */
+ let h='<div class="grpL ol" style="opacity:.75;font-weight:400;line-height:1.5">'
+  +'論文の改訂版のどれを読んだかまでは確認していません</div>';
+ const ORD=[]; const BY={};
+ SEC.forEach((s,i)=>{ if(!BY[s.grp]){BY[s.grp]=[];ORD.push(s.grp)} BY[s.grp].push(i) });
+ ORD.forEach(g=>{
+  const op=S.open===g;
+  h+=`<div class="grpL ol gT" data-g="${g}" style="cursor:pointer"
+   >${op?'▾':'▸'} ${g}<span style="float:right;opacity:.7">${BY[g].length}</span></div>`;
+  if(!op)return;
+  BY[g].forEach(i=>{
+   const s=SEC[i],sc=S.i===i,o=sc?'':' ol';
+   h+=`<div class="mi ${sc?'sel':''} ${S.seen.includes(i)&&!sc?'done':''}" data-i="${i}"
+    ><div class="t${o}">${s.short}</div></div>`})});
+ h+=`<div class="grpL ol">ほか</div>
+  <div class="mi" data-id="__wip"><div class="t ol">これから足す節</div>
+   <div class="sub ol">5節</div></div>
+  <div class="mi fin" data-go="back"><div class="t ol">${BACK.label}</div>
+   <div class="sub ol">${BACK.sub}</div></div>`;
+ document.getElementById('menu').innerHTML=h;
+ document.querySelectorAll('.gT').forEach(el=>el.onclick=()=>{
+  S.open=(S.open===el.dataset.g)?null:el.dataset.g; paintMenu()});
+ document.querySelectorAll('.mi').forEach(el=>el.onclick=()=>{
+  if(el.dataset.go){backToGame();return}
+  if(el.dataset.id==='__wip'){popWip();return}
+  if(el.dataset.i!==undefined)go(+el.dataset.i)});
+}
+/* 未変換の一覧はモーダルで出す */
+function popWip(){
+ document.getElementById('dlg').innerHTML=
+  `<div class="dh"><h3>これから足す節</h3><div class="x" onclick="shut()">×</div></div>
+   <div class="db"><p>いま変換できているのは <b>76節</b>です。
+    この資料は、<b>このゲームが確かめた論文32本</b>を照合して書かれたもので、
+    そこから順に移していきます。</p>
+   ${WIP.map(([g,items])=>`<h4>${g}</h4>`+
+     items.map(([t,sub])=>`<div class="mline"><span>${t}</span><b>${sub}</b></div>`).join('')
+    ).join('')}</div>`;
+ document.getElementById('veil').classList.add('on');
+}
+function shut(){document.getElementById('veil').classList.remove('on')}
+document.getElementById('veil').onclick=e=>{if(e.target.id==='veil')shut()};
+
+function paintPane(){
+ const s=SEC[S.i];
+ document.querySelector('.panel').classList.add('full');
+ document.getElementById('pane').innerHTML=`
+  <div class="pt"><h2 class="ol">${s.t}</h2><div class="tag">
+   <span><span class="k ol">節</span> <span class="v c n ol">${s.sec}</span></span>
+  </div></div>
+  <div class="pc">
+   <div class="ibody">
+    <div class="land"><div class="lh">ここに書いてあること</div>
+     ${s.land.map(x=>`<p>${x}</p>`).join('')}</div>
+    <div class="dbody">${s.b}</div>
+    ${s.where?`<div class="dfoot">
+     <span class="lb">この節が出てくる場所</span>　${s.where}<br>
+     <span class="lb">くわしくは</span>　この資料の §${s.sec}（このゲームが確かめた論文32本を照合したもの）
+    </div>`:''/* ★対応先のデータが無い節では dfoot を出さない。
+        §7-4 の6節にしか当てはまらない文を76節に描いていた（2026-08-18 指摘） */}
+   </div>
+   <div class="row">
+    <button class="btn" ${S.i?'':'disabled'} onclick="go(S.i-1)">前の節</button>
+    <button class="btn go" ${S.i<SEC.length-1?'':'disabled'} onclick="go(S.i+1)">次の節</button>
+    <button class="btn more" onclick="backToGame()">${BACK.label}</button>
+   </div>
+  </div>`;
+}
+function say(){
+ document.getElementById('said').innerHTML=
+  `<span class="lbl">AI秘書・鳥居 麻衣</span><br>${SEC[S.i].mai}`;
+ padStage();
+}
+function goId(id){const i=SEC.findIndex(s=>s.id===id);if(i>=0)go(i)}
+function go(i){
+ if(i<0||i>=SEC.length)return;
+ S.i=i; if(!S.seen.includes(i))S.seen.push(i);
+ S.open=SEC[i].grp;                     /* ★読んでいる節のグループは開いた状態にする */
+ paintTop();paintMenu();paintPane();say();
+ const b=document.querySelector('.ibody'); if(b)b.scrollTop=0;
+ history.replaceState(null,'','#'+SEC[i].id);
+}
+/* アンカーで飛んできたときは、その節に着地する */
+function land(){
+ const a=location.hash.replace('#','');
+ const i=SEC.findIndex(s=>s.id===a);
+ return i<0?0:i;
+}
+addEventListener('keydown',e=>{
+ if(e.key==='Escape')shut();
+ if(e.key==='ArrowRight')go(S.i+1);
+ if(e.key==='ArrowLeft')go(S.i-1);
+});
+
+fit();S.i=land();S.seen=[S.i];S.open=SEC[S.i].grp;paintTop();paintMenu();paintPane();say();
+</script>
+</body>
+</html>

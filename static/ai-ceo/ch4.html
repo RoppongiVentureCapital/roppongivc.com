@@ -1,0 +1,937 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex,nofollow,noarchive">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>第4章 ── 正誤で鍛える</title>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Zen+Kaku+Gothic+New:wght@500;700;900&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="ui.css">
+</head>
+<body>
+<div id="fit"><div id="frame">
+
+<!-- ══════════ オフィス（中身は fig.js の G.office） ══════════ -->
+<div id="office"></div>
+<img id="bgimg" src="assets/bg_office.png" alt="" onerror="this.remove()">
+<img id="bgimg2" src="assets/bg_office_portrait.png" alt="" onerror="this.remove()">
+<div id="grade"></div>
+<img id="whole" src="assets/secretary_full.png" alt="" onerror="this.remove()">
+
+<!-- ══════════ 上部バー（★年だけを出す。★他社の力は割合の字も出す＝決定6） ══════════ -->
+<div class="topbar">
+ <div class="logo ol"><span>AI&nbsp;LAB</span></div>
+ <div class="when ol">
+  <span class="yr" id="tYear">4年目</span>
+  <span class="qq" id="tQ">／ 5年のうち</span>
+ </div>
+ <div class="rival">
+  <span class="k ol">他社の力</span>
+  <span class="rbar" title="他社のAIの力。自社の満点に対する割合"><i id="rv" style="width:50%"></i></span>
+  <span class="k ol" id="rvp">50%</span>
+ </div>
+ <div class="cash">
+  <span class="y ol">¥</span><span class="v ol2" id="cash">0</span><span class="u ol">億円</span>
+ </div>
+</div>
+
+<div class="stage">
+ <div class="menu" id="menu"></div>
+ <div class="panel"><div id="pane"></div></div>
+</div>
+
+<div class="info">
+ <div class="infoH"><b>Information</b></div>
+ <div class="in">
+  <div class="bust">
+   <div class="ph"><div class="h"></div></div>
+   <img src="assets/secretary_bust.png" alt="" onerror="this.remove()">
+  </div>
+  <div class="said" id="said"></div>
+ </div>
+</div>
+
+<div class="veil" id="veil"><div class="dlg" id="dlg"></div></div>
+
+</div></div><!-- /#frame /#fit -->
+
+<script src="fig.js"></script>
+<!-- ★土台（章をまたぐ条件・決算の枠・カードUIの部品） -->
+<script src="ch_common.js"></script>
+<script src="ch4.data.js"></script>
+<script>
+
+/* ══════════ 資料由来の数字（★文面の一部。★差し込み口にしない）══════════
+   ★出どころ  ★正答率4件＝DeepSeek-R1, arXiv:2501.12948 §2・Table 3 ／
+     ★注釈の誤り＝Shao et al. 2024, arXiv:2402.03300 §5.2.3 ／
+     ★人手の件数＝Ouyang et al. 2022, arXiv:2203.02155 Table 6（算術）・§3.4 ／
+     ★電力と計算日＝Brown et al. 2020, arXiv:2005.14165 §6.3・§3-5 */
+const LIT={
+ aime0:'15.6%',      // 鍛える前
+ aime1:'77.9%',      // 正誤だけで鍛えた後
+ aime2:'59.0%',      // 人の模範解答を先に入れた後
+ aime3:'86.7%',      // 16回解かせて多い答えを採った場合
+ badAnn:'約20%',     // 採点用データの誤った注釈
+ sft13:'約1万3千件', // 人が書いた見本
+ rank33:'約3万3千問',// 人が良い順に並べた質問
+ labN:'40人ほど',    // 評価者の人数
+ labA:'7割ほど',     // 評価者どうしの一致率
+ kwh :'約0.4 kW-h ＝ 数セント',
+ days:'3,640 計算日'
+};
+
+/* ══════════ 図（★fig.js の部品だけで描く。★新しい部品を作っていない）══════════
+   使った部品  G.man（人）／G.bub（吹き出し）／G.box（箱の枠）
+   ★帯（<rect>）と文字は ch1.html・ch2.html・ch3.html の図と同じ書き方（生の SVG）である
+   ★★関数である（★開いたときの値で描く）。★人員の帯は【いまの配り方】を描く */
+const F={
+rlvr:(base,ver,gold)=>{
+ const cap=D.set.staffCap, X=196, W=424, H=17;
+ const w=n=>+(W*n/cap).toFixed(1);
+ const rest=Math.max(0,cap-base-ver-gold);
+ const segs=[[base,'#8fd8f0','見本を書く／答えを順位づける'],
+             [ver, '#5ed093','採点の基準を作る'],
+             [gold,'#f5c14e','人の模範解答を書く'],
+             [rest,'#4a5a6b','まだ投じていない枠']];
+ let x=X, bars='';
+ segs.forEach(([n,c])=>{const ww=w(n);
+  if(n>0){bars+=`<rect x="${x}" y="176" width="${ww}" height="${H}" rx="2" fill="${c}"
+   stroke="rgba(0,0,0,.35)" stroke-width=".6"/>`; x+=ww}});
+ const legend=segs.map(([n,c,lab],i)=>
+  `<rect x="10" y="${212+i*22}" width="9" height="9" fill="${c}"/>
+   <text x="24" y="${221+i*22}" fill="#bcccdd" font-size="10.5">${lab}</text>
+   <text x="330" y="${221+i*22}" fill="#f4f8fc" font-family="Oswald" font-size="11"
+    text-anchor="end">${n}</text>
+   <text x="336" y="${221+i*22}" fill="#8a9db3" font-size="10.5">名</text>`).join('');
+ return `<svg viewBox="0 0 640 316" style="width:100%">
+ <text x="10" y="14" fill="#bcccdd" font-size="12">① 同じ問題に4つ答えさせる　→　② 機械が ○ × を付ける　→　③ ○ の側に寄せる</text>
+ ${G.box(10,24,404,92,'#67d3e8')}
+ ${[0,1,2,3].map(i=>G.bub(24+i*96,36,84,22,'答え'+(i+1),'#67d3e8')).join('')}
+ ${['○','×','○','×'].map((m,i)=>`<text x="${24+i*96+42}" y="86" fill="${
+   m==='○'?'#5ed093':'#e0574a'}" font-size="19" text-anchor="middle">${m}</text>`).join('')}
+ <text x="24" y="108" fill="#8a9db3" font-size="10.5">4つを見比べて、良い側に寄せます</text>
+ ${G.box(428,24,202,92,'#5ed093')}
+ ${G.man(462,108,.85,'#a9e8c4')}
+ <text x="540" y="56" fill="#c9f2dc" font-size="11" text-anchor="middle">○ の側に寄せる</text>
+ <text x="540" y="76" fill="#8a9db3" font-size="10.5" text-anchor="middle">正誤が機械で</text>
+ <text x="540" y="92" fill="#8a9db3" font-size="10.5" text-anchor="middle">決まる問題だけ</text>
+
+ <line x1="10" y1="130" x2="630" y2="130" stroke="#7590a8" stroke-dasharray="4 4"/>
+ <text x="10" y="150" fill="#bcccdd" font-size="12">人を回す先は3つ。合計が ${cap}名 を超えられません</text>
+ <text x="10" y="168" fill="#8a9db3" font-size="10.5">ここに回した分だけ、他の帯が細くなります</text>
+ ${bars}
+ <rect x="${X}" y="176" width="${W}" height="${H}" rx="2" fill="none" stroke="rgba(255,255,255,.18)"/>
+ ${legend}
+ <text x="10" y="306" fill="#f5c14e" font-size="12">人を増やすのではなく、取り合っています</text>
+</svg>`}
+};
+
+/* ══════════════════════════════════════════════════════════════════════════
+   ★第3章からの引き継ぎ
+   ★★仮定値を置かない（★第3章と同じ判断。★申告する）
+     ★理由  ★第2章は `FROM_CH1` という写しを持っていて、★実際に腐って残金が5億円ずれた
+       （★ch2.html の注記）。★同じ形を増やさない
+   ★受け取るのは `from` が 3 のものだけである（★第4章を締めた保存を入口として読まない）
+   ══════════════════════════════════════════════════════════════════════════ */
+const HAND=(()=>{const h=C.load();return (h&&h.from===3)?h:null})();
+const RUN=Object.assign({},C.RUN0,C.carry({},HAND));
+Object.assign(RUN,{year:D.year, from:3, verifier:0, gold:false, risk:false,
+                   capacity:0, log:RUN.log||[]});
+C.run=RUN;
+/* ★★章に入った時点で【すでに工程に固定されている人数】（★第1章の見本＋第3章の好み訓練）。
+   ★★この章の配属はこれに足す（★上書きしない）。★理由：★人員は通期の枠である */
+const ASSIGNED0=RUN.assigned||0;
+const STAFF0=RUN.staff||0;          // ★章に入った時点で雇っていた人数（★今年雇った分を出すため）
+
+const A=D.card('rlvr'), B=D.card('gold'), K=D.card('risk'), E=D.card('equip');
+const V={
+ /* 人員 */
+ hireCap :()=>D.set.staffCap+'名',                       // {雇用の上限}
+ pay1    :()=>D.oku(D.set.staffPay)+'億円',              // {人件費}
+ restN   :()=>C.hireMax(D,RUN)+'名',                     // {残り人数}
+ verCap  :()=>A.staffMax+'名',                           // {検証器の上限}
+ goldN   :()=>B.staff+'名',                              // {模範解答の人数}
+ bothN   :()=>(A.staffMax+B.staff)+'名',                 // {2枚を上限まで取る人数}
+ /* バー */
+ rlvrUp  :()=>A.thinkMax,                                // {RLVRの効果}
+ rlvrSafe:()=>D.set.rlvrSafe,                            // {RLVRの安全低下}
+ goldUp  :()=>B.obey,                                    // {模範解答の効果}
+ goldDn  :()=>Math.abs(B.think),                         // {模範解答の代償}
+ /* 倍率と金額 */
+ mulR    :()=>D.set.mulRlvr+'倍',                        // {RLVRの原価倍率}
+ riskFee :()=>D.oku(K.cost)+'億円',                      // {リスク管理の費用}
+ unitX   :()=>D.yen(D.set.equipX),                       // {設備の単価}
+ /* ★上限の増減は【set.cap を2点で呼んで出す】。★式や数字を html に書かない
+    ★{上限の下がり}   安全が {RLVRの安全低下} 下がったときの、出せるシェアの上限の下がり
+    ★{上限の上がり}   リスク管理を作ったときの上限の上がり
+    ★{上限が戻らない安全の値} これ以下だと作っても上限が 0% のままになる安全 */
+ capDn   :()=>D.set.cap(D.set.safeBase,false)
+              -D.set.cap(D.set.safeBase-D.set.rlvrSafe,false),
+ capUp   :()=>D.set.cap(D.set.safeBase,true)-D.set.cap(D.set.safeBase,false),
+ safeNG  :()=>{let v=0;for(let s=0;s<=100;s++)if(D.set.cap(s,true)<=0)v=s;return v}
+};
+
+const INTRO=[
+()=>`去年決めたのは、私の喋り方でした。今年鍛えるのは、<b>答えの中身</b>です。<br><br>
+ なぜ今年これをやるのか、先に申し上げます。<br>
+ 去年までのやり方は、人が「どちらの答えが好きか」を選ぶものでした。<br>
+ 好きかどうかは人によって分かれるので、答えが合っているかどうかは測れません。<br>
+ 今年やるのは、合っているかどうかを機械で判定して鍛えることです。<br><br>
+ 判定する仕組みを<span class="cy">「検証器」</span>と呼びます。<br>
+ 人が正解と採点の基準を作り、機械がそれを使って自動で採点します。<br>
+ 今年あなたが人を回す先は、2つあります。<br>
+ 1つは、答え合わせの機械に注釈を付ける仕事。もう1つは、人が模範解答を書く仕事です。<br>
+ どちらに何人回すかが、今年の決めごとです。`,
+()=>`人については、2つを決めます。<br>
+ <span class="sm">1　これから何人雇うか<br>
+ 2　雇った人を、どの工程に回すか</span><br><br>
+ 雇える人数は、5年間で合わせて <b>${V.hireCap()}</b> までです。<br>
+ この枠は年ごとに戻りません。1年目の見本づくりと、去年の好み訓練で使った分は、戻ってきません。<br>
+ いま枠に残っているのは <b>${V.restN()}</b> です。<br><br>
+ 1名につき <b>${V.pay1()}</b> かかります。雇った年から5年目まで、毎年です。<br>
+ <span class="em">だから同じ人数でも、早く雇ったほうが累計は高くなります。</span>`
+];
+/* ★★見出し2件は正本に無い（★§40-1' は麻衣の文だけを持つ）。★仮置きして申告する */
+const INTRO_T=['答えの中身を鍛える','人の枠'];
+
+const TXT={
+hire:{
+ lead:`人を雇います。何人雇うかを、あなたが決めます。<br>
+       今年その人を回せる先は、2つです。`,
+ def:`<b>1　検証器の基準づくり</b>　── 答え合わせの正解と採点の基準を、人が作ります<br>
+      <b>2　人の模範解答を書く</b>　── 手本になる答えを、人が書きます<br><br>
+      雇った人は、投じた工程に固定されます。あとで別の工程に回せません。<br>
+      1年目の見本づくりと、去年の好み訓練に投じた人も、戻ってきません。`,
+ note:`5年間で合わせて <b>${V.hireCap()}</b> まで。1名につき <b>${V.pay1()}</b> かかります
+       （雇った年から5年目まで毎年）。早く雇うほど累計の人件費が高くなります。<br><br>
+       検証器の基準づくりに回せるのは <b>${V.verCap()}</b> まで、<br>
+       人の模範解答に回せるのは <b>${V.goldN()}</b> です。<br>
+       2つとも上限まで人を回すと、それだけで枠の <b>${V.bothN()}</b> を使います。`},
+
+rlvr:{
+ lead:`ある研究チームが、人の模範解答を1問も使わずに、<br>
+       「答えが合っているか」だけを点数にしてAIを鍛えました。`,
+ def:`すると、誰も教えていないのに、AIが次のことを始めました。<br>
+      <span class="sm">　途中の考えを長く書く　／　自分の答えを見直す　／　途中で方針を切り替える</span><br><br>
+      数学の問題を解く力は、鍛える前と後で大きく変わりました。<br><br>
+      ただしこの研究チームは、これを「新しい力が付いた」とは書いていません。<br>
+      書いているのは「元から出せていた答えの候補から、正しいものを選び出している」です。<br>
+      ここでの「引く」は、AIに同じ問いへ何回も答えさせて、当たりが出るか見ることです。<br>
+      「元から出せていた」は、【何回も引けばいつか当たった】という意味です。<br>
+      鍛える前は、1回で当たる割合が ${LIT.aime0} でした。<br>
+      鍛えたあとも、答えの候補そのものは増えていません。<br>
+      変わったのは、正しい候補が【1回で引かれやすくなった】ことです。<br>
+      <span class="em">だから、この鍛え方は、答えの正誤を機械で判定できない仕事には効きません。</span>`,
+ /* ★★この欄は正本に対応が無い（★仮置き。★申告する）。
+      ★中身は §40-1'' の欄3 と §40-2' の T18 から取っている（★新しい主張を足していない） */
+ note:`この工程に回せるのは <b>${V.verCap()}</b> までです。回した人数の分だけ効きます。<br>
+       <span class="sm">回した人は、見本を書く仕事にも、答えを順位づける仕事にも戻せません。</span>`,
+ ends:[
+  {id:'on', name:'検証器に人を回す',
+   sub:`回す人数は、この下の欄で決めます。<br>
+        安全が許すシェアの上限は、安全から決まる数です。決算に出ています。`+
+       `この上限が 0% になると、その年は1件も売れません。`,
+   up:[`考える力 ＋${V.rlvrUp()}（回した人数の分だけ）`],
+   down:[`安全 −${V.rlvrSafe()}`,
+         `安全が許すシェアの上限 −${V.capDn()}`,
+         `1回あたりの費用 ${V.mulR()}`,
+         `設備の費用 ${V.mulR()}`,
+         `回した人は、他の仕事に戻せません`]},
+  {id:'off',name:'検証器に人を回さない',
+   up:[`人を回せる枠が ${V.verCap()} ぶん空きます`,`費用が上がりません`,
+       `安全が許すシェアの上限が下がりません`,
+       `来年に選べる手が2つ残ります（何が残るかは来年の画面で分かります）`],
+   down:[`＋${V.rlvrUp()} が入りません`]}
+ ]},
+
+gold:{
+ lead:`正誤で鍛える前に、人が書いた模範解答を読ませると、「指示に従う」は上がります。<br>
+       ところが、「考える力」は下がります。`,
+ def:`この2つは、同じ研究チームの同じ論文の中で、両方とも測られています。<br>
+      その研究チームが挙げた理由はこうです。<br>
+      <span class="sm">「人が与える応答はAIの学習にとって常に最適ではなく、<br>
+      　明示的な反省や検証のステップといった重要な要素を欠いていることが多い」</span><br><br>
+      <span class="em">つまり、人が書いた手本は、人が書き飛ばした部分まで手本になります。</span>`,
+ /* ★★この欄は正本に対応が無い（★仮置き。★申告する）。★中身は §40-3' の T18 から取っている */
+ note:`この工程には、模範解答を書く人が <b>${V.goldN()}</b> 要ります。<br>
+       <span class="sm">見本を書く工程と同じ人手を使います。先に人を雇っていないと選べません。</span>`,
+ ends:[
+  {id:'yes',name:'模範解答を入れる',
+   up:[`指示に従う ＋${V.goldUp()}`],
+   down:[`考える力 −${V.goldDn()}`,
+         `模範解答を書く人が ${V.goldN()} 要ります`,
+         `指示に従うが上がると、安全は同じ分だけ下がります。`+
+         `その結果、安全が許すシェアの上限が ${V.capDn()} 下がります`+
+         `（上限は、安全から決まる数です。決算に出ています）`,
+         `この上限が 0% になると、その年は1件も売れません。`+
+         `リスク管理のしくみを作ると、上限は ${V.capUp()} 戻ります。`+
+         `ただし戻るのは1枚分だけです。「正誤で鍛える」も取っていると、`+
+         `下がる分のほうが大きく、戻りきりません`]},
+  {id:'no', name:'模範解答を入れない',
+   up:[`人を回せる枠が ${V.goldN()} ぶん空きます`,`考える力が下がりません`,
+       `安全が許すシェアの上限が下がりません`],
+   down:[`指示に従うが上がりません`]}
+ ]},
+
+risk:{
+ lead:`AIを作った研究チーム自身が、そのAIの安全の水準を「中程度」と自己評価しています。<br>
+       同じ時期の他社のAI（GPT-4o）と同じ程度だと書いています。`,
+ def:`そして、AIだけでは「優れた水準」に届かないと書いています。<br>
+      <span class="sm">「安全の水準は、リスク管理のしくみと組み合わせて初めて優れた水準になる」</span><br><br>
+      リスク管理のしくみとは、AIの外側に置く手順や体制のことです。<br>
+      <span class="em">安全は、AIの中だけでは作れません。</span>`,
+ /* ★★この欄は正本に対応が無い（★仮置き。★申告する）。★中身は §40-4' の T18 から取っている */
+ note:`毎年 <b>${V.riskFee()}</b> かかります。一度払って終わりではありません。<br>
+       <span class="sm">安全が ${V.safeNG()} 以下だと、作ってもこの上限は 0% のままです。<br>
+       このしくみが戻せるのは、上限を下げるカード1枚分だけです。</span>`,
+ ends:[
+  {id:'yes',name:'しくみを作る',
+   up:[`安全が許すシェアの上限が ${V.capUp()} 上がります`+
+       `（上限は、安全から決まる数です。決算に出ています）`],
+   down:[`毎年 ${V.riskFee()} かかります（一度払って終わりではありません）`,
+         `このしくみが戻せるのは、上限を下げるカード1枚分だけです。`+
+         `「正誤で鍛える」と「人の模範解答」の両方を取ると、足りません`,
+         `安全が ${V.safeNG()} 以下だと、作ってもこの上限は 0% のままです。`+
+         `その年は1件も売れません`]},
+  {id:'no', name:'しくみを作らない',
+   up:[`その費用がかかりません`],
+   down:[`安全が許すシェアの上限が上がりません`,
+         `使う人が増えると、上限のほうが先に足りなくなります`+
+         `（必要な水準は、使う人が増えるほど上がります）`]}
+ ]},
+
+equip:{
+ lead:`設備の話は、去年から続いています。仕組みは去年と同じです。<br>
+       人に使ってもらうには、答えを返す設備が要ります。`,
+ def:`設備は<b>その年に捌く回数ぶん</b>を、毎年買います。去年買った分は今年には残りません。<br>
+      <b>買わないと、1回も捌けません。製品があっても、その年の売上は0です。</b><br>
+      <b>買いすぎた分は、その年で消えます。</b>翌年に持ち越せません。<br><br>
+      <span class="em">今年から1つ変わります。</span><br>
+      「正誤で鍛える」を押すと、答えるまでに書く量が増えます。<br>
+      書く量が増えると、1回あたりの電気代が上がります。ここまでは去年と同じ話です。<br>
+      今年はそれに加えて、同じ回数を捌くのに要る設備も増えます。<br>
+      <span class="em">つまり、運用費と設備費の両方が ${V.mulR()} になります。</span>`,
+ note:`どれだけ捌けるようにするかを、あなたが決めます。<br>
+       <span class="sm">1,000回を捌く容量あたり <b>${V.unitX()}</b> です。
+       この単価は、AIの大きさによって変わりません。</span>`,
+ ends:[
+  {id:'buy', name:'多く買う',
+   sub:`買う量は、この上の欄で決めます`,
+   up:[`捌ける回数が増えます（その回数まで売れます）`],
+   down:[`資金が減ります`,
+         `使われなかった分は、その年で消えます（翌年に持ち越せません）`,
+         `「正誤で鍛える」を押した年は、この費用が ${V.mulR()} です`]},
+  {id:'none',name:'買わない',
+   up:[`資金を使いません`],
+   down:[`1回も捌けません。その年の売上は0です`]}
+ ]}
+};
+
+function H(id){return {
+rlvr:{t:A.name,b:`
+ <div class="fig">${F.rlvr(ASSIGNED0,RUN.verifier,RUN.gold?B.staff:0)}</div>
+ <p>点は、答えが合っているかどうかだけで付きます。人の好みは入りません。<br>
+ 同じ問題に何通りも答えさせて、その中で良い側に寄せていきます。</p>
+ <p>成績は大きく変わりました。生の数字は章末に出します。<br>
+ ただし研究チームは、これを「新しい力が付いた」とは書いていません。</p>`,
+ use:`検算できる仕事はAIに任せ、検算できない仕事は自分で確かめてください。境界は
+      「答えが機械で正誤判定できるか」です。`,
+ utag:'導出',
+ cites:[['先にこれをやった研究チームが書いていること',
+   '「強化学習」＝ 良い答えに点を与えて、その方向へAIを寄せる鍛え方。<br>'+
+   '「報酬モデル」＝ 答えの良さを点数に変える採点機。<br>'+
+   '「報酬信号」＝ 採点の結果としてAIに渡る点数。<br>'+
+   '「純粋な強化学習」＝ 人の模範解答を使わず、正誤の点だけで鍛えること。<br>'+
+   '「スケールアップ」＝ 規模を大きくして押し進めること。<br><br>'+
+   'DeepSeek-R1, arXiv:2501.12948 §6<br>'+
+   '　「純粋な強化学習の成功は信頼できる報酬信号に依存する。…しかし執筆のようなタスクでは、'+
+   'そのような報酬モデルを作るのが難しい。…信頼できる報酬モデルで効果的に評価できない'+
+   '複雑なタスクについては、純粋な強化学習のスケールアップは未解決の課題である」<br><br>'+
+   '　「検証器によって効果的に評価できるタスクであれば、〔AIは〕人間にとってどれほど'+
+   '複雑であっても解ける可能性がある」<br>'+
+   '　※〔　〕は、読みやすさのために足した主語']],
+ doc:'#s5-5-boundary',dt:'§5-5 効く境界'},
+
+equip:{t:E.name,b:`
+ <p>1回使うときの費用と、作るときの費用は、桁が違います。<br>
+ 100ページ分の文章を生成するのに使う電力は ${LIT.kwh} です。<br>
+ 同じ論文が、作るときには ${LIT.days} を使ったと書いています。</p>
+ <p>今年から、答えが長くなる分の倍率が、運用費と設備費の両方に掛かります。</p>`,
+ use:`AIの費用を見積もるときは、電気代だけを見ないでください。
+      同じ回数を捌くのに要る機械の台数も、答えの長さで変わります。
+      「1回いくら」の中に、機械の代金が入っているかを確かめてください。`,
+ utag:'導出',
+ cites:[['先にこれをやった研究チームが書いていること',
+   'Brown et al. 2020「Language Models are Few-Shot Learners」arXiv:2005.14165 §6.3<br>'+
+   `　100ページ分の文章を生成するのに使う電力は、${LIT.kwh}です。<br>`+
+   `　同じ論文が、作るときには ${LIT.days} を使ったと書いています（§3-5）。<br><br>`+
+   `　1,000回を捌く容量あたり ${V.unitX()} は、このゲームが置いた値です。原典に単価はありません。<br>`+
+   '　この単価は、AIの大きさによって変わりません。<br>'+
+   '　答えが長くなる分の倍率も、このゲームが置いた値です。長くなること自体は測られています。']]}
+}[id]}
+
+const FACTS=[
+{t:'鍛える前と後',b:`
+ <p>これはゲームの数値ではありません。研究チームが測った正答率です。</p>
+ <div class="def">数学の問題（AIME 2024）の正答率<br>
+  <span class="sm">　鍛える前　　　　　　　　　　　　　　　　　　<b>${LIT.aime0}</b><br>
+  　正誤だけで鍛えた後　　　　　　　　　　　　　<b>${LIT.aime1}</b><br>
+  　人の模範解答を先に入れた後　　　　　　　　　<b>${LIT.aime2}</b>　← 下がっている<br>
+  　同じ問題を16回解かせて、多い答えを採った場合　<b>${LIT.aime3}</b></span></div>
+ <p>最後の1つだけ、数え方が違います。<br>
+ <span class="sm">　${LIT.aime1} ＝ 1回で答えさせるのを何度かくり返し、当たった割合を平均した数<br>
+ 　${LIT.aime3} ＝ 16回の答えを見比べて、多かった答えを1つ選んだときの数</span><br>
+ 測った研究チームが、そう定義しています。</p>
+ <div class="def">採点する側の数字<br>
+  <span class="sm">　人が慎重に作った採点用のデータのうち、注釈が誤っていたもの　<b>${LIT.badAnn}</b></span></div>`,
+ use:`AIの成績を見るときは、「1回で答えた結果か、何回か解かせた結果か」を確かめてください。`,
+ utag:'資料',
+ cite:'DeepSeek-R1, arXiv:2501.12948 §2（15.6→77.9／16回の多数決の 86.7）／Table 3（59.0）／'+
+      'Shao et al. 2024「DeepSeekMath」arXiv:2402.03300 §5.2.3（検証用データの誤り 約20%）　〔原典〕'},
+
+{t:'人が書いたのは、1万3千件だけ',b:`
+ <p>人が書いた見本は ${LIT.sft13} です。これが、いまのAIの答え方の元になりました。<br>
+ その次の工程で、答えを良い順に並べていたのは ${LIT.labN}の人です。<br>
+ その人たちの判断が一致した割合は、${LIT.labA}でした。</p>`,
+ use:`いま使っているAIの答え方を決めたのは、人が書いた見本 ${LIT.sft13}と、
+      人が答えを良い順に並べた質問 ${LIT.rank33}です。「大量の人手」という規模ではありません。`,
+ utag:'導出',
+ cite:'Ouyang et al. 2022, arXiv:2203.02155 Table 6（2列の合計）／§3.4・Appendix B.3 ／'+
+      '資料 付録A　〔原典〕'},
+
+{t:'好みで整えるのは報酬モデル、正誤で鍛えるのはルール',b:`
+ <p>同じ会社が、同じ手順の中で、点数の出どころを2つに分けています。<br>
+ 今年やったのは、機械の規則で正誤を採点する側です。<br>
+ 去年やったのは、人の好みを覚えた採点役に採点させる側でした。</p>`,
+ use:`同じ会社が、同じ手順の中で、点数の出どころを2つに分けています。答えが決まる問題では、
+      正解かどうかと、決めた書き方を守れているかを、機械の規則で採点します。
+      答え方の好ましさは、人の好みを覚えた採点役（報酬モデル）が採点します。
+      「強化学習」の一語で中身を決めつけないでください。`,
+ utag:'導出',
+ cite:'DeepSeek-R1, arXiv:2501.12948 §2.2 ／ Shao et al. 2024「DeepSeekMath」'+
+      'arXiv:2402.03300 Table 10 ／ 資料 §5-1　〔原典〕'},
+
+{t:'推論モデルには、例を見せない',b:`
+ <p>推論モデル ＝ 答える前に、自分で手順を書いてから答えるAIです。<br>
+ 今年 検証器に人を回したAIが、これに当たります。<br>
+ このAIに例文を貼ると、かえって成績が落ちると報告されています。<br>
+ なぜ落ちるのかは、報告した研究チームも書いていません。測られているのは「落ちた」までです。</p>`,
+ use:`推論モデル（答える前に自分で手順を書くAI）に例文を貼るのは逆効果です。
+      やりたいことと答えの形だけを書いてください。ふつうのモデルは逆で、例を見せると良くなります。
+      上手な頼み方は、モデルの世代で変わります。`,
+ utag:'資料',
+ cite:'DeepSeek-R1, arXiv:2501.12948 §6 ／ 資料 §5-6　〔原典〕'}
+];
+
+const SET={
+A:{head:'正誤が機械で決まる問題では、はっきり強くなりました',
+   s2:R=>`検証器に ${R.verifier}名 を回しました。<br>
+    正誤が機械で決まる問題では、はっきり強くなっています。<br>
+    ところが、考える力のバーは ${C.sign(R.thinkAdd)} しか伸びていません。<br>
+    人を回した数のわりにバーが動かないのは、<br>
+    上がったのが、正誤を機械で判定できる問題だけだからです。<br>
+    それ以外の問題は、去年のままです。`,
+   s3label:'先にこれをやった研究チームが書いていること',
+   s3:`<p>この研究チームは、成績が上がった理由を「新しい力が付いた」とは書いていません。<br>
+    「元から出せていた答えの候補から、正しいものを選び出している」と書いています。<br>
+    「元から出せていた」は、【何回も引けばいつか当たった】という意味です。<br>
+    鍛える前は、1回で当たる割合が ${LIT.aime0} でした。<br>
+    鍛えたあとも、答えの候補そのものは増えていません。<br>
+    変わったのは、正しい候補が【1回で引かれやすくなった】ことです。<br>
+    そして、人が慎重に作った採点用のデータにも、誤りが残っていたと報告しています。<br>
+    採点する側が間違っていれば、AIはそこまでしか伸びません。<br>
+    どれくらい残っていたかは、章末に出します。</p>`,
+   s4:'Shao et al. 2024「DeepSeekMath」arXiv:2402.03300 §5.2.2（選び出している）／'+
+      '§5.2.3（検証用データの誤り 約20%）／'+
+      'DeepSeek-R1, arXiv:2501.12948 §6（正誤が判定できない領域は未解決）'},
+B:{head:'答えの中身は、去年のままです',
+   s2:R=>`検証器には人を回しませんでした。答えを考える力は去年から動いていません。<br>
+    代わりに、人を回せる枠が ${C.hireMax(D,RUN)}名 残っています。<br>
+    そして来年、例を見せる／道具を呼ぶという2つの手が使えます。`,
+   s3label:'先にこれをやった研究チームが書いていること',
+   s3:`<p>検証器に人を回したAIには、この2つが効きません。<br>
+    例を見せないほうが成績が良いと、そのAIを作った研究チームが報告しています。<br>
+    道具（電卓や検索）も使えません。<br>
+    あなたは人を回さなかったので、来年この2つが使えます。</p>`,
+   s4:'DeepSeek-R1, arXiv:2501.12948 §6（例を見せると一貫して悪化する／道具を使えない）'},
+fore:`今年上がった分は、来年の売値には乗りません。来年の売上は、使われた量で決まります。`
+};
+
+/* ══════════ 状態と描画 ══════════ */
+let S={phase:'intro',ip:0,seen:[0],sel:'hire',hireN:10,
+        hired:false,
+        rlvr:null,verN:10,gold:null,risk:null,equip:null};
+let lastSay=null;
+/* ★★人員。★この章の配属は ASSIGNED0 に足す（★上書きしない） */
+const usedHere=()=>RUN.verifier+(RUN.gold?B.staff:0);
+const freeNow =()=>RUN.staff-ASSIGNED0-usedHere();      // ★まだ工程に回せる人数
+const verMax  =()=>Math.min(A.staffMax,RUN.verifier+freeNow());
+const equipY  =()=>RUN.capacity*D.set.equipX/1000*(RUN.rlvr?D.set.mulRlvr:1)/1e8;
+/* ★★上に出す資金は【設備費とリスク管理費を引かない】（★第3章と同じ理由）
+   ★理由  ★★どちらも `ch4.data.js` が `fixed` に入れ、★その年の売上と差し引いて `left` を出す。
+     ★★引いてから出すと、★売上が立つ前に「破産している」ように見える。
+   ★★第4章のカードは全部0円である（★`dev:0`。★代償は人員と年費）。★だから開発費は引かない */
+const money=()=>D.set.budget-RUN.spent-C.payroll(D,RUN)+(RUN.bonus||0);
+const times=n=>{n=Math.round(n);
+ return n>=1e12?(n/1e12).toFixed(2)+'兆回'
+      :n>=1e8 ?(n/1e8 ).toFixed(2)+'億回'
+      :n.toLocaleString()+'回'};
+/* ★★いまの選択で必要な容量（★D.settle が返す use。★容量に依存しない量である） */
+const needCap=()=>Math.ceil(D.settle(C.stFor(D,RUN,{capacity:0})).use);
+/* ★選んだ端の名前（★名前の正本は上の TXT の ends[].name である） */
+const endName=id=>{
+ if(id==='hire')return RUN.staff+'名';
+ if(id==='rlvr')return S.rlvr==null?null
+  :(S.rlvr==='off'?'回さない':'回す（'+RUN.verifier+'名）');
+ if(id==='gold')return S.gold==null?null:(S.gold?'入れる':'入れない');
+ if(id==='risk')return S.risk==null?null:(S.risk?'作る':'作らない');
+ if(id==='equip')return S.equip==null?null
+  :(S.equip==='none'?'買わない':'多く買う（'+times(RUN.capacity)+'）');
+ return null;
+};
+const decided=id=>id==='hire'?true
+ :id==='rlvr'?S.rlvr!=null :id==='gold'?S.gold!=null
+ :id==='risk'?S.risk!=null :S.equip!=null;
+const undecidedIds=()=>['rlvr','gold','risk','equip'].filter(id=>!decided(id));
+/* ★★設備は【必要な容量が決まってから】選ぶ（★第3章と同じ理由）。
+   ★捌く回数は、考える力・指示に従う・安全（＝上限）から出る。★だから3枚を決めてから開く */
+const equipOpen=()=>S.rlvr!=null&&S.gold!=null&&S.risk!=null;
+/* ★端ごとに押せない理由を返す（→C.ends の why）
+   ★★リスク管理は【資金で縛らない】（★2026-08-21 に直した。★通しで走らせて見つけた）
+     ★理由  ★★`ch4.data.js` は `fixed = st.staff*staffPay + (st.risk?riskCost:0) + equip` で、
+       ★★リスク管理の費用は【年末に精算する固定費】である（★開発費のように即時に払わない）。
+       ★★第4章のカードは全部 `cost:0`＝開発費0円なので、★即時に払うものが1つも無い
+     ★★実害が出ていた：★上のバーの資金は「予算 − 累計支出」で、★過去の売上を足さない形なので、
+       ★★第3章で設備を買うと第4章では必ずマイナスになる。★★実測：★通しで5通り走らせて
+       ★★4通りで「資金が足りない」になり、★★上限を戻す唯一の手が押せなくなっていた
+     ★★→ ★これを外すと、★★§40-2'・§40-4' の「リスク管理で上限が戻る」が成立する */
+const whyEnd=cardId=>e=>{
+ if(cardId==='rlvr'&&e.id==='on'&&verMax()<1)return '人が足りない（1名以上必要）';
+ if(cardId==='gold'&&e.id==='yes'&&freeNow()<B.staff)return `人が足りない（${B.staff}名必要）`;
+ return null;
+};
+const restLine=()=>{const n=undecidedIds().length;
+ return n?`<br><span style="color:#bcccdd">まだ選んでいないカードが ${n}枚 あります。</span>`
+        :`<br><span class="hl">選び終わりました。「${D.year}年目を締める」へ。</span>`};
+
+function paintTop(){
+ C.top(D,Math.round(money()),D.rival(D.year),{year:D.year+'年目',q:'／ 5年のうち'});
+}
+
+function paintMenu(){
+ if(S.phase==='intro'){
+  const T=INTRO_T;
+  let h=`<div class="grpL ol">第4章 ── 麻衣の説明</div>`;
+  T.forEach((t,i)=>{const sc=S.ip===i;
+   h+=`<div class="mi ${sc?'sel':''}" data-ip="${i}"><div class="t${sc?'':' ol'}">${i+1}. ${t}</div></div>`});
+  h+=`<div class="grpL ol">本編</div>
+   <div class="mi fin" data-id="__start"><div class="t ol">第4章をはじめる</div>
+    <div class="sub ol">正誤で鍛えるかを決める</div></div>`;
+  /* ★★序章の口は【章の説明の場面にも】置く（★決定10 の後半。★どちらの場面からでも開ける） */
+  h+=`<div class="grpL ol">説明</div>
+   <div class="mi" data-id="__intro"><div class="t ol">はじめの説明</div>
+    <div class="sub ol">序章 ── 麻衣の説明</div></div>`;
+  document.getElementById('menu').innerHTML=h;
+  document.querySelectorAll('.mi').forEach(el=>el.onclick=()=>{
+   const id=el.dataset.id;
+   if(id==='__intro'){C.openIntro();return}
+   id==='__start'?startGame():iGo(+el.dataset.ip)});
+  return}
+ let last='',h='';
+ D.cards.forEach(c=>{
+  if(c.grp!==last){h+=`<div class="grpL ol">${c.grp}</div>`;last=c.grp}
+  const sc=S.sel===c.id, o=sc?'':' ol', dn=decided(c.id);
+  const shut=(c.id==='equip'&&!equipOpen());
+  const sub=c.id==='hire'?(S.hired?`${RUN.staff}名 ／ この章では雇い終わりました`
+    :`${RUN.staff}名 ／ あと${C.hireMax(D,RUN)}名`)
+   :shut?'ほかの3枚を決めてから'
+   :dn?`${endName(c.id)}`:'まだ選んでいません';
+  h+=`<div class="mi ${sc?'sel':''}${(c.id==='hire'?S.hired:dn)?' done':''}${shut?' gone':''}"
+   data-id="${c.id}"><div class="t${o}">${c.name}</div>
+   <div class="sub${o}">${sub}</div></div>`});
+ const nd=undecidedIds();
+ h+=`<div class="grpL ol">決算</div>
+  <div class="mi fin${nd.length?' gone':''}" data-id="__end"><div class="t ol">${D.year}年目を締める</div>
+   <div class="sub ol">${nd.length?`先に ${nd.length}枚 を選んでください`:'結果を見る'}</div></div>
+  <div class="grpL ol">説明</div>
+  <div class="mi" data-id="__chIntro"><div class="t ol">この章の説明</div>
+   <div class="sub ol">この章の入口にもどる</div></div>
+  <div class="mi" data-id="__intro"><div class="t ol">はじめの説明</div>
+   <div class="sub ol">序章 ── 麻衣の説明</div></div>
+  <div class="mi" data-id="__doc"><div class="t ol">資料を開く</div>
+   <div class="sub ol">AIの原理 ／ 原論文32本</div></div>`;
+ document.getElementById('menu').innerHTML=h;
+ document.querySelectorAll('.mi').forEach(el=>el.onclick=()=>{
+  const id=el.dataset.id;
+  if(id==='__end'){settle();return}
+  if(id==='__chIntro'){reIntro();return}
+  /* ★★序章を開く（★決定10 の後半。★土台が持つ。★戻り先は intro.html が ?from= で読む） */
+  if(id==='__intro'){C.openIntro();return}
+  if(id==='__doc'){C.openDoc('');return}
+  S.sel=id;paintPane();paintMenu()});
+}
+
+function paintIntro(){
+ const pages=INTRO, i=S.ip, last=i===pages.length-1;
+ document.querySelector('.panel').classList.add('full');
+ document.documentElement.classList.add('intro');
+ document.getElementById('pane').innerHTML=`
+  ${C.head(`${i+1}. ${INTRO_T[i]}`,[['第4章',i+1,'/ '+pages.length]])}
+  <div class="pc">
+   <div class="ibody">${pages[i]()}</div>
+   <div class="row">
+    <button class="btn" ${i?'':'disabled'} onclick="iBack()">戻る</button>
+    <button class="btn go" onclick="iNext()">${last?'カードを見る':'次へ'}</button>
+   </div></div>`;
+}
+function iGo(i){S.ip=i;if(!S.seen.includes(i))S.seen.push(i);
+ paintPane();paintMenu();const b=document.querySelector('.ibody');if(b)b.scrollTop=0}
+function iNext(){S.ip<INTRO.length-1?iGo(S.ip+1):startGame()}
+function iBack(){if(S.ip)iGo(S.ip-1)}
+function startGame(){S.phase='play';
+ document.querySelector('.panel').classList.remove('full');
+ document.documentElement.classList.remove('intro');
+ paintMenu();paintPane();say(null)}
+function reIntro(){S.phase='intro';iGo(0);say(null)}
+
+function paintPane(){
+ if(S.phase==='intro')return paintIntro();
+ S.hireN=Math.max(1,Math.min(C.hireMax(D,RUN),S.hireN));
+ const c=D.card(S.sel), t=TXT[c.id];
+ const cost=c.id==='hire'?S.hireN*D.set.staffPay
+  :c.id==='risk'?(S.risk?K.cost:0)
+  :c.id==='equip'?Math.round(equipY()):0;
+ const body=c.id==='hire'
+  ? (S.hired
+   ? `<div class="note" style="border-left-color:#5ed093;color:#a9e8c4">
+      実施済み ── この章で雇えるのはこの1回だけです。<br>
+      いま雇っている <b>${RUN.staff}名</b>（うち未配属 ${freeNow()}名）／
+      5年間の枠の残りは <b>${C.hireMax(D,RUN)}名</b> です。</div>`
+   : `${C.stepper(D,RUN,S.hireN,'setN')}
+     <div class="row"><button class="btn go" ${C.hireMax(D,RUN)<1||S.hireN*D.set.staffPay>money()
+       ?'disabled':''} onclick="askHire()">${C.hireMax(D,RUN)<1?'これ以上は雇えません'
+       :(S.hireN*D.set.staffPay>money()?'資金が足りない':'この人数で雇う')}</button></div>`)
+  : c.id==='rlvr'
+  ? `${C.ends(c.id,t.ends,S.rlvr,whyEnd(c.id))}${verBox()}`
+  : (c.id==='equip'&&!equipOpen())
+  ? `<div class="note" style="border-left-color:#f5c14e;color:#ffdf9c">
+      いまは決められません。先に「${A.name}」「${B.name}」「${K.name}」を決めてください。<br>
+      捌く回数は、その3つから決まります。</div>`
+  : c.id==='equip'
+  ? `${capBox()}${C.ends(c.id,t.ends,S.equip)}`   /* ★量の欄は選んだ直後に見える位置に置く */
+  : c.id==='risk'
+  ? `${C.ends(c.id,t.ends,S.risk==null?null:(S.risk?'yes':'no'),whyEnd(c.id))}${riskBox()}`
+  : C.ends(c.id,t.ends,c.id==='gold'?(S.gold==null?null:(S.gold?'yes':'no'))
+                                    :(S.risk==null?null:(S.risk?'yes':'no')),whyEnd(c.id));
+ document.getElementById('pane').innerHTML=`
+  ${C.head(c.name,[['費用',D.oku(cost),'億円','y']])}
+  <div class="pc"><div class="cbody">
+   <p class="lead">${t.lead}</p>
+   <div class="def">${t.def}</div>
+   <div class="note">${t.note}</div>
+   ${body}
+   ${C.src(c.tag,c.cite)}
+  </div>
+  ${H(c.id)?`<div class="row"><button class="btn more" onclick="C.pop(H('${c.id}'))"
+    >くわしく知る</button></div>`:''}
+  </div>`;
+}
+
+function riskBox(){
+ const R=D.settle(C.stFor(D,RUN,{capacity:0}));
+ const ok=R.safe>V.safeNG();
+ return `<div class="def" style="border-color:${ok?'#5ed093':'#e0574a'};
+  background:rgba(${ok?'94,208,147':'224,87,74'},.08)">
+  ${C.mline('いまの安全',C.n1(R.safe),ok?'#5ed093':'#ff9d90')}
+  ${C.mline('上限が 0% のままになる安全',V.safeNG())}
+  ${C.note(ok?'いまの安全なら、このしくみを作れば上限は 0% より上になります。'
+   :'いまの安全では、このしくみを作っても上限は 0% のままです。')}
+ </div>`;
+}
+
+/* ★★検証器に回す人数を決める欄（★「回す」を選んだときだけ出す。★0〜30名の連続量）
+   ★★人数の上限は【上限30名】と【まだ回せる人数】の小さい側である */
+function verBox(){
+ if(S.rlvr!=='on')return '';
+ const mx=verMax(), n=RUN.verifier;
+ const b=(d,l)=>`<button class="btn" style="min-width:54px;padding:8px 4px"
+  ${(n+d<1||n+d>mx)?'disabled':''} onclick="setVer(${n+d})">${l}</button>`;
+ return `<div class="def" style="border-color:#5ed093;background:rgba(94,208,147,.08)">
+  <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+   ${b(-10,'−10')}${b(-1,'−1')}
+   <b style="font-family:Oswald;font-size:26px;color:#a9e8c4;min-width:54px;text-align:center">${n}</b>
+   <span style="color:#bcccdd">名</span>${b(1,'＋1')}${b(10,'＋10')}</div>
+  ${C.mline('考える力の上がり',C.sign(n*A.thinkPer*(RUN.mul==null?1:RUN.mul)))}
+  ${C.msub('回した人数の分だけ上がります。去年の答えの幅で決まる倍率が掛かります。')}
+  ${C.mline('回せる上限',Math.min(A.staffMax,n+freeNow())+' 名')}
+  ${C.msub('上限は '+V.verCap()+' です。いま回せるのは、まだ工程に投じていない人だけです。')}
+ </div>`;
+}
+/* ★★買う容量を決める欄（★「多く買う」を選んだときだけ出す。★第3章と同じ形） */
+function capBox(){
+ if(S.equip!=='buy')return '';
+ const need=needCap(), cap=RUN.capacity, fee=equipY();
+ if(need<=0)return C.note('安全が許すシェアの上限が 0% です。製品があっても、その年の売上は0です。');
+ const b=(v,l)=>`<button class="btn" style="min-width:64px;padding:8px 6px"
+   ${v===cap?'disabled':''} onclick="setCap(${v})">${l}</button>`;
+ const R=D.settle(C.stFor(D,RUN,{capacity:cap}));
+ return `<div class="def" style="border-color:#f5c14e;background:rgba(245,193,78,.08)">
+  ${C.mline('いまの選択で必要な容量',times(need))}
+  ${C.mline('買う容量',times(cap),cap<need?'#ff9d90':'#5ed093')}
+  ${C.mline('設備費',D.oku(Math.round(fee))+' 億円')}
+  ${C.mline('この容量で立つ売上',D.oku(Math.round(R.rev))+' 億円')}
+  ${C.msub('設備費は、その年の売上から払います。')}
+  ${RUN.rlvr?C.msub('「'+A.name+'」を押しているので、設備費は '+V.mulR()+' になっています。'):''}
+  <div class="row" style="flex-wrap:wrap;gap:6px">
+   ${b(Math.round(need*0.5),'必要の半分')}${b(need,'必要ちょうど')}
+   ${b(Math.round(need*1.5),'必要の1.5倍')}${b(Math.round(need*2),'必要の2倍')}</div>
+  ${C.note(cap<need
+   ?'足りない分は捌けません。捌けなかった回は売上になりません。'
+   :(cap>need?'余った分は、その年で消えます。':'必要な分だけ買っています。'))}
+ </div>`;
+}
+function setCap(v){RUN.capacity=Math.max(0,v);paintTop();paintMenu();paintPane();say('equip')}
+function setVer(n){
+ RUN.verifier=Math.max(0,Math.min(verMax(),n));
+ RUN.rlvr=RUN.verifier>0;
+ if(S.equip!=null){S.equip=null;RUN.capacity=0}
+ paintTop();paintMenu();paintPane();say('rlvr');
+}
+function setN(n){S.hireN=Math.max(1,Math.min(Math.max(1,C.hireMax(D,RUN)),n));paintPane()}
+function askHire(){
+ const cost=S.hireN*D.set.staffPay;
+ C.ask({title:'実行しますか',lead:D.card('hire').name,
+  body:`${C.mline('雇う人数',S.hireN+' 名')}
+   ${C.mline('人件費',D.oku(cost)+' 億円／年（5年で '+D.oku(cost*5)+' 億円）')}
+   ${C.mline('実行後の合計',(RUN.staff+S.hireN)+' 名')}
+   ${C.mline('あと雇える',(C.hireMax(D,RUN)-S.hireN)+' 名')}
+   ${C.msub('「あと雇える」は5年間の枠の残りです。')}
+   ${C.mline('実行後の予算の残り',D.oku(money()-cost)+' 億円')}
+   ${C.note('この章で雇えるのはこの1回だけです。人数はいま決めてください。')}`,
+  ok:'雇う',run:'doHire()'});
+}
+function doHire(){
+ if(S.hired)return;            /* ★★2回目は効かせない（★★画面からは押せないが、二重に塞ぐ） */
+ const n=Math.min(S.hireN,C.hireMax(D,RUN));
+ if(n<1)return;
+ RUN.staff+=n;
+ S.hired=true;
+ paintTop();paintMenu();paintPane();say('hire');
+}
+function pick(cardId,endId){
+ /* ★★人が足りない端は効かせない（★★`C.ends` の `why` が既に押せなくしているが、二重に塞ぐ）
+    ★理由  ★★下の式は `Math.max(1,…)` を持っていて、★★空きが0名でも1名を配属していた
+      （★実測：★第1章で10名雇って見本に10名固定した通しで、★空き0名なのに検証器に1名入った）。
+      ★★画面からは押せないので出ないが、★★存在しない人員が入る形は残さない */
+ if(cardId==='rlvr'&&endId==='on'&&verMax()<1)return;
+ if(cardId==='gold'&&endId==='yes'&&freeNow()<B.staff)return;
+ if(cardId==='rlvr'){
+  S.rlvr=endId;
+  RUN.verifier=(endId==='on')
+   ?Math.max(0,Math.min(A.staffMax,Math.min(S.verN,freeNow()+RUN.verifier))):0;
+  RUN.rlvr=RUN.verifier>0;
+ }else if(cardId==='gold'){
+  S.gold=(endId==='yes');
+  RUN.gold=S.gold;
+  /* ★★模範解答に10名を回すと、★検証器に回せる人数が減る。★はみ出した分は戻す */
+  if(RUN.verifier>verMax())RUN.verifier=Math.max(0,verMax());
+  RUN.rlvr=RUN.verifier>0;
+ }else if(cardId==='risk'){
+  S.risk=(endId==='yes'); RUN.risk=S.risk;
+ }else if(cardId==='equip'){
+  S.equip=endId;
+  RUN.capacity=(endId==='buy')?needCap():0;
+ }
+ /* ★★必要な容量は上の3枚で変わる。★選び直したら買った量を戻す（★古い量を残さない＝型⑥を塞ぐ） */
+ if(cardId!=='equip'&&S.equip!=null){S.equip=null;RUN.capacity=0}
+ RUN.assigned=ASSIGNED0+usedHere();
+ paintTop();paintMenu();paintPane();say(cardId);
+}
+function say(last){
+ if(last!==undefined)lastSay=last;
+ if(S.phase==='intro'){
+  return C.say(`${C.menuSide()}のメニューから、いつでもこの説明に戻れます。<br>
+   読み終わったら <span class="hl">「第4章をはじめる」</span> を押してください。`)}
+ if(last==='__need'){
+  const nd=undecidedIds();
+  if(!nd.length)return say(null);
+  return C.say(`まだ選んでいないカードが ${nd.length}枚 あります。<br>
+   <span class="hl">${D.card(nd[0]).name}</span> を決めてください。`)}
+ if(!last){
+  const n=undecidedIds().length;
+  return C.say(n
+   ?`${C.menuSide()}のメニューから選んでください。<br>
+     <span style="color:#bcccdd">今年のカードは、作るお金が全部 0円です。払うのは<span class="hl">人</span>です。
+     ただし1枚だけ、毎年のお金がかかります。リスク管理のしくみです（毎年 ${V.riskFee()}）。
+     まだ選んでいないカードが ${n}枚 あります。</span>`
+   :`選び終わりました。<span class="hl">「${D.year}年目を締める」</span> に進んでください。<br>
+     <span style="color:#bcccdd">選び直しても構いません。結果は決算で分かります。</span>`)}
+ if(last==='hire'){
+  return C.say(`${RUN.staff}名 になりました。<br>
+   <span style="color:#bcccdd">まだ工程に回していないのは ${freeNow()}名 です。
+   人件費は5年目まで毎年かかります。<br>
+   この章で雇うのは、これで終わりです。</span>`+restLine())}
+ if(last==='rlvr'){
+  return C.say((S.rlvr==='off'
+   ?`検証器には人を回しません。<span class="ok">安全が許すシェアの上限は下がりません。</span>`
+   :`検証器に <span class="hl">${RUN.verifier}名</span> を回しました。<br>
+     <span style="color:#bcccdd">考える力が上がり、安全が下がります。
+     安全が許すシェアの上限も ${V.capDn()} 下がります。</span>`)+restLine())}
+ if(last==='gold'){
+  return C.say((S.gold
+   ?`人の模範解答を <span class="hl">入れます</span>。<br>
+     <span style="color:#bcccdd">指示に従うが上がり、考える力が下がります。
+     安全が許すシェアの上限も ${V.capDn()} 下がります。</span>`
+   :`人の模範解答は入れません。<span class="ok">考える力は下がりません。</span>`)+restLine())}
+ if(last==='risk'){
+  return C.say((S.risk
+   ?`リスク管理のしくみを <span class="hl">作ります</span>。<br>
+     <span style="color:#bcccdd">安全が許すシェアの上限が ${V.capUp()} 上がります。
+     戻せるのは1枚分だけです。</span>`
+   :`リスク管理のしくみは作りません。<span class="ng">安全が許すシェアの上限は上がりません。</span>`)
+   +restLine())}
+ if(last==='equip'){
+  const need=needCap();
+  return C.say((S.equip==='none'
+   ?`設備を買いません。<span class="ng">1回も捌けないので、その年の売上は0です。</span>`
+   :need<=0
+   ?`安全が許すシェアの上限が 0% です。<span class="ng">製品があっても、その年の売上は0です。</span>`
+   :`容量を <span class="hl">${times(RUN.capacity)}</span> 買いました。<br>
+     <span style="color:#bcccdd">必要なのは ${times(need)} です。${
+      RUN.capacity<need?'足りない分は捌けません。':
+      (RUN.capacity>need?'余った分はその年で消えます。':'ちょうどです。')}</span>`)+restLine())}
+ C.say(`${D.card(last).name}を決めました。`+restLine());
+}
+
+function settle(){
+ const nd=undecidedIds();
+ if(nd.length){S.sel=nd[0];paintMenu();paintPane();return say('__need')}
+ const R=D.settle(C.stFor(D,RUN,{capacity:RUN.capacity}));
+ const T=R.rlvr?SET.A:SET.B;
+ const left=C.leftOf(RUN,R);
+ const yen=n=>D.oku(Math.round(n))+' 億円';
+ const safeNG=()=>{let v=0;for(let s=0;s<=100;s++)if(D.set.cap(s,!!RUN.risk)<=0)v=s;return v};
+ const FLOW=()=>`<div class="fig">${G.flow({
+   appeal:C.n1(R.appeal)+' / '+D.set.full+' 点',  rival:C.n1(R.rival)+' 点',
+   target:D.pct(R.target), share:D.pct(R.share),
+   cap:D.pct(R.cap),      sold:D.pct(R.sold),
+   need:times(R.use),     bought:RUN.capacity>0?times(RUN.capacity):'買っていません',
+   served:times(R.served),rev:yen(R.rev),
+   depth:R.depth.toFixed(3)+' 倍'})}</div>`;
+
+ const s1=`
+  ${C.bars(R.bars,['考える力','指示に従う','安全'])}
+  ${C.msub('自信の正しさは、去年で決まった値のままです。この章に動かすカードはありません。答えの幅も、去年のままです。')}
+  <div class="fig">${G.safe({safe:R.safe, ng:safeNG(), cap:D.pct(R.cap), base:D.set.safeBase})}</div>
+  <details class="cite"><summary>くわしく知る</summary>
+   <span class="sm">害になる答えを受け取るのは、あなたのAIを使う客です。<br>
+   客が多ければ、受け取る人も多くなります。<br>
+   このゲームは、客が多いほど高い安全を要求する形にしています。<br>
+   指示に従う力を上げた分だけ、ここから引かれます。</span></details>
+  <h4>今年決めたこと</h4>
+  ${C.mline('検証器に回した人数',R.verifier+' 名')}
+  ${C.mline('人の模範解答',RUN.gold?'入れた':'入れない')}
+  ${C.mline('リスク管理のしくみ',RUN.risk?'作った（今年の分）':'作らない')}
+  ${C.mline('買った容量',RUN.capacity>0?times(RUN.capacity):'買っていません')}
+  ${C.mline('今年雇った人数',(RUN.staff-STAFF0)+' 名')}
+  <h4>人員の枠</h4>
+  ${C.mline('5年間の枠',D.set.staffCap+' 名')}
+  ${C.mline('これまでに投じた枠',RUN.staff+' 名')}
+  ${C.mline('残っている枠',R.staffFree+' 名')}
+  ${C.msub('この枠は年ごとに戻りません。投じた工程から人は戻ってきません。')}
+  <h4>バーがどれだけ動いたか</h4>
+  ${C.mline('考える力の伸び',C.sign(R.thinkAdd))}
+  ${C.msub('検証器に回した人数の分だけ上がります。去年の「答えの幅」で決まる倍率が掛かります。')}
+  ${C.mline('去年の答えの幅で決まる倍率',C.n1(RUN.mul==null?1:RUN.mul)+' 倍')}
+  <h4>売れたか</h4>
+  ${FLOW()}
+  ${C.note('<b>この図の読み方</b><br>'+
+    '<b>魅力</b> ── あなたのAIが客から見てどれだけ選ばれるかの点数です。'+
+    '満点は '+D.set.full+' 点です。<br>'+
+    '同じ画面の「他社の力」と比べます。この2つの取り分が、下の行になります。<br>'+
+    '<b>落ち着くシェア</b> ── 毎年、差の '+(D.set.follow*100)+'% ずつ'+
+    '近づいていく先の割合です。単位は％です。<br>'+
+    '「何年目に届く」という数ではありません。今年の結果でもありません。')}
+  <div class="fig">${G.calib({ece:C.n1(R.ece)+' ポイント', calib:R.cal+' 点', depth:R.depth.toFixed(3)+' 倍'})}</div>
+  <details class="cite"><summary>くわしく知る</summary>
+   <span class="sm">「自信の正しさ」は 100 からこの数を引いた点数です。<br>
+   「一人あたりの利用量」に客の数を掛けたものが、上の図の「必要だった容量」になります。<br>
+   ずれは第3章で決まっていて、この章では動きません。信用できないAIは使われません。</span></details>
+  ${C.mline('設備は足りたか',R.capBound?'足りなかった':'足りた',R.capBound?'#ff9d90':null)}
+  ${C.msub('上の図の「必要だった容量」と「買った容量」を見比べてください。')}
+  ${R.capBound?C.msub('捌けなかった回は売上になりません。'):
+    (RUN.capacity>R.use?C.msub('余った容量は、その年で消えます。'):'')}
+  ${RUN.capacity>0?'':C.msub(R.use>0
+    ?'買った容量が0なので、捌けた回数は0回です。'
+    :'捌く回数が0なので、設備は要りません。')}
+  ${C.mline('1回あたりの費用の倍率',R.mult+' 倍')}
+  ${C.msub('1回答えるごとにかかる費用が、何倍になったかです。押した枚数だけ掛け合わさります（足し算ではありません）。'+
+    '運用費と設備費の両方に、同じ倍率が掛かります。')}
+  <h4>使ったお金</h4>
+  ${C.mline('売上',yen(R.rev))}
+  ${C.mline('運用費',yen(R.op))}
+  ${C.mline('設備費',yen(R.equip))}
+  ${RUN.capacity>0?'':C.msub('買った容量が0なので、設備費は0円です。')}
+  ${C.mline('リスク管理の費用',yen(RUN.risk?D.set.riskCost:0))}
+  ${C.mline('開発費',yen(R.dev))}
+  ${C.mline('人件費（'+D.year+'年目）',yen(RUN.staff*D.set.staffPay)+'（'+RUN.staff+'名）')}
+  ${C.mline('今年の利益',yen(R.profit),R.profit<0?'#ff9d90':'#5ed093')}
+  ${C.mline('予算の残り',yen(left))}
+  ${(left<0 && !RUN.rescued)?C.note('予算が足りなくなった年です。'+D.oku(D.set.rescue)+'億円 を借りました。1回だけの借入です。<br>'+
+    'この分は、5年目の成績から引かれます。'):''}
+  <details class="cite"><summary>1,000回あたりの粗利　${D.yen(R.gross)}</summary>
+   <span class="sm">この数は、1,000回あたりで黒字かどうかを見るための数です。<br>
+   ここがマイナスだと、売れるほど損になります。<br>
+   売値から運用費だけを引いた数です。設備費は引いていません。</span></details>
+  ${R.cap<=0?C.note('今年は、安全が許すシェアの上限が 0% でした。だから売上は0です。<br>'+
+    'この上限は安全から決まります。'+
+    '安全を下げたカードは、今年の決算の「今年決めたこと」に出ています。<br>'+
+    'リスク管理のしくみを作ると、上限は上がります。ただし戻せるのは1枚分だけです。<br>'+
+    '上限を下げるカードを2枚とも取っていると、作っても 0% のままになることがあります。'):''}`;
+
+ const tail=`
+  <h4>章末の事実（判断には使いません）</h4>
+  ${FACTS.map(f=>C.fact(f)).join('')}
+  <div class="row">
+   <button class="btn" onclick="location.reload()">やり直す</button>
+   <button class="btn go" onclick="toCh5()">第5章へ</button></div>
+  <details class="cite"><summary>この画面の数字の出どころ</summary>
+   正答率（章末の事実）は DeepSeek-R1, arXiv:2501.12948 §2・Table 3。
+   採点用データの誤った注釈は Shao et al. 2024, arXiv:2402.03300 §5.2.3。
+   人手の件数は Ouyang et al. 2022, arXiv:2203.02155 Table 6・§3.4。<br>
+   <b>市場の大きさ・他社の力・設備の単価・5本のバーの目盛り・人件費・リスク管理の費用・
+   答えが長くなる分の倍率は、ゲームのために置いた値です。</b></details>`;
+
+ C.dlg(C.settleFrame({title:'第4章 決算',head:T.head,
+  s1,s2:C.mai(T.s2(R)+'<br><br>'+SET.fore,'#67d3e8'),
+  s3label:T.s3label,s3:T.s3,s4:T.s4,tail}));
+ /* ★年を閉じて次章へ渡す（★土台が持つ）。
+    ★★RLVR の有無は第5章が読む。★run に焼いてから閉じる */
+ RUN.rlvr=R.rlvr; RUN.verifier=R.verifier;
+ C.closeYear(D,R,RUN);
+ C.run=RUN;
+}
+function toCh5(){C.save(RUN);location.href='ch5.html'}
+
+/* ══════════ 起動 ══════════ */
+C.boot(()=>{if(S.phase!=='intro')say(lastSay)});
+if(!HAND){
+ /* ★第3章を通っていない（★仮定値を作らない） */
+ document.querySelector('.panel').classList.add('full');
+ document.getElementById('menu').innerHTML=`<div class="grpL ol">第4章</div>`;
+ document.getElementById('pane').innerHTML=`
+  ${C.head('第4章',[['第4章','—','']])}
+  <div class="pc"><div class="ibody">
+   <p class="lead">第4章は、第3章の結果を引き継いで始まります。</p>
+   <div class="note">第3章を締めた記録が見つかりません。<br>
+    第1章から順に遊んでください。第3章の決算で「第4章へ」を押すと、ここに続きます。</div>
+   </div>
+   <div class="row"><button class="btn go" onclick="location.href='ch1.html'"
+     >第1章へ</button></div></div>`;
+ C.say('第3章の結果が見つかりません。第1章から順に遊んでください。');
+}else{
+ paintTop();paintMenu();paintPane();say(null);
+}
+</script>
+</body>
+</html>

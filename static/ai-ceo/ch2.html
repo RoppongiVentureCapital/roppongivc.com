@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex,nofollow,noarchive">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>第2章 ── 何を食わせるか</title>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Zen+Kaku+Gothic+New:wght@500;700;900&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="ui.css">
+</head>
+<body>
+<div id="fit"><div id="frame">
+
+<!-- ══════════ オフィス（一点透視のフォールバック。中身は ch_common.js の C.OFFICE） ══════════ -->
+<div id="office"></div>
+
+<!-- 背景画像を置いたら、上のSVGを覆って最優先で表示される。無ければ自分を消す -->
+<img id="bgimg" src="assets/bg_office.png" alt="" onerror="this.remove()">
+<!-- 縦画面用。狭い画面のときだけ表示され、上の横長背景を覆う -->
+<img id="bgimg2" src="assets/bg_office_portrait.png" alt="" onerror="this.remove()">
+<div id="grade"></div>
+<img id="whole" src="assets/secretary_full.png" alt="" onerror="this.remove()">
+
+<!-- ══════════ 上部バー ══════════ -->
+<div class="topbar">
+ <div class="logo ol"><span>AI&nbsp;LAB</span></div>
+ <div class="when ol">
+  <span class="yr" id="tYear">2年目</span>
+  <span class="qq" id="tQ">／ 5年のうち</span>
+ </div>
+ <div class="rival">
+  <span class="k ol">他社の力</span>
+  <span class="rbar" title="他社のAIの力。自社の満点に対する割合"><i id="rv" style="width:50%"></i></span>
+  <span class="k ol" id="rvp">50%</span>
+ </div>
+ <div class="cash">
+  <span class="y ol">¥</span><span class="v ol2" id="cash">0</span><span class="u ol">億円</span>
+ </div>
+</div>
+
+<div class="stage">
+ <div class="menu" id="menu"></div>
+ <div class="panel"><div id="pane"></div></div>
+</div>
+
+<div class="info">
+ <div class="infoH"><b>Information</b></div>
+ <div class="in">
+  <div class="bust">
+   <div class="ph"><div class="h"></div></div>
+   <img src="assets/secretary_bust.png" alt="" onerror="this.remove()">
+  </div>
+  <div class="said" id="said"></div>
+ </div>
+</div>
+
+<div class="veil" id="veil"><div class="dlg" id="dlg"></div></div>
+
+</div></div><!-- /#frame /#fit -->
+
+<script src="fig.js"></script>
+<script src="ch_common.js"></script>
+<script src="ch2.data.js"></script>
+<script>
+
+const LIT={
+ src:[ /* [名前, 億語, 読ませた回数の表示, 読ませる量に占める割合] */
+  ['ざっと集めた web',4100,'1周の44%だけ','60%'],
+  ['本（2）',          550,'1周の43%だけ','8%'],
+  ['厳選した web',     190,'2.9回',       '22%'],
+  ['本（1）',          120,'1.9回',       '8%'],
+  ['百科事典',          30,'3.4回',       '3%']
+ ],
+ store:'4,990億語',   // 倉庫にある文章（＝上の5つの合計）
+ good:'340億語',
+ rest:'4,650億語'     // 残りの側
+};
+
+/* ══════════ 図（★fig.js の部品だけで描く。★新しい部品を作っていない）══════════
+   使った部品  G.books（本の山）／G.money（札束）
+   ★帯（<rect>）と目盛りの文字は ch1.html の図と同じ書き方（生の SVG）である */
+const F={
+
+mix:(()=>{
+ const W=560,X=48,tot=LIT.src.reduce((a,b)=>a+b[1],0);
+ const col=['#5b7f9e','#6f8f6a','#8a7fa8','#a8894f','#4f9f86'];
+ const band=(y,list,extra)=>{
+  let x=X,s='';
+  list.forEach(([nm,v],i)=>{const w=W*v/tot;
+   s+=`<rect x="${x.toFixed(1)}" y="${y}" width="${w.toFixed(1)}" height="26" fill="${col[i]}"
+        stroke="rgba(0,0,0,.45)" stroke-width=".6"/>`;x+=w});
+  if(extra){const w=W*extra/tot;
+   s+=`<rect x="${x.toFixed(1)}" y="${y}" width="${w.toFixed(1)}" height="26" fill="#f5c14e"
+        stroke="rgba(0,0,0,.5)" stroke-width=".6"/>`}
+  return s};
+ /* 右の帯：総量を変えずにコードを入れるので、5種類は (tot−コード)/tot に縮む */
+ const cap=D.set.codeCap*10, k=(tot-cap)/tot;
+ return `<svg viewBox="0 0 640 250" style="width:100%">
+ <text x="10" y="16" fill="#bcccdd" font-size="12">2020年のAIが読んだ5種類（帯の長さ＝量）</text>
+ ${band(26,LIT.src)}
+ ${LIT.src.map(([nm,v],i)=>`<rect x="${16+i*124}" y="62" width="9" height="9" fill="${col[i]}"/>
+  <text x="${29+i*124}" y="71" fill="#bcccdd" font-size="10">${nm}</text>`).join('')}
+ <rect x="${48}" y="86" width="${560}" height="20" rx="3" fill="rgba(224,87,74,.10)"
+   stroke="rgba(224,87,74,.5)"/>
+ <text x="328" y="100" fill="#ff9d90" font-size="11.5" text-anchor="middle">コード 0</text>
+
+ <line x1="10" y1="126" x2="630" y2="126" stroke="#7590a8" stroke-dasharray="4 4"/>
+ <text x="10" y="148" fill="#bcccdd" font-size="12">コードを混ぜたあと（帯の長さは同じ）</text>
+ ${(()=>{let x=48,s='';LIT.src.forEach(([nm,v],i)=>{const w=560*v/tot*k;
+   s+=`<rect x="${x.toFixed(1)}" y="158" width="${w.toFixed(1)}" height="26" fill="${col[i]}"
+        opacity=".72" stroke="rgba(0,0,0,.45)" stroke-width=".6"/>`;x+=w});
+   const w=560*(D.set.codeCap*10)/tot;
+   s+=`<rect x="${x.toFixed(1)}" y="158" width="${w.toFixed(1)}" height="26" fill="#f5c14e"
+        stroke="rgba(0,0,0,.5)" stroke-width=".7"/>`;
+   s+=`<text x="${(x+w/2).toFixed(1)}" y="200" fill="#ffdf9c" font-size="10.5" text-anchor="middle">コード</text>`;
+   return s})()}
+ <text x="300" y="222" fill="#ff9d90" font-size="12.5" text-anchor="middle">
+  5種類の側が、足した分だけ細くなる</text>
+ ${G.money(556,214,1)}
+ <text x="10" y="244" fill="#f5c14e" font-size="12">増えるのではなく、入れ替わる</text>
+</svg>`})(),
+
+sift:(tokensB,code,cur)=>{
+ const s=D.set, X0=10, XB=196, W=430;
+ const opts=D.card('mix').opts;
+ const term=e=>e===s.eMax?'右＝これ以上増やせない回数':'左＝これ以上減らせない回数';
+ const row=(Y,o)=>{
+  const m=D.mix(tokensB,code,o.e), g=W*m.goodB/m.den, r=W-g, on=cur===o.id;
+  return `${on?`<rect x="6" y="${Y}" width="628" height="88" rx="5"
+    fill="rgba(255,223,156,.09)" stroke="rgba(255,223,156,.45)"/>`:''}
+  <text x="${X0}" y="${Y+16}" fill="${on?'#ffdf9c':'#f4f8fc'}" font-size="13.5">${o.name}</text>
+  <text x="${X0}" y="${Y+32}" fill="#8a9db3" font-size="10.5">${term(o.e)}</text>
+  <text x="${X0}" y="${Y+54}" fill="#8a9db3" font-size="9.5">厳選した側を</text>
+  <text x="${X0}" y="${Y+65}" fill="#8a9db3" font-size="9.5">読ませた回数</text>
+  <text x="${X0}" y="${Y+83}" fill="#ffdf9c" font-family="Oswald" font-size="14">${V.laps(o.e)}</text>
+  <rect x="${XB}" y="${Y+8}" width="${g.toFixed(1)}" height="30" fill="#4f9f86"
+   stroke="rgba(0,0,0,.45)" stroke-width=".6"/>
+  <rect x="${(XB+g).toFixed(1)}" y="${Y+8}" width="${r.toFixed(1)}" height="30" fill="#5b7f9e"
+   stroke="rgba(0,0,0,.45)" stroke-width=".6"/>
+  <rect x="${XB}" y="${Y+50}" width="9" height="9" fill="#4f9f86"/>
+  <text x="${XB+15}" y="${Y+59}" fill="#c9f2dc" font-size="11"
+   >厳選した側に回した量　${D.words(Math.round(m.goodB*10))}</text>
+  <rect x="${XB}" y="${Y+68}" width="9" height="9" fill="#5b7f9e"/>
+  <text x="${XB+15}" y="${Y+77}" fill="#cfe0f0" font-size="11"
+   >ざっと集めた側の割合　${m.low.toFixed(1)}%</text>
+  ${on?`<text x="626" y="${Y+59}" fill="#ffdf9c" font-size="10.5" text-anchor="end"
+   >いまこちらを選んでいます</text>`:''}`};
+ const den=D.mix(tokensB,code,s.e0).den;   // ★回数では動かない（★だから合計はどちらでも同じ）
+ return `<svg viewBox="0 0 640 268" style="width:100%">
+ <text x="${X0}" y="14" fill="#bcccdd" font-size="12">厳選した側を、平均何回読ませるか</text>
+ ${row(26,opts[0])}
+ ${row(122,opts[1])}
+ <text x="${X0}" y="234" fill="#f5c14e" font-size="12"
+  >2本の帯の合計は、どちらでも同じ ── 5種類の文章に回した量 ${D.words(Math.round(den*10))}</text>
+ <text x="${X0}" y="256" fill="#c9f2dc" font-size="11.5">増やす画面ではない。取り替える画面である</text>
+ ${G.books(600,256,3)}
+</svg>`}
+};
+
+const FROM_CH1={
+ big :{name:'大きく作る',      tokensB:300,    paramsOku:1750, think:40, dev:3640},
+ data:{name:'たくさん読ませる',tokensB:1024.7, paramsOku:512,  think:50, dev:3640},
+ lite:{name:'安く済ませる',    tokensB:300,    paramsOku:130,  think:20, dev:270}
+};
+/* ★第1章が渡した実績。★localStorage なのでタブを閉じても残る（→ch_common.js の save／load）
+   ★★`from` が 1 のものだけを受け取る。★from は「どの章が閉じたか」で、★既にある項目である
+     ★理由  ★第2章を締めて「第3章へ」を押すと from＝2 で保存される。★それを第2章の入口として
+            ★読むと、★支出とバーが二重に数えられる（★閉じても残る形にしたので現実に起きる）
+     ★決算の「やり直す」は保存前なので、★from＝1 の実績がそのまま残る＝第2章を正しく遊び直せる */
+const HAND=(()=>{const h=C.load();return (h&&h.from===1)?h:null})();
+const Q=C.carry({pick:'data',staff:0,assigned:0},HAND);   // ★実績 ＋ URL の上書き
+const RUN=Object.assign({},C.RUN0,Q);
+if(!HAND){
+ /* ★第1章を通っていない（ch2.html を直接開いた）。★写しで組む */
+ const P=FROM_CH1[RUN.pick]||FROM_CH1.data;
+ Object.assign(RUN,{
+  tokensB:P.tokensB, paramsOku:P.paramsOku,
+  think:P.think,
+  obey:D.set.obeyBase,                     // 設定30 の基礎値（★見本を読ませていない状態）
+  cal:Math.round(100-D.set.ece0),
+  width:D.set.widthBase,
+  spent:P.dev+(+RUN.staff||0)*D.set.staffPay,   // ★1年目の開発費 ＋ 1年目の人件費
+  mul:1                                    // ★設定9：第1章の幅は基礎50だけなので必ず 1.0
+ });
+ RUN.safe=C.safeOf(D,RUN.obey,RUN.rlvr);
+}
+Object.assign(RUN,{year:D.year, from:1, code:null, mix:null, log:RUN.log||[]});
+C.run=RUN;
+
+const V={
+ need :()=>D.words(Math.round(RUN.tokensB*10)),   // {必要量}
+ pool :()=>D.words(Math.round(D.set.pool*10)),    // {プール総量}＝読ませられる量
+ pick :()=>(FROM_CH1[RUN.pick]||FROM_CH1.data).name,
+ zero :()=>D.set.e0.toFixed(2)+'回',              // {ゼロ点}＝これ以上減らせない回数
+ max  :()=>D.set.eMax.toFixed(1)+'回',            // {上限}＝これ以上増やせない回数
+ laps :e=>e===D.set.eMax?V.max():e.toFixed(2)+'回',
+ cCost:()=>D.oku(D.card('code').cost)+'億円',     // {コードの収集費}
+ cCap :()=>D.words(D.set.codeCap*10)              // {コードの上限}
+};
+
+const INTRO=[
+`去年あなたが選んだのは「<b>${V.pick()}</b>」でした。<br>
+ あの選択で決まったのは、読ませる文章の<b>量</b>です。<b>${V.need()}</b> です。<br>
+ 今年決めるのは、その ${V.need()} を<b>何で埋めるか</b>です。<br><br>
+ なぜ2020年の話から始めるか、先に言います。<br>
+ あなたの倉庫にある文章は、2020年に実際にAIを作ったチームが集めたものと同じ5種類です。<br>
+ そのチームは、5種類を均等には読ませていません。<br>
+ <span class="sm">3種類は<b>何度も</b>読ませ、2種類は<b>1回も読み切っていません</b>。</span><br>
+ この差は、そのチームが公表した表に<b>回数</b>として載っています。だから確かめられます。<br><br>
+ だからこの章では、5種類を2つの群に分けて扱います。<br>
+ <span class="sm">「厳選した側」　　そのチームが<b>何度も</b>読ませた3種類です。<br>
+ 「ざっと集めた側」<b>1回も読み切らなかった</b>2種類です。</span><br>
+ 2つの呼び名は、集め方ではなく<b>読ませた回数</b>で分けたものです。<br>
+ <span class="cy">どちらをどれだけ読ませるかを、この章では「配合」と呼びます。</span><br><br>
+ 倉庫にある文章より多くを読ませることもできます。同じ文章は、何度でも読ませられます。<br>
+ <span class="em">何回まで読ませるかが、今年の選択です。</span><br>
+ <span class="sm">量も、5種類の内訳も、選ぶ画面でお見せします。</span>`
+];
+const INTRO_T=['配合'];
+
+const LQ=nm=>{const r=LIT.src.find(x=>x[0]===nm);return r[1].toLocaleString()};
+
+const TXT={
+code:{
+ lead:`去年決めた「読ませる量」は <b>${V.need()}</b> で、もう決まっています。
+       今年やるのは、その ${V.need()} を何で埋めるかの配り直しです。だから総量は増えません。
+       コードを入れるなら、その分だけ5種類の側を削ることになります。<br>
+       <span class="cy">増えるのではなく、入れ替わる。これがこの画面でやることです。</span>`,
+ def:`では、なぜプログラムの話が出てくるのか。<br>
+      2020年のAIが読んだ5種類の文章に、<b>プログラムのソースコードは1本も入っていません</b>。<br>
+      <span class="sm">（ここで言うソースコードは、人が書いたプログラムの文字列そのものです。
+      AIにプログラムを書かせる話ではありません。読ませる文章にコードを混ぜる話です。）</span>`,
+ note:`コードとして集められるのは <b>${V.cCap()}</b> までです。
+       これは、厳選した側と同じ量までにしてある、というこのゲームの決めごとです。<br>
+       集めるお金 <b>${V.cCost()}</b> も、このゲームが置いた値です。原典にコードの金額はありません。`,
+ ends:[
+  {id:'on', name:'混ぜる',
+   up:[`考える力が上がる`],
+   down:[`資金が ${V.cCost()} 減る`,
+         `もとの5種類の文章に回せる量が ${V.cCap()} ぶん減る`]},
+  {id:'off',name:'混ぜない',
+   up:[`資金を使わない`,`もとの5種類の文章に回せる量が減らない`],
+   down:[`コードのぶんの考える力が入らない`]}
+ ]},
+
+mix:{
+ lead:`倉庫にある文章を種類ごとに数えると、こうなります。合わせて <b>${LIT.store}</b>です。`,
+ def:`<b>厳選した側</b>（何度も読ませた3種類）　<b>${LIT.good}</b><br>
+      <span class="sm">　百科事典 ${LQ('百科事典')}億語　／　厳選した web ${LQ('厳選した web')}億語
+      　／　本（1） ${LQ('本（1）')}億語</span><br>
+      <b>ざっと集めた側</b>（1回も読み切らなかった2種類）　<b>${LIT.rest}</b><br>
+      <span class="sm">　本（2） ${LQ('本（2）')}億語　／　ざっと集めた web
+      ${LQ('ざっと集めた web')}億語</span><br>
+      <span class="sm">「本（1）」「本（2）」は、原典が2つに分けて数えている2つの本の束です。
+      中身の違いは、原典に書かれていません。だからこの章でも分けたまま出します。</span>`,
+ note:`読ませられる量は <b>${V.pool()}</b> です。これは、原典と同じ配り方を守ったときの量で、
+       これ以上は読ませられない量ではありません。<br>
+       <span class="sm">配合は、倉庫の中身を配り直すだけなので 0円です。金では回避できません。</span><br>
+       <span class="sm">過学習 ＝ 同じ文章を何度も読ませると、その文章に合わせすぎて、
+       読ませていない話に弱くなること。〔教科書〕</span>`,
+ ends:[
+  {id:'volume', name:'量で埋める',
+   sub:`厳選した側は、これ以上減らせない回数（<b>${V.zero()}</b>）にとどめる。
+        足りない分は、ざっと集めた側で埋める`,
+   up:[`同じ文章を余分に読ませない`],
+   down:[`考える力が下がる（ざっと集めた側の割合が、2020年のときより高くなる）`]},
+  {id:'quality',name:'質に寄せる',
+   sub:`厳選した側を、これ以上増やせない回数（<b>${V.max()}</b>）まで読ませる`,
+   up:[`考える力が上がる（ざっと集めた側の割合が下がる）`],
+   down:[`考える力が下がる（同じ文章を何度も読ませた分。上の「過学習」がこれです）`]}
+ ]}
+};
+function H(id){return {
+code:{t:D.card('code').name,b:`
+ <div class="fig">${F.mix}</div>
+ <p>ところが別の研究チームが、数学の問題を解かせる訓練で、こう報告しています。</p>
+ <div class="qt">コードを読ませたモデルは、数学の問題に強くなる。<br>
+  数学の論文を読ませても、そうはならないように見える。</div>
+ <p>この研究チームは、2つ目のほう（論文は効かない）を「意外なことに」と前置きして書いています。<br>
+ そして別の場所で、この結論には限界があり、慎重に受け取るべきだと書いています。</p>
+ <p>なぜコードだと効いて論文だと効かないのか、その理由は書かれていません。<br>
+ 自分たちがまだ調べていないことを3つ挙げて、そこで止めています。</p>`,
+ use:'数学や集計が要る仕事なら、コードも学習したモデルを選んでください。'+
+     'ただし報告した研究チーム自身が「限界があり、慎重に受け取るべき」と書いています。',
+ utag:'導出',
+ cites:[['先にこれをやった研究チームが書いていること',`
+  DeepSeekMath, arXiv:2402.03300<br>
+  　§5.1.1　コードを読ませると、数学の問題を解く力が上がる<br>
+  　§5.1.2　arXiv の論文を読ませても、数学の問題を解く力は上がらないように見える<br>
+  　　　　　「Webページは高品質な数学データの大きな可能性を持つ一方、
+  arXiv は期待したほど有益でない」<br><br>
+  前置き（§5.1.2）　「意外なことに、我々の実験によれば…」<br>
+  研究チーム自身が書いた限界（§5.1.2）　「ただしこの結論には限界があり、慎重に受け取るべきである。
+  我々はまだ調べていない：」＋ 調べていない3点<br>
+  この研究が使った文章の中心は、web から集めた 1,200億語ぶんの数学の文章です。`]],
+ doc:'#s7-1-data',dt:'§7-1 データ'},
+
+mix:{t:D.card('mix').name,b:`
+ <div class="fig">${F.sift(RUN.tokensB,RUN.code,RUN.mix)}</div>
+ <p>倉庫にある文章を種類ごとに数えると、こうなります。合わせて ${LIT.store}です。</p>
+ <div class="def">${TXT.mix.def}</div>
+ <h4>読ませられる量は、倉庫にある ${LIT.store}より多くなります</h4>
+ <p>同じ文章を2回読ませれば、読ませた量は2倍になります。<br>
+ 厳選した側を当時と同じ回数だけ読ませると、読ませられる量は全部で <b>${V.pool()}</b> になります。<br>
+ 読ませる量 ＝ それぞれの量 × 読ませる回数 だからです。</p>
+ <div class="note">この ${V.pool()} は、原典と同じ配り方を守ったときの量です。
+  これ以上は読ませられない量ではありません。<br>
+  厳選した側を平均 ${V.zero()}（＝原典が実際にやった配り方）、残りを1回、で足した数です。<br>
+  右端の ${V.max()} は、原典が実際に回した中でいちばん多い回数です。<br>
+  原典が「これが上限だ」と書いているわけではありません。このゲームがそこを右端に置きました。</div>
+ <h4>2020年のチームは、集めた文章を均等には読ませていません</h4>
+ <table class="cmp3"><tbody>${LIT.src.slice().reverse().map(r=>
+  `<tr><th>${r[0]}</th><td><b>${r[1].toLocaleString()}</b> 億語</td><td>${r[2]}</td></tr>`).join('')}
+ </tbody></table>
+ <p>量がいちばん少ない百科事典を、いちばん多く読ませています。逆になっています。<br>
+ このチームは、その理由をこう書いています。<b>「多少の過学習を受け入れて、質を買う」</b>。</p>
+ <div class="note">過学習 ＝ 同じ文章を何度も読ませると、その文章に合わせすぎて、
+  読ませていない話に弱くなること。〔教科書〕</div>
+ <p>つまりこのチームは、量が足りなかったから繰り返したのではありません。<br>
+ 弱くなる側を承知のうえで、それでも同じ文章をもう一度読ませています。<br>
+ <b>これが「質を買う」の中身です。</b></p>`,
+ use:`2020年のチームは、量では全体の7%（340億語）しかない側に、読ませる量の3分の1を使っています。
+      <br><br>この章では、その7%を「厳選した側」と呼びました。ゲームの中の呼び名です。
+      中身は「そのチームが何度も読ませた3種類」です。<br>
+      あなたの職場では、こう聞いてください。
+      「全部で何語ありますか」ではなく「そのうち、人が中身を確認したものは何語ですか」。
+      <br><br>同じものを指しているとは言えません。
+      原典は、その3種類を人が中身を確認して選んだとは書いていません。<br>
+      言えるのは、どちらも「量ではなく、中身を見た分がどれだけあるか」を聞いている、ということです。`,
+ utag:'導出',
+ cites:[
+  ['研究チームが測っている数字　〔【実測】〕',
+   'Brown et al. 2020「Language Models are Few-Shot Learners」arXiv:2005.14165 Table 2.2<br>'+
+   '　左＝倉庫にあった量　　右＝読ませる量に占める割合<br>'+
+   LIT.src.slice().reverse().map(r=>`　${r[0]}　${r[1].toLocaleString()}億語 ／ ${r[3]}`).join('<br>')+
+   '<br>　表の説明文：「あるデータセットは最大3.4回見られ、他は1回未満しか見られない」'],
+  ['研究チームが自分の判断として書いていること　〔測定値ではない ／ 原典の一次記述〕',
+   'Brown et al. 2020, arXiv:2005.14165 本文（配合の理由）<br>'+
+   '　「多少の過学習を受け入れて質を買う」<br>'+
+   '　これは、作ったチームが自分たちの判断として書いた文です。測った数字ではありません。']],
+ doc:'#s3-5-numbers',dt:'§3-5 主な数値 ── 読むのは「読ませた文章の内訳」の表と、その下の断り'}
+}[id]}
+
+const FACTS=[
+{t:'文字ではなく、かたまりで受け取っている',b:`
+ <p>AIは文字を見ていません。文章を「かたまり」に割ってから受け取ります。<br>
+ このかたまりを<b>「トークン」</b>と呼びます。序章で数えた「語」は、この単位です。</p>
+ <p>だから、こうなります。</p>
+ <div class="def">単語を逆から綴らせる　　例を見せても <b>0.44%</b> しか当たらない<br>
+  5桁の足し算　　<b>9.3%</b> しか当たらない（2桁なら 100%）</div>
+ <p>これはゲームの数値ではありません。2020年のチームが測った正答率です。</p>
+ <p>ただし、いまの製品は裏で電卓やプログラムを呼ぶので、普段は間違えません。<br>
+ 呼んだかどうかは画面に出ません。仕組みの話と、製品の実力の話は分けてください。</p>`,
+ use:'文字数えや桁の多い計算は、最初から電卓や表計算に任せてください。',utag:'資料',
+ cite:'Brown et al. 2020「Language Models are Few-Shot Learners」arXiv:2005.14165 '+
+      '§3.9.2（逆綴り）／Table 3.9（桁の足し算）　〔原典〕'},
+
+{t:'日本語がトークンを食うことには、指標名がある',b:`
+ <p>日本語は、英語と同じ内容でも多くのトークンを使います。<br>
+ この差を測る物差しには <b>parity（パリティ）</b>という名前が付いています。<br>
+ どれだけ多く使うかは、この資料では数字を出していません。</p>`,
+ use:'印象で語らずに、この名前で調べてください。',utag:'資料',
+ cite:'parity の指標名は Petrov et al. 2023　このゲームが確かめた論文32本の外です'+
+      '（資料§7-2 が指標名として挙げているもの）　〔教科書〕'},
+
+{t:'良いものは何度も読ませ、残りは1周も読ませない',b:`
+ <p>さきほどの表（読ませた回数）の出どころは、2020年のチームが公表した1枚の表です。<br>
+ 質の高いものを、何度もくり返し読ませています。逆に、量の多いものは1周も読ませていません。</p>`,
+ use:'「学習データが何兆語」だけを見ても、何を読ませたかは分かりません。',utag:'資料',
+ cite:'Brown et al. 2020, arXiv:2005.14165 Table 2.2　〔原典〕'},
+
+{t:'コードは効くのに、論文は効かない',b:`
+ <p>さきほどのカードで見た「コードは効くのに、論文は効かない」の出どころです。<br>
+ 報告した研究チームは、論文が効かない側を「意外なことに」と前置きして書いています。<br>
+ そして、なぜそうなるのかは書いていません。</p>`,
+ use:'数学が要る仕事なら、コードも学習したモデルを選ぶ。'+
+     'ただし報告した研究チーム自身が、限界があり慎重に受け取るべきだと書いています。',utag:'導出',
+ cite:'Shao et al. 2024「DeepSeekMath」arXiv:2402.03300 §5.1.1（コード）／§5.1.2（arXiv）　〔原典〕'}
+];
+const FACTS_LEAD=`ここから先は、今年の選択には使わない話です。読み飛ばしても、来年の選択は変わりません。<br>
+ <span class="sm">4つのうち2つは、この章で出てきた表とカードの<b>出どころ</b>です。<br>
+ 残りの2つは、この章では出てこなかった話です。</span>`;
+
+const overPool=()=>RUN.tokensB>D.set.pool;
+const SET={
+A:{head:'2020年と同じ配合が、そのまま成立しました',
+   s2:R=>`去年「${V.pick()}」で決めた量は ${V.need()} でした。読ませられる量で足ります。
+    無理をしていません。<br>
+    厳選した側の周回数は ${V.laps(R.e)}。ざっと集めた側は1回も読み切っていません。<br>
+    これは、2020年のチームが実際にやった配合とほぼ同じです。`,
+   s3label:'2020年のチームが書いていること',
+   s3:`<p>この配合を選んだ理由は「多少の過学習を受け入れて質を買う」でした。<br>
+    量が足りなかったからではありません。質を選ぶために、わざとこう偏らせています。</p>`,
+   s4:'Brown et al. 2020, arXiv:2005.14165 Table 2.2 ／ 本文（配合の理由）'},
+B:{head:'去年増やした量の請求書が、今年きています',
+   s2:R=>`去年あなたは「${V.pick()}」を選びました。読ませる量は ${V.need()} です。<br>
+    倉庫の文章を繰り返して作れる量は ${V.pool()} までです。だから今年は足りません。<br>
+    足りない分は、同じ文章をもう一度読ませて埋めました。<br><br>
+    ここで代償が付きます。<br>
+    <span class="sm">量で埋めても、質に寄せても、ざっと集めた側の割合は、
+    2020年のときより高いままです。<br>
+    これは金では戻せません。倉庫に無いものは買えないからです。</span><br><br>
+    去年の決算で見た「こちらの方が賢くなる」は、<b>同じ費用での配り方</b>の話でした。<br>
+    読ませる量そのものを増やした分は、今年の配合で払います。<br>
+    3枚を比べた表の「考える力」は、去年つくった時点の数です。今年の配合はそこから動きます。`,
+   s3label:'2つの研究チームが書いていること',
+   s3:`<p>2020年のチームが集められた厳選分も ${LIT.good}しかなく、最大3.4回まで読ませて使い切っています。<br>
+    「同じ費用なら、パラメータを抑えて読ませる量を増やすべきだった」は、
+    2022年に別の研究チーム（Chinchilla）が主張した内容です。<br>
+    ただし、当時それだけの文章を集められたかどうかは、2020年の論文には書かれていません。</p>`,
+   s4:'Brown et al. 2020「Language Models are Few-Shot Learners」'+
+      'arXiv:2005.14165 Table 2.2（340億語は厳選3種の合計。3.4回は同じ表の値）<br>'+
+      'Hoffmann et al. 2022「Training Compute-Optimal Large Language Models」'+
+      'arXiv:2203.15556（このゲームが確かめた論文32本の外です）'},
+/* 【A'】★「安く済ませる」を選んでいた場合に、A の段2 へ1行だけ足す */
+Alite:`ただし、去年決めた規模が小さいことは、今年の配合では変えられません。<br>
+ 配合で足せる分は他の作り方と同じですが、そこから届く高さは、去年の規模で決まります。`,
+fore:`来年は、このAIの喋り方を直します。中身ではなく、応じ方です。<br>
+ 人を雇って、答えを2つ並べて選ばせます。`
+};
+
+/* ══════════ 状態と描画 ══════════ */
+let S={phase:'intro',ip:0,seen:[0],sel:'code'};
+const money=()=>D.set.budget-RUN.spent-devNow()-C.payroll(D,RUN)+(RUN.bonus||0);
+const devNow=()=>RUN.code?D.card('code').cost:0;
+/* ★選んだ端の名前。★★名前の正本は1箇所だけ（★カードの文面 TXT ／ 数値の側は ch2.data.js）。
+   ★★以前ここに '混ぜる'／'混ぜない' を直に書いていた（★同じ語が2箇所にあった） */
+const endName=id=>{
+ if(id==='code'){if(RUN.code===null)return null;
+  const e=TXT.code.ends.find(x=>x.id===(RUN.code?'on':'off'));return e?e.name:null}
+ const o=RUN.mix===null?null:D.opt('mix',RUN.mix);return o?o.name:null;
+};
+/* ★★まだ選んでいないカード（→G23）。★決算に入れるかの判定はこの1本だけで決める */
+const decided=id=>id==='code'?RUN.code!==null:RUN.mix!==null;
+const undecidedIds=()=>D.cards.filter(c=>!decided(c.id)).map(c=>c.id);
+/* ★秘書の欄に足す1行（★あと何枚か／2枚とも決まったか） */
+const restLine=()=>{const n=undecidedIds().length;
+ return n?`<br><span style="color:#bcccdd">まだ選んでいないカードが ${n}枚 あります。</span>`
+        :`<br><span class="hl">${D.cards.length}枚とも選びました。「${D.year}年目を締める」へ。</span>`};
+/* ★最後に秘書が言ったこと（★窓の大きさが変わると言い直す。→ say()・C.boot） */
+let lastSay=null;
+
+function paintTop(){
+ /* ★上部に出すのは【年】だけである（★決定1：時間の表示は全部やめた）。
+    ★★2026-08-20 に「4 /APR」（★月）を落とした。★ch1.html は年と「／ 5年のうち」だけを出している */
+ C.top(D,money(),D.set.rival0*Math.pow(1+D.set.rivalUp,D.year-1),
+  {year:D.year+'年目',q:'／ 5年のうち'});
+}
+
+function paintMenu(){
+ if(S.phase==='intro'){
+  let h=`<div class="grpL ol">第2章 ── 麻衣の説明</div>`;
+  INTRO_T.forEach((t,i)=>{const sc=S.ip===i;
+   h+=`<div class="mi ${sc?'sel':''}" data-ip="${i}"><div class="t${sc?'':' ol'}">${i+1}. ${t}</div></div>`});
+  h+=`<div class="grpL ol">本編</div>
+   <div class="mi fin" data-id="__start"><div class="t ol">第2章をはじめる</div>
+    <div class="sub ol">配合を決める</div></div>`;
+  /* ★★序章の口は【章の説明の場面にも】置く（★決定10 の後半。★どちらの場面からでも開ける） */
+  h+=`<div class="grpL ol">説明</div>
+   <div class="mi" data-id="__intro"><div class="t ol">はじめの説明</div>
+    <div class="sub ol">序章 ── 麻衣の説明</div></div>`;
+  document.getElementById('menu').innerHTML=h;
+  document.querySelectorAll('.mi').forEach(el=>el.onclick=()=>{
+   const id=el.dataset.id;
+   if(id==='__intro'){C.openIntro();return}
+   id==='__start'?startGame():iGo(+el.dataset.ip)});
+  return}
+ let last='',h='';
+ D.cards.forEach(c=>{
+  if(c.grp!==last){h+=`<div class="grpL ol">${c.grp}</div>`;last=c.grp}
+  const sc=S.sel===c.id,o=sc?'':' ol',dn=decided(c.id);
+  h+=`<div class="mi ${sc?'sel':''}${dn?' done':''}" data-id="${c.id}"><div class="t${o}">${c.name}</div>
+   <div class="sub${o}">${D.oku(c.cost)}億円 ／ ${dn?endName(c.id):'まだ選んでいません'}</div></div>`});
+ /* ★★2枚とも選ぶまで決算に入れない（★入れると、押していない配合で結果が出る） */
+ const nd=undecidedIds();
+ h+=`<div class="grpL ol">決算</div>
+  <div class="mi fin${nd.length?' gone':''}" data-id="__end"><div class="t ol">${D.year}年目を締める</div>
+   <div class="sub ol">${nd.length?`先に ${nd.length}枚 を選んでください`:'結果を見る'}</div></div>
+  <div class="grpL ol">説明</div>
+  <div class="mi" data-id="__chIntro"><div class="t ol">この章の説明</div>
+   <div class="sub ol">この章の入口にもどる</div></div>
+  <div class="mi" data-id="__intro"><div class="t ol">はじめの説明</div>
+   <div class="sub ol">序章 ── 麻衣の説明</div></div>
+  <div class="mi" data-id="__doc"><div class="t ol">資料を開く</div>
+   <div class="sub ol">AIの原理 ／ 原論文32本</div></div>`;
+ document.getElementById('menu').innerHTML=h;
+ document.querySelectorAll('.mi').forEach(el=>el.onclick=()=>{
+  const id=el.dataset.id;
+  if(id==='__end'){settle();return}
+  if(id==='__chIntro'){reIntro();return}
+  /* ★★序章を開く（★決定10 の後半。★土台が持つ。★戻り先は intro.html が ?from= で読む） */
+  if(id==='__intro'){C.openIntro();return}
+  if(id==='__doc'){C.openDoc('');return}
+  S.sel=id;paintPane();paintMenu()});
+}
+
+function paintIntro(){
+ const i=S.ip,last=i===INTRO.length-1;
+ document.querySelector('.panel').classList.add('full');
+ document.documentElement.classList.add('intro');
+ document.getElementById('pane').innerHTML=`
+  ${C.head(`${i+1}. ${INTRO_T[i]}`,[['第2章',i+1,'/ '+INTRO.length]])}
+  <div class="pc">
+   <div class="ibody">${INTRO[i]}</div>
+   <div class="row">
+    <button class="btn" ${i?'':'disabled'} onclick="iBack()">戻る</button>
+    <button class="btn go" onclick="iNext()">${last?'配合を決める':'次へ'}</button>
+   </div></div>`;
+}
+function iGo(i){S.ip=i;if(!S.seen.includes(i))S.seen.push(i);
+ paintPane();paintMenu();const b=document.querySelector('.ibody');if(b)b.scrollTop=0}
+function iNext(){S.ip<INTRO.length-1?iGo(S.ip+1):startGame()}
+function iBack(){if(S.ip)iGo(S.ip-1)}
+function startGame(){S.phase='play';
+ document.querySelector('.panel').classList.remove('full');
+ document.documentElement.classList.remove('intro');
+ paintMenu();paintPane();say(null)}
+function reIntro(){S.phase='intro';iGo(0);say(null)}
+
+const CMP_H='選べる配合を比べる';   // ★見出しは1箇所（★カードの画面と決算で同じ表である）
+const CMP_K=['開発費','厳選した側を読ませた回数','5種類の文章に回した量',
+             'ざっと集めた側の割合','考える力'];
+const cmpId=(code,mix)=>(code?'on':'off')+'|'+mix;
+const codeName=on=>{const e=TXT.code.ends.find(x=>x.id===(on?'on':'off'));return e?e.name:''};
+function cmpRows(){
+ const st=C.stFor(D,RUN), rows=[];
+ [true,false].forEach(code=>D.card('mix').opts.forEach(o=>{
+  const R=D.settle(Object.assign({},st,{code,mix:o.id}));
+  rows.push({id:cmpId(code,o.id),
+   name:`${codeName(code)} ／ ${o.name}`,
+   cells:[`<b>${D.oku(R.dev)}</b> 億円`,
+          `<b>${V.laps(R.e)}</b>`,
+          `<b>${D.words(Math.round(R.den*10))}</b>`,
+          `<b>${R.low.toFixed(1)}</b> %`,
+          `<b>${C.n1(R.think)}</b>`]});
+ }));
+ return rows;
+}
+/* ★目印は【2枚とも選んでいるとき】だけ付ける（★押していない行を光らせない。→G23） */
+const cmpSel=()=>(decided('code')&&decided('mix'))?cmpId(RUN.code,RUN.mix):null;
+
+function paintPane(){
+ if(S.phase==='intro')return paintIntro();
+ const c=D.card(S.sel),t=TXT[c.id];
+ /* ★★null ＝ まだ選んでいない。★C.ends() が「まだ選んでいません」を先頭に出す（→G23） */
+ const cur=c.id==='code'?(RUN.code===null?null:(RUN.code?'on':'off')):RUN.mix;
+ document.getElementById('pane').innerHTML=`
+  ${C.head(c.name,[['費用',D.oku(c.cost),'億円','y']])}
+  <div class="pc"><div class="cbody">
+   <p class="lead">${t.lead}</p>
+   <div class="def">${t.def}</div>
+   <div class="note">${t.note}</div>
+   ${C.cmpHead(CMP_H)}
+   ${C.cmp({keys:CMP_K,rows:cmpRows(),sel:cmpSel(),lab:'← いま選んでいる配合'})}
+   ${C.note('「考える力」は、この配合で今年できあがる値です。'+
+     '去年つくった時点の値から、今年の配合で動いたあとの数です。')}
+   ${C.ends(c.id,t.ends,cur)}
+   ${C.src(c.tag,c.cite)}
+  </div>
+  <div class="row"><button class="btn more" onclick="C.pop(H('${c.id}'))">くわしく知る</button></div>
+  </div>`;
+}
+function pick(cardId,endId){
+ if(cardId==='code')RUN.code=(endId==='on'); else RUN.mix=endId;
+ paintTop();paintMenu();paintPane();say(cardId);
+}
+function say(last){
+ /* ★★何を言ったかを覚える（★窓の大きさが変わると言い直すため。★ch1.html の lastSay と同じ形）。
+    ★★覚えないと、★窓を動かした拍子に「まだ選んでいません」の断りが消えて、
+      ★一般の案内文に戻る（★実測：★headless で窓を 1100×900 にした瞬間に戻った） */
+ if(last!==undefined)lastSay=last;
+ if(S.phase==='intro'){
+  return C.say(`${C.menuSide()}のメニューから、いつでもこの説明に戻れます。<br>
+   読み終わったら <span class="hl">「配合を決める」</span> を押してください。`)}
+ if(last==='__need'){                       /* ★決算に入ろうとしたが、まだ選んでいない（→G23） */
+  const nd=undecidedIds();
+  if(!nd.length)return say(null);
+  return C.say(`まだ選んでいないカードが ${nd.length}枚 あります。<br>
+   <span class="hl">${D.card(nd[0]).name}</span> の「上がるもの／下がるもの」を読んで、
+   どちらかを押してください。`)}
+ if(!last){
+  const n=undecidedIds().length;
+  return C.say(n
+   ?`${C.menuSide()}のメニューから選んでください。
+     今年決めるのは <span class="hl">配合</span> です。<br>
+     <span style="color:#bcccdd">カードは ${D.cards.length}枚 あります。まだ選んでいないカードが ${n}枚 あります。<br>
+     ${D.cards.length}枚とも選ぶと「${D.year}年目を締める」に進めます。</span>`
+   :`${D.cards.length}枚とも選びました。<span class="hl">「${D.year}年目を締める」</span> に進んでください。<br>
+     <span style="color:#bcccdd">選び直しても構いません。結果は決算で分かります。</span>`)}
+ if(last==='code'){
+  return C.say((RUN.code
+   ?`コードを混ぜます。<span class="ok">考える力が上がります。</span><br>
+     <span style="color:#bcccdd">そのぶん、もとの5種類に回せる量が減ります。</span>`
+   :`コードは混ぜません。<span style="color:#bcccdd">資金は減らず、5種類に回せる量も減りません。</span>`)
+   +restLine())}
+ const o=D.opt('mix',RUN.mix);
+ C.say(`配合を <span class="hl">${o.name}</span> にしました。<br>
+  <span style="color:#bcccdd">この配り方が良かったかは、決算で分かります。</span>`+restLine());
+}
+
+function settle(){
+ const nd=undecidedIds();
+ if(nd.length){
+  S.sel=nd[0];paintMenu();paintPane();
+  return say('__need')}
+ const st=C.stFor(D,RUN);
+ const R=D.settle(st);
+ const B=overPool(), K=B?SET.B:SET.A;
+ const s2=K.s2(R)+(!B&&RUN.pick==='lite'?'<br><br>'+SET.Alite:'');
+ const left=C.leftOf(RUN,R);
+
+ const s1=`
+  ${C.bars(R.bars,['考える力'])}
+  ${C.note('この章で動いたのは <b>考える力</b> 1本だけです（↕ の付いた行）。'+
+    '<br>ほかの4本は、去年の値をそのまま引き継いでいます。')}
+  <h4>配合の中身</h4>
+  ${C.mline('去年「'+V.pick()+'」で決めた、読ませる量',V.need())}
+  ${C.mline('倉庫の文章を繰り返して作れる、読ませる量の上限',V.pool())}
+  ${C.mline('厳選した側を平均何回読ませたか',V.laps(R.e))}
+  ${C.mline('そのうち、厳選した側に使った量',D.words(Math.round(R.goodB*10)))}
+  ${C.mline('そのうち、5種類の文章に使った量',D.words(Math.round(R.den*10)))}
+  ${C.mline('読ませた量のうち、ざっと集めた側が占めた割合',R.low.toFixed(1)+'%')}
+  <h4>考える力の内訳</h4>
+  ${C.mline('去年つくったAIの考える力',C.n1(st.think))}
+  ${C.msub('去年「'+V.pick()+'」を選んだ結果です。今年の選択では変わりません。')}
+  ${C.mline('同じ文章を何度も読ませた分',C.sign(R.d1),R.d1<0?'#ff9d90':null)}
+  ${C.msub('厳選した側を平均 '+V.laps(R.e)+' 読ませました。'+
+    '回数を増やすほどここが下がります。増やさなければ 0 です。')}
+  ${C.mline('ざっと集めた側の割合の分',C.sign(R.d2),R.d2<0?'#ff9d90':null)}
+  ${C.msub('ざっと集めた側が '+R.low.toFixed(1)+'% を占めました。'+
+    '2020年のときより高いと下がり、低いと上がります。')}
+  ${C.mline('コードを混ぜた分',C.sign(R.codeAdd),R.codeAdd>0?'#5ed093':null)}
+  ${C.msub('混ぜなかった場合は 0 です。')}
+  ${C.mline('今年の考える力',C.n1(R.think))}
+  <h4>使ったお金</h4>
+  ${C.mline('開発費',D.oku(R.dev)+' 億円')}
+  ${C.mline('人件費（'+D.year+'年目）',D.oku(R.fixed)+' 億円（'+RUN.staff+'名）')}
+  ${C.mline('予算の残り',D.oku(left)+' 億円')}
+  ${C.note('今年も製品がありません。<b>売値を決めるのは第3章です。</b>')}`;
+
+ const tail=`
+  ${C.mai(SET.fore,'#f5c14e')}
+  <h4>章末の事実（判断には使いません）</h4>
+  ${C.note(FACTS_LEAD)}
+  ${FACTS.map(f=>C.fact(f)).join('')}
+  <div class="row">
+   <button class="btn" onclick="location.reload()">やり直す</button>
+   <button class="btn go" onclick="toCh3()">第3章へ</button></div>
+  <details class="cite"><summary>この画面の数字の出どころ</summary>
+   金額は「計算1日＝1億円」で換算しています（論文に金額の記載はありません）。<br>
+   文章の量・読ませた回数・読ませる量に占める割合は Brown et al. 2020, arXiv:2005.14165 Table 2.2。
+   コードが数学に効く話は Shao et al. 2024, arXiv:2402.03300 §5.1.1・§5.1.2。<br>
+   コードを集めるお金と集められる量、および考える力の増減の<b>大きさ</b>は、
+   ゲームのために置いた値です（向きだけが原典から来ています）。<br>
+   <b>5本のバーの目盛り・人件費・他社の力は、ゲームのために置いた値です。</b></details>`;
+
+ C.dlg(C.settleFrame({title:'第2章 決算',head:K.head,
+  s1,
+  /* ★★段2 の中に表を置く（★第1章と同じ位置。★段2 は「なぜそうなったか」＝答え合わせの段である）
+     ★★目印の語は決算の側の語にする（★カードの画面は「← いま選んでいる配合」） */
+  s2:C.mai(s2,'#67d3e8')
+   +C.cmpHead(CMP_H)
+   +C.cmp({keys:CMP_K,rows:cmpRows(),sel:cmpSel(),lab:'← これを選びました'})
+   +C.note('この表は、カードを選ぶ画面に出ていたものと同じです。'+
+     '「やり直す」を押せば、ほかの配合も試せます。'),
+  s3label:K.s3label,s3:K.s3,s4:K.s4,tail}));
+ C.closeYear(D,R,RUN);
+ C.run=RUN;
+}
+function toCh3(){C.save(RUN);location.href='ch3.html'}
+
+/* ══════════ 起動 ══════════ */
+C.boot(()=>{if(S.phase!=='intro')say(lastSay)});
+paintTop();paintMenu();paintPane();say(null);
+</script>
+</body>
+</html>
