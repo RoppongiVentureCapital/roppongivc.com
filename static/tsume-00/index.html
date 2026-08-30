@@ -1,0 +1,2123 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow,noarchive">
+<title>詰めKaggle 00 ── AIは「巨大な関数」でできている（対話版）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@300;400;600;700&family=Inter:wght@300;400;500;600;700&family=Noto+Serif+JP:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+ --bg:#fff; --white:#fff; --black:#000;
+ --gray-100:#f9f9f9; --gray-200:#d9d9d9; --gray-500:#6e6e6e; --gray-600:#3f3f3f;
+ --accent:#019949;
+ --sans:'Inter',system-ui,sans-serif;
+ --serif:'Source Serif 4','Noto Serif JP',Georgia,serif;
+ --content-w:52.625rem;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--black);font-family:var(--sans);
+ -webkit-font-smoothing:antialiased}
+.wrap{max-width:var(--content-w);margin:0 auto;padding:0 1.5rem 5rem}
+.top{border-bottom:1px solid var(--gray-200);margin-bottom:2.4rem}
+.top .in{max-width:var(--content-w);margin:0 auto;padding:1.1rem 1.5rem;font-size:13px;
+ letter-spacing:.14em;text-transform:uppercase;color:var(--gray-500)}
+.top .in .tag{display:block;margin-top:.3rem;font-size:12.5px;letter-spacing:0;
+ text-transform:none;color:var(--gray-500);line-height:1.6;font-family:var(--serif)}
+.eyebrow{font-size:13px;font-weight:500;letter-spacing:.16em;text-transform:uppercase;
+ color:var(--gray-500);margin-bottom:.9rem}
+h1{font-family:var(--serif);font-size:2.1rem;font-weight:300;line-height:1.35;margin:0 0 .8rem}
+h2{font-family:var(--serif);font-size:1.45rem;font-weight:300;line-height:1.4;margin:0 0 1rem}
+h3{font-size:16px;font-weight:600;margin:1.4rem 0 .6rem}
+.lead{font-size:16px;line-height:1.9;color:var(--gray-600);margin:0 0 1.1rem}
+.lead b{color:var(--black)}
+.meta{font-size:13px;letter-spacing:.1em;color:var(--gray-500);padding-bottom:1.2rem;
+ border-bottom:1px solid var(--gray-200);margin-bottom:1.2rem}
+.steps{display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:2.4rem}
+.steps div{flex:1 1 5rem;padding:.55rem .3rem;text-align:center;font-size:12px;
+ border:1px solid var(--gray-200);color:var(--gray-500);background:var(--white)}
+.steps div.open{border-color:var(--black);color:var(--black)}
+.steps div.done{background:var(--black);border-color:var(--black);color:var(--white)}
+.card{border:1px solid var(--gray-200);padding:2rem;margin-bottom:2rem;background:var(--white)}
+.tagline{font-size:13px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;
+ color:var(--gray-500);margin-bottom:.9rem}
+.figbox{background:var(--gray-100);border:1px solid var(--gray-200);padding:1rem;margin:1.3rem 0}
+#p2,#p2m{max-width:420px;display:block;margin:0 auto}
+.panel{background:var(--gray-100);border:1px solid var(--gray-200);padding:1rem;margin:1.3rem 0}
+.panel .ctl{margin:.9rem 0 .2rem}
+.panel .togs{margin-top:.7rem}
+.panel .gauge{margin-top:.9rem}
+.panel .verdict{margin-top:.8rem;background:var(--white)}
+.two{display:flex;gap:1rem;flex-wrap:wrap}
+.two>div{flex:1 1 15rem;min-width:0}
+.cap{font-size:12.5px;color:var(--gray-500);margin-bottom:.5rem;line-height:1.5}
+svg{display:block;width:100%;height:auto}
+
+.stick{position:sticky;top:0;z-index:5;background:var(--gray-100);
+       padding-bottom:.35rem;box-shadow:0 6px 8px -6px rgba(0,0,0,.18)}
+.stick svg{max-height:42vh;width:auto;max-width:100%;margin:0 auto}
+.stickbot{position:sticky;bottom:0;z-index:5;background:var(--gray-100);
+          padding-top:.4rem;box-shadow:0 -6px 8px -6px rgba(0,0,0,.18)}
+.ctl{margin:1.1rem 0 .2rem}
+.ctl label{display:flex;justify-content:space-between;align-items:baseline;font-size:14px;
+ margin-bottom:.35rem;gap:1rem}
+.ctl label span.n{font-weight:600;font-variant-numeric:tabular-nums;white-space:nowrap}
+input[type=range]{width:100%;accent-color:#000;height:1.4rem}
+.togs{display:flex;gap:.6rem;flex-wrap:wrap;margin-top:1.1rem;align-items:center}
+.btn{background:none;border:1px solid var(--gray-200);padding:.6rem 1.15rem;font-size:14px;
+ font-family:var(--sans);color:var(--black);cursor:pointer;transition:all .15s}
+.btn:hover{border-color:var(--black);background:var(--gray-100)}
+.btn.on{background:var(--black);color:var(--white);border-color:var(--black)}
+.btn.go{background:var(--black);color:var(--white);border-color:var(--black)}
+.btn.sm{font-size:13px;padding:.45rem .85rem;color:var(--gray-500)}
+.btn:disabled{opacity:.35;cursor:default}
+.gauge{margin:1.2rem 0 0}
+.gauge .row{display:flex;align-items:baseline;gap:.7rem;margin-bottom:.5rem}
+.gauge .u{font-size:14px;color:var(--gray-500)}
+.gtrack{height:10px;background:#e9e9e9;position:relative;overflow:hidden}
+.gfill{display:block;height:100%;background:#c00;transition:width .12s linear}
+.gfill.ok{background:var(--accent)}
+.gmark{position:absolute;top:-3px;bottom:-3px;width:2px;background:#000}
+.gcap{display:flex;justify-content:space-between;font-size:12px;color:var(--gray-500);
+ margin-top:.35rem}
+.read{font-size:15px;line-height:1.8;margin:.9rem 0 0;font-variant-numeric:tabular-nums}
+.big{font-family:var(--serif);font-size:2rem;font-weight:400;font-variant-numeric:tabular-nums;
+ line-height:1}
+.calc{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13.5px;line-height:2;
+ background:var(--white);border:1px solid var(--gray-200);padding:.9rem 1.1rem;margin:.9rem 0;
+ overflow-x:auto;white-space:pre}
+.verdict{margin-top:1.2rem;padding:.9rem 1.1rem;border:1px solid var(--gray-200);font-size:14px;
+ line-height:1.75;background:var(--gray-100)}
+.verdict.ok{border-color:var(--accent);background:#f2fbf6}
+.verdict.stuck{border-color:#c00;background:#fdf4f4}
+.next{margin-top:1rem;font-size:13px;color:var(--gray-500)}
+.src{border-left:2px solid var(--black);padding:.9rem 0 .9rem 1.1rem;margin:1.4rem 0;
+ font-size:14px;line-height:1.85;color:var(--gray-600)}
+.src .h{font-size:12px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;
+ color:var(--black);margin-bottom:.4rem}
+.src q{font-style:normal;color:var(--black)}
+.src .ref{font-size:13px;color:var(--gray-500);margin-top:.4rem;display:block}
+.box{border:1px solid var(--gray-200);padding:1.1rem 1.3rem;margin:1.3rem 0;background:var(--gray-100)}
+.box .h{font-size:12px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;
+ margin-bottom:.5rem}
+.mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+.sc-row{display:flex;align-items:center;gap:.75rem;margin-bottom:.6rem}
+.sc-label{width:3.2rem;font-size:14px;text-align:right;flex-shrink:0}
+.sc-track{flex:1;background:#e9e9e9;height:9px;position:relative}
+.sc-fill{display:block;height:100%;background:var(--black);transition:width .1s linear}
+.sc-fill.hit{background:var(--accent)}
+.sc-pct{width:3.4rem;font-size:14px;font-variant-numeric:tabular-nums}
+.sc-track .goal{position:absolute;top:-3px;bottom:-3px;width:1px;background:#c00}
+details{border-top:1px solid var(--gray-200);padding-top:1rem;margin-top:1.5rem}
+summary{font-size:14px;font-weight:500;cursor:pointer}
+.lg{font-size:14px;line-height:1.9;color:var(--gray-600);margin-top:.9rem}
+.lg table{width:100%;border-collapse:collapse;margin:.8rem 0;font-size:13px}
+.lg th,.lg td{padding:.45rem .6rem;border:1px solid var(--gray-200);text-align:left}
+.lg th{background:var(--gray-100);font-weight:600}
+.dtab{width:100%;border-collapse:collapse;font-size:12.5px;margin:.9rem 0;
+ font-variant-numeric:tabular-nums}
+.dtab th,.dtab td{padding:.35rem .5rem;border:1px solid var(--gray-200);text-align:right}
+.dtab th{background:var(--gray-100);font-weight:600;font-size:11.5px}
+.dtab tr.sum td{background:#f2fbf6;border-top:2px solid var(--black)}
+.mnum{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13px;line-height:1.9;
+ background:var(--white);border:1px solid var(--gray-200);padding:.6rem .8rem;margin-top:.5rem;
+ white-space:pre}
+.hide{display:none}
+.foot{border-top:1px solid var(--gray-200);margin-top:3rem;padding-top:1.5rem;font-size:13px;
+ color:var(--gray-500);line-height:1.8}
+.arrow{text-align:center;font-size:22px;color:var(--gray-500);margin:.5rem 0}
+@media (max-width:430px){
+  .wrap{padding-left:.5rem;padding-right:.5rem}
+  .card{padding-left:.75rem;padding-right:.75rem}
+  .figbox,.panel{padding-left:.5rem;padding-right:.5rem}
+  .top .in{padding-left:.5rem;padding-right:.5rem}
+  #p1 text,#p3 text,#p4 text,#p5 text,#p2d text,#mvFig text,#p2b text{font-size:17px}
+  .cl .ic{width:38px;height:38px}
+  .cl{gap:.5rem;margin-bottom:.7rem}
+  .cl .bb{font-size:14.5px;padding:.55rem .75rem;line-height:1.8}
+  .cast2{padding:.7rem .75rem}
+  .cast2 .ic{width:46px;height:46px}
+  .cast2 .row{gap:.6rem}
+  .cast2 .tx2{font-size:13px;line-height:1.8}
+}
+
+.cast2{border:1px solid var(--gray-200);background:var(--gray-100);
+  padding:1rem 1.1rem;margin:0 0 2.4rem}
+.cast2 .row{display:flex;gap:.9rem;align-items:flex-start}
+.cast2 .row+.row{margin-top:.9rem;padding-top:.9rem;border-top:1px solid var(--gray-200)}
+.cast2 .ic{width:54px;height:54px;border-radius:50%;flex-shrink:0;display:block;
+  border:2px solid var(--white);box-shadow:0 0 0 1px var(--gray-200),0 1px 3px rgba(0,0,0,.10)}
+.cast2 .nm2{display:block;font-size:15.5px;font-weight:700;margin-bottom:.2rem}
+.cast2 .rb{font-size:12px;font-weight:400;color:var(--gray-500);margin-left:.45rem}
+.cast2 .tx2{font-size:13.5px;line-height:1.85;color:var(--gray-600)}
+.cast2 .tx2 b{color:var(--black)}
+.cv{margin:1.6rem 0}
+.cl{display:flex;gap:.75rem;align-items:flex-start;margin:0 0 .85rem}
+.cl .ic{width:46px;height:46px;border-radius:50%;flex-shrink:0;display:block;
+  border:2px solid var(--white);box-shadow:0 0 0 1px var(--gray-200),0 1px 3px rgba(0,0,0,.10)}
+.cl .bb{position:relative;min-width:0;padding:.65rem .95rem;font-size:15px;line-height:1.9;
+  border:1px solid var(--gray-200);border-radius:.85rem;background:var(--white);color:var(--gray-600)}
+.cl .bb b{color:var(--black)}
+.cl .bb:before{content:'';position:absolute;left:-6px;top:15px;width:10px;height:10px;
+  background:inherit;border-left:1px solid;border-bottom:1px solid;border-color:inherit;
+  transform:rotate(45deg)}
+.cl.m .bb{background:#eef4fa;border-color:#c3d9ee}
+.cl.d .bb{background:#fff7ea;border-color:#efd6a6}
+.cl .nm{display:block;font-size:11.5px;font-weight:700;letter-spacing:.07em;margin-bottom:.15rem}
+.cl.m .nm{color:#2f6fb5}
+.cl.d .nm{color:#b0700c}
+.keyh{font-size:11.5px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--gray-500);margin:1.6rem 0 .5rem}
+</style>
+</head>
+<body>
+<div class="top"><div class="in">詰めKaggle<span class="tag">Kaggleでやることを工程ごとに切り分けて、1問＝1判断にしたもの。データは用意します。答えは1つに決まります。</span></div></div>
+<div class="wrap">
+
+<div class="eyebrow">詰めKaggle 00 ／ はじめの1問</div>
+<h1>AIは「巨大な関数」でできている</h1>
+<p class="lead"><b>つまみ（パラメータ）を2個から始めて、増やしていきます。</b></p>
+<div class="meta">全5問 ｜ 約10分 ｜ 中心にあるのは掛け算と足し算</div>
+
+<div id="cast2"></div>
+
+<div class="steps" id="steps">
+ <div class="open">1　つまみを回す</div>
+ <div>2　坂を下る</div>
+ <div>3　2個では足りない</div>
+ <div>4　つまみを増やす</div>
+ <div>5　確率に直す</div>
+</div>
+
+<div class="card" id="c1">
+<div class="tagline">Question 1</div>
+<h2>つまみを2個、手で回してみる</h2>
+<div id="d1a"></div>
+<div class="box">
+ <div class="h">いまから作る箱</div>
+ <div style="text-align:center;font-size:15px;line-height:2.2">
+  <b>勉強した時間</b>　→　<span class="mono" style="border:1px solid #000;padding:.35rem .9rem">
+  y = a × 時間 + b</span>　→　<b>テストの点数</b>
+ </div>
+</div>
+<div id="d1b"></div>
+
+<div class="panel">
+ <div class="stick"><svg id="p1" viewBox="0 0 560 330"></svg></div>
+ <div class="cap" style="margin:.2rem 0 .5rem"><b style="color:#c00">赤い線</b>
+  ＝ 点と線の<b>縦のずれ</b>。その長さが、下の式の各項になります</div>
+<div class="ctl">
+ <label for="b1"><span>つまみ <b>b</b>　線の高さ（0時間のときの点数）</span><span class="n" id="b1v">0</span></label>
+ <input type="range" id="b1" min="0" max="60" step="1" value="0">
+</div>
+<div class="ctl">
+ <label for="a1"><span>つまみ <b>a</b>　線の傾き（1時間ごとに何点増えるか）</span><span class="n" id="a1v">0.0</span></label>
+ <input type="range" id="a1" min="0" max="150" step="1" value="0">
+</div>
+
+ <div class="calc" id="resEq" style="margin:.6rem 0 0"></div>
+</div>
+
+<div class="gauge">
+ <div class="row"><span class="big" id="e1">–</span><span class="u">点　＝ ずれ
+  （<b style="color:#c00">赤い線</b>が長い人を重く数えます）</span></div>
+ <div class="gtrack"><span class="gfill" id="g1" style="width:100%"></span>
+  <span class="gmark" id="m1"></span></div>
+ <div class="gcap"><span>0（ぴったり）</span><span>目標 3.0 ↑</span><span>30</span></div>
+</div>
+
+<div class="verdict" id="j1">赤い線が短くなるように、2つのつまみを回してください。
+ <b>長い線から先に短くすると早いです。</b></div>
+
+<div id="d2"></div>
+
+<div id="r1" class="hide">
+ <div id="d3"></div>
+ <div class="keyh">この問で覚えること</div>
+ <div class="verdict ok">
+  <b>いまやったことが「学習」です。</b>AIも同じで、
+  違うのは<b>つまみが 1,750億個</b>あることだけです。
+ </div>
+</div>
+<div class="src">
+ <div class="h">役に立つところ</div>
+ <b>AIは「入れると出てくる箱」。</b>中身は掛け算と足し算で、つまみの数字を変えているだけです。
+ <span class="ref">Brown et al. 2020 Table 2.1</span>
+</div>
+</div>
+
+<div class="card" id="c2">
+<div class="tagline">Question 2</div>
+<h2>ずれの「地形」を下る</h2>
+<div id="d4"></div>
+
+<div class="figbox">
+ <div class="cap">データと線　── <b>つまみを動かすと、この線が動きます</b></div>
+ <svg id="p2" viewBox="0 0 300 250"></svg>
+</div>
+
+<div class="panel">
+   <div class="cap">ずれの地図（真上から見たところ。オレンジが歩いた跡）</div>
+   <svg id="p2m" viewBox="0 0 300 250"></svg>
+   <div class="cap" style="font-size:12px;color:#3f3f3f;text-align:left;margin-top:.3rem">
+    緑の筋が谷底。<b>オレンジが歩いた跡です。</b></div>
+ <div class="stickbot">
+ <div class="ctl">
+  <label for="lr"><span><b>1歩の大きさ</b>（学習率）</span><span class="n" id="lrv">0.030</span></label>
+  <input type="range" id="lr" min="5" max="80" step="1" value="30">
+ </div>
+ <div class="togs">
+  <button class="btn go" id="step1">1歩ずつ</button>
+  <button class="btn go" id="step10">10歩</button>
+  <button class="btn" id="rst2">はじめの場所に戻す</button>
+ </div>
+ <div class="gauge">
+  <div class="row"><span class="big" id="e2">–</span><span class="u">点　＝ ずれ　／
+   <span id="st2">0</span> 歩</span></div>
+  <div class="gtrack"><span class="gfill" id="g2" style="width:100%"></span>
+   <span class="gmark" id="m2"></span></div>
+  <div class="gcap"><span>0</span><span>目標 1.5 ↑</span><span>30</span></div>
+ </div>
+ </div>
+ <div class="verdict" id="j2">「1歩ずつ」を数回押して、地図の上で点が動くのを見てください。</div>
+</div>
+
+<div class="figbox">
+ <div class="cap">ずれの地形を斜めから見た図　── 緑の筋が谷底、
+  <span style="color:#ff8a2b">オレンジの丸</span>がいまいる場所。
+  <span style="color:var(--gray-500)">高さは見やすいように誇張しています</span></div>
+ <svg id="p2b" viewBox="0 0 560 172"></svg>
+</div>
+
+<div id="d5"></div>
+
+<h3>どこがダメかは、表を見れば分かります</h3>
+<div id="d6"></div>
+
+<div class="panel">
+ <div class="cap">いま　a ＝ <b id="d_a">3.00</b>　b ＝ <b id="d_b">20.00</b>　／　ずれ
+  <b id="d_L">27.18</b></div>
+ <div style="overflow-x:auto"><table class="dtab" id="dtab"></table></div>
+ <svg id="p2d" viewBox="0 0 560 212"></svg>
+ <div class="ctl">
+  <label for="d_bs"><span>つまみ <b>b</b>　線の高さ</span><span class="n" id="d_bv">20.0</span></label>
+  <input type="range" id="d_bs" min="0" max="60" step="1" value="20">
+ </div>
+ <div class="ctl">
+  <label for="d_as"><span>つまみ <b>a</b>　線の傾き</span><span class="n" id="d_av">3.0</span></label>
+  <input type="range" id="d_as" min="0" max="150" step="1" value="30">
+ </div>
+ <div class="cap" style="margin-top:.8rem">この表から読めること</div>
+ <div class="verdict" id="d_j">–</div>
+</div>
+
+<h3>【測る】　つまみ1本だけを 1 上げて、ずれを見る</h3>
+<div id="d7"></div>
+
+<div class="panel">
+ <div class="two">
+  <div>
+   <div class="cap"><b>b（高さ）を 1 上げる</b>（a は止めたまま）</div>
+   <svg id="p2nb" viewBox="0 0 300 168"></svg>
+   <div class="mnum" id="mb">–</div>
+  </div>
+  <div>
+   <div class="cap"><b>a（傾き）を 1 上げる</b>（b は止めたまま）</div>
+   <svg id="p2na" viewBox="0 0 300 168"></svg>
+   <div class="mnum" id="ma">–</div>
+  </div>
+ </div>
+ <div class="verdict" id="m_j">–</div>
+</div>
+
+
+<div id="d8"></div>
+
+<h3>【動かす】　測り終わったら、測った分だけ a と b を書き換える</h3>
+
+<div class="panel">
+ <div class="cap">押すと、いま測った分だけ両方が動きます</div>
+ <div class="togs" style="margin-top:.5rem">
+  <button class="btn go" id="mstep">1歩ずつ</button>
+  <button class="btn go" id="mstep10">10歩</button>
+  <button class="btn sm" id="mrst">はじめの場所に戻す</button>
+ </div>
+ <svg id="mvFig" viewBox="0 0 560 152"></svg>
+ <div style="overflow-x:auto"><table class="dtab" id="mvtab" style="max-width:30rem"></table></div>
+ <div class="cap" id="mv_at" style="margin:.2rem 0 0"></div>
+ <div class="verdict" id="mv_j">ボタンを押してください。</div>
+
+</div>
+
+<div id="r2" class="hide">
+ <div id="d9"></div>
+ <div class="keyh">この問で覚えること</div>
+ <div class="verdict ok">
+  <b>これが勾配降下法です。</b>力を数えて、その向きへ少し動かし、繰り返す。
+  GPT-3 は <b>10万回ほど</b>。
+ </div>
+</div>
+<div class="src">
+ <div class="h">役に立つところ</div>
+ <b>学習が進まないときは、まず「1歩の大きさ（学習率）」を疑います。</b>大きすぎると発散し、小さすぎると着きません。
+</div>
+</div>
+
+<div class="card" id="c3">
+<div class="tagline">Question 3</div>
+<h2>つまみ2個では、届かないものがある</h2>
+<div id="d10"></div>
+<p class="lead">同じ2つのつまみで、<b>ずれを 3.0以下</b> にしてください。</p>
+
+<div class="panel">
+<div class="stick"><svg id="p3" viewBox="0 0 560 330"></svg></div>
+
+<div class="ctl">
+ <label for="b3"><span>つまみ <b>b</b>　線の高さ</span><span class="n" id="b3v">0</span></label>
+ <input type="range" id="b3" min="-20" max="100" step="1" value="0">
+</div>
+<div class="ctl">
+ <label for="a3"><span>つまみ <b>a</b>　線の傾き</span><span class="n" id="a3v">0.0</span></label>
+ <input type="range" id="a3" min="-100" max="200" step="1" value="0">
+</div>
+
+<div class="gauge">
+ <div class="row"><span class="big" id="e3">–</span><span class="u">点　＝ ずれ</span></div>
+ <div class="gtrack"><span class="gfill" id="g3" style="width:100%"></span>
+  <span class="gmark" id="m3"></span></div>
+ <div class="gcap"><span>0</span><span>目標 3.0 ↑</span><span>40</span></div>
+</div>
+
+<div class="verdict" id="j3">ずれを <b>3.0以下</b> にしてください。</div>
+<div class="togs">
+ <button class="btn" id="best3">いちばん良い直線にする</button>
+</div>
+</div>
+
+<div id="r3" class="hide">
+ <div id="d11"></div>
+ <div class="keyh">この問で覚えること</div>
+ <div class="verdict stuck">
+  <b>つまみが2個ではできません。</b><span class="mono">y = ax + b</span> は
+  <b>まっすぐな線</b>だけなので、<b>山の形が作れません。</b>
+  いちばん良い直線でも <b>ずれ 14.28</b>。目標 3.0 には<b>どう回しても届きません。</b><br>
+  <b>この問3 は「届かないことを確かめる問題」です。</b>ここで終わりなので、
+  <b>そのまま下の 問4 へ進んでください。</b>
+  <span style="color:var(--gray-500)">つまみを増やすと届きます。</span>
+ </div>
+</div>
+<div class="src">
+ <div class="h">役に立つところ</div>
+ <b>「回し方が悪い」のか「形が足りない」のか</b>を切り分けられます。ここは形が足りない側です。
+</div>
+</div>
+
+<div class="card" id="c4">
+<div class="tagline">Question 4</div>
+<h2>つまみを増やすと、描ける形が増える</h2>
+
+<div id="d12a"></div>
+
+<div class="box">
+ <div class="h">つまみ ＝ 画面のスライダーの本数（問1から変わっていません）</div>
+ <table class="dtab" style="max-width:20rem;margin-top:.6rem">
+  <tr><th>つまみ</th><th>線の形</th><th>折れ目</th></tr>
+  <tr><td>2個</td><td class="mono" style="white-space:nowrap">●───────●</td><td>0回</td></tr>
+  <tr><td>3個</td><td class="mono" style="white-space:nowrap">●───●───●</td><td>1回</td></tr>
+  <tr><td>4個</td><td class="mono" style="white-space:nowrap">●──●──●──●</td><td>2回</td></tr>
+  <tr><td>5個</td><td class="mono" style="white-space:nowrap">●─●─●─●─●</td><td>3回</td></tr>
+ </table>
+</div>
+
+<div class="figbox stick">
+ <div class="cap">黒い点がデータ、緑が線、<span style="color:#ff8a2b">オレンジの丸</span>が動かせる折れ目</div>
+ <svg id="p4" viewBox="0 0 560 330"></svg>
+</div>
+
+<div class="panel">
+ <div class="togs">
+  <button class="btn on" id="k2">つまみ 2個</button>
+  <button class="btn" id="k3">3個</button>
+  <button class="btn" id="k4">4個</button>
+  <button class="btn" id="k5">5個</button>
+ </div>
+
+ <div id="ksl" style="margin-top:.4rem"></div>
+
+ <div class="gauge">
+  <div class="row"><span class="big" id="e4">–</span><span class="u">点　＝ ずれ　／
+   つまみ <span id="kn">2</span> 個</span></div>
+  <div class="gtrack"><span class="gfill" id="g4" style="width:100%"></span>
+   <span class="gmark" id="m4"></span></div>
+  <div class="gcap"><span>0</span><span>目標 3.0 ↑</span><span>30</span></div>
+ </div>
+
+ <div class="verdict" id="j4">スライダーを動かして、線をデータに重ねてください。</div>
+</div>
+
+<div class="panel">
+ <div class="cap">問2 でやった<b>「測って動かす」</b>を、この<b>つまみ <span id="kn2">2</span> 個</b>でもやります</div>
+ <div class="togs" style="margin-top:.4rem">
+  <button class="btn go" id="s4step">1歩ずつ</button>
+  <button class="btn" id="s4rst">全部 50 に戻す</button>
+ </div>
+ <div style="overflow-x:auto"><table class="dtab" id="s4tab"></table></div>
+ <div class="verdict" id="s4j">ボタンを押してください。</div>
+</div>
+
+<div id="d13"></div>
+
+
+<div id="r4" class="hide">
+ <div id="d14"></div>
+ <div class="keyh">この問で覚えること</div>
+ <div class="verdict ok">
+  <b>つまみを増やす ＝ 描ける形が増える。</b>計算は問1 と同じ<b>掛け算と足し算</b>で、数が増えただけです。
+ </div>
+ <div class="box">
+  <div class="h">つまみの数と、届く限界</div>
+  <table class="dtab" style="max-width:28rem">
+   <tr><th>つまみの数</th><th>いちばん良い高さにしたときのずれ</th><th></th></tr>
+   <tr><td>2個</td><td>14.28</td><td>折れ目 0回。まっすぐなので山にならない</td></tr>
+   <tr><td>3個</td><td>4.64</td><td>折れ目 1回。まだ足りない</td></tr>
+   <tr><td>4個</td><td>2.05</td><td>折れ目 2回。届く</td></tr>
+   <tr><td>5個</td><td>0.79</td><td>折れ目 3回。ほぼ重なる</td></tr>
+  </table>
+ </div>
+ <div id="d15"></div>
+ <div class="verdict stuck">
+  <b>手で回せるのはこのあたりまで。</b>1個の一番良い高さが<b>他のつまみ次第で変わる</b>ので、
+  順に合わせても終わりません。
+ </div>
+</div>
+<div class="src">
+ <div class="h">役に立つところ</div>
+ <b>届かないときは「つまみが足りているか」</b>を見ます。<br>
+ <span style="color:var(--gray-500)">折れ線になるのは本物でも同じ（ReLU）。
+ <b>縦に段を重ねる</b>と「ディープ」ラーニング ── 深さは 01 で測ります。
+</span>
+</div>
+</div>
+
+<div class="card" id="c5">
+<div class="tagline">Question 5</div>
+<h2>同じ関数で「どれか」を当てる</h2>
+
+<div id="d16"></div>
+
+<div class="figbox stick">
+ <svg id="p5" viewBox="0 0 560 470"></svg>
+</div>
+
+<div id="d17"></div>
+
+
+<div class="box">
+ <div class="h">式はこれだけ ── 点数を出して、割合に直す</div>
+ <div class="calc" id="eq5">–</div>
+ <div class="cap" style="text-align:left">引き算だから<b>右下がり</b>、足し算だから<b>右上がり</b>、0 だから<b>水平</b>。</div>
+</div>
+<div id="d18"></div>
+
+<div class="panel">
+ <div class="cap" style="text-align:left"><b>睡眠時間を動かすと、答えが3つのどれかに変わります。</b></div>
+ <div class="ctl" style="margin-top:.5rem">
+  <label for="x5"><span style="color:#c26100"><b>睡眠時間</b>（この人を入れます）</span><span class="n" id="x5v">6.0</span></label>
+  <input type="range" id="x5" min="20" max="110" step="1" value="60">
+ </div>
+ <div class="verdict" id="j5">–</div>
+ <div class="cap" style="margin-top:.9rem">合計 1 の割合に直したもの（<b>softmax</b>）</div>
+ <div id="b5"></div>
+ <div class="cap" id="sum5" style="text-align:right"></div>
+</div>
+
+<p class="lead"><b>LLM</b>（ChatGPT のように文章を作るAI）も、まったく同じことをしています。
+やっているのは<b>「次に来る語」を当てること</b>で、候補は3つではなく<b>5万語</b>です。<br>
+　「日本の首都は」の次に来る語 →
+<b>東京 82% ／ 大阪 11% ／ 京都 7%</b>（合計 100%）
+<span style="color:var(--gray-500)">この数字は例です。</span><br>
+式の <b>5.5</b> と <b>9.5</b> は人が置きました。でもこの2つも、
+<b>問2 と同じやり方</b>（効き方を測って、つまみを動かす）で<b>機械に決めさせられます</b>。</p>
+
+
+<div id="r5" class="hide">
+ <div id="d19"></div>
+ <div class="keyh">この問で覚えること</div>
+ <div class="verdict ok">
+  <b>これが分類です。</b>出口を候補の数だけ用意して、いちばん高いものを答えにする。
+  <b>中身は問1 と同じ 掛け算と足し算</b>で、変わったのは<b>出口の付け方だけ</b>です。
+ </div>
+</div>
+<div class="src">
+ <div class="h">役に立つところ</div>
+ <b>「数値を当てる」のか「どれかを当てる」のか</b>で、出口の数と最後の処理が変わります。
+ <span class="ref">softmax の中身は 素材（doc.html）へ。</span>
+</div>
+</div>
+
+
+<div class="card" id="nx">
+<div class="tagline">next</div>
+<h2>次にやること</h2>
+<p class="lead">次は<b>つまみをもっと増やして、段を重ねる</b>ところを触ります。</p>
+<div class="togs">
+ <span class="btn" style="opacity:.55;cursor:default">詰めKaggle 01　深くするとどうなるか（準備中）</span>
+ <button class="btn" id="again">もう一度やる</button>
+</div>
+<div class="togs">
+ 
+</div>
+</div>
+
+<div class="foot">
+詰めKaggle 00 ── 試作（対話版）<br>
+<span style="color:var(--gray-500)">つまみ・図・判定は原本
+<span class="mono">tsume-00-function.html</span> と同じです。触っていません。<br>
+変えたのは<b>解説の出し方</b>だけ ── 説明文を、<b>博士</b>と<b>深井 学</b>のやり取りにしました。<br>
+登場人物は架空です。</span>
+</div>
+</div>
+
+<script>
+const $=id=>document.getElementById(id);
+const show=id=>$(id).classList.remove('hide');
+const rmseOf=(X,Y,f)=>Math.sqrt(X.reduce((s,x,i)=>s+(f(x)-Y[i])**2,0)/X.length);
+const R2=v=>+v.toFixed(2);
+function gauge(fillId,markId,val,goal,max){
+  const g=$(fillId); g.style.width=Math.min(100,val/max*100)+'%';
+  g.classList.toggle('ok',val<=goal); $(markId).style.left=(goal/max*100)+'%';
+}
+function mark(i,cls){ const d=$('steps').children;
+  d[i].className=cls; if(cls==='done'&&d[i+1])d[i+1].className='open'; }
+
+function plot(el,X,Y,xr,yr,f,opt){
+  opt=opt||{}; const W=el.viewBox.baseVal.width||560, H=el.viewBox.baseVal.height||330;
+  const P={x0:opt.narrow?42:52, y0:H-64, x1:W-20, y1:48};
+  const sx=v=>P.x0+(v-xr[0])/(xr[1]-xr[0])*(P.x1-P.x0);
+  const sy=v=>P.y0+(v-yr[0])/(yr[1]-yr[0])*(P.y1-P.y0);
+  let s='';
+  for(let v=yr[0];v<=yr[1];v+=opt.ystep||20){
+    s+=`<line x1="${P.x0}" y1="${sy(v)}" x2="${P.x1}" y2="${sy(v)}" stroke="#ececec"/>`;
+    s+=`<text x="${P.x0-12}" y="${sy(v)+4}" text-anchor="end" font-size="13" fill="#6e6e6e"
+         font-family="Inter">${v}</text>`;}
+  for(let v=xr[0];v<=xr[1];v+=opt.xstep||1){
+    s+=`<text x="${sx(v)}" y="${P.y0+17}" text-anchor="middle" font-size="13" fill="#6e6e6e"
+         font-family="Inter">${v}</text>`;}
+  s+=`<line x1="${P.x0}" y1="${P.y0}" x2="${P.x1}" y2="${P.y0}" stroke="#000"/>`;
+  s+=`<line x1="${P.x0}" y1="${P.y0}" x2="${P.x0}" y2="${P.y1}" stroke="#000"/>`;
+  s+=`<text x="${P.x1}" y="${P.y0+52}" text-anchor="end" font-size="13" fill="#3f3f3f"
+       font-family="'Noto Serif JP',serif">${opt.xlab||''}</text>`;
+  s+=`<text x="${P.x0-6}" y="20" font-size="13" fill="#3f3f3f"
+       font-family="'Noto Serif JP',serif">${opt.ylab||''}</text>`;
+  if(f){
+    let d='';
+    for(let i=0;i<=140;i++){const v=xr[0]+(xr[1]-xr[0])*i/140;
+      const yy=Math.max(yr[0]-200,Math.min(yr[1]+200,f(v)));
+      d+=(i?'L':'M')+sx(v).toFixed(1)+' '+sy(yy).toFixed(1);}
+    s+=`<clipPath id="cp${el.id}"><rect x="${P.x0}" y="${P.y1}" width="${P.x1-P.x0}"
+         height="${P.y0-P.y1}"/></clipPath>`;
+    s+=`<path d="${d}" fill="none" stroke="#019949" stroke-width="2.2"
+         clip-path="url(#cp${el.id})"/>`;
+    X.forEach((x,i)=>{ s+=`<line x1="${sx(x)}" y1="${sy(Y[i])}" x2="${sx(x)}"
+      y2="${sy(Math.max(yr[0]-20,Math.min(yr[1]+20,f(x))))}" stroke="#c00" stroke-width="1.8"
+      opacity=".85" clip-path="url(#cp${el.id})"/>`;});
+    let USED=[];
+    const PAD=5;
+    if(opt.pivot!=null && xr[0]<=0){
+      const F=17;
+      s+=`<circle cx="${sx(0)}" cy="${sy(opt.pivot)}" r="5.5" fill="#fff" stroke="#019949"
+           stroke-width="2"/>`;
+      const bx=sx(0)+9, by=sy(opt.pivot)-8;
+      s+=`<text x="${bx}" y="${by}" font-size="13" fill="#019949"
+           font-family="Inter">b</text>`;
+      USED.push({x0:bx-PAD, x1:bx+0.28*F*2+PAD, y0:by-F*0.8-PAD, y1:by+F*0.2+PAD});
+    }
+    if(opt.resid) X.forEach((x,i)=>{
+      const F=17, ASC=F*0.8, DESC=F*0.2, M=11;
+      const yp=sy(Y[i]);
+      const hx=(xr[1]-xr[0])*0.045;
+      let lo=1e9, hi=-1e9;
+      for(let k=-1;k<=1;k++){ const yy=sy(f(x+hx*k)); if(yy<lo)lo=yy; if(yy>hi)hi=yy; }
+      const d=Math.abs(Y[i]-f(x));
+      let up = yp<=lo;
+      let ty = up ? Math.min(yp,lo)-M-DESC : Math.max(yp,hi)+M+ASC;
+      if(up && ty-ASC < P.y1+2){ up=false; ty=Math.max(yp,hi)+M+ASC; }
+      if(!up && ty+DESC > P.y0-2){ up=true;  ty=Math.min(yp,lo)-M-DESC; }
+      if(ty-ASC < P.y1+2 || ty+DESC > P.y0-2) return;
+      const txt=d.toFixed(1), half=0.28*F*txt.length;
+      let tx=sx(x), an='middle';
+      if(tx-half < P.x0+3){ tx=P.x0+3; an='start'; }
+      else if(tx+half > P.x1-3){ tx=P.x1-3; an='end'; }
+      const bx0 = an==='start'? tx : an==='end'? tx-half*2 : tx-half;
+      const box={x0:bx0-PAD, x1:bx0+half*2+PAD, y0:ty-ASC-PAD, y1:ty+DESC+PAD};
+      if(USED.some(u=>u.x0<box.x1 && box.x0<u.x1 && u.y0<box.y1 && box.y0<u.y1)) return;
+      USED.push(box);
+      s+=`<text x="${tx.toFixed(1)}" y="${ty.toFixed(1)}" text-anchor="${an}"
+           font-size="13" fill="#c00" font-family="Inter" paint-order="stroke"
+           stroke="#fff" stroke-width="3.5"
+           stroke-linejoin="round">${txt}</text>`;});
+  }
+  X.forEach((x,i)=>{ s+=`<circle cx="${sx(x)}" cy="${sy(Y[i])}" r="4.2" fill="#000"/>`;});
+  if(opt.anchors) opt.anchors.forEach((p,i)=>{
+    s+=`<circle cx="${sx(p[0]).toFixed(1)}" cy="${sy(p[1]).toFixed(1)}" r="6.5" fill="#ff8a2b"
+         stroke="#fff" stroke-width="2"/>`;
+    s+=`<text x="${sx(p[0]).toFixed(1)}" y="${(sy(p[1])-12).toFixed(1)}" text-anchor="middle"
+         font-size="13" fill="#c26100" font-family="Inter">${i+1}</text>`;});
+  el.innerHTML=s;
+}
+
+const X1=[0,1,2,3,4,5,6,7], Y1=[32,40,45,55,58,68,72,80];
+const XR1=[0,8], YR1=[0,100], GOAL1=3.0,
+      OPT1={xlab:'勉強した時間',ylab:'点数',resid:true};
+let ok1=false;
+function resFig(a, b) {
+  const d = X1.map((x, i) => a * x + b - Y1[i]);
+  const sq = d.reduce((s, v) => s + v * v, 0) / X1.length;
+  const sq1 = d.slice(0, 4).map(v => Math.abs(v).toFixed(1) + '²').join(' ＋ ');
+  const sq2 = d.slice(4).map(v => Math.abs(v).toFixed(1) + '²').join(' ＋ ');
+  $('resEq').textContent =
+     `ずれ ＝ √（ (線−実際)² の合計 ÷ 8 ）\n\n`
+   + `(線−実際)² の合計\n`
+   + `  ＝ ` + sq1 + `\n`
+   + `  ＋ ` + sq2 + `\n`
+   + `  ＝ ` + (sq * 8).toFixed(2) + `\n\n`
+   + `ずれ ＝ √（ ` + (sq * 8).toFixed(2) + ` ÷ 8 ）\n`
+   + `     ＝ √ ` + sq.toFixed(2) + ` ＝ ` + Math.sqrt(sq).toFixed(2) + ` 点`;
+}
+function up1(){
+  const a=(+$('a1').value)/10, b=+$('b1').value;
+  $('a1v').textContent=a.toFixed(1); $('b1v').textContent=b;
+  const f=x=>a*x+b, e=rmseOf(X1,Y1,f);
+  resFig(a, b);
+  plot($('p1'),X1,Y1,XR1,YR1,f,Object.assign({pivot:b},OPT1));
+  $('e1').textContent=e.toFixed(2); gauge('g1','m1',R2(e),GOAL1,30);
+  const ok=R2(e)<=GOAL1;
+  $('j1').className='verdict'+(ok?' ok':'');
+  $('j1').innerHTML = ok ? `ずれ <b>${e.toFixed(2)}</b>。届きました。`
+    : (e<=6 ? `ずれ <b>${e.toFixed(2)}</b>。<b>近いです。</b>あと少し。`
+      : `ずれはいま <b>${e.toFixed(2)}</b>。目標は 3.0 以下です。`
+);
+  gate1Label();
+  if(ok&&!ok1) pass1();
+}
+function pass1(){ ok1=true; mark(0,'done'); show('r1'); show('c2'); buildMap(); up2(); }
+let mv1=0;
+function gate1Label(){}
+function gate1(){ mv1++; gate1Label(); up1(); }
+['a1','b1'].forEach(i=>{ $(i).oninput=up1; $(i).onchange=gate1; });
+
+const AR=[0,15], BR=[0,60], GOAL2=1.5, LRMAX=0.0549;
+const mseOf=(a,b)=>X1.reduce((s,x,i)=>s+(a*x+b-Y1[i])**2,0)/X1.length;
+const rm2=(a,b)=>Math.sqrt(mseOf(a,b));
+const grad2=(a,b)=>{ let ga=0,gb=0;
+  for(let i=0;i<X1.length;i++){ const r=a*X1[i]+b-Y1[i];
+    ga+=2*r*X1[i]/X1.length; gb+=2*r/X1.length; } return [ga,gb]; };
+let A2=3, B2=20, st2=0, ok2=false, div2=false, path=[[3,20]];
+let MAPBG='';
+const MP={x0:44,y0:206,x1:288,y1:22};
+const mx_=a=>MP.x0+(a-AR[0])/(AR[1]-AR[0])*(MP.x1-MP.x0);
+const my_=b=>MP.y0-(b-BR[0])/(BR[1]-BR[0])*(MP.y0-MP.y1);
+const BP={ox:90, oy:178, wa:300, wb:140, hb:60, hz:95};
+const bx_=(a,b)=>BP.ox+(a-AR[0])/(AR[1]-AR[0])*BP.wa+(b-BR[0])/(BR[1]-BR[0])*BP.wb;
+const by_=(a,b,t)=>BP.oy-(b-BR[0])/(BR[1]-BR[0])*BP.hb-t*BP.hz;
+let BIRDBG='', BLO=0, BHI=1;
+function birdT(a,b){ return (Math.log(mseOf(a,b))-BLO)/(BHI-BLO); }
+function buildBird(){
+  if(BIRDBG)return;
+  let lo=1e18, hi=0;
+  for(let i=0;i<=40;i++)for(let j=0;j<=40;j++){
+    const v=mseOf(AR[0]+(AR[1]-AR[0])*i/40, BR[0]+(BR[1]-BR[0])*j/40);
+    if(v<lo)lo=v; if(v>hi)hi=v;}
+  BLO=Math.log(lo); BHI=Math.log(hi);
+  let s='';
+  const NA=9, NB=7, M=36;
+  for(let j=0;j<=NB;j++){
+    const b=BR[0]+(BR[1]-BR[0])*j/NB; let d='';
+    for(let i=0;i<=M;i++){ const a=AR[0]+(AR[1]-AR[0])*i/M;
+      d+=(i?'L':'M')+bx_(a,b).toFixed(1)+' '+by_(a,b,birdT(a,b)).toFixed(1);}
+    s+=`<path d="${d}" fill="none" stroke="#8fa3b5" stroke-width="0.9" opacity="0.75"/>`;}
+  for(let i=0;i<=NA;i++){
+    const a=AR[0]+(AR[1]-AR[0])*i/NA; let d='';
+    for(let j=0;j<=M;j++){ const b=BR[0]+(BR[1]-BR[0])*j/M;
+      d+=(j?'L':'M')+bx_(a,b).toFixed(1)+' '+by_(a,b,birdT(a,b)).toFixed(1);}
+    s+=`<path d="${d}" fill="none" stroke="#8fa3b5" stroke-width="0.9" opacity="0.55"/>`;}
+  let dv='';
+  for(let i=0;i<=M;i++){ const a=AR[0]+(AR[1]-AR[0])*i/M;
+    const b=Math.max(BR[0],Math.min(BR[1],56.25-3.5*a));
+    dv+=(i?'L':'M')+bx_(a,b).toFixed(1)+' '+by_(a,b,birdT(a,b)).toFixed(1);}
+  s+=`<path d="${dv}" fill="none" stroke="#019949" stroke-width="2.6"/>`;
+  s+=`<text x="${bx_(AR[1],BR[0])+6}" y="${by_(AR[1],BR[0],birdT(AR[1],BR[0]))+6}"
+       font-size="13" fill="#3f3f3f" font-family="'Noto Serif JP',serif">a</text>`
+   +`<text x="${bx_(AR[0],BR[1])-8}" y="${by_(AR[0],BR[1],birdT(AR[0],BR[1]))-8}"
+       text-anchor="end" font-size="13" fill="#3f3f3f"
+       font-family="'Noto Serif JP',serif">b</text>`;
+  BIRDBG=s;
+}
+function drawBird(){
+  buildBird();
+  let dot='';
+  if(isFinite(A2)&&A2>=AR[0]&&A2<=AR[1]&&B2>=BR[0]&&B2<=BR[1]){
+    const t=birdT(A2,B2);
+    dot=`<circle cx="${bx_(A2,B2).toFixed(1)}" cy="${by_(A2,B2,t).toFixed(1)}" r="5"
+          fill="#ff8a2b" stroke="#fff" stroke-width="1.6"/>`;
+  }
+  $('p2b').innerHTML=BIRDBG+dot;
+}
+function buildMap(){
+  if(MAPBG)return;
+  const NA=45, NB=30, w=(MP.x1-MP.x0)/NA, h=(MP.y0-MP.y1)/NB;
+  let lo=1e9, hi=0, V=[];
+  for(let i=0;i<NA;i++){V[i]=[];for(let j=0;j<NB;j++){
+    const e=rm2(AR[0]+(AR[1]-AR[0])*(i+0.5)/NA, BR[0]+(BR[1]-BR[0])*(j+0.5)/NB);
+    V[i][j]=e; if(e<lo)lo=e; if(e>hi)hi=e;}}
+  let s='';
+  for(let i=0;i<NA;i++)for(let j=0;j<NB;j++){
+    const t=(Math.log(V[i][j])-Math.log(lo))/(Math.log(hi)-Math.log(lo));
+    const R=Math.round(27+t*(245-27)), G=Math.round(42+t*(246-42)), B=Math.round(68+t*(250-68));
+    s+=`<rect x="${(MP.x0+i*w).toFixed(1)}" y="${(MP.y1+(NB-1-j)*h).toFixed(1)}"
+         width="${(w+0.7).toFixed(1)}" height="${(h+0.7).toFixed(1)}"
+         fill="rgb(${R},${G},${B})"/>`;}
+  s+=`<rect x="${MP.x0}" y="${MP.y1}" width="${MP.x1-MP.x0}" height="${MP.y0-MP.y1}"
+       fill="none" stroke="#000"/>`;
+  [0,5,10,15].forEach(a=>s+=`<text x="${mx_(a)}" y="${MP.y0+16}" text-anchor="middle"
+    font-size="10.5" fill="#6e6e6e" font-family="Inter">${a}</text>`);
+  [0,20,40,60].forEach(b=>s+=`<text x="${MP.x0-11}" y="${my_(b)+4}" text-anchor="end"
+    font-size="10.5" fill="#6e6e6e" font-family="Inter">${b}</text>`);
+  s+=`<text x="${MP.x1}" y="${MP.y0+40}" text-anchor="end" font-size="11.5" fill="#3f3f3f"
+       font-family="'Noto Serif JP',serif">つまみ a</text>`;
+  s+=`<text x="${MP.x0+2}" y="${MP.y1-8}" font-size="11.5" fill="#3f3f3f"
+       font-family="'Noto Serif JP',serif">つまみ b</text>`;
+  const bx=mx_(6.762), by=my_(32.58);
+  s+=`<path d="M${bx-6} ${by-6}L${bx+6} ${by+6}M${bx+6} ${by-6}L${bx-6} ${by+6}"
+       stroke="#fff" stroke-width="2.4"/>`;
+  MAPBG=s;
+}
+function drawMap(){
+  if(!$('p2m').querySelector('#mppath'))
+    $('p2m').innerHTML=`<g>${MAPBG}</g><g id="mppath"></g>`;
+  let s='';
+  const cl=(a,b)=>[Math.max(AR[0],Math.min(AR[1],a)),Math.max(BR[0],Math.min(BR[1],b))];
+  let d='';
+  path.forEach((p,i)=>{const [a,b]=cl(p[0],p[1]);
+    d+=(i?'L':'M')+mx_(a).toFixed(1)+' '+my_(b).toFixed(1);});
+  s+=`<path d="${d}" fill="none" stroke="#ff8a2b" stroke-width="1.8" opacity=".95"/>`;
+  path.forEach(p=>{const [a,b]=cl(p[0],p[1]);
+    s+=`<circle cx="${mx_(a).toFixed(1)}" cy="${my_(b).toFixed(1)}" r="1.8" fill="#ff8a2b"/>`;});
+  const [ca,cb]=cl(A2,B2);
+  s+=`<circle cx="${mx_(ca).toFixed(1)}" cy="${my_(cb).toFixed(1)}" r="5" fill="#ff8a2b"
+       stroke="#fff" stroke-width="1.6"/>`;
+  if(div2) s+=`<text x="${(MP.x0+MP.x1)/2}" y="${MP.y1+22}" text-anchor="middle" font-size="13"
+    fill="#fff" font-family="'Noto Serif JP',serif">地図の外へ飛び出しました</text>`;
+  $('mppath').innerHTML=s;
+}
+function up2(){
+  const f=x=>A2*x+B2, e=div2?Infinity:rm2(A2,B2);
+  plot($('p2'),X1,Y1,XR1,YR1,f,Object.assign({pivot:B2,narrow:1},OPT1));
+  drawMap(); drawBird(); diffTab(); diffFig(); nudge();
+  $('e2').textContent=div2?'∞':e.toFixed(2); $('st2').textContent=st2;
+  gauge('g2','m2',div2?30:R2(e),GOAL2,30);
+  const lr=(+$('lr').value)/1000; $('lrv').textContent=lr.toFixed(3);
+  const ok=!div2&&R2(e)<=GOAL2;
+  $('j2').className='verdict'+(ok?' ok':(div2?' stuck':''));
+  $('j2').innerHTML = div2
+    ? `<b>飛び越えました。</b>1歩が大きすぎると、谷の反対側のもっと高いところに着き、
+       そこの傾きはもっと急なので、次はもっと遠くへ飛びます。<b>戻ってきません。</b><br>
+       1歩を <b>${LRMAX.toFixed(4)} 以下</b>にして「はじめの場所に戻す」を押してください。`
+    : ok
+    ? `<b>${st2}歩で ずれ ${e.toFixed(2)}。谷底に着きました</b>（最小は 1.28）。<br>
+       1歩の大きさを変えて、かかる歩数が変わるのを見てください。
+       <b>${LRMAX.toFixed(4)} を超えると発散します。</b>`
+    : (st2===0 ? `まず「1歩ずつ」を数回押して、地図の上で点が動くのを見てください。`
+       : `${st2}歩で ずれ <b>${e.toFixed(2)}</b>。目標 1.5 まで下げてください。`
+         +(lr<0.012?`<br><span style="color:var(--gray-500)">1歩が小さいので、
+            何百歩もかかります。「はじめから谷底まで走らせる」を押すか、1歩を大きくしてください。</span>`:''));
+  if(ok&&!ok2){ ok2=true; mark(1,'done'); show('r2'); show('c3'); up3(); }
+}
+const NH=1;
+
+function diffTab(){
+  if(div2){$('dtab').innerHTML='';return}
+  let cells={t:'',y:'',p:'',d:''};
+  X1.forEach((x,i)=>{ const pr=A2*x+B2, d=pr-Y1[i];
+    cells.t+=`<td>${x}</td>`; cells.y+=`<td>${Y1[i]}</td>`;
+    cells.p+=`<td>${pr.toFixed(1)}</td>`;
+    cells.d+=`<td style="color:${d<0?'#c00':'#019949'}"><b>${d>=0?'＋':'−'}${Math.abs(d).toFixed(1)}</b></td>`;});
+  $('dtab').innerHTML=
+   `<tr><th>時間</th>${cells.t}</tr>`
+  +`<tr><th>実際</th>${cells.y}</tr>`
+  +`<tr><th>線</th>${cells.p}</tr>`
+  +`<tr><th>差（線−実際）</th>${cells.d}</tr>`;
+  $('d_a').textContent=A2.toFixed(2); $('d_b').textContent=B2.toFixed(2);
+  $('d_L').textContent=Math.sqrt(mseOf(A2,B2)).toFixed(2);
+  if($('d_as')){ $('d_as').value=Math.round(A2*10); $('d_bs').value=Math.round(B2);
+    $('d_av').textContent=A2.toFixed(1); $('d_bv').textContent=B2.toFixed(1); }
+  const D=X1.map((x,i)=>A2*x+B2-Y1[i]);
+  const allNeg=D.every(v=>v<0), allPos=D.every(v=>v>0);
+  const grows=Math.abs(D[7])>Math.abs(D[0]);
+  let m=[];
+  if(allNeg) m.push('差が<b>全部マイナス</b> → 線がデータより下にある → <b>b（高さ）を上げる</b>');
+  else if(allPos) m.push('差が<b>全部プラス</b> → 線がデータより上にある → <b>b（高さ）を下げる</b>');
+  else m.push('差にプラスとマイナスが混ざっている → 高さはだいぶ合っている');
+  const r0=D[0], r7=D[7];
+  if(r7<r0-1) m.push('右へ行くほど<b>下に外れている</b> → <b>a（傾き）を急にする</b>');
+  else if(r7>r0+1) m.push('右へ行くほど<b>上に外れている</b> → <b>a（傾き）をゆるくする</b>');
+  else m.push('左右の外れ方が同じくらい → 傾きはだいぶ合っている');
+  $('d_j').className='verdict';
+  $('d_j').innerHTML='① '+m[0]+'<br>② '+m[1];
+}
+function diffFig(){
+  if(div2){$('p2d').innerHTML='';return}
+  const P={x0:52,y0:150,x1:540,y1:16}, mid=(P.y0+P.y1)/2;
+  const D=X1.map((x,i)=>A2*x+B2-Y1[i]);
+  const mx=Math.max(45,...D.map(Math.abs));
+  const bw=(P.x1-P.x0)/X1.length*0.52;
+  let s=`<line x1="${P.x0}" y1="${mid}" x2="${P.x1}" y2="${mid}" stroke="#000"/>`;
+  s+=`<text x="${P.x0-7}" y="${mid+4}" text-anchor="end" font-size="13" fill="#6e6e6e"
+       font-family="Inter">0</text>`;
+  D.forEach((d,i)=>{
+    const cx=P.x0+(P.x1-P.x0)*(i+0.5)/X1.length;
+    const h=Math.abs(d)/mx*(mid-P.y1-23);
+    const up=d>0, col=up?'#019949':'#c00';
+    s+=`<rect x="${(cx-bw/2).toFixed(1)}" y="${(up?mid-h:mid).toFixed(1)}"
+         width="${bw.toFixed(1)}" height="${h.toFixed(1)}" fill="${col}" opacity=".85"/>`;
+    s+=`<text x="${cx.toFixed(1)}" y="${(up?mid-h-5:mid+h+13).toFixed(1)}" text-anchor="middle"
+         font-size="13" fill="${col}" font-family="Inter">${d>=0?'＋':'−'}${Math.abs(d).toFixed(0)}</text>`;
+    s+=`<text x="${cx.toFixed(1)}" y="${(P.y0+16)}" text-anchor="middle" font-size="13"
+         fill="#6e6e6e" font-family="Inter">${X1[i]}</text>`;});
+  s+=`<text x="${P.x1}" y="${P.y0+46}" text-anchor="end" font-size="13" fill="#3f3f3f"
+       font-family="'Noto Serif JP',serif">時間</text>`;
+  $('p2d').innerHTML=s;
+}
+function nudge(){
+  if(div2){$('mb').textContent='';$('ma').textContent='';return}
+  const L0=mseOf(A2,B2), Lb=mseOf(A2,B2+NH), La=mseOf(A2+NH,B2);
+  const arrows=(el,amt,lab)=>{
+    const P={x0:34,y0:120,x1:288,y1:18};
+    const mx=7.6;
+    let g=`<line x1="${P.x0}" y1="${P.y0}" x2="${P.x1}" y2="${P.y0}" stroke="#000"/>`;
+    g+=`<text x="${P.x0-6}" y="${P.y0+4}" text-anchor="end" font-size="10" fill="#6e6e6e"
+         font-family="Inter">0</text>`;
+    X1.forEach((x,i)=>{
+      const cx=P.x0+(P.x1-P.x0)*(i+0.5)/X1.length;
+      const v=amt(x), h=v/mx*(P.y0-P.y1-14);
+      if(v>0.001){
+        g+=`<line x1="${cx.toFixed(1)}" y1="${P.y0}" x2="${cx.toFixed(1)}"
+             y2="${(P.y0-h).toFixed(1)}" stroke="#ff8a2b" stroke-width="5"/>`;
+        g+=`<path d="M${cx.toFixed(1)} ${(P.y0-h-8).toFixed(1)}l-5 8l10 0Z" fill="#ff8a2b"/>`;
+        g+=`<text x="${cx.toFixed(1)}" y="${(P.y0-h-13).toFixed(1)}" text-anchor="middle"
+             font-size="10.5" fill="#c26100" font-family="Inter">+${v}</text>`;
+      }else{
+        g+=`<circle cx="${cx.toFixed(1)}" cy="${P.y0}" r="3" fill="#9aa"/>`;
+        g+=`<text x="${cx.toFixed(1)}" y="${P.y0-9}" text-anchor="middle" font-size="10.5"
+             fill="#6e6e6e" font-family="Inter">0</text>`;}
+      g+=`<text x="${cx.toFixed(1)}" y="${P.y0+15}" text-anchor="middle" font-size="10"
+           fill="#6e6e6e" font-family="Inter">${x}</text>`;});
+    g+=`<text x="${P.x1}" y="${P.y0+40}" text-anchor="end" font-size="10.5" fill="#3f3f3f"
+         font-family="'Noto Serif JP',serif">時間</text>`;
+    g+=`<text x="${P.x0-2}" y="${P.y1+2}" font-size="10.5" fill="#3f3f3f"
+         font-family="'Noto Serif JP',serif">${lab}</text>`;
+    $(el).innerHTML=g;
+  };
+  arrows('p2nb',()=>NH,'予測が動く量　全員おなじ');
+  arrows('p2na',x=>x*NH,'予測が動く量　時間の分だけ');
+  const R=v=>Math.sqrt(Math.max(0,v));
+  const fmt=(L1)=>`ずれ  ${R(L0).toFixed(2)} → ${R(L1).toFixed(2)}\n`
+   +`      ${(L1-L0>=0?'＋':'−')}${Math.abs(R(L1)-R(L0)).toFixed(2)}\n`
+   +`→ ${L1<L0?'上げるべき':(L1>L0?'下げるべき':'そのまま')}`;
+  $('mb').textContent=fmt(Lb); $('ma').textContent=fmt(La);
+  $('m_j').className='verdict';
+  $('m_j').innerHTML=
+    `<b>矢印は予測が動く量。その下の数字は、そのとき ずれ が動く量です。</b>`
+   +`<br><b>つまみはまだ動いていません。</b>`
+   +`<span style="color:var(--gray-500)">　この2つを、次にそのまま使います。</span>`;
+}
+function step2(n){
+  if(div2){up2();return}
+  const lr=(+$('lr').value)/1000;
+  for(let k=0;k<n;k++){
+    const [ga,gb]=grad2(A2,B2); A2-=lr*ga; B2-=lr*gb; st2++;
+    path.push([A2,B2]);
+    if(!isFinite(A2)||Math.abs(A2)>60||Math.abs(B2)>240){div2=true;break}
+  }
+  if(path.length>400)path=path.slice(-400);
+  up2();
+}
+function mvFig(a0,b0,a1,b1,r0,r1){
+  const still = (a0===a1 && b0===b1);
+  const rows=[['つまみ a（傾き）',a0,a1,0,15],['つまみ b（高さ）',b0,b1,0,60],['ずれ',r0,r1,0,30]];
+  const P={x0:150,x1:436};
+  let s='';
+  rows.forEach((r,i)=>{
+    const y=26+i*36;
+    const sx=v=>P.x0+(Math.max(r[3],Math.min(r[4],v))-r[3])/(r[4]-r[3])*(P.x1-P.x0);
+    s+=`<text x="${P.x0-14}" y="${y+5}" text-anchor="end" font-size="13" fill="#3f3f3f"
+         font-family="'Noto Serif JP',serif">${r[0]}</text>`;
+    s+=`<line x1="${P.x0}" y1="${y}" x2="${P.x1}" y2="${y}" stroke="#e0e0e0" stroke-width="3"/>`;
+    const x0=sx(r[1]), x1=sx(r[2]), col=(i===2?(r[2]<r[1]?'#019949':'#c00'):'#2f6fb5');
+    if(Math.abs(x1-x0)>1.5){
+      s+=`<line x1="${x0.toFixed(1)}" y1="${y}" x2="${x1.toFixed(1)}" y2="${y}"
+           stroke="${col}" stroke-width="4"/>`;
+      const dir=x1>x0?1:-1;
+      s+=`<path d="M${x1.toFixed(1)} ${y}l${-7*dir} -5v10z" fill="${col}"/>`;
+    }
+    s+=`<circle cx="${x0.toFixed(1)}" cy="${y}" r="4.5" fill="#fff" stroke="#6e6e6e" stroke-width="2"/>`;
+    s+=`<circle cx="${x1.toFixed(1)}" cy="${y}" r="5.5" fill="${col}" stroke="#fff" stroke-width="1.6"/>`;
+    const nd=(i===2?4:2);
+    s+=`<text x="${P.x1+8}" y="${y+5}" font-size="13" fill="${col}" font-weight="600"
+         font-family="Inter">${r[2].toFixed(nd)}</text>`;
+  });
+  s+=`<text x="10" y="140" font-size="12.5" fill="#6e6e6e" font-family="'Noto Serif JP',serif">`
+   +(still?`いまの場所です。[1歩ずつ] を押すと ●が動きます`
+         :`○が動く前　●が動いた後。3本とも同時に動きます`)+`</text>`;
+  $('mvFig').innerHTML=s;
+}
+const RT=v=>Math.sqrt(Math.max(0,v));
+const RA0=3, RB0=20;
+function oneStep(){
+  const a0=A2,b0=B2,L0=mseOf(A2,B2);
+  step2(1);
+  gate2();
+  const L1=mseOf(A2,B2), da=A2-a0, db=B2-b0;
+  const nd0=Math.abs(L1-L0)<0.05?4:(L0<10?2:1);
+  $('mvtab').innerHTML=
+   `<tr><th></th><th>動かす前</th><th>動かした後</th><th>動いた量</th></tr>`
+  +`<tr><th>a（傾き）</th><td>${a0.toFixed(2)}</td><td>${A2.toFixed(2)}</td>
+     <td><b>${da>=0?'＋':'−'}${Math.abs(da).toFixed(2)}</b></td></tr>`
+  +`<tr><th>b（高さ）</th><td>${b0.toFixed(2)}</td><td>${B2.toFixed(2)}</td>
+     <td><b>${db>=0?'＋':'−'}${Math.abs(db).toFixed(2)}</b></td></tr>`
+  +`<tr class="sum"><th>ずれ</th><td>${RT(L0).toFixed(nd0)}</td><td>${RT(L1).toFixed(nd0)}</td>
+     <td><b>${L1-L0>=0?'＋':'−'}${Math.abs(RT(L1)-RT(L0)).toFixed(nd0)}</b></td></tr>`;
+  $('mv_at').innerHTML=`測った場所は <b>a＝${a0.toFixed(2)} ／ b＝${b0.toFixed(2)}</b>（動かす前）です。`;
+  mvFig(a0,b0,A2,B2,RT(L0),RT(L1));
+  const dL=L1-L0, dR=RT(L1)-RT(L0);
+  const nd = Math.abs(dR)<0.05 ? 4 : 2;
+  $('mv_j').className='verdict'+(dL<-1e-9?' ok':(dL>1e-9?' stuck':''));
+  $('mv_j').innerHTML=`<b>a と b が同時に動きました。</b>　`
+   +(Math.abs(dR)<0.0005
+     ? `<b>ずれはもう変わりません（${RT(L0).toFixed(4)}）。谷底です。</b>`
+       +`<span style="color:var(--gray-500)">　[はじめの場所に戻す] を押すと、大きく動くところが見られます。</span>`
+     : `ずれ ${RT(L0).toFixed(nd)} → <b>${RT(L1).toFixed(nd)}</b>`
+       +`（${dR>=0?'＋':'−'}${Math.abs(dR).toFixed(nd)}）`);
+}
+function mvClear(msg){
+  $('mvtab').innerHTML=''; $('mv_at').innerHTML='';
+  mvFig(A2,B2,A2,B2,RT(mseOf(A2,B2)),RT(mseOf(A2,B2)));
+  $('mv_j').className='verdict'; $('mv_j').innerHTML=msg;
+}
+let mv2=0;
+function gate2Label(){}
+function gate2(){ mv2++; }
+$('step1').onclick=oneStep;
+$('mstep').onclick=oneStep;
+function tenSteps(){ for(let k=0;k<10;k++) oneStep(); }
+$('step10').onclick=tenSteps;
+$('mstep10').onclick=tenSteps;
+$('mrst').onclick=()=>$('rst2').click();
+['d_as','d_bs'].forEach(id=>{ const e=$(id); if(!e)return;
+  e.oninput=()=>{ A2=(+$('d_as').value)/10; B2=+$('d_bs').value;
+    path=[[A2,B2]]; st2=0; div2=false;
+    mvClear('つまみを手で動かしました。「1歩ずつ」を押すと、ここから下ります。');
+    up2(); };
+  e.onchange=()=>{ gate2(); }; });
+$('lr').oninput=()=>{ $('lrv').textContent=((+$('lr').value)/1000).toFixed(3); up2();
+  if($('mvtab').innerHTML)
+    mvClear('1歩の大きさを変えました。「1歩ずつ」を押すと、この大きさで動きます。'); };
+$('rst2').onclick=()=>{
+  A2=RA0; B2=RB0; st2=0; div2=false; path=[[A2,B2]]; up2();
+  mvClear(`<b>はじめの場所（a＝3.00 ／ b＝20.00）に戻しました。</b>`
+   +`<span style="color:var(--gray-500)">「1歩ずつ」を押すと、ここから動きます。</span>`); };
+
+
+const X3=[2,3,4,5,6,7,8,9,10,11], Y3=[25,35,45,58,70,78,80,74,62,48];
+const XR3=[0,12], YR3=[0,100], GOAL3=3.0, OPT3={xlab:'睡眠時間',ylab:'集中力',xstep:2};
+let mv3=0, ok3=false;
+function up3(){
+  const a=(+$('a3').value)/10, b=+$('b3').value;
+  $('a3v').textContent=a.toFixed(1); $('b3v').textContent=b;
+  const f=x=>a*x+b, e=rmseOf(X3,Y3,f);
+  plot($('p3'),X3,Y3,XR3,YR3,f,Object.assign({pivot:b},OPT3));
+  $('e3').textContent=e.toFixed(2); gauge('g3','m3',e,GOAL3,40);
+  $('j3').className='verdict'+(ok3?' stuck':'');
+  $('j3').innerHTML= ok3
+    ? `ずれはいま <b>${e.toFixed(2)}</b>。<b>まっすぐな線ではここが限界です。</b>`
+      +`<span style="color:var(--gray-500)">　目標 3.0 には届きません。下の 問4 へ進んでください。</span>`
+    : `ずれはいま <b>${e.toFixed(2)}</b>。目標は 3.0 以下です。`
+      +(e<16?`<br><span style="color:var(--gray-500)">
+        左を合わせると右が外れ、右を合わせると左が外れています。</span>`:'');
+  gate3Label();
+}
+function gate3Label(){ const b=$('best3'); if(b){ b.disabled=false; } }
+function pass3(){ if(!ok3){ ok3=true; mark(2,'done'); show('r3'); setK(2); up3(); } }
+function gate3(){ mv3++; gate3Label();
+  if(mv3>=3) pass3(); }
+['a3','b3'].forEach(i=>{ $(i).oninput=up3; $(i).onchange=gate3; });
+$('best3').onclick=()=>{ $('a3').value=38; $('b3').value=33; up3(); pass3(); };
+
+const GOAL4=3.0;
+const ANC={2:{K:[2,11],H:[41,74]}, 3:{K:[2,6.5,11],H:[22,81,55]},
+           4:{K:[2,5,8,11],H:[24,59,84,49]},
+           5:{K:[2,4.25,6.5,8.75,11],H:[25,47,78,79,48]}};
+let K4=2, H4=[50,50], ok4=false;
+function curve4(x){
+  const K=ANC[K4].K;
+  if(x<=K[0])return H4[0];
+  if(x>=K[K.length-1])return H4[H4.length-1];
+  for(let i=0;i<K.length-1;i++) if(x<=K[i+1]){
+    const t=(x-K[i])/(K[i+1]-K[i]); return H4[i]+(H4[i+1]-H4[i])*t; }
+  return H4[H4.length-1];
+}
+function slid4(){
+  const K=ANC[K4].K;
+  $('ksl').innerHTML=K.map((k,i)=>
+   `<div class="ctl"><label for="h4s${i}"><span>${i+1}つ目の高さ　（時間 ${k} のところ）</span>
+     <span class="n" id="h4v${i}">${H4[i]}</span></label>
+    <input type="range" id="h4s${i}" min="0" max="100" step="1" value="${H4[i]}"></div>`).join('');
+  K.forEach((k,i)=>{ $('h4s'+i).oninput=()=>{ H4[i]=+$('h4s'+i).value; up4();
+    if($('s4tab').innerHTML)
+      s4clear('高さを手で動かしました。「1歩ずつ」を押すと、ここから下ります。'); };
+    $('h4s'+i).onchange=gate4; });
+}
+function setK(n){
+  const old=ANC[K4].K.slice(), oldH=H4.slice();
+  K4=n;
+  const f=x=>{ if(x<=old[0])return oldH[0];
+    if(x>=old[old.length-1])return oldH[oldH.length-1];
+    for(let i=0;i<old.length-1;i++) if(x<=old[i+1]){
+      const t=(x-old[i])/(old[i+1]-old[i]); return oldH[i]+(oldH[i+1]-oldH[i])*t; }
+    return oldH[oldH.length-1]; };
+  H4=ANC[n].K.map(k=>Math.round(f(k)));
+  [2,3,4,5].forEach(m=>$('k'+m).classList.toggle('on',m===n));
+  slid4(); up4();
+  s4clear(`つまみを ${n} 個にしました。<b>形はそのまま引き継ぎます</b>から、`
+   +`高さを合わせるまで ずれは変わりません。「1歩ずつ」を押してください。`);
+}
+function up4(){
+  const K=ANC[K4].K;
+  K.forEach((k,i)=>{ const e=$('h4v'+i); if(e) e.textContent=H4[i]; });
+  plot($('p4'),X3,Y3,XR3,YR3,curve4,Object.assign({anchors:K.map((k,i)=>[k,H4[i]])},OPT3));
+  const e=rmseOf(X3,Y3,curve4);
+  $('e4').textContent=e.toFixed(2); $('kn').textContent=K4; $('kn2').textContent=K4;
+  gauge('g4','m4',R2(e),GOAL4,30);
+  const ok=R2(e)<=GOAL4;
+  $('j4').className='verdict'+(ok?' ok':'');
+  const lim={2:14.28,3:4.64,4:2.05,5:0.79}[K4];
+  $('j4').innerHTML = ok
+    ? `ずれ <b>${e.toFixed(2)}</b>。届きました。つまみを増やしたから届いたのです。`
+    : (K4<=3
+       ? `ずれはいま <b>${e.toFixed(2)}</b>。<b>つまみ${K4}個では、いちばん良くしても ${lim} までです。</b>
+          目標 3.0 には届きません。<span style="color:var(--gray-500)">
+          つまみを増やしてください。</span>`
+       : `ずれはいま <b>${e.toFixed(2)}</b>。目標は 3.0 以下。
+          <span style="color:var(--gray-500)">つまみ${K4}個なら ${lim} まで下げられます。</span>`);
+  if(ok&&!ok4){ ok4=true; mark(3,'done'); show('r4'); show('c5'); up5(); }
+}
+[2,3,4,5].forEach(n=>$('k'+n).onclick=()=>setK(n));
+let mv4=0;
+function gate4Label(){}
+function gate4(){ mv4++; gate4Label(); }
+
+const LR4=1.0;
+const mse4=()=>X3.reduce((s,x,i)=>s+(curve4(x)-Y3[i])**2,0)/X3.length;
+function grad4(){
+  const K=ANC[K4].K, N=X3.length, g=K.map(()=>0);
+  X3.forEach((x,n)=>{
+    const r=curve4(x)-Y3[n], d=K.map(()=>0);
+    if(x<=K[0]) d[0]=1;
+    else if(x>=K[K.length-1]) d[K.length-1]=1;
+    else { for(let i=0;i<K.length-1;i++) if(x<=K[i+1]){
+      const t=(x-K[i])/(K[i+1]-K[i]); d[i]=1-t; d[i+1]=t; break; } }
+    d.forEach((v,i)=>g[i]+=2*r*v/N);
+  });
+  return g;
+}
+function s4clear(msg){
+  $('s4tab').innerHTML=''; $('s4j').className='verdict'; $('s4j').innerHTML=msg;
+}
+function step4(){
+  const K=ANC[K4].K, g=grad4(), L0=mse4(), old=H4.slice();
+  const nx=H4.map((v,i)=>Math.max(0,Math.min(100,Math.round(v-LR4*g[i]))));
+  const same=nx.every((v,i)=>v===old[i]);
+  let worse=false;
+  if(!same){ const keep=H4.slice(); H4=nx; worse=mse4()>L0; H4=keep; }
+  if(same||worse){
+    s4clear(`<b>もう1目盛りも動きません。</b>`
+     +(worse?`これ以上動かすと、かえって離れます。`:``)
+     +`<br><span style="color:var(--gray-500)">`
+     +`スライダーの刻みが <b>1</b> なので、傾きが小さくなると 1歩が刻みより小さくなって`
+     +`動けなくなります。本物のつまみに刻みはないので、もっと細かく下れます。`
+     +`ここから先は「いちばん良い高さにする」で見てください。</span>`);
+    return;
+  }
+  H4=nx; slid4(); up4();
+  const L1=mse4();
+  $('s4tab').innerHTML=
+   `<tr><th></th><th>測った効き方</th><th>動かす前</th><th>動かした後</th><th>動いた量</th></tr>`
+  +K.map((k,i)=>`<tr><th>${i+1}つ目（時間 ${k}）</th>`
+    +`<td>${g[i]>=0?'＋':'−'}${Math.abs(g[i]).toFixed(2)}</td>`
+    +`<td>${old[i]}</td><td>${H4[i]}</td>`
+    +`<td><b>${H4[i]-old[i]>=0?'＋':'−'}${Math.abs(H4[i]-old[i])}</b></td></tr>`).join('')
+  +`<tr class="sum"><th>ずれ</th><td></td><td>${Math.sqrt(L0).toFixed(2)}</td><td>${Math.sqrt(L1).toFixed(2)}</td>`
+  +`<td><b>${L1-L0>=0?'＋':'−'}${Math.abs(L1-L0).toFixed(1)}</b></td></tr>`;
+  $('s4j').className='verdict'+(L1<L0?' ok':'');
+  $('s4j').innerHTML=`<b>${K4}個ぜんぶ、いっぺんに動きました。</b>`
+   +`効き方は<b>${K4}個ぜんぶ、動かす前の高さで測っています</b>。`
+   +`<br><b>動いた量は、効き方の【逆向き】です。</b>`
+   +`<span style="color:var(--gray-500)">坂を下るので、効き方の反対へ進みます`
+   +`（1歩の大きさが ${LR4.toFixed(1)} なので、効き方を四捨五入して符号を反転した分だけ動きます）。</span>`
+   +`<br><span style="color:var(--gray-500)">`
+   +`ずれは ${Math.sqrt(L0).toFixed(2)} から ${Math.sqrt(L1).toFixed(2)} に減りました。`
+   +`つまみが1,750億個でも、この表が1,750億行になるだけです。</span>`;
+}
+$('s4step').onclick=()=>{ step4(); gate4(); };
+$('s4rst').onclick=()=>{ H4=ANC[K4].K.map(()=>50); slid4(); up4();
+  s4clear('全部 50 に戻しました。「1歩ずつ」を押してください。'); };
+
+const CLS5=['寝不足','ちょうど','寝すぎ'];
+const COL5=['#2f6fb5','#019949','#d97706'];
+const SG5=v=>{const t=(Math.abs(v)<0.05?0:v).toFixed(1);
+  return t.charAt(0)==='-'?'−'+t.slice(1):t;};
+const X5=[2,3,4,5,6,7,8,9,10,11], Y5=[25,35,45,58,70,78,80,74,62,48];
+const CUT5=70;
+const T1=5.5, T2=9.5;
+const score5=x=>[T1-x, 0, x-T2];
+const win5=z=>z.indexOf(Math.max.apply(null,z));
+function softmax(a){const m=Math.max.apply(null,a),e=a.map(x=>Math.exp(x-m)),
+  s=e.reduce((p,c)=>p+c,0);return e.map(x=>x/s)}
+let ok5=false, mv5=0;
+
+function fig5(x0){
+  const P={x0:52,x1:520}, XR=[0,13];
+  const sx=v=>P.x0+(v-XR[0])/(XR[1]-XR[0])*(P.x1-P.x0);
+  const UA=46, UB=170, YU=[0,100];
+  const LA=216, LB=336, YL=[-6,3];
+  const uy=v=>UB-(v-YU[0])/(YU[1]-YU[0])*(UB-UA);
+  const ly=v=>LB-(v-YL[0])/(YL[1]-YL[0])*(LB-LA);
+  const by=LB+34, bh=30;
+  let s='';
+  s+=`<text x="${P.x0}" y="30" font-size="17" fill="#3f3f3f"
+       font-family="'Noto Serif JP',serif">集中力（問3・問4 と同じ10人）</text>`;
+  [0,50,100].forEach(v=>{
+    s+=`<line x1="${P.x0}" y1="${uy(v)}" x2="${P.x1}" y2="${uy(v)}" stroke="#ececec"/>`;
+    s+=`<text x="${P.x0-8}" y="${uy(v)+6}" text-anchor="end" font-size="17" fill="#6e6e6e"
+         font-family="Inter">${v}</text>`;});
+  s+=`<line x1="${P.x0}" y1="${uy(CUT5)}" x2="${P.x1}" y2="${uy(CUT5)}" stroke="#019949"
+       stroke-width="2.4" stroke-dasharray="7 4"/>`;
+  s+=`<text x="${P.x1}" y="${uy(CUT5)-8}" text-anchor="end" font-size="17" fill="#019949"
+       font-weight="600" font-family="'Noto Serif JP',serif">70点で切る（人が決めた）</text>`;
+  X5.forEach((x,i)=>{
+    s+=`<circle cx="${sx(x).toFixed(1)}" cy="${uy(Y5[i]).toFixed(1)}" r="5"
+         fill="${Y5[i]>=CUT5?'#019949':'#6e6e6e'}"/>`;});
+  [T1,T2].forEach(t=>{
+    s+=`<line x1="${sx(t).toFixed(1)}" y1="${uy(CUT5)}" x2="${sx(t).toFixed(1)}" y2="${by+bh}"
+         stroke="#019949" stroke-width="1.6" stroke-dasharray="3 3" opacity=".8"/>`;
+    s+=`<text x="${sx(t).toFixed(1)}" y="${UB-4}" text-anchor="middle" font-size="17"
+         fill="#019949" font-weight="700" font-family="Inter">${t.toFixed(1)}</text>`;});
+  s+=`<text x="${P.x0}" y="200" font-size="17" fill="#3f3f3f"
+       font-family="'Noto Serif JP',serif">線の高さ</text>`;
+  let lx=P.x0+92;
+  CLS5.forEach((n,i)=>{
+    s+=`<rect x="${lx}" y="186" width="15" height="15" fill="${COL5[i]}"/>`;
+    s+=`<text x="${lx+20}" y="200" font-size="17" fill="${COL5[i]}" font-weight="600"
+         font-family="'Noto Serif JP',serif">${n}</text>`;
+    lx+=20+n.length*17+14;});
+  s+=`<line x1="${P.x0}" y1="${ly(0)}" x2="${P.x1}" y2="${ly(0)}" stroke="#ddd"/>`;
+  CLS5.forEach((n,i)=>{
+    const f=v=>score5(v)[i], cl=v=>Math.max(YL[0],Math.min(YL[1],v));
+    s+=`<line x1="${sx(XR[0])}" y1="${ly(cl(f(XR[0])))}" x2="${sx(XR[1])}"
+         y2="${ly(cl(f(XR[1])))}" stroke="${COL5[i]}" stroke-width="2.6"/>`;});
+  s+=`<line x1="${sx(x0).toFixed(1)}" y1="${LA}" x2="${sx(x0).toFixed(1)}" y2="${by+bh}"
+       stroke="#ff8a2b" stroke-width="2.4" stroke-dasharray="5 3"/>`;
+  const w=win5(score5(x0));
+  s+=`<circle cx="${sx(x0).toFixed(1)}" cy="${ly(score5(x0)[w]).toFixed(1)}" r="6"
+       fill="${COL5[w]}" stroke="#fff" stroke-width="2"/>`;
+  s+=`<text x="${P.x0}" y="${by-8}" font-size="17" fill="#3f3f3f"
+       font-family="'Noto Serif JP',serif">箱の答え</text>`;
+  for(let i=0;i<130;i++){
+    const xa=XR[0]+(XR[1]-XR[0])*i/130, xb=XR[0]+(XR[1]-XR[0])*(i+1)/130;
+    s+=`<rect x="${sx(xa).toFixed(1)}" y="${by}" width="${(sx(xb)-sx(xa)+0.6).toFixed(1)}"
+         height="${bh}" fill="${COL5[win5(score5((xa+xb)/2))]}" opacity=".85"/>`;}
+  CLS5.forEach((n,i)=>{
+    let lo=null,hi=null;
+    for(let k=0;k<=130;k++){const xx=XR[0]+(XR[1]-XR[0])*k/130;
+      if(win5(score5(xx))===i){ if(lo===null)lo=xx; hi=xx; }}
+    if(lo!==null && (hi-lo)>1.6)
+      s+=`<text x="${sx((lo+hi)/2).toFixed(1)}" y="${by+21}" text-anchor="middle"
+           font-size="17" fill="#fff" font-family="'Noto Serif JP',serif">${n}</text>`;});
+  for(let v=0;v<=13;v+=1)
+    s+=`<text x="${sx(v).toFixed(1)}" y="${by+bh+24}" text-anchor="middle" font-size="17"
+         fill="#6e6e6e" font-family="Inter">${v}</text>`;
+  s+=`<text x="${P.x1}" y="${by+bh+54}" text-anchor="end" font-size="17" fill="#3f3f3f"
+       font-family="'Noto Serif JP',serif">睡眠時間</text>`;
+  $('p5').innerHTML=s;
+}
+
+function up5(){
+  const x0=(+$('x5').value)/10;
+  $('x5v').textContent=x0.toFixed(1);
+  fig5(x0);
+  const z=score5(x0), p=softmax(z), w=win5(z);
+  const ex=z.map(v=>Math.exp(v));
+  const exS=ex.map(v=>+v.toFixed(3));
+  const sum=+(exS[0]+exS[1]+exS[2]).toFixed(3);
+  const q=exS.map(v=>v/sum), pS=q.map(v=>+v.toFixed(2));
+  {const t=+(pS[0]+pS[1]+pS[2]).toFixed(2);
+   if(t!==1){
+     const m=Math.max.apply(null,pS), tied=[0,1,2].filter(i=>pS[i]===m);
+     const big=(tied.length>1) ? tied.filter(i=>i!==w)[0]
+                               : q.indexOf(Math.max.apply(null,q));
+     pS[big]=+(pS[big]+(1-t)).toFixed(2);}}
+  const N=n=>n.padEnd(4,'　'), F=v=>SG5(v).padStart(5);
+  $('eq5').textContent=
+    `${N('寝不足')} ＝ 5.5 − 睡眠時間\n`
+   +`${N('ちょうど')} ＝ 0\n`
+   +`${N('寝すぎ')} ＝ 睡眠時間 − 9.5\n\n`
+   +`いま ${x0.toFixed(1)}時間 なので\n`
+   +`${N('寝不足')} ＝ 5.5 − ${x0.toFixed(1)} ＝ ${F(z[0])}\n`
+   +`${N('ちょうど')} ＝ 0 ＝ ${F(z[1])}\n`
+   +`${N('寝すぎ')} ＝ ${x0.toFixed(1)} − 9.5 ＝ ${F(z[2])}\n\n`
+   +`↓ e（2.718）の その数 乗にする\n`
+   +CLS5.map((n,i)=>`${N(n)} ${exS[i].toFixed(3).padStart(6)}`).join('\n')
+   +`\n     合計 ${sum.toFixed(3)}\n\n`
+   +`↓ 合計で割る\n`
+   +CLS5.map((n,i)=>`${N(n)} ${exS[i].toFixed(3).padStart(6)} ÷ ${sum.toFixed(3)} ＝ ${pS[i].toFixed(2)}`).join('\n');
+  $('b5').innerHTML=CLS5.map((n,i)=>
+   `<div class="sc-row"><span class="sc-label">${n}</span>
+     <span class="sc-track"><span class="sc-fill" style="width:${p[i]*100}%;
+       background:${COL5[i]}"></span></span>
+     <span class="sc-pct">${pS[i].toFixed(2)}</span></div>`).join('');
+  $('sum5').textContent=`合計 ${(pS[0]+pS[1]+pS[2]).toFixed(2)}`;
+  $('j5').className='verdict'+(mv5>=3?' ok':'');
+  $('j5').innerHTML=`<b>${x0.toFixed(1)}時間の人 → 「${CLS5[w]}」</b>`
+   +`<span style="color:var(--gray-500)">　いちばん上にあるのが
+     <b style="color:${COL5[w]}">${CLS5[w]}</b> の線です。</span>`;
+  if(mv5>=3&&!ok5){ ok5=true; mark(4,'done'); show('r5'); }
+}
+$('x5').oninput=up5;
+$('x5').onchange=()=>{ mv5++; up5(); };
+function gate5Label(){}
+
+up1();
+buildMap(); up2(); up3(); slid4(); up4(); up5();
+mvFig(A2,B2,A2,B2,RT(mseOf(A2,B2)),RT(mseOf(A2,B2)));
+gate1Label(); gate2Label(); gate3Label(); gate4Label(); gate5Label();
+
+(function(){
+  var IMG = {
+    m:'data:image/jpeg;base64,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',
+    d:'data:image/jpeg;base64,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'
+  };
+  var NM = { m:'学', d:'博士' };
+  var CV = {
+ "d1a": [
+  [
+   "m",
+   "博士！ 来たよ。今日から AI の中身を見せてくれるって話だったよね。"
+  ],
+  [
+   "d",
+   "やぁ学くん、よく来た！ ……<b>深井 学</b>。深く、学ぶ。いい名前だ。何度でも言うぞ。"
+  ],
+  [
+   "m",
+   "もう聞いた。"
+  ],
+  [
+   "d",
+   "よし、本題だ。まずこれを見てくれ ── <b>箱</b>だ！"
+  ],
+  [
+   "m",
+   "箱？"
+  ],
+  [
+   "d",
+   "そうだ、箱だ！ 何かを<b>入れると、何かが出てくる</b>。それだけの箱だ。数学ではこれを<b>関数</b>と呼ぶ。"
+  ],
+  [
+   "m",
+   "それだけ？ ちょっと拍子抜けだよ。"
+  ],
+  [
+   "d",
+   "それだけだ。……だがな学くん、<b>ChatGPT も、この箱なんだ。</b>"
+  ],
+  [
+   "m",
+   "えっ。"
+  ],
+  [
+   "d",
+   "入れるのは文章。出てくるのは<b>次に来る単語</b>。箱の形はまったく同じだ。だから箱から始める。"
+  ],
+  [
+   "m",
+   "じゃあ、今日作る箱は何を入れるの？"
+  ],
+  [
+   "d",
+   "<b>勉強した時間</b>だ。出てくるのは<b>テストの点数</b>。下の図が、その箱だ。"
+  ]
+ ],
+ "d1b": [
+  [
+   "d",
+   "8人ぶんの記録がある。そして箱には<b>つまみが2個</b>しか付いていない。<b>a</b> と <b>b</b> だ。"
+  ],
+  [
+   "m",
+   "たった2個？ それで点数が当たるの？"
+  ],
+  [
+   "d",
+   "回してみろ。……そして学くん、覚えておけ。<b>その2個を回すことが「学習」だ。</b>"
+  ],
+  [
+   "m",
+   "学習？ AI が勉強するってこと？"
+  ],
+  [
+   "d",
+   "あとで分かる。まず回せ！"
+  ]
+ ],
+ "d2": [
+  [
+   "m",
+   "回したけど……この<b>赤い線</b>って何？"
+  ],
+  [
+   "d",
+   "点と線の<b>たての距離</b>だ。8人ぶん、8本ある。予想が外れた分だな。これを<b>ズレ</b>と呼ぶ。"
+  ],
+  [
+   "m",
+   "8本あるのに、下の数字は1個だけだよ。"
+  ],
+  [
+   "d",
+   "まとめるんだ。<b>2乗して、足して、8で割って、ルートを取る。</b>下の式が、それを毎回やっている。"
+  ],
+  [
+   "m",
+   "うわ、めんどくさ。なんで2乗するの？"
+  ],
+  [
+   "d",
+   "いい質問だ、学くん！ 線より<b>上</b>に外れた人と、<b>下</b>に外れた人がいるだろう。そのまま足すと、どうなる？"
+  ],
+  [
+   "m",
+   "……あっ。打ち消し合って <b>0</b> になっちゃう。外れてるのに！"
+  ],
+  [
+   "d",
+   "その通り！ 2乗すれば全部プラスだ。だから足せる。"
+  ],
+  [
+   "m",
+   "絶対値でもよくない？"
+  ],
+  [
+   "d",
+   "鋭いぞ！ <b>それも本物の測り方だ。</b>ただし2乗のほうが、大きく外した1人を重く見る。"
+  ],
+  [
+   "m",
+   "どっちが正しいの？"
+  ],
+  [
+   "d",
+   "どちらも正しい。<b>この問題は2乗を選んだ</b> ── それだけだ。ズレの測り方は<b>人が決める</b>。覚えておけ。"
+  ],
+  [
+   "m",
+   "で、つまみは2個あるけど、どっちから回せばいいの？"
+  ],
+  [
+   "d",
+   "形が分かれている。<b>b は線ごと上下に動く。a は白い丸を軸に回る。</b>"
+  ],
+  [
+   "m",
+   "あ、だから順番にやれるんだ。まず b で高さを合わせて、次に a で傾き。"
+  ],
+  [
+   "d",
+   "そうだ！ <b>長い赤い線から先に短くする</b>と早いぞ。"
+  ]
+ ],
+ "d3": [
+  [
+   "m",
+   "合った！ ズレが 3.0 を切ったよ！"
+  ],
+  [
+   "d",
+   "<b>おめでとう、学くん。いま君がやったこと ── それが「学習」だ。</b>"
+  ],
+  [
+   "m",
+   "え、これが？ つまみを2個回しただけだよ。"
+  ],
+  [
+   "d",
+   "AI も同じことをしている。<b>違うのは、つまみが 1,750億個あることだけだ。</b>"
+  ],
+  [
+   "m",
+   "1,750億……手で回したら何年かかるんだよ。"
+  ],
+  [
+   "d",
+   "そこが次の問だ。<b>手では回せない。だから機械に回させる。</b>"
+  ]
+ ],
+ "d4": [
+  [
+   "m",
+   "1,750億個って、どうやって回すの。"
+  ],
+  [
+   "d",
+   "待て。まず<b>なぜ</b>回したいのかをはっきりさせよう。ズレを小さくして、何が嬉しい？"
+  ],
+  [
+   "m",
+   "うーん……8人にぴったり合うと気持ちいい？"
+  ],
+  [
+   "d",
+   "気持ちよさじゃない！ この8人は<b>君がもう点数を知っている</b>連中だ。だが世の中には<b>9人目</b>がいる。"
+  ],
+  [
+   "m",
+   "9人目？"
+  ],
+  [
+   "d",
+   "<b>まだ点数を知らない9人目</b>だ。ズレが小さい線は、その9人目もよく当てる。<b>だから小さくしたい。</b>"
+  ],
+  [
+   "m",
+   "じゃあズレを <b>0</b> にすれば完璧じゃない？"
+  ],
+  [
+   "d",
+   "……学くん。そこがいちばん恐ろしいところだ。<b>8人にぴったり合わせた線は、9人目を外す。</b>"
+  ],
+  [
+   "m",
+   "えっ、逆じゃない？"
+  ],
+  [
+   "d",
+   "逆だ。だが今日は言わない。<b>01</b> でやる。楽しみは取っておくものだ！"
+  ],
+  [
+   "m",
+   "含み持たせるなあ……。で、回し方は？"
+  ],
+  [
+   "d",
+   "3つだけだ。<b>⑴ 足元の坂を測る　⑵ その分だけ動かす　⑶ 繰り返す。</b>この問では、その3つを順にやるぞ。"
+  ],
+  [
+   "m",
+   "坂？ 坂なんてどこにあるの。"
+  ],
+  [
+   "d",
+   "つまみが2個しかないから、<b>組み合わせを全部 絵に描ける</b>。それが下の地図だ。横が a、縦が b。<b>暗いほどズレが小さくて、× が谷底</b>だ。"
+  ],
+  [
+   "m",
+   "地図の上を歩くってこと？"
+  ],
+  [
+   "d",
+   "そうだ。<b>行きたいのは × だ。</b>行くぞ！"
+  ]
+ ],
+ "d5": [
+  [
+   "m",
+   "押したら動いた！ ……でも最初の1歩がすごく大きくて、そのあと小さくなるんだけど。"
+  ],
+  [
+   "d",
+   "歩く幅は<b>坂の急さに比例</b>している。急なところでは大きく、平らなところでは小さい。"
+  ],
+  [
+   "m",
+   "谷底に近づくと、勝手に止まる？"
+  ],
+  [
+   "d",
+   "<b>ひとりでに小さくなる。</b>誰も減らしていない。よくできているだろう！"
+  ],
+  [
+   "m",
+   "じゃあ<b>1歩の大きさ</b>を上げれば速いんじゃない？"
+  ],
+  [
+   "d",
+   "上げてみろ。……ただし <b>0.0549</b> を超えると、<b>谷を飛び越えて戻ってこない。</b>"
+  ],
+  [
+   "m",
+   "戻ってこない？"
+  ],
+  [
+   "d",
+   "向こう岸はもっと急だ。次はもっと遠くへ飛ぶ。そこはもっと急だ。もっと飛ぶ。……<b>止まらなくなる！</b>"
+  ],
+  [
+   "m",
+   "それ見たい。"
+  ],
+  [
+   "d",
+   "見ろ！ 壊れ方を知っておくのは大事だ。……ところで学くん、1つ言っておくことがある。<b>機械はこの地図を見ていない。</b>"
+  ],
+  [
+   "m",
+   "えっ。じゃあ、どうやって谷底に行くの。"
+  ],
+  [
+   "d",
+   "見えているのは<b>足元の傾きだけ</b>だ。それだけで下れる。<b>その傾きを出すのが微分だ。</b>"
+  ],
+  [
+   "m",
+   "微分って、高校でやるあれ？"
+  ],
+  [
+   "d",
+   "あれだ！ だが計算はしなくていい。ここから先は、<b>それが何をしているのか</b>を君の目で見る。"
+  ]
+ ],
+ "d6": [
+  [
+   "d",
+   "まずは<b>どこがダメか</b>を見る。8人ぶんの<b>差</b>を並べるだけだ。"
+  ],
+  [
+   "m",
+   "差？"
+  ],
+  [
+   "d",
+   "<b>差 ＝ 線 − 実際。</b>マイナスなら、線がその人より<b>下</b>にあるということだ。"
+  ],
+  [
+   "m",
+   "……全部マイナスだ。"
+  ],
+  [
+   "d",
+   "なら線が<b>全体的に下</b>にある。<b>b を上げろ</b>と、表が言っているわけだ。"
+  ],
+  [
+   "m",
+   "表が喋るの？"
+  ],
+  [
+   "d",
+   "喋るとも！ 右へ行くほど外れ方が大きければ、<b>a が足りない</b>。それも読める。"
+  ]
+ ],
+ "d7": [
+  [
+   "d",
+   "次は<b>測る</b>だ。ここが今日の山場だぞ、学くん。"
+  ],
+  [
+   "m",
+   "何を測るの。"
+  ],
+  [
+   "d",
+   "<b>つまみを1本だけ、1 上げてみる。</b>もう1本は止めたままだ。そしてズレがどう動くか見る。"
+  ],
+  [
+   "m",
+   "片方だけ？ 両方いっぺんに測ればいいのに。"
+  ],
+  [
+   "d",
+   "それでは<b>どっちが効いたのか分からない</b>だろう！ 片方を止めるから分かるんだ。"
+  ],
+  [
+   "m",
+   "なるほど。"
+  ],
+  [
+   "d",
+   "そして学くん、この「<b>片方だけ</b>」という考え方には名前が付いている。<b>偏微分</b>だ。"
+  ],
+  [
+   "m",
+   "出た、難しい名前。"
+  ],
+  [
+   "d",
+   "名前だけだ！ <b>「偏」は「片方だけ」という意味だぞ。</b>やっているのは、いま君が見たこと ── それ以上のことは何もしていない。"
+  ]
+ ],
+ "d8": [
+  [
+   "m",
+   "測ったなら、その分だけ<b>片方ずつ</b>動かせばいいんじゃない？"
+  ],
+  [
+   "d",
+   "できる。だが学くん、いま測ったのは<b>いま立っている1点</b>での効き方だ。"
+  ],
+  [
+   "m",
+   "1点？"
+  ],
+  [
+   "d",
+   "<b>a を動かせば、立っている場所が変わる。</b>場所が変われば <b>b の効き方も変わる</b>。動いた先の効き方は、まだ測っていない。"
+  ],
+  [
+   "m",
+   "じゃあ測り直せばいいじゃない。"
+  ],
+  [
+   "d",
+   "それが<b>次の1歩</b>だ！ 1歩の中では測り直さない。<b>測る → 両方いっぺんに動かす → また測る。</b>この順番は崩さない。"
+  ],
+  [
+   "m",
+   "あ、だから同時なんだ。"
+  ],
+  [
+   "d",
+   "そういうことだ。測った分は、動く前に<b>両方まとめて使い切る。</b>"
+  ]
+ ],
+ "d9": [
+  [
+   "m",
+   "着いた！ 谷底だ！"
+  ],
+  [
+   "d",
+   "<b>やったな、学くん。いまやったのが「勾配降下法」だ。</b>"
+  ],
+  [
+   "m",
+   "さっきの3つだよね。測って、動かして、繰り返す。"
+  ],
+  [
+   "d",
+   "その通り！ そしてな ── <b>GPT-3 は、これを10万回ほどやった。</b>"
+  ],
+  [
+   "m",
+   "10万回！ 僕、いま何回やった？"
+  ],
+  [
+   "d",
+   "数十回だ。桁は違うが、<b>やっていることはまったく同じ</b>だぞ。"
+  ],
+  [
+   "m",
+   "……博士。AI って、地味だね。"
+  ],
+  [
+   "d",
+   "地味だ！ 実に地味だ。だが<b>これが全部だ。</b>ここから先は<b>形の話</b>になる。行こう！"
+  ]
+ ],
+ "d10": [
+  [
+   "d",
+   "次は別のデータだ。入れるのは<b>睡眠時間</b>、出てくるのは<b>次の日の集中力</b>。10人ぶんある。"
+  ],
+  [
+   "m",
+   "寝れば寝るほど集中できるってこと？"
+  ],
+  [
+   "d",
+   "見てみろ。……<b>寝すぎても落ちている。</b>"
+  ],
+  [
+   "m",
+   "……ほんとだ。<b>山みたいな形</b>だ。"
+  ],
+  [
+   "d",
+   "そこだ。さっきと<b>同じつまみ2個</b>で、この山にズレ 3.0 まで近づけてくれ。"
+  ],
+  [
+   "m",
+   "やり方は同じだよね。b で高さ、a で傾き。楽勝だよ。"
+  ],
+  [
+   "d",
+   "……やってみろ、学くん。"
+  ]
+ ],
+ "d11": [
+  [
+   "m",
+   "博士、どう回しても届かないんだけど。僕が下手なの？"
+  ],
+  [
+   "d",
+   "下手じゃない。<b>届かないんだ。</b>"
+  ],
+  [
+   "m",
+   "えっ。"
+  ],
+  [
+   "d",
+   "<span class='mono'>y = ax + b</span> は<b>まっすぐな線</b>しか描けない。まっすぐな線で<b>山</b>が作れるか？"
+  ],
+  [
+   "m",
+   "……作れない。"
+  ],
+  [
+   "d",
+   "いちばん良い直線でも、ズレは <b>14.28</b> だ。3.0 には絶対に届かない。<b>この問は「届かないことを確かめる問」だったんだ。</b>"
+  ],
+  [
+   "m",
+   "先に言ってよ！"
+  ],
+  [
+   "d",
+   "先に言ったら確かめられないだろう！ ……学くん、ここは大事だぞ。行き詰まったとき、疑うことは2つある。<b>回し方が悪いのか、形が足りないのか。</b>"
+  ],
+  [
+   "m",
+   "今回は？"
+  ],
+  [
+   "d",
+   "<b>形が足りない。</b>だから次で<b>形を増やす</b>。下の問4へ進め！"
+  ]
+ ],
+ "d12a": [
+  [
+   "d",
+   "つまみを増やす。すると<b>描ける形が増える。</b>"
+  ],
+  [
+   "m",
+   "増やすと何が起きるの？"
+  ],
+  [
+   "d",
+   "<b>折れ目</b>ができる。<b>線の傾きが変わる点</b>だ。つまみ2個なら折れ目は0個 ── だからまっすぐだった。"
+  ],
+  [
+   "m",
+   "3個にすると？"
+  ],
+  [
+   "d",
+   "<b>1回 折れる。</b>4個なら2回、5個なら3回だ。下の表を見てくれ。"
+  ],
+  [
+   "m",
+   "折れれば山になるね！"
+  ],
+  [
+   "d",
+   "なるぞ！ そして動かせるのは<b>それぞれの折れ目の高さ</b>だけだ。図のオレンジの丸が、それだ。"
+  ]
+ ],
+ "d13": [
+  [
+   "m",
+   "博士、2個から3個にしたのに<b>ズレが変わらない</b>んだけど。壊れた？"
+  ],
+  [
+   "d",
+   "壊れていない！ 増やしたとき、<b>いまの線の形をそのまま引き継ぐ</b>ようにしてあるんだ。"
+  ],
+  [
+   "m",
+   "引き継ぐ？"
+  ],
+  [
+   "d",
+   "新しい折れ目は、<b>いまの線の上</b>に置かれる。だから線は1ミリも動かない。<b>君が動かせば変わる。</b>"
+  ],
+  [
+   "m",
+   "なるほど。増やすだけじゃダメなんだ。"
+  ],
+  [
+   "d",
+   "そこが大事だぞ、学くん。<b>つまみを増やすのは「描ける形を増やす」ことだ。描くのは別の仕事だ。</b>"
+  ],
+  [
+   "m",
+   "何個あれば山になるの。"
+  ],
+  [
+   "d",
+   "<b>2個と3個では届かない。4個で届く。</b>やってみろ！"
+  ]
+ ],
+ "d14": [
+  [
+   "m",
+   "届いた！ 4個で山になった！"
+  ],
+  [
+   "d",
+   "<b>よくやった、学くん。つまみを増やす ＝ 描ける形が増える。</b>これが今日いちばん大事なことだ。"
+  ],
+  [
+   "m",
+   "計算は難しくなったの？"
+  ],
+  [
+   "d",
+   "<b>問1 とまったく同じだ。掛け算と足し算。</b>数が増えただけだ。<b>1,750億個でも同じだぞ。</b>"
+  ],
+  [
+   "m",
+   "1,750億個でも、掛け算と足し算……。"
+  ]
+ ],
+ "d15": [
+  [
+   "m",
+   "5個にしたら、もっと下がったよ。じゃあ増やせば増やすほど……"
+  ],
+  [
+   "d",
+   "そこで止まれ！ <b>手で回せるのは、このあたりまでだ。</b>"
+  ],
+  [
+   "m",
+   "なんで？"
+  ],
+  [
+   "d",
+   "1個の<b>いちばん良い高さ</b>が、<b>他のつまみ次第で変わる</b>んだ。順番に合わせても終わらない。"
+  ],
+  [
+   "m",
+   "じゃあ、どうするの。"
+  ],
+  [
+   "d",
+   "機械に回させる。<b>問2 でやったやつだ。</b>あれは、このためにあった。"
+  ]
+ ],
+ "d16": [
+  [
+   "d",
+   "最後だ、学くん。ここまでの箱は<b>点数を1個</b>出していた。"
+  ],
+  [
+   "m",
+   "うん。80点とか。"
+  ],
+  [
+   "d",
+   "今回は<b>「寝不足」「ちょうど」「寝すぎ」のどれか</b>を答えさせる。"
+  ],
+  [
+   "m",
+   "言葉？ 箱から言葉が出てくるの？"
+  ],
+  [
+   "d",
+   "出ない！ <b>箱は数しか出せない。</b>だから<b>候補ごとに線を1本ずつ引く。</b>3つなら3本だ。"
+  ],
+  [
+   "m",
+   "3本引いて、どうするの。"
+  ],
+  [
+   "d",
+   "<b>いちばん上にある線が、箱の答えだ。</b>"
+  ],
+  [
+   "m",
+   "……それだけ？"
+  ],
+  [
+   "d",
+   "それだけだ。……学くん、<b>ChatGPT はこれを5万本やっている。</b>"
+  ],
+  [
+   "m",
+   "5万本！？"
+  ],
+  [
+   "d",
+   "候補が<b>5万語</b>あるからな。<b>形は、これから君が見るものと同じだ。</b>"
+  ]
+ ],
+ "d17": [
+  [
+   "m",
+   "この上と下の図、どうつながってるの。"
+  ],
+  [
+   "d",
+   "上は問3・問4 と<b>同じ10人</b>だ。そこに<b>70点</b>で横線を引いた。<b>線より上の人が「ちょうど」</b>になる。"
+  ],
+  [
+   "m",
+   "70点って、誰が決めたの。"
+  ],
+  [
+   "d",
+   "<b>人が決めた。</b>私だ！ そう決めれば、あとは全部そこから出てくる。"
+  ],
+  [
+   "m",
+   "出てくる？"
+  ],
+  [
+   "d",
+   "数えてみろ。<b>5時間は 58点で線より下。6時間は 70点で線より上。</b>だから切り替わりは 5 と 6 のあいだ ── <b>5.5</b> だ。"
+  ],
+  [
+   "m",
+   "あ、ほんとだ。右側も同じ？"
+  ],
+  [
+   "d",
+   "<b>9時間は 74点で上、10時間は 62点で下。</b>だから <b>9.5</b>。これが境目だ。"
+  ],
+  [
+   "m",
+   "下の3本の線、その 5.5 と 9.5 が入ってる！"
+  ],
+  [
+   "d",
+   "よく見たな！ <b>人が1か所 決めれば、線は勝手に決まる。</b>ここが今日の大事なところだ。"
+  ]
+ ],
+ "d18": [
+  [
+   "m",
+   "式に <b>e の何乗</b> ってあるけど、これ何。意味わかんない。"
+  ],
+  [
+   "d",
+   "点数に<b>マイナス</b>が出るだろう。<b>−1.5</b> のままでは割合にできない。"
+  ],
+  [
+   "m",
+   "じゃあ全部に <b>10</b> 足せばいいじゃない。"
+  ],
+  [
+   "d",
+   "やってみろ！ 点数が <b>3</b> と <b>1</b> なら、合計で割って <b>0.75</b> 対 <b>0.25</b> だ。10 足すと <b>13</b> と <b>11</b>。割ると？"
+  ],
+  [
+   "m",
+   "……<b>0.54</b> 対 <b>0.46</b>。うわ、ほとんど同じになっちゃった！"
+  ],
+  [
+   "d",
+   "<b>足すと差が縮む。</b>e の何乗なら縮まない。しかも<b>大小の順番は変わらない。</b>"
+  ],
+  [
+   "m",
+   "順番が変わらないなら、答えも入れ替わらないね。"
+  ],
+  [
+   "d",
+   "そこだ！ だから安心して使える。この処理には名前がある ── <b>softmax</b> だ。"
+  ]
+ ],
+ "d19": [
+  [
+   "m",
+   "動かしたら答えが変わった！ 6時間なら「ちょうど」だ。"
+  ],
+  [
+   "d",
+   "<b>これが「分類」だ、学くん。</b>出口を候補の数だけ用意して、いちばん高いものを答えにする。"
+  ],
+  [
+   "m",
+   "中身は難しくなったの？"
+  ],
+  [
+   "d",
+   "<b>問1 と同じだ。掛け算と足し算。</b>変わったのは<b>出口の付け方だけ</b>だ。"
+  ],
+  [
+   "m",
+   "……博士。今日やったの、全部これだね。<b>掛けて、足して、外れ方を測って、坂を下る。</b>"
+  ],
+  [
+   "d",
+   "<b>ここまでが土台だ。</b>ChatGPT も、この土台の上に載っている。「日本の首都は」の次に来る語を <b>5万語ぶんの線</b>から選ぶ ── その出口の作りは、いま君が見たものと同じだ。"
+  ],
+  [
+   "m",
+   "じゃあ、あと何が足りないの。"
+  ],
+  [
+   "d",
+   "<b>つまみの数</b>と、<b>層</b>だ。それは <b>01</b> でやる。……準備はいいか、学くん？"
+  ],
+  [
+   "m",
+   "行こう！"
+  ]
+ ]
+};
+  var CAST = [
+    ['d','博士','',
+     'AIの研究者。<b>元大学教授</b>で、機械学習を教えていた。'
+    +'「説明を読ませるより、<b>つまみを回させたほうが早い</b>」が信条で、大学のやり方と合わずに辞めた。'
+    +'いまは家の一室でひとり実験している。口癖は<b>「やってみろ」</b>。'],
+    ['m','深井 学','ふかい まなぶ ／ 高校2年',
+     '<b>数学は得意</b>だが、AI は素人。'
+    +'「みんな AI って言うけど、<b>中で何が起きてるのか誰も説明してくれない</b>」が動機。'
+    +'小学生のころから博士の家に出入りしている。<b>納得しないと引かない。</b>']
+  ];
+  (function(){
+    var h = document.getElementById('cast2');
+    if (!h) return;
+    h.className = 'cast2';
+    h.innerHTML = CAST.map(function(c){
+      return '<div class="row">'
+           +   '<img class="ic" src="' + IMG[c[0]] + '" alt="' + c[1] + '"'
+           +        ' width="150" height="150" decoding="async">'
+           +   '<div><span class="nm2" style="color:' + (c[0]==='d'?'#b0700c':'#2f6fb5') + '">'
+           +     c[1] + (c[2] ? '<span class="rb">' + c[2] + '</span>' : '') + '</span>'
+           +     '<span class="tx2">' + c[3] + '</span></div>'
+           + '</div>';
+    }).join('');
+  })();
+
+  Object.keys(CV).forEach(function(id){
+    var host = document.getElementById(id);
+    if (!host) return;
+    host.className = 'cv';
+    host.innerHTML = CV[id].map(function(r){
+      return '<div class="cl ' + r[0] + '">'
+           +   '<img class="ic" src="' + IMG[r[0]] + '" alt="' + NM[r[0]] + '"'
+           +        ' width="150" height="150" decoding="async">'
+           +   '<div class="bb"><span class="nm">' + NM[r[0]] + '</span>' + r[1] + '</div>'
+           + '</div>';
+    }).join('');
+  });
+})();
+
+</script>
+</body>
+</html>
