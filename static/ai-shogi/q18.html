@@ -1,0 +1,926 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow,noarchive">
+<meta name="description" content="列が足りないと、決め方をどう変えても そこで止まる ── 問18 組で決める">
+<meta property="og:title" content="AIの詰将棋 ── 問18 列が足りないと、決め方をどう変えても そこで止まる（第5章）">
+<meta property="og:description" content="列が足りないと、決め方をどう変えても そこで止まる ── 問18 組で決める">
+<title>AIの詰将棋 ── 問18 列が足りないと、決め方をどう変えても そこで止まる（第5章）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@300;400;600;700&family=Inter:wght@300;400;500;600;700&family=Noto+Serif+JP:wght@300;400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="common.css">
+<style>
+
+.offpage{display:none}
+
+:root{
+ --bg:#fff; --white:#fff; --black:#000;
+ --gray-100:#f9f9f9; --gray-200:#d9d9d9; --gray-500:#6e6e6e; --gray-600:#3f3f3f;
+ --accent:#019949;
+ --sans:'Inter',system-ui,sans-serif;
+ --serif:'Source Serif 4','Noto Serif JP',Georgia,serif;
+ --content-w:52.625rem;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--black);font-family:var(--sans);
+ -webkit-font-smoothing:antialiased}
+.wrap{max-width:var(--content-w);margin:0 auto;padding:0 1.5rem 5rem}
+.top{border-bottom:1px solid var(--gray-200);margin-bottom:2.4rem}
+.top .in{max-width:var(--content-w);margin:0 auto;padding:1.1rem 1.5rem;font-size:13px;
+ letter-spacing:.14em;text-transform:uppercase;color:var(--gray-500)}
+.top .in .tag{display:block;margin-top:.3rem;font-size:12.5px;letter-spacing:0;
+ text-transform:none;color:var(--gray-500);line-height:1.6;font-family:var(--serif)}
+.eyebrow{font-size:13px;font-weight:500;letter-spacing:.16em;text-transform:uppercase;
+ color:var(--gray-500);margin-bottom:.9rem}
+h1{font-family:var(--serif);font-size:2.1rem;font-weight:300;line-height:1.35;margin:0 0 .8rem}
+.lead b{color:var(--black)}
+.meta{font-size:13px;letter-spacing:.1em;color:var(--gray-500);padding-bottom:1.2rem;
+ border-bottom:1px solid var(--gray-200);margin-bottom:1.2rem}
+.steps{display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:2.4rem}
+.steps div{flex:1 1 5rem;padding:.55rem .3rem;text-align:center;font-size:12px;
+ border:1px solid var(--gray-200);color:var(--gray-500);background:var(--white)}
+.steps div.open{border-color:var(--black);color:var(--black)}
+.steps div.done{background:var(--black);border-color:var(--black);color:var(--white)}
+.card{border:1px solid var(--gray-200);padding:2rem;margin-bottom:2rem;background:var(--white)}
+.tagline{font-size:13px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;
+ color:var(--gray-500);margin-bottom:.9rem}
+.figbox{background:var(--gray-100);border:1px solid var(--gray-200);padding:1rem;margin:1.3rem 0}
+
+.panel{background:var(--gray-100);border:1px solid var(--gray-200);padding:1rem;margin:1.3rem 0}
+.panel .ctl{margin:.9rem 0 .2rem}
+.panel .togs{margin-top:.7rem}
+.panel .gauge{margin-top:.9rem}
+.panel .verdict{margin-top:.8rem;background:var(--white)}
+svg{display:block;width:100%;height:auto}
+.ctl{margin:1.1rem 0 .2rem}
+.ctl label{display:flex;justify-content:space-between;align-items:baseline;font-size:14px;
+ margin-bottom:.35rem;gap:1rem}
+.ctl label span.n{font-weight:600;font-variant-numeric:tabular-nums;white-space:nowrap}
+input[type=range]{width:100%;accent-color:#000;height:1.4rem}
+.togs{display:flex;gap:.6rem;flex-wrap:wrap;margin-top:1.1rem;align-items:center}
+.btn{background:none;border:1px solid var(--gray-200);padding:.6rem 1.15rem;font-size:14px;
+ font-family:var(--sans);color:var(--black);cursor:pointer;transition:all .15s;
+ text-decoration:none;display:inline-block}
+.btn:hover{border-color:var(--black);background:var(--gray-100)}
+.btn.on{background:var(--black);color:var(--white);border-color:var(--black)}
+.btn.go{background:var(--black);color:var(--white);border-color:var(--black)}
+.btn.sm{font-size:13px;padding:.45rem .85rem;color:var(--gray-500)}
+.gauge{margin:1.2rem 0 0}
+.gauge .row{display:flex;align-items:baseline;gap:.7rem;margin-bottom:.5rem}
+.gauge .u{font-size:14px;color:var(--gray-500)}
+.gtrack{height:10px;background:#e9e9e9;position:relative;overflow:hidden}
+.gfill{display:block;height:100%;background:#c00;transition:width .12s linear}
+.gfill.ok{background:var(--accent)}
+.gmark{position:absolute;top:-3px;bottom:-3px;width:2px;background:#000}
+.gcap{display:flex;justify-content:space-between;font-size:12px;color:var(--gray-500);
+ margin-top:.35rem}
+.big{font-family:var(--serif);font-size:2rem;font-weight:400;font-variant-numeric:tabular-nums;
+ line-height:1}
+.calc{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13.5px;line-height:2;
+ background:var(--white);border:1px solid var(--gray-200);padding:.9rem 1.1rem;margin:.9rem 0;
+ overflow-x:auto;white-space:pre}
+.verdict{margin-top:1.2rem;padding:.9rem 1.1rem;border:1px solid var(--gray-200);font-size:14px;
+ line-height:1.75;background:var(--gray-100)}
+.verdict.ok{border-color:var(--accent);background:#f2fbf6}
+.verdict.stuck{border-color:#c00;background:#fdf4f4}
+.src{border-left:2px solid var(--black);padding:.9rem 0 .9rem 1.1rem;margin:1.4rem 0;
+ font-size:14px;line-height:1.85;color:var(--gray-600)}
+.src .h{font-size:12px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;
+ color:var(--black);margin-bottom:.4rem}
+.box{border:1px solid var(--gray-200);padding:1.1rem 1.3rem;margin:1.3rem 0;background:var(--gray-100)}
+.box .h{font-size:12px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;
+ margin-bottom:.5rem}
+.mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+
+.grow{display:flex;align-items:center;gap:.5rem;margin-bottom:.5rem;flex-wrap:wrap}
+.grow .gn{width:9.4rem;font-size:14px;flex-shrink:0;font-variant-numeric:tabular-nums}
+.grow .gb{font-size:13px;padding:.35rem .8rem}
+.grow .gv{font-size:13px;color:var(--gray-500);font-variant-numeric:tabular-nums}
+
+.sc-row{display:flex;align-items:center;gap:.5rem;margin-bottom:.55rem}
+.sc-label{width:8.6rem;font-size:13.5px;text-align:right;flex-shrink:0}
+.sc-track{flex:1;background:#e9e9e9;height:11px;position:relative;min-width:2rem}
+.sc-fill{display:block;height:100%;background:var(--black);transition:width .18s linear}
+.sc-fill.hit{background:var(--accent)}
+.sc-pct{width:4.2rem;font-size:13.5px;font-variant-numeric:tabular-nums;flex-shrink:0}
+details{border-top:1px solid var(--gray-200);padding-top:1rem;margin-top:1.5rem}
+summary{font-size:14px;font-weight:500;cursor:pointer}
+.lg{font-size:14px;line-height:1.9;color:var(--gray-600);margin-top:.9rem}
+.dtab th,.dtab td{padding:.4rem .55rem;border:1px solid var(--gray-200);text-align:right}
+.dtab th{background:var(--gray-100);font-weight:600;font-size:11.5px}
+.dtab td.l,.dtab th.l{text-align:left}
+.dtab tr.bad td{background:#fdf4f4}
+.foot{border-top:1px solid var(--gray-200);margin-top:3rem;padding-top:1.5rem;font-size:13px;
+ color:var(--gray-500);line-height:1.8}
+
+
+@media (max-width:430px){
+  .wrap{padding-left:.5rem;padding-right:.5rem}
+  
+  .calc{font-size:12px;padding-left:.7rem;padding-right:.7rem}
+  .card{padding-left:.75rem;padding-right:.75rem}
+  .box,.figbox,.panel{padding-left:.5rem;padding-right:.5rem}
+  .top .in{padding-left:.5rem;padding-right:.5rem}
+  #bd0 text,#fig17 text,#p19a text,#p19b text{font-size:17px}
+  .grow .gn{width:100%}
+  .sc-label{width:7.4rem}
+  
+  .stick{position:sticky;top:0;z-index:5;background:var(--gray-100);
+         padding-bottom:.35rem;box-shadow:0 6px 8px -6px rgba(0,0,0,.18)}
+  .stickbot{position:sticky;bottom:0;z-index:5;background:var(--gray-100);
+            padding-top:.4rem;box-shadow:0 -6px 8px -6px rgba(0,0,0,.18)}
+  
+  .cl .ic{width:38px;height:38px}
+  .cl{gap:.5rem;margin-bottom:.7rem}
+  
+  .cast2{padding:.7rem .75rem}
+  .cast2 .ic{width:46px;height:46px}
+  .cast2 .row{gap:.6rem}
+  .cast2 .tx2{font-size:13px;line-height:1.8}
+}
+
+
+.cast2{border:1px solid var(--gray-200);background:var(--gray-100);
+  padding:1rem 1.1rem;margin:0 0 2.4rem}
+.cast2 .row{display:flex;gap:.9rem;align-items:flex-start}
+.cast2 .row+.row{margin-top:.9rem;padding-top:.9rem;border-top:1px solid var(--gray-200)}
+.cast2 .ic{width:54px;height:54px;border-radius:50%;flex-shrink:0;display:block;
+  border:2px solid var(--white);box-shadow:0 0 0 1px var(--gray-200),0 1px 3px rgba(0,0,0,.10)}
+.cast2 .nm2{display:block;font-size:15.5px;font-weight:700;margin-bottom:.2rem}
+.cast2 .rb{font-size:12px;font-weight:400;color:var(--gray-500);margin-left:.45rem}
+.cast2 .tx2{font-size:13.5px;line-height:1.85;color:var(--gray-600)}
+.cast2 .tx2 b{color:var(--black)}
+.cv{margin:1.6rem 0}
+.cl{display:flex;gap:.75rem;align-items:flex-start;margin:0 0 .85rem}
+.cl .ic{width:46px;height:46px;border-radius:50%;flex-shrink:0;display:block;
+  border:2px solid var(--white);box-shadow:0 0 0 1px var(--gray-200),0 1px 3px rgba(0,0,0,.10)}
+.cl .bb b{color:var(--black)}
+.cl .bb:before{content:'';position:absolute;left:-6px;top:15px;width:10px;height:10px;
+  background:inherit;border-left:1px solid;border-bottom:1px solid;border-color:inherit;
+  transform:rotate(45deg)}
+
+.cl.m .bb{background:#fff7ea;border-color:#efd6a6}
+.cl.d .bb{background:#eef4fa;border-color:#c3d9ee}
+.cl .nm{display:block;font-size:11.5px;font-weight:700;letter-spacing:.07em;margin-bottom:.15rem}
+.cl.m .nm{color:#b0700c}   
+.cl.d .nm{color:#2f6fb5}   
+.keyh{font-size:11.5px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--gray-500);margin:1.6rem 0 .5rem}
+
+
+/* ⒜ 2本のゲージ ── 練習の点と初見の点を縦に並べる */
+.g2{margin:1rem 0 0}
+.g2 .r{display:flex;align-items:baseline;gap:.6rem;margin-bottom:.3rem}
+.g2 .lb{font-size:12.5px;color:var(--gray-500);width:9.6rem;flex-shrink:0}
+.g2 .nv{font-family:var(--serif);font-size:1.5rem;font-weight:400;
+  font-variant-numeric:tabular-nums;line-height:1}
+.g2 .u{font-size:12.5px;color:var(--gray-500)}
+.g2 .tr{height:9px;background:#e9e9e9;position:relative;overflow:hidden;margin-bottom:.7rem}
+.g2 .fl{display:block;height:100%;transition:width .12s linear}
+.g2 .fl.a{background:#2f6fb5}          /* 練習の点＝青 */
+.g2 .fl.b{background:#c00}             /* 初見の点＝赤 */
+.g2 .fl.b.ok{background:var(--accent)} 
+/* ⒝ 891人の帯（当たり／外れ） */
+.band{height:26px;display:flex;border:1px solid var(--gray-200);overflow:hidden}
+.band .hit{background:var(--accent)}
+.band .mis{background:var(--white)}
+.band .sp{border-left:1px solid var(--gray-200)}
+.bandcap{display:flex;justify-content:space-between;font-size:12px;
+  color:var(--gray-500);margin-top:.3rem}
+/* ⒟ 表の実物（横に広いので横スクロールの枠に入れる） */
+.rawwrap{overflow-x:auto;margin:.9rem 0;border:1px solid var(--gray-200)}
+.rawtab{border-collapse:collapse;font-size:11.5px;white-space:nowrap;
+  font-variant-numeric:tabular-nums}
+.rawtab th,.rawtab td{padding:.35rem .5rem;border-bottom:1px solid var(--gray-200);
+  border-right:1px solid var(--gray-200);text-align:left}
+.rawtab th{background:var(--gray-100);font-weight:600;font-size:10.5px}
+.rawtab td.y{background:#f2fbf6;font-weight:600}
+.rawtab th.y{background:#d9f0e4}
+
+.pick{display:flex;gap:.5rem;flex-wrap:wrap;margin:.8rem 0}
+.pick .btn{flex:1 1 6rem}
+.pick .btn.sel{background:var(--black);color:var(--white);border-color:var(--black)}
+.locked{opacity:.35;pointer-events:none}
+@media (max-width:430px){
+  .g2 .lb{width:7.2rem;font-size:11.5px}
+  .g2 .nv{font-size:1.3rem}
+  #ln20 text,#tree20 text,#dt20 text,#cv20 text,#bar21 text{font-size:17px}
+  .rawtab{font-size:10.5px}
+}
+</style>
+</head>
+<body>
+
+<div class="top"><div class="in">AIの詰将棋<span class="tag">将棋の詰将棋のように、AIの中身を1問ずつ切り出しました。全21問。</span></div></div>
+<div class="wrap">
+
+
+<div class="prog">
+ <div class="steps" id="steps"></div>
+ <div class="cnt" id="prog_cnt"></div>
+</div>
+<div class="chap" id="chap"></div>
+
+<!-- ══════════════════ 章の締め ══════════════════ -->
+<div class="card">
+<div class="tagline">before</div>
+<h2>ここからは、あなたが手を動かす番です</h2>
+<p class="lead">第1章〜第4章でやったのは<b>AI の原理</b>でした。つまみを回し、ずれを下げ、
+言葉を数にするところまで見ました。<b>ここからは その原理を、公開されている本物のデータで使います。</b></p>
+<div class="box">
+ <div class="h">Kaggle と タイタニック</div>
+ <p class="lead" style="margin:0 0 .6rem"><b>Kaggle</b> は、<b>同じデータと同じ問いが公開されていて、
+ 誰でも自分のやり方で答えを出し、点が付く場所</b>です。世界中の人が同時に同じ問題に当たっています。
+ <b>答えがまだ決まっていない問題</b>も、そこに並んでいます。</p>
+ <p class="lead" style="margin:0"><b>タイタニック</b>は、その入口に置かれている問題です。
+ <b>Kaggle を始める人が ほぼ全員 最初に触ります。</b>
+ 891人の記録から、誰が助かったかを当てます。<br>
+ <b>ここでやることは、そこでそのまま点になります。</b></p>
+</div>
+<h3>渡されるのは、2つの表だけです</h3>
+<div id="e18a"></div>
+
+<div class="rawwrap"><table class="rawtab" id="t0"></table></div>
+<p class="cap">練習用の表の先頭5人（Kaggle の train.csv の実物）。<b>緑の列 Survived が「生き残ったか」</b>。
+1 なら生存・0 なら死亡。<b>この1列だけが、本番の表にありません。</b></p>
+
+<div class="figbox">
+ <svg id="bd0" viewBox="0 0 560 168"></svg>
+ <div class="cap">あなたが見られるのは <b>891人</b>（練習用・番号 1〜891）。<br>
+  点が付くのは <b>418人</b>（本番用・番号 892〜1309）。<b>番号は1つも重なっていません。</b></div>
+</div>
+
+
+<h3>本物のデータには、空欄があります</h3>
+<div class="figbox">
+ <svg id="na0" viewBox="0 0 560 168"></svg>
+ <div class="cap"><b>記録が残っていない箇所があります。</b>数学なら「そこでは考えない」で済みますが、
+  <b>本番の418人にも空欄があり、あなたは全員に答えを出さなければなりません。</b><br>
+  だから<b>何かで埋めるしかありません。埋め方を決めるのは あなたです。</b>
+  この教材では年齢の空欄を <b>28歳</b>（891人の年齢の真ん中の値）で埋めました。</div>
+</div>
+
+<div class="src">
+ <div class="h">出すもの</div>
+ <b>418行。1人ずつ 0 か 1 を書いたファイルだけ</b>です。「70%の確率で生存」では受け取ってもらえません。
+ 採点は418人のうち何人が実際と一致したか。<b>どんな手を使ったかは点に関係しません。</b>
+</div>
+</div>
+
+<!-- ══════════════════ c18 ══════════════════ -->
+<div class="card" id="c18">
+<div class="tagline">Question 18</div>
+<h2>列が足りないと、決め方をどう変えても そこで止まる</h2>
+<div id="e18b"></div>
+
+
+<h3>まず、性別だけで分けてみる</h3>
+<div class="figbox">
+ <svg id="sex18" viewBox="0 0 560 200"></svg>
+ <div class="cap">表の <b>Sex</b> の列を使って、891人を <b>女314人</b>と <b>男577人</b>に分けました。<br>
+  <b>同じ組に入った人には、同じ答えしか付けられません</b>（使っているのは「男か女か」の1つだけだから）。</div>
+</div>
+<div class="panel">
+ <div class="cap">2つの組に、それぞれ <b>「生存」か「死亡」</b>を決めてください。<br>
+  当たりは<b>「決めた側」の人数</b>です。いちばん大きい数は何人になりますか。</div>
+ <div id="rows18s"></div>
+ <div class="gauge">
+  <div class="row"><span class="big" id="h18s">–</span><span class="u">人 当たり（891人中）</span></div>
+  <div class="gtrack"><span class="gfill" id="g18s"></span><span class="gmark" id="m18s"></span></div>
+  <div class="gcap"><span>0</span><span>目標 701</span><span>891</span></div>
+ </div>
+ <div class="verdict" id="j18s">2つの組に答えを決めてください。</div>
+ <div class="togs"><button class="btn sm" id="rst18s">両方「死亡」に戻す</button></div>
+</div>
+<div class="calc" id="eq18s">–</div>
+<div id="e18c"></div>
+
+
+<h3>次に、客室の等級を足す</h3>
+<div class="figbox">
+ <svg id="grid18" viewBox="0 0 560 216"></svg>
+ <div class="cap">表の <b>Pclass</b> の列は <b>1等・2等・3等</b>の3つ。
+  <b>性別2つ × 等級3つ ＝ 6組</b>になります。<br>
+  1等がいちばん高い船室です。数字が大きいほど安い部屋です。</div>
+</div>
+
+<div class="panel" id="p18box">
+ <div class="cap">組が <b>2つ → 6つ</b>に増えました。<b>当たりはどうなりますか。</b><br>
+  <span style="color:var(--gray-500)">（さっき出した数より 増えるか、変わらないか、減るか）</span></div>
+ <div class="pick" id="p18">
+  <button class="btn" id="p18a">増える</button>
+  <button class="btn" id="p18b">変わらない</button>
+  <button class="btn" id="p18c">減る</button>
+ </div>
+ <div class="verdict" id="j18p">3つのうち1つを押してください。</div>
+</div>
+
+<div id="q18wrap" class="locked">
+<div class="figbox stick">
+ <svg id="fig18" viewBox="0 0 560 236"></svg>
+ <div class="cap">縦線が 0.5（半分）。<b>点が右なら「生存」が多い組</b>です。<br>
+  <b>◇ はちょうど半分</b>（どちらに決めても当たりは同じ）</div>
+</div>
+
+<div class="panel">
+ <div class="cap">6つの組にも、それぞれ <b>「生存」か「死亡」</b>を決めてください。
+  <b>この6組で出せるいちばん大きい数</b>が目標です（<b id="goal18">–</b>人）。</div>
+ <div id="rows18"></div>
+ <div class="stickbot">
+  <div class="gauge">
+   <div class="row"><span class="big" id="h18">–</span><span class="u">人 当たり（891人中）</span></div>
+   <div class="gtrack"><span class="gfill" id="g18"></span><span class="gmark" id="m18"></span></div>
+   <div class="gcap"><span>500</span><span id="gm18">目標 –</span><span>760</span></div>
+  </div>
+  <div class="togs">
+   <button class="btn sm" id="all18">6つ全部を「多いほう」に合わせる</button>
+   <button class="btn sm" id="rst18">全部「死亡」に戻す</button>
+  </div>
+ </div>
+ <div class="verdict" id="j18">6つの組の答えを決めてください。</div>
+</div>
+
+<div class="calc" id="eq18">–</div>
+<div id="e18d"></div>
+</div>
+</div>
+
+
+<div id="nav"></div>
+
+<div id="foot"></div>
+</div>
+
+
+<script src="common.js"></script>
+<script>
+
+var QBASE = 17;
+drawProg(18); drawChap(18, "この章だけは<b>道具が変わります</b>。本物のデータ（タイタニック891人）で、ここまでの原理が<b>何にでも効くわけではない</b>ことを見ます。");
+drawNav(["q17.html","問17 正誤で伸ばす"], ["q19.html","問19 どこまで分ける"]);
+drawFoot()   ;
+
+(function(){
+
+if (typeof drawBar === 'undefined') var drawBar = function(){};
+if (typeof drawCmp === 'undefined') var drawCmp = function(){};
+if (typeof drawCv === 'undefined') var drawCv = function(){};
+if (typeof drawDt === 'undefined') var drawDt = function(){};
+if (typeof drawMs21 === 'undefined') var drawMs21 = function(){};
+if (typeof drawMz2 === 'undefined') var drawMz2 = function(){};
+if (typeof drawMz21 === 'undefined') var drawMz21 = function(){};
+if (typeof drawNm === 'undefined') var drawNm = function(){};
+if (typeof drawRank21 === 'undefined') var drawRank21 = function(){};
+if (typeof drawTab21p === 'undefined') var drawTab21p = function(){};
+if (typeof drawTit === 'undefined') var drawTit = function(){};
+if (typeof up20 === 'undefined') var up20 = function(){};
+
+
+
+'use strict';
+const $ = id => document.getElementById(id);
+const SVGNS = 'http://www.w3.org/2000/svg';
+function el(tag, at, txt){
+  const n = document.createElementNS(SVGNS, tag);
+  for (const k in at) n.setAttribute(k, at[k]);
+  if (txt !== undefined) n.textContent = txt;
+  return n;
+}
+function ce(tag, cls, txt){
+  const n = document.createElement(tag);
+  if (cls) n.className = cls;
+  if (txt !== undefined) n.textContent = txt;
+  return n;
+}
+const N891 = 891, ALL_DEAD = 549, SEX_ONLY = 701;
+
+
+
+
+const RAWH = [['PassengerId','乗客の番号'],['Survived','生き残ったか'],['Pclass','客室の等級'],
+ ['Name','氏名'],['Sex','性別'],['Age','年齢'],['SibSp','兄弟・配偶者の数'],['Parch','親・子の数'],
+ ['Ticket','切符の番号'],['Fare','運賃'],['Cabin','船室の番号'],['Embarked','乗った港']];
+const RAW5 = [
+ ['1','0','3','Braund, Mr. Owen Harris','male','22.0','1','0','A/5 21171','7.25','','S'],
+ ['2','1','1','Cumings, Mrs. John Bradley (Florence Briggs Thayer)','female','38.0','1','0','PC 17599','71.2833','C85','C'],
+ ['3','1','3','Heikkinen, Miss. Laina','female','26.0','0','0','STON/O2. 3101282','7.925','','S'],
+ ['4','1','1','Futrelle, Mrs. Jacques Heath (Lily May Peel)','female','35.0','1','0','113803','53.1','C123','S'],
+ ['5','0','3','Allen, Mr. William Henry','male','35.0','0','0','373450','8.05','','S']
+];
+
+const G6 = [
+  ['女 1等',  94,  91], ['女 2等',  76,  70], ['女 3等', 144,  72],
+  ['男 1等', 122,  45], ['男 2等', 108,  17], ['男 3等', 347,  47]
+];
+
+const GLO = 500, GHI = 760;
+function gauge(fillId, markId, hit, goal){
+  const p = Math.max(0, Math.min(100, (hit - GLO) / (GHI - GLO) * 100));
+  const f = $(fillId);
+  f.style.width = p.toFixed(2) + '%';
+  f.classList.toggle('ok', hit >= goal);
+  if (markId) $(markId).style.left = ((goal - GLO) / (GHI - GLO) * 100).toFixed(2) + '%';
+}
+/* ══════════════════ 導入 ══════════════════ */
+function drawRaw(){
+  const t = $('t0'); t.innerHTML = '';
+  const tr = ce('tr');
+  RAWH.forEach(h => {
+    const th = ce('th', h[0] === 'Survived' ? 'y' : '');
+    th.innerHTML = h[0] + '<br><span style="font-weight:400;color:#6e6e6e">（' + h[1] + '）</span>';
+    tr.appendChild(th);
+  });
+  t.appendChild(tr);
+  RAW5.forEach(r => {
+    const row = ce('tr');
+    r.forEach((v, i) => {
+      const td = ce('td', RAWH[i][0] === 'Survived' ? 'y' : '', v === '' ? '　' : v);
+      row.appendChild(td);
+    });
+    t.appendChild(row);
+  });
+}
+function drawBd0(){
+  const s = $('bd0'); s.innerHTML = '';
+  const x0 = 96, W = 420;
+  const wa = W * 891 / 1309, wb = W * 418 / 1309;
+  s.appendChild(el('text', {x:0, y:22, 'font-size':13.5, fill:'#6e6e6e'}, '2つの表'));
+  /* 練習用 */
+  s.appendChild(el('text', {x:0, y:56, 'font-size':13.5, fill:'#000'}, '練習用'));
+  s.appendChild(el('rect', {x:x0, y:40, width:wa.toFixed(1), height:24, fill:'#000'}));
+  s.appendChild(el('text', {x:(x0+wa/2).toFixed(1), y:57, 'text-anchor':'middle',
+    'font-size':13.5, fill:'#fff'}, '891人'));
+  s.appendChild(el('text', {x:(x0+wa+8).toFixed(1), y:57, 'font-size':13.5, fill:'#6e6e6e'}, '1〜891'));
+  /* 本番用 */
+  s.appendChild(el('text', {x:0, y:98, 'font-size':13.5, fill:'#000'}, '本番用'));
+  s.appendChild(el('rect', {x:x0, y:82, width:wb.toFixed(1), height:24,
+    fill:'#fdf4f4', stroke:'#c00'}));
+  s.appendChild(el('text', {x:(x0+wb/2).toFixed(1), y:99, 'text-anchor':'middle',
+    'font-size':13.5, fill:'#c00'}, '418人'));
+  s.appendChild(el('text', {x:(x0+wb+8).toFixed(1), y:99, 'font-size':13.5, fill:'#6e6e6e'},
+    '892〜1309'));
+  /* 内訳 */
+  const wd = W * ALL_DEAD / 1309, wl = W * 342 / 1309;
+  s.appendChild(el('text', {x:0, y:142, 'font-size':13.5, fill:'#000'}, '891人の内訳'));
+  s.appendChild(el('rect', {x:x0, y:126, width:wd.toFixed(1), height:24, fill:'#3f3f3f'}));
+  s.appendChild(el('rect', {x:(x0+wd).toFixed(1), y:126, width:wl.toFixed(1), height:24,
+    fill:'#f2fbf6', stroke:'#019949'}));
+  s.appendChild(el('text', {x:(x0+wd/2).toFixed(1), y:143, 'text-anchor':'middle',
+    'font-size':13.5, fill:'#fff'}, '死亡 549'));
+  s.appendChild(el('text', {x:(x0+wd+wl/2).toFixed(1), y:143, 'text-anchor':'middle',
+    'font-size':13.5, fill:'#019949'}, '生存 342'));
+}
+
+
+const NA0 = [['船室の番号', 687, 77.1], ['年齢', 177, 19.9], ['乗った港', 2, 0.2]];
+function drawNa0(){
+  const s2 = $('na0'); s2.innerHTML = '';
+  const xl = 118, xw = 380;
+  s2.appendChild(el('text', {x:0, y:18, 'font-size':13.5, fill:'#6e6e6e'},
+    '891人のうち、記録が空いている人数'));
+  NA0.forEach(function(g, i){
+    const y = 32 + i * 40, wn = xw * g[1] / N891;
+    s2.appendChild(el('text', {x:0, y:(y+18).toFixed(1), 'font-size':13.5, fill:'#000'}, g[0]));
+    s2.appendChild(el('rect', {x:xl, y:y, width:wn.toFixed(1), height:24,
+      fill:'#fdf4f4', stroke:'#c00'}));
+    s2.appendChild(el('rect', {x:(xl+wn).toFixed(1), y:y, width:(xw-wn).toFixed(1), height:24,
+      fill:'#f4f4f4', stroke:'#d9d9d9'}));
+    s2.appendChild(el('text', {x:(xl+6).toFixed(1), y:(y+17).toFixed(1), 'font-size':13.5,
+      fill:'#c00'}, '空欄 ' + g[1] + '人'));
+    s2.appendChild(el('text', {x:(xl+xw+8).toFixed(1), y:(y+17).toFixed(1), 'font-size':13.5,
+      fill:'#6e6e6e'}, g[2].toFixed(1) + '%'));
+  });
+  s2.appendChild(el('text', {x:0, y:160, 'font-size':13, fill:'#6e6e6e'},
+    '赤＝記録が無い人 ／ 灰＝記録がある人。ほかの9列には空欄がありません'));
+}
+/* ══════════════════ 問18 ══════════════════ */
+
+const SEX2 = [['女', 314, 233], ['男', 577, 109]];   /* 名前 / 人数 / 生存 */
+let pick18s = [0, 0];
+function drawSex18(){
+  const s2 = $('sex18'); s2.innerHTML = '';
+  const x0 = 74, W = 452;
+  s2.appendChild(el('text', {x:0, y:20, 'font-size':13.5, fill:'#6e6e6e'}, '891人を 性別で分ける'));
+  s2.appendChild(el('rect', {x:x0, y:30, width:W, height:24, fill:'#3f3f3f'}));
+  s2.appendChild(el('text', {x:(x0+W/2).toFixed(1), y:47, 'text-anchor':'middle',
+    'font-size':13.5, fill:'#fff'}, '891人'));
+  let y = 84;
+  SEX2.forEach((g, i) => {
+    const w = W * g[1] / N891, a = g[2], d = g[1] - a;
+    const on = pick18s[i] === 1;
+    s2.appendChild(el('text', {x:0, y:(y+16).toFixed(1), 'font-size':13.5,
+      fill: on ? '#019949' : '#000'}, g[0] + ' ' + g[1] + '人'));
+    /* 生存ぶん／死亡ぶん */
+    const wa = w * a / g[1];
+    s2.appendChild(el('rect', {x:x0, y:y, width:wa.toFixed(1), height:24,
+      fill:'#f2fbf6', stroke:'#019949'}));
+    s2.appendChild(el('rect', {x:(x0+wa).toFixed(1), y:y, width:(w-wa).toFixed(1), height:24,
+      fill:'#3f3f3f'}));
+    s2.appendChild(el('text', {x:(x0+wa/2).toFixed(1), y:(y+16).toFixed(1), 'text-anchor':'middle',
+      'font-size':13.5, fill:'#019949'}, '生存' + a));
+    s2.appendChild(el('text', {x:(x0+wa+(w-wa)/2).toFixed(1), y:(y+16).toFixed(1),
+      'text-anchor':'middle', 'font-size':13.5, fill:'#fff'}, '死亡' + d));
+    s2.appendChild(el('text', {x:(x0+w+8).toFixed(1), y:(y+16).toFixed(1), 'font-size':13.5,
+      fill:'#6e6e6e'}, '生存率 ' + (a / g[1]).toFixed(4)));
+    s2.appendChild(el('line', {x1:(x0+W/2).toFixed(1), y1:54, x2:(x0+w/2).toFixed(1), y2:y,
+      stroke:'#d9d9d9'}));
+    y += 52;
+  });
+  s2.appendChild(el('text', {x:0, y:194, 'font-size':13, fill:'#000'},
+    '緑＝生き残った人 ／ 黒＝亡くなった人'));
+}
+function rows18s(){
+  const box = $('rows18s'); box.innerHTML = '';
+  SEX2.forEach((g, i) => {
+    const d = ce('div', 'grow');
+    const nm = ce('span', 'gn'); nm.innerHTML = '<b>' + g[0] + '</b> ' + g[1] + '人';
+    const ba = ce('button', 'btn gb', '生存'); ba.id = 'a18s_' + i;
+    const bd = ce('button', 'btn gb', '死亡'); bd.id = 'd18s_' + i;
+    ba.onclick = () => { pick18s[i] = 1; up18s(); };
+    bd.onclick = () => { pick18s[i] = 0; up18s(); };
+    const v = ce('span', 'gv'); v.id = 'v18s_' + i;
+    d.appendChild(nm); d.appendChild(ba); d.appendChild(bd); d.appendChild(v);
+    box.appendChild(d);
+  });
+}
+function up18s(){
+  let hit = 0; const t = [];
+  for (let i = 0; i < 2; i++){
+    const n = SEX2[i][1], a = SEX2[i][2], dd = n - a;
+    const c = pick18s[i] === 1 ? a : dd;
+    hit += c; t.push(SEX2[i][0] + (pick18s[i] ? '「生存」' : '「死亡」') + ' → ' + c);
+    $('a18s_' + i).classList.toggle('on', pick18s[i] === 1);
+    $('d18s_' + i).classList.toggle('on', pick18s[i] === 0);
+    $('v18s_' + i).textContent = '生' + a + ' 死' + dd + ' → 当たり ' + c;
+  }
+  $('h18s').textContent = hit;
+  const f = $('g18s'); f.style.width = (hit / N891 * 100).toFixed(2) + '%';
+  f.classList.toggle('ok', hit >= SEX_ONLY);
+  $('m18s').style.left = (SEX_ONLY / N891 * 100).toFixed(2) + '%';
+  $('eq18s').textContent = '当たり ＝ 「決めた側」の人数 の合計\n\n'
+    + t.join('\n') + '\n　　　 ＝ ' + hit + ' 人 ／ 891 人';
+  const j = $('j18s');
+  if (hit >= SEX_ONLY){
+    j.className = 'verdict ok';
+    j.innerHTML = '<b>' + hit + '人。これが2つの組で出せる いちばん大きい数です。</b><br>'
+      + '女は生存が多い（生存率 0.7420）ので<b>「生存」</b>、男は死亡が多い（0.1889）ので<b>「死亡」</b>。'
+      + '<b>組ごとに「多いほう」を選ぶと、少ないほうの人数がそのまま外れになります。</b>'
+      + 'だから多いほうを選ぶしかありません。<br>'
+      + '全員に「死亡」と答えた <b>549人</b>から <b>＋152人</b>。'
+      + '<b>質問を1つ（男か女か）足しただけです。</b>';
+  } else {
+    j.className = 'verdict';
+    j.innerHTML = '<b>' + hit + '人。</b>'
+      + (hit === ALL_DEAD ? '両方「死亡」＝ 全員に「死亡」と答えた状態です（549人）。'
+                          : 'まだ増やせます。')
+      + '<b>それぞれの組で「多いほう」はどちらですか。</b>上の図を見てください。';
+  }
+}
+
+function drawGrid18(){
+  const g = $('grid18'); g.innerHTML = '';
+  const x0 = 96, y0 = 44, cw = 148, ch = 56;
+  g.appendChild(el('text', {x:0, y:20, 'font-size':13.5, fill:'#6e6e6e'},
+    '性別（2つ）× 客室の等級（3つ）＝ 6組'));
+  ['1等','2等','3等'].forEach((t, c) => {
+    g.appendChild(el('text', {x:(x0+cw*c+cw/2).toFixed(1), y:38, 'text-anchor':'middle',
+      'font-size':13.5, fill:'#000'}, t));
+  });
+  for (let r = 0; r < 2; r++){
+    g.appendChild(el('text', {x:0, y:(y0+ch*r+ch/2+5).toFixed(1), 'font-size':13.5, fill:'#000'},
+      r ? '男' : '女'));
+    for (let c = 0; c < 3; c++){
+      const i = r * 3 + c, n = G6[i][1], a = G6[i][2];
+      g.appendChild(el('rect', {x:(x0+cw*c).toFixed(1), y:(y0+ch*r).toFixed(1),
+        width:cw-4, height:ch-4, fill:'#fff', stroke:'#d9d9d9'}));
+      g.appendChild(el('text', {x:(x0+cw*c+8).toFixed(1), y:(y0+ch*r+22).toFixed(1),
+        'font-size':13.5, fill:'#000'}, n + '人'));
+      g.appendChild(el('text', {x:(x0+cw*c+8).toFixed(1), y:(y0+ch*r+42).toFixed(1),
+        'font-size':13, fill:'#6e6e6e'}, '生存' + a + ' 死亡' + (n - a)));
+    }
+  }
+  g.appendChild(el('text', {x:0, y:186, 'font-size':13, fill:'#000'},
+    '6つを足すと 891人（94＋76＋144＋122＋108＋347）'));
+  g.appendChild(el('text', {x:0, y:206, 'font-size':13, fill:'#6e6e6e'},
+    'この6組にも、それぞれ「生存」か「死亡」を決めます'));
+}
+
+
+let pick18 = [0,0,0,0,0,0];      /* 0＝死亡 / 1＝生存 */
+let shown18 = [0,0,0,0,0,0];     
+let moved18 = 0, guessed18 = 0;
+
+function best18(){
+  let mx = -1, cnt = 0;
+  for (let m = 0; m < 64; m++){
+    let h = 0;
+    for (let i = 0; i < 6; i++) h += ((m >> i) & 1) ? G6[i][2] : G6[i][1] - G6[i][2];
+    if (h > mx){ mx = h; cnt = 1; } else if (h === mx) cnt++;
+  }
+  return { mx: mx, cnt: cnt, n: 64 };
+}
+const B18 = best18();
+const tie18 = i => G6[i][2] * 2 === G6[i][1];
+
+function drawFig18(){
+  const s = $('fig18'); s.innerHTML = '';
+  const xl = 130, xw = 415, x50 = xl + xw * 0.5;
+  s.appendChild(el('text', {x:0, y:22, 'font-size':13.5, fill:'#6e6e6e'}, '組ごとの生存率'));
+  s.appendChild(el('line', {x1:x50, y1:36, x2:x50, y2:200, stroke:'#000', 'stroke-width':1.4}));
+  s.appendChild(el('text', {x:x50, y:22, 'text-anchor':'middle', 'font-size':13.5, fill:'#000'}, '0.5'));
+  for (let i = 0; i < 6; i++){
+    const y = 46 + i * 28, r = G6[i][2] / G6[i][1];
+    const on = pick18[i] === 1, col = on ? '#019949' : '#000';
+    s.appendChild(el('text', {x:0, y:y+5, 'font-size':13.5, fill:col},
+      G6[i][0] + ' ' + r.toFixed(4)));
+    s.appendChild(el('line', {x1:xl, y1:y, x2:xl+xw, y2:y, stroke:'#d9d9d9'}));
+    const cx = xl + xw * r;
+    if (tie18(i)){
+      const d = 7.5;
+      s.appendChild(el('polygon', {points:
+        [[cx,y-d],[cx+d,y],[cx,y+d],[cx-d,y]].map(p=>p[0].toFixed(1)+','+p[1].toFixed(1)).join(' '),
+        fill:'#fff', stroke:col, 'stroke-width':1.8}));
+    } else {
+      s.appendChild(el('circle', {cx:cx.toFixed(1), cy:y, r:5.5, fill:col}));
+    }
+  }
+  s.appendChild(el('text', {x:xl, y:218, 'font-size':13.5, fill:'#6e6e6e'}, '0'));
+  s.appendChild(el('text', {x:xl+xw, y:218, 'text-anchor':'end', 'font-size':13.5,
+    fill:'#6e6e6e'}, '1'));
+}
+
+function rows18(){
+  const box = $('rows18'); box.innerHTML = '';
+  G6.forEach((g, i) => {
+    const d = ce('div', 'grow');
+    const nm = ce('span', 'gn'); nm.innerHTML = '<b>' + g[0] + '</b> ' + g[1] + '人';
+    const ba = ce('button', 'btn gb', '生存'); ba.id = 'a18_' + i;
+    const bd = ce('button', 'btn gb', '死亡'); bd.id = 'd18_' + i;
+    ba.onclick = () => { pick18[i] = 1; shown18[i] = 1; moved18++; up18(); };
+    bd.onclick = () => { pick18[i] = 0; shown18[i] = 1; moved18++; up18(); };
+    const v = ce('span', 'gv'); v.id = 'v18_' + i;
+    d.appendChild(nm); d.appendChild(ba); d.appendChild(bd); d.appendChild(v);
+    box.appendChild(d);
+  });
+}
+
+function up18(){
+  let hit = 0; const terms = [];
+  for (let i = 0; i < 6; i++){
+    const n = G6[i][1], a = G6[i][2], dd = n - a;
+    const c = pick18[i] === 1 ? a : dd;
+    hit += c; terms.push(c);
+    $('a18_' + i).classList.toggle('on', pick18[i] === 1);
+    $('d18_' + i).classList.toggle('on', pick18[i] === 0);
+    
+    $('v18_' + i).textContent = shown18[i] ? ('生' + a + '死' + dd + ' → 当たり ' + c) : '';
+  }
+  $('eq18').textContent =
+    '当たり ＝ 「決めた側」の人数 の合計\n\n' +
+    '当たり ＝ ' + terms.slice(0,3).join(' ＋ ') + '\n' +
+    '　　　 ＋ ' + terms.slice(3).join(' ＋ ') + '\n' +
+    '　　　 ＝ ' + hit + '人 ／ 891 人';
+  $('h18').textContent = hit;
+  gauge('g18', 'm18', hit, B18.mx);
+  $('goal18').textContent = B18.mx;
+  $('gm18').textContent = '目標 ' + B18.mx;
+  const alive = [], ties = [];
+  for (let i = 0; i < 6; i++){
+    if (pick18[i] === 1) alive.push(G6[i][0]);
+    if (tie18(i)) ties.push(i);
+  }
+  const tieTxt = ties.map(i => '<b>' + G6[i][0] + '</b>は ' + G6[i][1] + '人が 生存' + G6[i][2] +
+    '対 死亡' + (G6[i][1] - G6[i][2]) + 'の<b>ちょうど半分</b>。' +
+    'どちらに決めても当たりは ' + G6[i][2] + '人 のままです（図では ◇）。').join('<br>');
+  const j = $('j18');
+  if (hit >= B18.mx){
+    j.className = 'verdict ok';
+    j.innerHTML = '<b>' + hit + '人。これが上限です。</b>' +
+      'いま「生存」にしているのは <b>' + (alive.length ? alive.join('・') : 'ありません') +
+      '</b>（' + alive.length + '組）、あとの ' + (6 - alive.length) + '組 は「死亡」。<br>' +
+      (tieTxt ? tieTxt + '<br>' : '') +
+      '決め方は ' + B18.n + '通り。' + B18.mx + '人になるのは <b>' + B18.cnt + '通り</b>だけです。' +
+      '<b>性別だけで決めた ' + SEX_ONLY + '人 から1人も増えていません。</b>';
+  } else if (moved18 >= 8){
+    j.className = 'verdict';
+    j.innerHTML = '<b>' + hit + '人。</b>各組で「多いほう」を選ぶと、いちばん大きくなります。' +
+      '<br>点が縦線より右の組は「生存」、左の組は「死亡」。<b>◇ の組はどちらでも同じ</b>です。';
+  } else {
+    j.className = 'verdict';
+    j.innerHTML = '<b>' + hit + '人。</b>' +
+      (hit === ALL_DEAD ? '全部「死亡」の状態です。図の点を見て決めてください。' : 'まだ増やせます。');
+  }
+  drawFig18();
+  $('steps').children[0].className = hit >= B18.mx ? 'done' : 'open';
+}
+
+
+function guess18(k){
+  guessed18 = 1;
+  ['p18a','p18b','p18c'].forEach((id, i) => $(id).classList.toggle('sel', i === k));
+  const j = $('j18p');
+  j.className = 'verdict ' + (k === 1 ? 'ok' : 'stuck');
+  j.innerHTML = (k === 1
+      ? '<b>そのとおりです。</b>'
+      : '<b>ちがいます。</b>') +
+    '6組にしても <b>701人</b>のまま。<b>さっき出した数から1人も増えません</b>。<br>' +
+    'では自分で確かめてください。<b>下の6組に答えを決めてください。</b>';
+  $('q18wrap').classList.remove('locked');
+}
+
+/* ══════════════════ 立ち上げ ══════════════════ */
+drawRaw(); drawBd0(); drawNa0();
+drawSex18(); rows18s(); up18s();
+drawGrid18();
+rows18(); up18();
+$('p18a').onclick = () => guess18(0);
+$('p18b').onclick = () => guess18(1);
+$('p18c').onclick = () => guess18(2);
+$('all18').onclick = () => {
+  for (let i = 0; i < 6; i++){ pick18[i] = (G6[i][2] * 2 > G6[i][1]) ? 1 : 0; shown18[i] = 1; }
+  moved18 += 6; up18();
+};
+$('rst18s').onclick = () => { pick18s = [0,0]; up18s(); };
+$('rst18').onclick = () => { pick18 = [0,0,0,0,0,0]; shown18 = [0,0,0,0,0,0]; moved18 = 0; up18(); };
+drawDt(); drawMz21(); drawMz2(); drawRank21(); drawCv();
+up20();
+drawNm(); drawTit(); drawMs21(); drawTab21p();
+drawBar(); drawCmp();
+
+
+drawRaw(); drawBd0(); drawNa0();
+drawSex18(); rows18s(); up18s();
+drawGrid18();
+rows18(); up18();
+
+
+var CV = {
+ "e18a": [
+  [
+   "d",
+   "学くん、いよいよ最後だ。今日は<b>本物のデータ</b>を使うよ。"
+  ],
+  [
+   "m",
+   "本物？"
+  ],
+  [
+   "d",
+   "1912年に沈んだ船だ。乗っていた人の記録が公開されている。生きたか死んだかも入っているよ。"
+  ],
+  [
+   "m",
+   "それを当てるんだ。"
+  ],
+  [
+   "d",
+   "そうだ。……だが先に<b>渡されるもの</b>を見てごらん。<b>表が2つ</b>ある。"
+  ],
+  [
+   "m",
+   "列の名前、英語だね。"
+  ],
+  [
+   "d",
+   "12列ある。<b>Sex</b> が性別、<b>Pclass</b> が客室の等級（<b>1等・2等・3等</b>）、<b>Age</b> が年齢、<b>Fare</b> が運賃だ。<b>Survived</b> が「生き残ったか」だよ。"
+  ],
+  [
+   "m",
+   "2つ？"
+  ],
+  [
+   "d",
+   "<b>891人の表</b>には「生き残ったか」の列が入っている。<b>418人の表</b>には、<b>その1列だけが無い。</b>"
+  ],
+  [
+   "m",
+   "じゃあ、891人を見て法則を作って、418人に答えるの。"
+  ],
+  [
+   "d",
+   "そこだ！ ……そして出すのは <b>0 か 1 だけ</b>だよ。「70%の確率で生存」は受け取ってもらえん。"
+  ],
+  [
+   "m",
+   "最後は どっちかに決めないといけないんだ。"
+  ],
+  [
+   "d",
+   "<b>決めるのは君だ。</b>……ではまず、いちばん簡単な答えを言っておく。<b>全員に「死亡」と答えてくれ。</b>"
+  ],
+  [
+   "m",
+   "え、それはズルでしょ。"
+  ],
+  [
+   "d",
+   "<b>549人 当たる。</b>891人のうち死んだのが 549人だからな。<b>そこが出発点だ。</b>"
+  ]
+ ],
+ "e18b": [
+  [
+   "d",
+   "まず<b>列を1つだけ</b>使う。表の <b>Sex</b> だ。<b>male が男・female が女</b>。それだけの列だよ。"
+  ],
+  [
+   "m",
+   "それで891人を2つに割るんだ。"
+  ],
+  [
+   "d",
+   "そうだ。<b>女314人</b>と<b>男577人</b>になる。……そして<b>組ごとに答えを決める。</b>"
+  ],
+  [
+   "m",
+   "1人ずつ決めちゃダメなの？"
+  ],
+  [
+   "d",
+   "<b>できん。</b>使っているのは「男か女か」の1つだけだ。<b>女314人は、こちらから見ると全員 同じ人</b>なのだ。"
+  ],
+  [
+   "m",
+   "区別する手がかりが無いんだ。じゃあ女には全員 同じ答えを付ける。"
+  ],
+  [
+   "d",
+   "<b>そこだ。</b>……<b>やってごらん。</b>2つの組に答えを決めて、いちばん大きい数を出してごらん。"
+  ]
+ ],
+ "e18c": [
+  [
+   "m",
+   "……<b>701人</b>。<b>女を「生存」、男を「死亡」</b>にしたときだ。"
+  ],
+  [
+   "d",
+   "そこだ！ ……なぜ それがいちばん大きい。"
+  ],
+  [
+   "m",
+   "女は生き残った人のほうが多くて（生存率 0.7420）、男は亡くなった人のほうが多い（0.1889）から。"
+  ],
+  [
+   "d",
+   "<b>組ごとに多いほうを答えると、少ないほうの人数が そのまま外れになる。</b>だから<b>多いほうを選ぶしかない。</b>ほかの選び方はどれも外れが増えるよ。"
+  ],
+  [
+   "m",
+   "全員「死亡」の 549人から <b>152人</b>も増えた。"
+  ],
+  [
+   "d",
+   "<b>「男か女か」を1回 聞いただけだよ。</b>……では、<b>もう1列 足す。</b>"
+  ]
+ ],
+ "e18d": [
+  [
+   "m",
+   "……6組 全部を多いほうに合わせたのに、<b>701人</b>。増えてない。"
+  ],
+  [
+   "d",
+   "気づいたか。……<b>1つだけ変な組</b>があるだろう。"
+  ],
+  [
+   "m",
+   "<b>女 3等</b>。生存率が <b>0.5000</b> だ。点が縦線の上にぴったり乗ってる。"
+  ],
+  [
+   "d",
+   "<b>144人が 生存72 対 死亡72。</b>どちらに決めても <b>72人 当たる。変わらん。</b>"
+  ],
+  [
+   "m",
+   "じゃあ この組は、決めても意味がないってこと？"
+  ],
+  [
+   "d",
+   "そこだ！ この2列は、この144人について<b>何も教えてくれていない</b>。だから図では ◇ にしてある。"
+  ],
+  [
+   "m",
+   "……で、残りの5組は 性別だけのときと 同じ向きだった。女は生存、男は死亡。だから増えなかったんだ。"
+  ],
+  [
+   "d",
+   "<b>そこを掴んだか！</b>……<b>持っている列が足りないと、決め方をどう変えても そこで止まる。</b>"
+  ],
+  [
+   "m",
+   "決め方じゃなくて、<b>列の問題</b>。"
+  ],
+  [
+   "d",
+   "<b>では列を足すよ。</b>次だ。"
+  ]
+ ]
+};
+drawCV(CV);
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,1041 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow,noarchive">
+<meta name="description" content="入力を増やす ── 問6 入力を増やす">
+<meta property="og:title" content="AIの詰将棋 ── 問6 入力を増やす（第2章）">
+<meta property="og:description" content="入力を増やす ── 問6 入力を増やす">
+<title>AIの詰将棋 ── 問6 入力を増やす（第2章）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@300;400;600;700&family=Inter:wght@300;400;500;600;700&family=Noto+Serif+JP:wght@300;400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="common.css">
+<style>
+
+.offpage{display:none}
+:root{
+ --bg:#fff; --white:#fff; --black:#000;
+ --gray-100:#f9f9f9; --gray-200:#d9d9d9; --gray-500:#6e6e6e; --gray-600:#3f3f3f;
+ --accent:#019949;
+ --sans:'Inter',system-ui,sans-serif;
+ --serif:'Source Serif 4','Noto Serif JP',Georgia,serif;
+ --content-w:52.625rem;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--black);font-family:var(--sans);
+ -webkit-font-smoothing:antialiased}
+.wrap{max-width:var(--content-w);margin:0 auto;padding:0 1.5rem 5rem}
+.top{border-bottom:1px solid var(--gray-200);margin-bottom:2.4rem}
+.top .in{max-width:var(--content-w);margin:0 auto;padding:1.1rem 1.5rem;font-size:13px;
+ letter-spacing:.14em;text-transform:uppercase;color:var(--gray-500)}
+.top .in .tag{display:block;margin-top:.3rem;font-size:12.5px;letter-spacing:0;
+ text-transform:none;color:var(--gray-500);line-height:1.6;font-family:var(--serif)}
+.eyebrow{font-size:13px;font-weight:500;letter-spacing:.16em;text-transform:uppercase;
+ color:var(--gray-500);margin-bottom:.9rem}
+h1{font-family:var(--serif);font-size:2.1rem;font-weight:300;line-height:1.35;margin:0 0 .8rem}
+.lead b{color:var(--black)}
+.meta{font-size:13px;letter-spacing:.1em;color:var(--gray-500);padding-bottom:1.2rem;
+ border-bottom:1px solid var(--gray-200);margin-bottom:1.2rem}
+.steps{display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:2.4rem}
+.steps div{flex:1 1 5rem;padding:.55rem .3rem;text-align:center;font-size:12px;
+ border:1px solid var(--gray-200);color:var(--gray-500);background:var(--white)}
+.steps div.open{border-color:var(--black);color:var(--black)}
+.steps div.done{background:var(--black);border-color:var(--black);color:var(--white)}
+.card{border:1px solid var(--gray-200);padding:2rem;margin-bottom:2rem;background:var(--white)}
+.tagline{font-size:13px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;
+ color:var(--gray-500);margin-bottom:.9rem}
+.figbox{background:var(--gray-100);border:1px solid var(--gray-200);padding:1rem;margin:1.3rem 0}
+
+.panel{background:var(--gray-100);border:1px solid var(--gray-200);padding:1rem;margin:1.3rem 0}
+.panel .ctl{margin:.9rem 0 .2rem}
+.panel .togs{margin-top:.7rem}
+.panel .gauge{margin-top:.9rem}
+.panel .verdict{margin-top:.8rem;background:var(--white)}
+.two{display:flex;gap:1rem;flex-wrap:wrap}
+.two>div{flex:1 1 15rem;min-width:0}
+svg{display:block;width:100%;height:auto}
+
+
+
+.stickwrap{position:relative}
+.stick{position:sticky;top:0;z-index:5;background:var(--gray-100);
+       padding-bottom:.35rem;box-shadow:0 6px 8px -6px rgba(0,0,0,.18)}
+.stick svg{max-height:42vh;width:auto;max-width:100%;margin:0 auto}
+
+#q9wrap{position:relative}
+#q9wrap > .panel{position:sticky;top:0;z-index:5;
+  box-shadow:0 8px 10px -8px rgba(0,0,0,.22)}
+#c9 .figrow{display:flex;gap:.5rem;align-items:flex-start;justify-content:center}
+#c9 .figrow > svg{margin:0}
+#c9 .figrow > #bd9{width:36%;height:auto;max-height:38vh}
+#c9 .figrow > #net9{width:62%;height:auto;max-height:38vh}
+
+#c9b .figrow{display:flex;gap:.5rem;align-items:flex-start;justify-content:center}
+#c9b .figrow > svg{margin:0}
+#c9b .figrow > #bd9b{width:36%;height:auto;max-height:38vh}
+#c9b .figrow > #gr10{width:62%;height:auto;max-height:38vh}
+#q10wrap{position:relative}
+#q10wrap > .panel{position:sticky;top:0;z-index:5;
+  box-shadow:0 8px 10px -8px rgba(0,0,0,.22)}
+
+#fig6 text.big6,#fig7 text.big6{font-size:26px;font-weight:600;font-family:var(--serif)}
+#fig6 text.lim6,#fig7 text.lim6{font-size:13px}
+
+#ov10 text.num6{font-size:26px}
+
+
+#stair6{max-width:440px;margin:0 auto}
+.ctl{margin:1.1rem 0 .2rem}
+.ctl label{display:flex;justify-content:space-between;align-items:baseline;font-size:14px;
+ margin-bottom:.35rem;gap:1rem}
+.ctl label span.n{font-weight:600;font-variant-numeric:tabular-nums;white-space:nowrap}
+input[type=range]{width:100%;accent-color:#000;height:1.4rem}
+.togs{display:flex;gap:.6rem;flex-wrap:wrap;margin-top:1.1rem;align-items:center}
+.btn{background:none;border:1px solid var(--gray-200);padding:.6rem 1.15rem;font-size:14px;
+ font-family:var(--sans);color:var(--black);cursor:pointer;transition:all .15s}
+.btn:hover{border-color:var(--black);background:var(--gray-100)}
+.btn.on{background:var(--black);color:var(--white);border-color:var(--black)}
+.btn.go{background:var(--black);color:var(--white);border-color:var(--black)}
+.btn.sm{font-size:13px;padding:.45rem .85rem;color:var(--gray-500)}
+.btn:disabled{opacity:.35;cursor:default}
+.gauge{margin:1.2rem 0 0}
+.gauge .row{display:flex;align-items:baseline;gap:.7rem;margin-bottom:.5rem}
+.gauge .u{font-size:14px;color:var(--gray-500)}
+.gtrack{height:10px;background:#e9e9e9;position:relative;overflow:hidden}
+.gfill{display:block;height:100%;background:#c00;transition:width .12s linear}
+.gfill.ok{background:var(--accent)}
+.gmark{position:absolute;top:-3px;bottom:-3px;width:2px;background:#000}
+.gcap{display:flex;justify-content:space-between;font-size:12px;color:var(--gray-500);
+ margin-top:.35rem}
+.read{font-size:15px;line-height:1.8;margin:.9rem 0 0;font-variant-numeric:tabular-nums}
+.big{font-family:var(--serif);font-size:2rem;font-weight:400;font-variant-numeric:tabular-nums;
+ line-height:1}
+.calc{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13.5px;line-height:2;
+ background:var(--white);border:1px solid var(--gray-200);padding:.9rem 1.1rem;margin:.9rem 0;
+ overflow-x:auto;white-space:pre}
+.verdict{margin-top:1.2rem;padding:.9rem 1.1rem;border:1px solid var(--gray-200);font-size:14px;
+ line-height:1.75;background:var(--gray-100)}
+.verdict.ok{border-color:var(--accent);background:#f2fbf6}
+.verdict.stuck{border-color:#c00;background:#fdf4f4}
+.next{margin-top:1rem;font-size:13px;color:var(--gray-500)}
+.src{border-left:2px solid var(--black);padding:.9rem 0 .9rem 1.1rem;margin:1.4rem 0;
+ font-size:14px;line-height:1.85;color:var(--gray-600)}
+.src .h{font-size:12px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;
+ color:var(--black);margin-bottom:.4rem}
+.src .ref{font-size:13px;color:var(--gray-500);margin-top:.4rem;display:block}
+.box{border:1px solid var(--gray-200);padding:1.1rem 1.3rem;margin:1.3rem 0;background:var(--gray-100)}
+.box .h{font-size:12px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;
+ margin-bottom:.5rem}
+.mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+td.mono{word-break:break-word;line-height:1.7}
+.sc-row{display:flex;align-items:center;gap:.75rem;margin-bottom:.6rem}
+.sc-label{width:5.4rem;font-size:14px;text-align:right;flex-shrink:0}
+.sc-track{flex:1;background:#e9e9e9;height:9px;position:relative}
+.sc-fill{display:block;height:100%;background:var(--black);transition:width .1s linear}
+.sc-fill.hit{background:var(--accent)}
+.sc-pct{width:3.4rem;font-size:14px;font-variant-numeric:tabular-nums}
+details{border-top:1px solid var(--gray-200);padding-top:1rem;margin-top:1.5rem}
+summary{font-size:14px;font-weight:500;cursor:pointer}
+.lg{font-size:14px;line-height:1.9;color:var(--gray-600);margin-top:.9rem}
+.lg table{width:100%;border-collapse:collapse;margin:.8rem 0;font-size:13px}
+.lg th,.lg td{padding:.45rem .6rem;border:1px solid var(--gray-200);text-align:left}
+.lg th{background:var(--gray-100);font-weight:600}
+.dtab th,.dtab td{padding:.35rem .5rem;border:1px solid var(--gray-200);text-align:right}
+.dtab th{background:var(--gray-100);font-weight:600;font-size:11.5px}
+.dtab tr.sum td{background:#f2fbf6;border-top:2px solid var(--black)}
+
+.dtab .l{text-align:left}
+.hide{display:none}
+.foot{border-top:1px solid var(--gray-200);margin-top:3rem;padding-top:1.5rem;font-size:13px;
+ color:var(--gray-500);line-height:1.8}
+.arrow{text-align:center;font-size:22px;color:var(--gray-500);margin:.5rem 0}
+
+@media (max-width:430px){
+  
+  .panel .ctl{margin:.55rem 0 .1rem}
+  .panel .ctl label{margin-bottom:.15rem}
+  .panel input[type=range]{height:1.25rem}
+  .wrap{padding-left:.5rem;padding-right:.5rem}
+  .card{padding-left:.75rem;padding-right:.75rem}
+  .figbox,.panel{padding-left:.5rem;padding-right:.5rem}
+  .top .in{padding-left:.5rem;padding-right:.5rem}
+  
+  #fig6 text,#fig7 text,#p7 text,#net9 text,
+  #stair6 text,#st6a text,#st6b text,#st6c text,
+  #ov10 text,#ep11 text{font-size:17px}
+  
+  #fig6 text.big6{font-size:42px}
+  #fig6 text.lim6{font-size:20px}
+  #fig7 text.big6{font-size:42px}
+  #fig7 text.lim6{font-size:20px}
+  #ov10 text.num6{font-size:30px}
+  
+  .cl .ic{width:38px;height:38px}
+  .cl{gap:.5rem;margin-bottom:.7rem}
+  
+  .cast2{padding:.7rem .75rem}
+  .cast2 .ic{width:46px;height:46px}
+  .cast2 .row{gap:.6rem}
+  .cast2 .tx2{font-size:13px;line-height:1.8}
+  
+  #c9 .figrow{flex-direction:column;align-items:center}
+  #c9 .figrow > #bd9{width:auto;max-width:76%;max-height:30vh}
+  #c9 .figrow > #net9{width:100%;max-height:19vh}
+  
+  #c9b .figrow{flex-direction:column;align-items:center}
+  #c9b .figrow > #bd9b{width:auto;max-width:76%;max-height:30vh}
+  #c9b .figrow > #gr10{width:100%;max-height:19vh}
+}
+
+
+.cast2{border:1px solid var(--gray-200);background:var(--gray-100);
+  padding:1rem 1.1rem;margin:0 0 2.4rem}
+.cast2 .row{display:flex;gap:.9rem;align-items:flex-start}
+.cast2 .row+.row{margin-top:.9rem;padding-top:.9rem;border-top:1px solid var(--gray-200)}
+.cast2 .ic{width:54px;height:54px;border-radius:50%;flex-shrink:0;display:block;
+  border:2px solid var(--white);box-shadow:0 0 0 1px var(--gray-200),0 1px 3px rgba(0,0,0,.10)}
+.cast2 .nm2{display:block;font-size:15.5px;font-weight:700;margin-bottom:.2rem}
+.cast2 .rb{font-size:12px;font-weight:400;color:var(--gray-500);margin-left:.45rem}
+.cast2 .tx2{font-size:13.5px;line-height:1.85;color:var(--gray-600)}
+.cast2 .tx2 b{color:var(--black)}
+.cv{margin:1.6rem 0}
+.cl{display:flex;gap:.75rem;align-items:flex-start;margin:0 0 .85rem}
+.cl .ic{width:46px;height:46px;border-radius:50%;flex-shrink:0;display:block;
+  border:2px solid var(--white);box-shadow:0 0 0 1px var(--gray-200),0 1px 3px rgba(0,0,0,.10)}
+.cl .bb b{color:var(--black)}
+.cl .bb:before{content:'';position:absolute;left:-6px;top:15px;width:10px;height:10px;
+  background:inherit;border-left:1px solid;border-bottom:1px solid;border-color:inherit;
+  transform:rotate(45deg)}
+
+.cl.m .bb{background:#fff7ea;border-color:#efd6a6}
+.cl.d .bb{background:#eef4fa;border-color:#c3d9ee}
+.cl .nm{display:block;font-size:11.5px;font-weight:700;letter-spacing:.07em;margin-bottom:.15rem}
+.cl.m .nm{color:#b0700c}   
+.cl.d .nm{color:#2f6fb5}   
+.keyh{font-size:11.5px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--gray-500);margin:1.6rem 0 .5rem}
+</style>
+</head>
+<body>
+
+<div class="top"><div class="in">AIの詰将棋<span class="tag">将棋の詰将棋のように、AIの中身を1問ずつ切り出しました。全21問。</span></div></div>
+<div class="wrap">
+
+
+<div class="prog">
+ <div class="steps" id="steps"></div>
+ <div class="cnt" id="prog_cnt"></div>
+</div>
+<div class="chap" id="chap"></div>
+<div id="nest"></div>
+
+<!-- ══════════════════ c6 ══════════════════ -->
+<div class="card" id="c6">
+<div class="tagline">Question 6</div>
+<h2>入力を増やす</h2>
+
+<!-- 🆕 F：この lead は会話 e6a・e6b に移した -->
+<div id="e6a"></div>
+
+<div class="box">
+ <div class="h">いまから作る箱</div>
+ <div style="text-align:center;font-size:15px;line-height:2.2">
+  <b>勉強時間・睡眠時間・出席率・出席番号</b>　→　<span class="mono"
+   style="border:1px solid #000;padding:.35rem .9rem">掛けて 足す</span>　→　<b>点数</b>
+ </div>
+ <table class="dtab" id="eq6" style="margin-top:.7rem">
+  <tr><th class="l">使う列</th><th class="l">式</th><th>つまみ</th></tr>
+  <tr><td class="l">1個</td><td class="l mono">点数 ＝ a × 勉強時間 ＋ d</td><td>2 個</td></tr>
+  <tr><td class="l">2個</td><td class="l mono">点数 ＝ a × 勉強 ＋ b × 睡眠 ＋ d</td><td>3 個</td></tr>
+  <tr><td class="l">3個</td><td class="l mono">点数 ＝ a × 勉強 ＋ b × 睡眠 ＋ c × 出席率 ＋ d</td><td>4 個</td></tr>
+  <tr><td class="l">4個</td><td class="l mono">… ＋ e × 出席番号 ＋ d</td><td>5 個</td></tr>
+ </table>
+ <div class="cap" style="text-align:left;margin:.4rem 0 0">
+ <span style="color:var(--gray-500)">d は 問1 の b と同じもの（全部0の人の点数）です。</span></div>
+</div>
+<!-- 🆕 F：「列を1個 足すと、掛ける数が1個 増える」は会話 e6b に移した -->
+<div id="e6b"></div>
+
+
+
+
+
+<div class="cap" style="text-align:left;margin-top:1.1rem"><b>使う列を選んでください</b>
+ ☑を入れると、<b>つまみが1本 増えます</b>。
+ 
+ <span style="color:var(--gray-500)">増えたつまみは <b>0</b> から始まります（＝まだ何もしていない状態）。
+ 動かして、<b>絵のどこが上がるか</b>を見てください。
+ 1本だけ動かすと ずれは<b>悪くなることもあります</b>。それでかまいません。</span></div>
+<div id="ck6" style="margin:.5rem 0 .2rem"></div>
+
+
+
+
+
+
+
+
+<div class="stickwrap">
+ <div class="figbox stick">
+  <svg id="fig6" viewBox="0 0 560 280"></svg>
+  <div id="leg6" class="cap" style="margin:.1rem 0 0"></div>
+ </div>
+
+ <div class="panel">
+  <div id="sl6"></div>
+  
+  <div class="verdict" id="j6">つまみを動かしてください。</div>
+ </div>
+
+ 
+ <div id="e6c"></div>
+ <div id="e6c2"></div>
+
+
+<div class="figbox">
+ <div class="calc" style="font-size:14px;line-height:1.9">予想 ＝ <b style="background:#fff3c4;
+  padding:0 .3rem;border:1px solid #e0c65a">a</b> × 勉強 ＋ b × 睡眠 ＋ c × 出席率 ＋ d</div>
+ <div class="cap" style="text-align:left;margin:.2rem 0 .3rem">
+  <b>印は「右にいること」（勉強時間が長い）。</b>a を大きくすると
+  <b>右にいる人ほど 大きく上がります</b>（<b id="s6a">–</b>）。</div>
+ <svg id="st6a" viewBox="0 0 560 236"></svg>
+ <div class="cap" id="m6a" style="text-align:left;margin:.2rem 0 0"></div>
+</div>
+
+<div class="figbox">
+ <div class="calc" style="font-size:14px;line-height:1.9">予想 ＝ a × 勉強 ＋ <b style="background:#fff3c4;
+  padding:0 .3rem;border:1px solid #e0c65a">b</b> × 睡眠 ＋ c × 出席率 ＋ d</div>
+ <div class="cap" style="text-align:left;margin:.2rem 0 .3rem">
+  <b>印は「色が濃いこと」（よく寝た）。</b>b を大きくすると
+  <b>色が濃い人ほど 大きく上がります</b>（<b id="s6b">–</b>）。<br>
+  <b style="color:#9dc3e6">●</b> 寝不足（平均 4.0時間）　
+  <b style="color:#2f6fb5">●</b> ふつう（7.1時間）　
+  <b style="color:#0b3d6b">●</b> よく寝た（9.5時間）</div>
+ <svg id="st6b" viewBox="0 0 560 236"></svg>
+ <div class="cap" id="m6b" style="text-align:left;margin:.2rem 0 0"></div>
+</div>
+
+<div class="figbox">
+ <div class="calc" style="font-size:14px;line-height:1.9">予想 ＝ a × 勉強 ＋ b × 睡眠 ＋ <b style="background:#fff3c4;
+  padding:0 .3rem;border:1px solid #e0c65a">c</b> × 出席率 ＋ d</div>
+ <div class="cap" style="text-align:left;margin:.2rem 0 .3rem">
+  <b>印は「丸が大きいこと」（よく出た）。</b>c を大きくすると
+  <b>丸が大きい人ほど 大きく上がります</b>（<b id="s6c">–</b>）。<br>
+  <span style="color:#6e6e6e">小＝あまり出ていない（平均 0.56）　
+  中＝ふつう（0.74）　大＝よく出た（0.90）</span></div>
+ <svg id="st6c" viewBox="0 0 560 236"></svg>
+ <div class="cap" id="m6c" style="text-align:left;margin:.2rem 0 0"></div>
+</div>
+
+
+
+<div id="e6d"></div>
+
+<div class="box">
+ <div class="h">つまみは動かせます。でも手で合わせるのは ほぼ無理です</div>
+ <table class="dtab" style="max-width:30rem">
+  <tr><th class="l"></th><th class="l">見た目</th><th>組み合わせ</th></tr>
+  <tr><td class="l">つまみ2個<br><span style="color:var(--gray-500)">問1</span></td>
+      <td class="l"><b>a＝傾き ／ b＝高さ</b>と分かれている。<br>
+        だから「まず b、次に a」と<b>順番にやれた</b></td>
+      <td>100 × 100<br><b>1万通り</b></td></tr>
+  <tr><td class="l">つまみ4個<br><span style="color:var(--gray-500)">ここ</span></td>
+      <td class="l">睡眠と出席率のつまみは、動かしても<b>絵の形が変わらず</b>、
+        全員の予想が上下するだけ。<b>順番にやる手がかりが無い</b></td>
+      <td>100×100×100×100<br><b>1億通り</b></td></tr>
+ </table>
+ <!-- 🆕 F：この1行は会話 e6d に移した -->
+</div>
+
+
+<div id="e6e"></div>
+
+<div class="panel">
+ <div class="togs" style="margin-top:0">
+  <button class="btn go" id="best6">機械に合わせてもらう</button>
+  <span style="font-size:13px;color:var(--gray-500)">問2 でやった「坂を下る」やり方</span>
+ </div>
+ <div class="cap" id="mach6" style="text-align:left;margin:.4rem 0 0"></div>
+</div>
+
+</div>
+
+
+<div class="figbox">
+ <svg id="stair6" viewBox="0 0 560 286"></svg>
+</div>
+<table class="dtab" id="res6"></table>
+<div class="cap" id="note6" style="text-align:left;margin:.3rem 0 0"></div>
+
+<div id="e6f"></div>
+
+<div id="r6" class="hide">
+ <div id="e6z"></div>
+ <div class="keyh">この問で覚えること</div>
+ 
+ <div class="verdict ok">
+  この「掛ける数を全部の列にひとつずつ用意する形」が <b>全結合層</b>、
+  掛ける数のことを <b>重み</b>、d を <b>バイアス</b>と呼びます。
+ </div>
+ <div class="src">
+  <div class="h">役に立つところ</div>
+  <b>Kaggle で最初に出す答えがこれです。</b>列を足すたびに、つまみが1個ずつ増えます。
+  <b>列を足しても下がらないとき</b>は、その列に情報が無いということです。
+ </div>
+</div>
+</div>
+
+
+<div id="nav"></div>
+
+<div id="foot"></div>
+</div>
+
+
+<div class="offpage" aria-hidden="true">
+
+</div>
+
+<script src="common.js"></script>
+<script>
+
+var QBASE = 5;
+drawProg(6); drawChap(6, "この章は<b>深くする</b>章です。列を増やし、単位をそろえ、層を入れます。<b>深くすると壊れる</b>ところまで見ます。");
+drawNav(["q05.html","問5 確率に直す"], ["q07.html","問7 単位をそろえる"]);
+drawNest("nest", 2);
+drawFoot()   ;
+
+(function(){
+
+const $ = id => document.getElementById(id);
+
+let BOOT = true;
+const show = id => { if (BOOT) return; const e = $(id); if (e) e.classList.remove('hide'); };
+const R2 = v => +v.toFixed(2);
+
+const DATA = (() => {
+  let S = 20260828;
+  const r = () => { S ^= S << 13; S ^= S >>> 17; S ^= S << 5; S |= 0; return (S >>> 0) / 4294967296; };
+  const nrm = () => { let u = 0, v = 0; while (!u) u = r(); while (!v) v = r();
+    return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v); };
+  const a = [];
+  for (let i = 0; i < 40; i++) {
+    const x1 = Math.round(r() * 20) / 2, x2 = 2 + Math.round(r() * 18) / 2;
+    const x3 = Math.round((0.5 + r() * 0.5) * 100) / 100;
+    const y = 6.2 * x1 + (14 - 1.1 * (x2 - 7.5) ** 2) + 22 * x3 + nrm() * 3.0;
+    a.push({ x1, x2, x3, y: Math.max(0, Math.min(100, Math.round(y * 10) / 10)) });
+  }
+  return a;
+})();
+const NN = DATA.length;
+/* 合格（問8・問9）＝ 睡眠の山を強くした点数が 55 以上 */
+const passOf = d => (6.2 * d.x1 + (30 - 2.5 * (d.x2 - 7.5) ** 2) + 20) >= 55 ? 1 : 0;
+DATA.forEach(d => d.t = passOf(d));
+/* ══════════ 共通の絵の部品 ══════════ */
+const T = (x, y, s, o) => { o = o || {};
+  return `<text x="${x}" y="${y}" font-size="${o.fs || 13}" fill="${o.c || '#3f3f3f'}"
+    text-anchor="${o.a || 'start'}" font-family="${o.f || 'Inter'}"${o.b ? ' font-weight="600"' : ''}
+    >${s}</text>`; };
+const NODE = (x, y, r, fill, stroke) =>
+  `<circle cx="${x}" cy="${y}" r="${r}" fill="${fill}" stroke="${stroke || '#fff'}" stroke-width="1.6"/>`;
+
+DATA.forEach((d, i) => d.id = i + 1);       
+
+const IN6 = [
+  { key: 'x1', name: '勉強時間', min: 0, max: 15, step: 0.1, dec: 1, lab: '勉強時間' },
+  { key: 'x2', name: '睡眠時間', min: 0, max: 10, step: 0.1, dec: 1, lab: '睡眠時間' },
+  { key: 'x3', name: '出席率', min: 0, max: 60, step: 1, dec: 0, lab: '出席率' },
+  
+  
+  { key: 'id', name: '出席番号', min: -1, max: 1, step: 0.02, dec: 2, lab: '出席番号' }
+];
+
+let ON6 = [true, false, false, false];
+
+let W6 = [6, 0, 0, 0], D6 = 20, ok6 = false, seen6 = false;
+
+let GH6 = null;
+
+let MACH6 = false;
+const SEL6 = () => IN6.map((c, i) => i).filter(i => ON6[i]);
+
+function pred6(d) { let s = D6; SEL6().forEach(i => { s += W6[i] * d[IN6[i].key]; }); return s; }
+function rmse6() { return Math.sqrt(DATA.reduce((s, d) => s + (pred6(d) - d.y) ** 2, 0) / NN); }
+
+
+function lsq6(sel) {
+  const n = sel.length + 1;
+  const X = DATA.map(d => [...sel.map(i => d[IN6[i].key]), 1]);
+  const A = [];
+  for (let a = 0; a < n; a++) A.push(new Array(n + 1).fill(0));
+  for (let r = 0; r < NN; r++) {
+    for (let a = 0; a < n; a++) {
+      for (let b = 0; b < n; b++) A[a][b] += X[r][a] * X[r][b];
+      A[a][n] += X[r][a] * DATA[r].y;
+    }
+  }
+  for (let c = 0; c < n; c++) {
+    let p = c;
+    for (let r = c + 1; r < n; r++) if (Math.abs(A[r][c]) > Math.abs(A[p][c])) p = r;
+    const t = A[c]; A[c] = A[p]; A[p] = t;
+    if (Math.abs(A[c][c]) < 1e-12) continue;
+    for (let r = 0; r < n; r++) {
+      if (r === c) continue;
+      const f = A[r][c] / A[c][c];
+      for (let b = c; b <= n; b++) A[r][b] -= f * A[c][b];
+    }
+  }
+  const w = A.map((row, i) => Math.abs(row[i]) < 1e-12 ? 0 : row[n] / row[i]);
+  const pr = d => sel.reduce((s, i, j) => s + w[j] * d[IN6[i].key], 0) + w[n - 1];
+  const mse = DATA.reduce((s, d) => s + (pr(d) - d.y) ** 2, 0) / NN;
+  return { w: w.slice(0, sel.length), d: w[n - 1], rmse: Math.sqrt(mse) };
+}
+
+const STEP6 = [[0], [0, 1], [0, 1, 2], [0, 1, 2, 3]];
+const LIMS6 = STEP6.map(sel => lsq6(sel).rmse);
+
+/* ══════ 列のチェックボックス ══════ */
+function ck6() {
+  
+  $('ck6').innerHTML = IN6.slice(0, 3).map((c, i) =>
+    `<label style="display:inline-flex;align-items:center;gap:.35rem;margin:0 1rem .4rem 0;
+       font-size:14.5px;cursor:pointer">
+      <input type="checkbox" id="ck6${i}"${ON6[i] ? ' checked' : ''}
+        style="width:1.05rem;height:1.05rem">
+      <b>${c.name}</b></label>`).join('');
+  [0, 1, 2].forEach(i => { $('ck6' + i).onchange = () => {
+    ON6[i] = $('ck6' + i).checked;
+    
+    W6[i] = 0; GH6 = null;
+    sl6(); up6(); }; });
+}
+
+
+function sl6() {
+  const sel = SEL6();
+  
+  let s = sel.filter(i => i !== 3).map(i => {
+    const c = IN6[i];
+    return `<div class="ctl"><label for="w6${i}"><span>${c.lab}
+      <b id="w6s${i}" style="color:${COL6[2]}">${STEPN6[i]} ${W6[i] >= 0 ? '＋' : '−'}${Math.abs(W6[i] * STEPX6[i]).toFixed(1)}点</b></span>
+      <span class="n" id="w6v${i}">${W6[i].toFixed(c.dec)}</span></label>
+      <input type="range" id="w6${i}" min="${Math.round(c.min / c.step)}"
+        max="${Math.round(c.max / c.step)}" step="1"
+        value="${Math.round(W6[i] / c.step)}"></div>`; }).join('');
+  s += `<div class="ctl"><label for="w6d"><span>バイアス
+    <b style="color:${COL6[2]}">全員の高さ</b></span>
+    <span class="n" id="w6vd">${D6.toFixed(1)}</span></label>
+    <input type="range" id="w6d" min="-40" max="60" step="1" value="${Math.round(D6)}"></div>`;
+  $('sl6').innerHTML = s;
+  
+  sel.filter(i => i !== 3).forEach(i => { const c = IN6[i], el = $('w6' + i);
+    el.onpointerdown = () => { GH6 = DATA.map(pred6); };
+    el.oninput = () => { W6[i] = +((+el.value) * c.step).toFixed(3); up6(); }; });
+  const ed6 = $('w6d');
+  ed6.onpointerdown = () => { GH6 = DATA.map(pred6); };
+  ed6.oninput = () => { D6 = +ed6.value; up6(); };
+  
+}
+
+
+const COL6 = ['#9dc3e6', '#2f6fb5', '#0b3d6b'];
+const CUT6 = [5.75, 8.25];
+const GRY6 = '#9aa3a9';
+const MM6 = IN6.map(c => ({
+  lo: Math.min.apply(null, DATA.map(d => d[c.key])),
+  hi: Math.max.apply(null, DATA.map(d => d[c.key]))
+}));
+
+const GCUT6 = [0.665, 0.825];
+const RAD6 = [3.2, 4.6, 6.2];
+const cbin6 = d => d.x2 < CUT6[0] ? 0 : (d.x2 < CUT6[1] ? 1 : 2);
+const gbin6 = d => d.x3 < GCUT6[0] ? 0 : (d.x3 < GCUT6[1] ? 1 : 2);
+const colOf6 = d => ON6[1] ? COL6[cbin6(d)] : GRY6;
+const radOf6 = d => ON6[2] ? RAD6[gbin6(d)] : 4.4;
+
+const avOf6 = (a, f) => a.reduce((t, d) => t + f(d), 0) / a.length;
+const CG6 = [0, 1, 2].map(k => DATA.filter(d => cbin6(d) === k));
+const GG6 = [0, 1, 2].map(k => DATA.filter(d => gbin6(d) === k));
+const STEPX6 = [
+  1,                                                                   /* 勉強：右へ1マス＝1時間 */
+  (avOf6(CG6[2], d => d.x2) - avOf6(CG6[0], d => d.x2)) / 2,           /* 色1段ぶんの睡眠時間 */
+  (avOf6(GG6[2], d => d.x3) - avOf6(GG6[0], d => d.x3)) / 2,           /* 丸1段ぶんの出席率 */
+  DATA.length / 3                                                       /* 番号1段ぶん */
+];
+const STEPN6 = ['右へ1マスで', '色が1段 濃くなると', '丸が1段 大きくなると', '番号が1段 大きくなると'];
+
+
+
+function embG6(G, o) {
+  const w = v => Math.max(0, Math.min(1, v / o.max)) * (G.x1 - G.x0);
+  let s = T(G.x1, 30, o.top, { a: 'end', fs: 13, c: '#6e6e6e', f: "'Noto Serif JP',serif" });
+  s += `<text id="${o.id}" class="big6" x="${G.x1}" y="96" text-anchor="end"
+    fill="${o.ok ? '#019949' : (o.bad ? '#c00' : '#111')}">${o.txt}</text>`;
+  s += `<rect x="${G.x0}" y="116" width="${G.x1 - G.x0}" height="11" fill="#e9e9e9"/>`;
+  s += `<rect x="${G.x0}" y="116" width="${w(o.fill).toFixed(1)}" height="11"
+    fill="${o.ok ? '#019949' : '#c00'}"/>`;
+  s += `<rect x="${(G.x0 + w(o.goal)).toFixed(1)}" y="113" width="2" height="17" fill="#111"/>`;
+  s += `<text id="${o.idLim}" class="lim6" x="${G.x1}" y="160" text-anchor="end"
+    fill="#6e6e6e" font-family="'Noto Serif JP',serif">${o.bot}</text>`;
+  return s;
+}
+function fig6() {
+  
+  const P = { x0: 52, y0: 204, x1: 408, y1: 28 };
+  const G = { x0: 420, x1: 556 };
+  const sx = v => P.x0 + v / 10 * (P.x1 - P.x0);
+  const sy = v => P.y0 - v / 100 * (P.y0 - P.y1);
+  const cl = v => Math.max(0, Math.min(100, v));
+  let s = '';
+  for (let v = 0; v <= 100; v += 25) {
+    s += `<line x1="${P.x0}" y1="${sy(v)}" x2="${P.x1}" y2="${sy(v)}" stroke="#ececec"/>`;
+    s += T(P.x0 - 8, sy(v) + 5, String(v), { a: 'end', fs: 13, c: '#6e6e6e' });
+  }
+  for (let v = 0; v <= 10; v += 2)
+    s += T(sx(v), P.y0 + 20, String(v), { a: 'middle', fs: 13, c: '#6e6e6e' });
+  DATA.forEach(d => { const x = sx(d.x1);
+    s += `<line x1="${x.toFixed(1)}" y1="${sy(cl(d.y)).toFixed(1)}" x2="${x.toFixed(1)}"
+      y2="${sy(cl(pred6(d))).toFixed(1)}" stroke="#c00" stroke-width="1.6" opacity=".75"/>`; });
+  DATA.forEach(d => {
+    s += NODE(sx(d.x1).toFixed(1), sy(cl(d.y)).toFixed(1), radOf6(d).toFixed(1), colOf6(d)); });
+  
+  if (GH6) DATA.forEach((d, i) => {
+    const x = sx(d.x1), y0 = sy(cl(GH6[i])), y1 = sy(cl(pred6(d)));
+    if (Math.abs(y1 - y0) >= 0.6)
+      s += `<line x1="${(x + 4).toFixed(1)}" y1="${y0.toFixed(1)}" x2="${(x + 4).toFixed(1)}"
+        y2="${y1.toFixed(1)}" stroke="#6e6e6e" stroke-width="1.5" stroke-dasharray="3 2"/>`;
+    s += `<line x1="${(x - 5).toFixed(1)}" y1="${y0.toFixed(1)}" x2="${(x + 5).toFixed(1)}"
+      y2="${y0.toFixed(1)}" stroke="#6e6e6e" stroke-width="1.6" opacity=".65"/>`;
+  });
+  DATA.forEach(d => { const x = sx(d.x1), yy = sy(cl(pred6(d)));
+    s += `<line x1="${(x - 5).toFixed(1)}" y1="${yy.toFixed(1)}" x2="${(x + 5).toFixed(1)}"
+      y2="${yy.toFixed(1)}" stroke="#111" stroke-width="2.6"/>`; });
+  s += `<line x1="${P.x0}" y1="${P.y0}" x2="${P.x1}" y2="${P.y0}" stroke="#000"/>`;
+  s += `<line x1="${P.x0}" y1="${P.y1}" x2="${P.x0}" y2="${P.y0}" stroke="#000"/>`;
+  
+  s += T(P.x1, P.y0 + 52, '勉強時間', { a: 'end', fs: 13, f: "'Noto Serif JP',serif" });
+  s += T(P.x0 - 4, 20, '点数', { a: 'start', fs: 13, f: "'Noto Serif JP',serif" });
+  
+  {
+    const e = rmse6(), lim = lsq6(SEL6()).rmse;
+    s += embG6(G, { id: 'e6t', idLim: 'gc6t', top: 'ずれ', txt: e.toFixed(2),
+      bot: '限界 ' + lim.toFixed(2), fill: e, goal: lim, max: 25, ok: R2(e) <= R2(lim) });
+  }
+  $('fig6').innerHTML = s;
+}
+
+
+const MEAN6 = [0, 1, 2].map(i => avOf6(DATA, d => d[IN6[i].key]));
+const BEST6W = (() => { const r = lsq6([0, 1, 2, 3]); return { w: r.w, d: r.d }; })();
+
+
+const YMAX6 = 120;
+
+const XCUT6 = [2.25, 5.5];
+const xbin6 = d => d.x1 < XCUT6[0] ? 0 : (d.x1 < XCUT6[1] ? 1 : 2);
+const BIN6 = [xbin6, cbin6, gbin6];
+const BNAME6 = [['少ない', 'ふつう', '多い'], ['うすい', 'ふつう', 'こい'], ['小', '中', '大']];
+const ST6DEF = [
+  { i: 0, v0: 3, v1: 6.3, dec: 1, d: BEST6W.d },
+  { i: 1, v0: 0, v1: 2.5, dec: 1, d: BEST6W.d + BEST6W.w[1] * MEAN6[1] },
+  { i: 2, v0: 0, v1: 30,  dec: 0, d: BEST6W.d + BEST6W.w[2] * MEAN6[2] }
+];
+
+function st6w(k, v) {
+  const w = [BEST6W.w[0], BEST6W.w[1], BEST6W.w[2], 0];
+  w[ST6DEF[k].i] = v;
+  return { w: w, d: ST6DEF[k].d };
+}
+const ST6 = [0, 1, 2].map(k => [st6w(k, ST6DEF[k].v0), st6w(k, ST6DEF[k].v1)]);
+const stPr6 = (st, d) => st.w[0] * d.x1 + st.w[1] * d.x2 + st.w[2] * d.x3 + st.d;
+
+function stFig6(id, k) {
+  const H = { y0: 176, y1: 44 };
+  const PN = [{ x0: 56, x1: 268 }, { x0: 316, x1: 528 }];
+  const t = ST6DEF[k], nm = ['a', 'b', 'c'][k], pair = ST6[k];
+  const sy = v => H.y0 - Math.max(0, Math.min(YMAX6, v)) / YMAX6 * (H.y0 - H.y1);
+  const lab = [nm + ' ＝ ' + t.v0.toFixed(t.dec), nm + ' ＝ ' + t.v1.toFixed(t.dec)];
+  let s = '';
+  pair.forEach((st, p) => {
+    const P = PN[p];
+    const sx = v => P.x0 + v / 10 * (P.x1 - P.x0);
+    s += T(P.x0, 28, lab[p], { fs: 17, b: 1, f: "'Noto Serif JP',serif" });
+    [0, 60, 120].forEach(v => {
+      s += `<line x1="${P.x0}" y1="${sy(v)}" x2="${P.x1}" y2="${sy(v)}" stroke="#ececec"/>`;
+      if (p === 0) s += T(P.x0 - 8, sy(v) + 6, String(v), { a: 'end', fs: 17, c: '#6e6e6e' }); });
+    if (p === 1) DATA.forEach(d => {
+      const x = sx(d.x1), y0 = sy(stPr6(pair[0], d)), y1 = sy(stPr6(st, d));
+      s += `<line x1="${x.toFixed(1)}" y1="${y0.toFixed(1)}" x2="${x.toFixed(1)}"
+        y2="${y1.toFixed(1)}" stroke="#c9ced2" stroke-width="1.4"/>`;
+      s += `<circle cx="${x.toFixed(1)}" cy="${y0.toFixed(1)}" r="2.3" fill="none"
+        stroke="#c9ced2" stroke-width="1.2"/>`; });
+    DATA.forEach(d => {
+      const col = k === 1 ? COL6[cbin6(d)] : GRY6;
+      const r = k === 2 ? RAD6[gbin6(d)] : 4.2;
+      s += NODE(sx(d.x1).toFixed(1), sy(stPr6(st, d)).toFixed(1), r, col); });
+    s += `<line x1="${P.x0}" y1="${H.y0}" x2="${P.x1}" y2="${H.y0}" stroke="#000"/>`;
+    s += `<line x1="${P.x0}" y1="${H.y1}" x2="${P.x0}" y2="${H.y0}" stroke="#000"/>`;
+    
+    for (let v = 0; v <= 10; v += 2)
+      s += T(sx(v), H.y0 + 20, String(v), { a: 'middle', fs: 17, c: '#6e6e6e' });
+    
+    s += T(P.x1, H.y0 + 52, '勉強時間', { a: 'end', fs: 17, c: '#6e6e6e', f: "'Noto Serif JP',serif" });
+  });
+  s += `<line x1="${PN[0].x1 + 12}" y1="110" x2="${PN[1].x0 - 12}" y2="110"
+    stroke="#3f3f3f" stroke-width="2.6"/>`;
+  s += `<path d="M${PN[1].x0 - 12} 110l-9 -6v12z" fill="#3f3f3f"/>`;
+  $(id).innerHTML = s;
+}
+
+function stMv6(k) {
+  const t = ST6DEF[k], key = IN6[t.i].key, dv = t.v1 - t.v0;
+  return [0, 1, 2].map(b => {
+    const g = DATA.filter(d => BIN6[k](d) === b);
+    return dv * avOf6(g, d => d[key]);
+  });
+}
+function stAll6() {
+  [0, 1, 2].forEach(k => {
+    stFig6(['st6a', 'st6b', 'st6c'][k], k);
+    const e = $(['m6a', 'm6b', 'm6c'][k]);
+    if (e) e.innerHTML = '<b>上がった量（平均）</b>　'
+      + stMv6(k).map((v, b) => BNAME6[k][b] + ' ＋' + v.toFixed(1) + '点').join('　→　');
+  });
+}
+
+
+
+
+function stair6() {
+  const P = { lab: 216, x0: 224, x1: 468 }, MX = 12;
+  const sx = v => P.x0 + Math.min(MX, v) / MX * (P.x1 - P.x0);
+  const nm = ['勉強だけ', '＋睡眠', '＋出席率', '＋出席番号'];
+  const cur = SEL6().join(',');
+  
+  let s = T(52, 24, 'ずれ（下げられるところまで）', { fs: 17, f: "'Noto Serif JP',serif" });
+  for (let k = 0; k < 4; k++) {
+    const y = 62 + k * 52, v = LIMS6[k], mine = STEP6[k].join(',') === cur;
+    s += T(P.lab, y + 6, nm[k] + '（つまみ' + (k + 2) + '個）',
+      { a: 'end', fs: 17, f: "'Noto Serif JP',serif" });
+    s += `<rect x="${P.x0}" y="${y - 13}" width="${P.x1 - P.x0}" height="26" fill="#ececec"/>`;
+    
+    if (MACH6) {
+      s += `<rect x="${P.x0}" y="${y - 13}" width="${(sx(v) - P.x0).toFixed(1)}" height="26"
+        fill="${mine ? '#019949' : (k === 3 ? '#c26100' : COL6[1])}"/>`;
+      s += T(P.x1 + 8, y + 6, v.toFixed(2),
+        { fs: 17, c: mine ? '#019949' : (k === 3 ? '#c26100' : COL6[2]), b: 1 });
+    } else {
+      s += T(P.x1 + 8, y + 6, '–', { fs: 17, c: '#9aa3a9', b: 1 });
+    }
+  }
+  s += T(P.x0, 262, MACH6 ? '棒が短いほど よく当たっています'
+    : '上の［機械に合わせてもらう］を押すと 4通りぜんぶ出ます',
+    { fs: 15, c: '#6e6e6e', f: "'Noto Serif JP',serif" });
+  $('stair6').innerHTML = s;
+}
+
+
+function res6() {
+  const nm = ['勉強だけ', '＋睡眠', '＋出席率', '＋出席番号'];
+  const cur = SEL6().join(',');
+  let s = `<tr><th class="l">足した列</th><th>つまみ</th><th>ずれ</th><th class="l">下がった分</th></tr>`;
+  for (let k = 0; k < 4; k++) {
+    const v = LIMS6[k], mine = STEP6[k].join(',') === cur;
+    const dn = k === 0 ? '―'
+      : (LIMS6[k - 1] - v).toFixed(2) + ' 下がった' + (k === 3 ? '　← ここ！' : '');
+    
+    s += `<tr${mine && MACH6 ? ' class="sum"' : ''}><td class="l">${nm[k]}</td><td>${k + 2}</td>`
+      + `<td>${MACH6 ? `<b>${v.toFixed(2)}</b>` : `<span style="color:#9aa3a9">–</span>`}</td>`
+      + `<td class="l"${k === 3 ? ' style="color:#c26100"' : ''}>`
+      + `${MACH6 ? dn : `<span style="color:#9aa3a9">–</span>`}</td></tr>`;
+  }
+  $('res6').innerHTML = s;
+}
+
+function up6() {
+  const sel = SEL6();
+  sel.forEach(i => { const e = $('w6v' + i);
+    if (e) e.textContent = W6[i].toFixed(IN6[i].dec);
+    
+    const l = $('w6s' + i);
+    if (l) l.innerHTML = `${STEPN6[i]} ${W6[i] >= 0 ? '＋' : '−'}${Math.abs(W6[i] * STEPX6[i]).toFixed(1)}点`; });
+  const ed = $('w6vd'); if (ed) ed.textContent = D6.toFixed(1);
+  
+  
+  let LEG6 = `<span style="color:#111">━</span> 黒い横棒＝<b>予想の点数</b>　`
+    + `<span style="color:#c00">┃</span> 赤いたての線＝<b>ずれ</b>`
+    
+    + `（この40本から出しています）`;
+  
+  if (GH6) LEG6 += `<br><span style="color:#6e6e6e">`
+    + `<b>━</b> 灰色の横棒＝つまみを<b>つかむ前</b>の予想　`
+    + `<b>┊</b> たての点線＝<b>動いた量</b>（長いほど 大きく上がった人）</span>`;
+  let mk = `丸は40人ぶんの<b>本当の点数</b>`;
+  if (ON6[1]) mk += `　色＝<b>睡眠時間</b>　`
+    + `<b style="color:${COL6[0]}">■</b> ${CUT6[0]}未満　`
+    + `<b style="color:${COL6[1]}">■</b> ${CUT6[0]}〜${CUT6[1]}　`
+    + `<b style="color:${COL6[2]}">■</b> ${CUT6[1]}より上`;
+  if (ON6[2]) mk += `　大きさ＝<b>出席率</b>（小 ${MM6[2].lo} → 大 ${MM6[2].hi}）`;
+  $('leg6').innerHTML = mk + `<br>` + LEG6
+    + `<br><span style="color:var(--gray-500)">色と大きさは<b>その人がどんな人かの目印</b>です
+       （つまみの効き方は ここからは読めません）。</span>`;
+  fig6(); stair6(); res6();
+  
+  const lim = lsq6(sel).rmse, e = rmse6();
+  const floor = R2(e) <= R2(lim);
+  $('j6').className = 'verdict' + (floor ? ' ok' : '');
+  
+  $('j6').innerHTML = floor
+    ? `<b>これ以上 下がりません。</b>列を足してください。`
+    : `<b>手では なかなか届きません。</b>`;
+  
+  
+  $('note6').innerHTML = MACH6
+    ? `<b style="color:#c26100">出席番号を足すと、つまみが1個 増えたのに ${(LIMS6[2] - LIMS6[3]).toFixed(2)} しか下がりません。</b>
+       <span style="color:var(--gray-500)">出席番号には点数の情報が入っていないからです。</span>`
+    : `<b>4通りぜんぶを 機械に下げさせます。</b>
+       <span style="color:var(--gray-500)">いちばん下の<b style="color:#c26100">＋出席番号</b>は、
+       点数と関係があるでしょうか。……押してから見てください。</span>`;
+  if (seen6 && !ok6) { ok6 = true; mark(0, 'done'); show('r6'); mark(1, 'open'); }
+}
+$('best6').onclick = () => {
+  
+  const sel = SEL6(), r = lsq6(sel);
+  W6 = [0, 0, 0, 0];
+  sel.forEach((i, j) => { W6[i] = r.w[j]; });
+  D6 = r.d;
+  GH6 = null;                       
+  
+  seen6 = true;
+  MACH6 = true;                     
+  sl6(); up6();
+  
+  $('mach6').innerHTML = `<b>機械が いちばん下まで下げました。</b>`
+    + `<span style="color:var(--gray-500)">下の棒と表は、<b>使う列の組み合わせ4通りぜんぶ</b>を`
+    + `機械に下げさせた結果です。どうやって下るかは 次の問7 でやります。</span>`;
+};
+
+DATA.forEach((d, i) => d.id = i + 1);
+
+
+ck6(); sl6();
+up6();
+BOOT = false;
+stAll6();
+['a', 'b', 'c'].forEach((k, i) => {
+  const e = $('s6' + k);
+  if (e) e.textContent = STEPN6[i] + ' ＋'
+    + (BEST6W.w[i] * STEPX6[i]).toFixed(1) + '点';
+});
+up6();
+
+
+var CV = {
+ "e6a": [
+  [
+   "m",
+   "博士、第1章は勉強時間だけだったよね。今日は何が増えるの？"
+  ],
+  [
+   "d",
+   "<b>列</b>が増える！ 40人ぶんの記録がある。勉強時間・睡眠時間・出席率 ── そして <b>出席番号</b> だ。"
+  ],
+  [
+   "m",
+   "出席番号？ そんなの点数に関係ある？"
+  ],
+  [
+   "d",
+   "いい問いだ、学くん。<b>それが今日の1問目だよ。</b>まず箱を見てくれ。"
+  ]
+ ],
+ "e6b": [
+  [
+   "d",
+   "<b>列を1個 足すと、掛ける数が1個 増える。</b>その増えた掛ける数が、つまみ1個になる。"
+  ],
+  [
+   "m",
+   "じゃあ ☑ を入れると つまみが増えるの？"
+  ],
+  [
+   "d",
+   "そうだ。……☑ を1つずつ入れて、つまみが増えるのを見てごらん。そして<b>動かしてごらん！</b>"
+  ]
+ ],
+ "e6c": [
+  [
+   "m",
+   "動かしてみた。<b>勉強時間のつまみは分かる</b>よ。上げると<b>右が持ち上がって 坂になる。</b>"
+  ],
+  [
+   "d",
+   "うむ。……学くん、<b>灰色の横棒</b>が見えるか。あれが つまみを<b>つかむ前</b>の予想だ。<b>たての点線</b>が動いた量だよ。"
+  ],
+  [
+   "m",
+   "あ。<b>右に行くほど 点線が長い。</b>だから右だけ持ち上がるんだ。"
+  ],
+  [
+   "d",
+   "そのとおり！ ……では次は<b>睡眠時間のつまみ</b>を動かしてごらん。"
+  ],
+  [
+   "m",
+   "……<b>坂にならない。</b>点線の長さが<b>バラバラだ。</b>これ、何やってるの？"
+  ],
+  [
+   "d",
+   "<b>そこが今日いちばん分かりにくいところだ。</b>……よく見てごらん、学くん。<b>長い点線は どこに付いている？</b>"
+  ]
+ ],
+ "e6c2": [
+  [
+   "m",
+   "<b>色が濃い丸</b>のところ。……あれ、でも<b>濃い丸って 左にも右にもいる</b>んだけど。"
+  ],
+  [
+   "d",
+   "<b>そこだ！</b> 色が濃い人は<b>横軸のどこにでもいる。</b>だから左も右も上がる。……<b>坂にならんのだ。</b>"
+  ],
+  [
+   "m",
+   "じゃあ このつまみ、何もしてないの？"
+  ],
+  [
+   "d",
+   "している。<b>ちゃんと上げている。形に出ないだけだ。</b>"
+  ],
+  [
+   "d",
+   "……つまみは3本とも<b>同じことをしている</b>ぞ ── 「<b>その特徴が強い人を 持ち上げる</b>」。<b>a だけ坂に見えるのは、横軸が勉強時間だからだ。</b>"
+  ],
+  [
+   "m",
+   "軸のせいなんだ。"
+  ],
+  [
+   "d",
+   "軸のせいだ。……<b>バイアス（全員の高さ）も動かしてみてくれ。</b>あれだけは<b>全員 同じ長さ</b>の点線になる。"
+  ],
+  [
+   "d",
+   "……いま自分の手で見たことを、<b>止まった絵</b>にしてある。<b>下の3枚だ。</b>1本ずつ大きくして、動いた先を線でつないである。<b>3枚とも 横軸は勉強時間だよ。</b>"
+  ]
+ ],
+ "e6d": [
+  [
+   "m",
+   "よし、じゃあ自分で いちばん下まで合わせてみる。"
+  ],
+  [
+   "d",
+   "……<b>無理だ。</b>"
+  ],
+  [
+   "m",
+   "なんで？ 第1章はできたよ。"
+  ],
+  [
+   "d",
+   "第1章は<b>つまみ2個</b>だった。a が傾き、b が高さで、<b>見た目が分かれていた</b>。だから「まず b、次に a」と順番にやれた。"
+  ],
+  [
+   "m",
+   "今回は？"
+  ],
+  [
+   "d",
+   "<b>4個</b>だ。しかも睡眠と出席率は、いま見たとおり<b>坂を作らない</b>。……<b>順番にやる手がかりが無い。</b>"
+  ],
+  [
+   "m",
+   "下の表……<b>1億通り</b>って書いてある。"
+  ]
+ ],
+ "e6e": [
+  [
+   "m",
+   "じゃあ どうするの。1億通り 試すの？"
+  ],
+  [
+   "d",
+   "試さん。<b>機械にやらせる。</b>……<b>問2 でやった、あれだ。</b>"
+  ],
+  [
+   "m",
+   "<b>坂を下る</b>やつ？ 足元の傾きを測って、下る方へ1歩ずつ動かすの。"
+  ],
+  [
+   "d",
+   "それだ！ <b>1億通りを見るのではない。坂を下るだけだ。</b>……押してごらん。"
+  ]
+ ],
+ "e6f": [
+  [
+   "m",
+   "……一瞬で下がった。で、この棒と表は何？"
+  ],
+  [
+   "d",
+   "<b>機械に【4通りぜんぶ】下げさせた結果だ。</b>列を足すたびに、どこまで下がるかが出ている。"
+  ],
+  [
+   "m",
+   "勉強だけで <b>10.30</b>。睡眠を足して <b>7.92</b>。出席率を足して <b>6.30</b>。……ちゃんと下がってる。"
+  ],
+  [
+   "d",
+   "<b>4本目を見てごらん。</b>"
+  ],
+  [
+   "m",
+   "＋出席番号……<b>6.28</b>。……えっ、<b>0.02 しか下がってない。</b>"
+  ],
+  [
+   "d",
+   "そこだ！ <b>つまみは1個 増えたのに、だ。</b>"
+  ],
+  [
+   "m",
+   "壊れてるの？"
+  ],
+  [
+   "d",
+   "壊れていない。……<b>出席番号には点数の情報が入っていない。</b>だから足しても下がらない。"
+  ],
+  [
+   "d",
+   "<b>これが今日の1問目の答えだ、学くん。</b>列を足せば つまみは増える。……<b>だが 情報の無い列は、いくら足しても下がらん。</b>"
+  ]
+ ],
+ "e6z": [
+  [
+   "m",
+   "じゃあ、なんでこの列があるの。使わないのに。"
+  ],
+  [
+   "d",
+   "……<b>問11 でもう一度 出てくる</b>よ、学くん。<b>層を重ねると、この同じ番号で 練習が満点になる。</b>"
+  ],
+  [
+   "m",
+   "え。下がらないのに満点？"
+  ],
+  [
+   "d",
+   "下がらないのに満点だ。……そのときにまた話そう。"
+  ],
+  [
+   "m",
+   "また含み持たせる。"
+  ]
+ ]
+};
+drawCV(CV);
+})();
+</script>
+</body>
+</html>

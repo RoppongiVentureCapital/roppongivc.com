@@ -1,0 +1,258 @@
+/* 🔴 2026-09-02 A（統括）：★★書体は【六本木VC の記事本文】に合わせた。★サイズは 15px のまま
+   ★記事の実物 .blog-single .content{font-family:var(--sans);font-size:16px;line-height:1.9;font-weight:400}
+     ★★見出し h2・h3 も var(--sans) の 600（★明朝ではない）／ h1 だけ var(--serif)
+   ★★★書体は元から記事と同一（--sans:'Inter',system-ui ／ --serif:'Source Serif 4','Noto Serif JP'）。
+     ★違っていたのは【割り当て】だけだった → h2 を明朝300 から sans600 に変えた
+   ★★★戻さないこと
+     ✗ h2 を明朝（--serif）に戻さない（★却下）
+     ✗ .lead / .chap / .fg / .nst / .cap を 15px 未満にしない（★「小さい」で3回 却下）
+     ✗ 16px に上げない（★★「全体的に大きい」で却下。★2026-09-02 13:4x）
+   ★対話（.cl .bb）は 15px／行間1.9。★上の方の文字はこれに合わせている
+   ★表（.dtab）だけ 12.5 → 14px（★山田様が「チープ」と指摘した箇所） */
+/* ══════════════════════════════════════════════════════════════════════════
+   AIの詰将棋 ── common.css（23ページで共有）
+   🔴 2026-09-02 1問1ページ担当が新設
+   ──────────────────────────────────────────────────────────────────────────
+   ★★中身は tsume-03-train-dialog.html の <style> 12〜119行の【写し】です。
+     ★ゲームの見た目を1pxも動かさないため、値は1文字も変えていません。
+   ★★★ただし【5本で値が違う5規則】だけは 00/01 の値（＝系列の基準）に戻しました ──
+     .cap ／ .ctl label ／ input[type=range] ／ .sc-label ／ .sc-pct
+     → ★03 の値は各ページの <style> で上書きします（★03 の枠を1pxも動かさないため）
+   ★★03 だけの3規則（.ctl label span:first-child ／ .qrow ／ .qrow .qt）も各ページへ出しました
+   ★★.fg / .nst の15規則は 02 から持ち上げ（★「いま どこの話か」の入れ子図。→ A の判断4）
+   ★@media (max-width:430px) の【SVG の id 一覧】は本ごとに違うので各ページに残します（→ A が承認）
+   ══════════════════════════════════════════════════════════════════════════ */
+
+:root{
+ --bg:#fff; --white:#fff; --black:#000;
+ --gray-100:#f9f9f9; --gray-200:#d9d9d9; --gray-500:#6e6e6e; --gray-600:#3f3f3f;
+ --accent:#019949;
+ --sans:'Inter',system-ui,sans-serif;
+ --serif:'Source Serif 4','Noto Serif JP',Georgia,serif;
+ --content-w:52.625rem;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--black);font-family:var(--sans);
+ -webkit-font-smoothing:antialiased}
+.wrap{max-width:var(--content-w);margin:0 auto;padding:0 1.5rem 5rem}
+.top{border-bottom:1px solid var(--gray-200);margin-bottom:2.4rem;background:var(--white)}
+.top .in{max-width:var(--content-w);margin:0 auto;padding:1.5rem 1.5rem;
+  display:flex;align-items:center;gap:1rem}
+.top .em{width:52px;height:52px;flex-shrink:0;display:block}
+.top .ti{min-width:0}
+.top .ti .nm{display:block;font-family:var(--serif);font-size:1.75rem;font-weight:600;
+  line-height:1.2;letter-spacing:.02em;color:var(--black)}
+.top .in .tag{display:block;margin-top:.28rem;font-size:13.5px;letter-spacing:0;
+  color:var(--gray-500);line-height:1.6;font-weight:400}
+@media (max-width:430px){
+  .pv{gap:.35rem}
+  .pv .lb{font-size:10px}
+  .pv .lb .tt{display:none}
+  .pv .sg.on .lb .tt{display:inline}
+
+  .top .in{padding:1.1rem 1.1rem;gap:.7rem}
+  .top .em{width:42px;height:42px}
+  .top .ti .nm{font-size:1.3rem}
+  .top .in .tag{font-size:12.5px}
+}
+.eyebrow{font-size:13px;font-weight:500;letter-spacing:.16em;text-transform:uppercase;
+ color:var(--gray-500);margin-bottom:.9rem}
+h1{font-family:var(--serif);font-size:2.1rem;font-weight:300;line-height:1.35;margin:0 0 .8rem}
+h2{font-family:var(--sans);font-size:1.375rem;font-weight:600;line-height:1.4;margin:0 0 1rem}
+h3{font-family:var(--sans);font-size:1.125rem;font-weight:600;margin:1.4rem 0 .6rem}
+.lead{font-size:16.5px;line-height:1.9;color:var(--gray-600);margin:0 0 1.1rem}
+.lead b{color:var(--black)}
+.meta{font-size:13px;letter-spacing:.1em;color:var(--gray-500);padding-bottom:1.2rem;
+ border-bottom:1px solid var(--gray-200);margin-bottom:1.2rem}
+.steps{display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:2.4rem}
+.steps div{flex:1 1 5rem;padding:.55rem .3rem;text-align:center;font-size:12px;
+ border:1px solid var(--gray-200);color:var(--gray-500);background:var(--white)}
+.steps div.open{border-color:var(--black);color:var(--black)}
+.steps div.done{background:var(--black);border-color:var(--black);color:var(--white)}
+.card{border:1px solid var(--gray-200);padding:2rem;margin-bottom:2rem;background:var(--white)}
+.tagline{font-size:13px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;
+ color:var(--gray-500);margin-bottom:.9rem}
+.figbox{background:var(--gray-100);border:1px solid var(--gray-200);padding:1rem;margin:1.3rem 0}
+/* ★★図・つまみ・判定を1つの枠にまとめる（→00 の §2-2） */
+.panel{background:var(--gray-100);border:1px solid var(--gray-200);padding:1rem;margin:1.3rem 0}
+.panel .ctl{margin:.9rem 0 .2rem}
+.panel .togs{margin-top:.7rem}
+.panel .gauge{margin-top:.9rem}
+.panel .verdict{margin-top:.8rem;background:var(--white)}
+.two{display:flex;gap:1rem;flex-wrap:wrap}
+.two>div{flex:1 1 15rem;min-width:0}
+.cap{font-size:15px;color:var(--gray-500);margin-bottom:.5rem;line-height:1.9}
+svg{display:block;width:100%;height:auto}
+.ctl{margin:1.1rem 0 .2rem}
+.ctl label{display:flex;justify-content:space-between;align-items:baseline;font-size:14px;
+ margin-bottom:.35rem;gap:1rem}
+.ctl label span.n{font-weight:600;font-variant-numeric:tabular-nums;white-space:nowrap}
+input[type=range]{width:100%;accent-color:#000;height:1.4rem}
+.togs{display:flex;gap:.6rem;flex-wrap:wrap;margin-top:1.1rem;align-items:center}
+.btn{background:none;border:1px solid var(--gray-200);padding:.6rem 1.15rem;font-size:14px;
+ font-family:var(--sans);color:var(--black);cursor:pointer;transition:all .15s}
+.btn:hover{border-color:var(--black);background:var(--gray-100)}
+.btn.on{background:var(--black);color:var(--white);border-color:var(--black)}
+.btn.go{background:var(--black);color:var(--white);border-color:var(--black)}
+.btn.sm{font-size:13px;padding:.45rem .85rem;color:var(--gray-500)}
+.btn:disabled{opacity:.35;cursor:default}
+.gauge{margin:1.2rem 0 0}
+.gauge .row{display:flex;align-items:baseline;gap:.7rem;margin-bottom:.5rem}
+.gauge .u{font-size:14px;color:var(--gray-500)}
+.gtrack{height:10px;background:#e9e9e9;position:relative;overflow:hidden}
+.gfill{display:block;height:100%;background:#c00;transition:width .12s linear}
+.gfill.ok{background:var(--accent)}
+.gmark{position:absolute;top:-3px;bottom:-3px;width:2px;background:#000}
+.gcap{display:flex;justify-content:space-between;font-size:12px;color:var(--gray-500);
+ margin-top:.35rem}
+.read{font-size:15px;line-height:1.8;margin:.9rem 0 0;font-variant-numeric:tabular-nums}
+.big{font-family:var(--serif);font-size:2rem;font-weight:400;font-variant-numeric:tabular-nums;
+ line-height:1}
+.calc{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13.5px;line-height:2;
+ background:var(--white);border:1px solid var(--gray-200);padding:.9rem 1.1rem;margin:.9rem 0;
+ overflow-x:auto;white-space:pre}
+.verdict{margin-top:1.2rem;padding:.9rem 1.1rem;border:1px solid var(--gray-200);font-size:14px;
+ line-height:1.75;background:var(--gray-100)}
+.verdict.ok{border-color:var(--accent);background:#f2fbf6}
+.verdict.stuck{border-color:#c00;background:#fdf4f4}
+.next{margin-top:1rem;font-size:13px;color:var(--gray-500)}
+.src{border-left:2px solid var(--black);padding:.9rem 0 .9rem 1.1rem;margin:1.4rem 0;
+ font-size:14px;line-height:1.85;color:var(--gray-600)}
+.src .h{font-size:12px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;
+ color:var(--black);margin-bottom:.4rem}
+.src .ref{font-size:13px;color:var(--gray-500);margin-top:.4rem;display:block}
+.box{border:1px solid var(--gray-200);padding:1.1rem 1.3rem;margin:1.3rem 0;background:var(--gray-100)}
+.box .h{font-size:12px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;
+ margin-bottom:.5rem}
+.mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+.sc-row{display:flex;align-items:center;gap:.75rem;margin-bottom:.6rem}
+/* 🔴 2026-09-02 1問1ページ担当【申告・処置】★.sc-label は 3.4rem でしたが、
+   ★★3.4rem は【5本のどこにも存在しない値】でした（★実測 00 3.2rem ／ 01・03 5.4rem）。
+   → ★案A を採り、common.css は【00 の値 3.2rem】にしました。★01・03 は各ページで上書きします
+   ★03（q15〜q17）は既に .sc-label{width:5.4rem} を各ページの <style> で上書き済み ＝ 実害0 */
+.sc-label{width:3.2rem;font-size:14px;text-align:right;flex-shrink:0}
+.sc-track{flex:1;background:#e9e9e9;height:9px;position:relative}
+.sc-fill{display:block;height:100%;background:var(--black);transition:width .1s linear}
+.sc-fill.hit{background:var(--accent)}
+.sc-pct{width:3.4rem;font-size:14px;font-variant-numeric:tabular-nums}
+details{border-top:1px solid var(--gray-200);padding-top:1rem;margin-top:1.5rem}
+summary{font-size:14px;font-weight:500;cursor:pointer}
+.lg{font-size:14px;line-height:1.9;color:var(--gray-600);margin-top:.9rem}
+.dtab{width:100%;border-collapse:collapse;font-size:14px;margin:.9rem 0;
+ font-variant-numeric:tabular-nums}
+.dtab th,.dtab td{padding:.35rem .5rem;border:1px solid var(--gray-200);text-align:right}
+.dtab th{background:var(--gray-100);font-weight:600;font-size:11.5px}
+.dtab tr.sum td{background:#f2fbf6;border-top:2px solid var(--black)}
+.hide{display:none}
+.foot{border-top:1px solid var(--gray-200);margin-top:3rem;padding-top:1.5rem;font-size:13px;
+ color:var(--gray-500);line-height:1.8}
+
+/* ══════ 会話の見た目（★03 の 150〜177 行の写し。★5本で完全に同一）══════ */
+   ══════════════════════════════════════════════════════════════════════════ */
+.cast2{border:1px solid var(--gray-200);background:var(--gray-100);
+  padding:1rem 1.1rem;margin:0 0 2.4rem}
+.cast2 .row{display:flex;gap:.9rem;align-items:flex-start}
+.cast2 .row+.row{margin-top:.9rem;padding-top:.9rem;border-top:1px solid var(--gray-200)}
+.cast2 .ic{width:54px;height:54px;border-radius:50%;flex-shrink:0;display:block;
+  border:2px solid var(--white);box-shadow:0 0 0 1px var(--gray-200),0 1px 3px rgba(0,0,0,.10)}
+.cast2 .nm2{display:block;font-size:15.5px;font-weight:700;margin-bottom:.2rem}
+.cast2 .rb{font-size:12px;font-weight:400;color:var(--gray-500);margin-left:.45rem}
+.cast2 .tx2{font-size:13.5px;line-height:1.85;color:var(--gray-600)}
+.cast2 .tx2 b{color:var(--black)}
+.cv{margin:1.6rem 0}
+.cl{display:flex;gap:.75rem;align-items:flex-start;margin:0 0 .85rem}
+.cl .av{width:46px;flex-shrink:0;text-align:center}
+.cl .av .nm{display:block;font-size:10.5px;font-weight:700;letter-spacing:.03em;
+  line-height:1.25;margin-top:.24rem}
+.cl .ic{width:46px;height:46px;border-radius:50%;flex-shrink:0;display:block;
+  border:2px solid var(--white);box-shadow:0 0 0 1px var(--gray-200),0 1px 3px rgba(0,0,0,.10)}
+.cl .bb{position:relative;min-width:0;padding:.65rem .95rem;font-size:15px;line-height:1.9;
+  border:1px solid var(--gray-200);border-radius:.85rem;background:var(--white);color:var(--gray-600)}
+.cl .bb b{color:var(--black)}
+.cl .bb:before{content:'';position:absolute;left:-6px;top:15px;width:10px;height:10px;
+  background:inherit;border-left:1px solid;border-bottom:1px solid;border-color:inherit;
+  transform:rotate(45deg)}
+/* 🔴 2026-09-02 A：★★吹き出しと話者名の色を【アイコンの背景色に合わせて入れ替えた】
+   ★山田様「今フォントとか吹き出し、対話のところ、それが博士がオレンジで学が青じゃん。
+     色は画像は元のに合わせたかったらフォントの色の方をあわせるようにかえてほしいな」（2026-09-02 17:5x）
+   ★★アイコンは 博士＝水色の背景 ／ 学＝オレンジの背景。★文字側が逆だったので合わせた
+   ✗✗ 戻さないこと ── 博士＝オレンジ／学＝青 は【逆】です */
+.cl.m .bb{background:#fff7ea;border-color:#efd6a6}
+.cl.d .bb{background:#eef4fa;border-color:#c3d9ee}
+.cl .nm{display:block;font-size:11.5px;font-weight:700;letter-spacing:.07em;margin-bottom:.15rem}
+.cl.m .nm{color:#b0700c}   /* 🔴 学 → オレンジ（★アイコンの背景に合わせた）*/
+.cl.d .nm{color:#2f6fb5}   /* 🔴 博士 → 青（★同じ）*/
+.keyh{font-size:11.5px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--gray-500);margin:1.6rem 0 .5rem}
+/* ══════ 「いま どこの話か」の入れ子図（★02 から持ち上げ）══════ */
+.fg{border:1px solid var(--gray-200);border-radius:.6rem;background:var(--white);
+  padding:.9rem 1rem;margin:0 0 .85rem}
+.fg .ft{font-size:15px;font-weight:700;letter-spacing:.04em;color:var(--black);
+  margin:0 0 .65rem}
+.fg .fn{font-size:15px;line-height:1.9;color:var(--gray-600);margin:.65rem 0 0}
+.fg .fn b{color:var(--black)}
+.fg .fn+.fn{margin-top:.4rem}
+.nst{border:2px solid var(--gray-200);border-radius:.5rem;padding:.55rem .6rem}
+.nst .lb{font-size:15px;font-weight:700;color:var(--black);margin:0 0 .3rem}
+.nst .sb{font-size:15px;color:var(--gray-600);margin:0 0 .5rem;line-height:1.9}
+.nst.a{border-color:#c3d9ee;background:#f6fafd}
+.nst.b{border-color:#bcdfc9;background:#f5fbf7}
+.nst.c{border-color:#efd6a6;background:#fffaf0}
+.fg table{width:100%;border-collapse:collapse;margin:.5rem 0 0;font-size:14px}
+.fg th,.fg td{padding:.4rem .5rem;border:1px solid var(--gray-200);text-align:left}
+.fg th{background:var(--gray-100);font-weight:600}
+.fg svg.dg{display:block;width:100%;max-width:520px;height:auto;margin:.5rem auto .2rem}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   🔴 2026-09-02 1問1ページ担当【新設】進み具合の帯（全21問）／章の表示／戻る・次へ
+     ★★#steps を【全21問の1本】にする。★mark(i,cls) は children[QBASE+i] を塗るので、
+       ★21個の div を並べれば 03 のページでは 15〜17番目が塗られる（→ A の判断1）
+     ★.steps div の見た目（枠・open・done）は既存のまま使う。★クラス名も変えない
+     ★★21マスに語は入らない（1280px で1マス 40px・390px で 16px）ので【問番号だけ】にし、
+       ★いまの問の題は下の .cnt と .chap が持つ（→ 山田様⑶「わからん言葉を出さない」）
+   ══════════════════════════════════════════════════════════════════════════ */
+.prog{margin-bottom:1.1rem}
+.pv{display:flex;gap:.6rem;align-items:flex-start;margin-bottom:.55rem}
+.pv .sg{min-width:0}
+.pv .bar{display:flex;gap:2px;align-items:flex-end;height:12px}
+.pv .bar a,.pv .bar span{flex:1 1 0;min-width:0;height:5px;border-radius:2.5px;
+  background:var(--gray-200);display:block;transition:height .12s,background .12s}
+.pv .bar a{cursor:pointer}
+.pv .bar a:hover{background:var(--gray-500);height:9px}
+.pv .bar .done{background:#1a1a1a}
+.pv .bar a.done:hover{background:#555}
+.pv .bar .open{background:#c0392b;height:12px;border-radius:2.5px}
+.pv .lb{margin-top:.42rem;font-size:10.5px;line-height:1.3;color:var(--gray-500);white-space:normal;overflow-wrap:anywhere} /* 🔴 2026-09-02 A：★2行まで許す（★nowrap だと文字が切れた） */
+.pv .lb b{font-weight:600;color:var(--gray-600)}
+.pv .lb .tt{margin-left:.3rem}
+.pv .sg.on .lb{color:var(--black)}
+.pv .sg.on .lb b{color:var(--black);font-weight:700}
+.prog .cnt{font-size:12.5px;color:var(--gray-500);
+  display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap}
+.prog .cnt b{color:var(--black);font-weight:600;font-size:14px}
+.chap{font-size:15px;line-height:1.9;color:var(--gray-600);
+  padding-bottom:1.2rem;border-bottom:1px solid var(--gray-200);margin-bottom:1.7rem}
+.chap b{color:var(--black)}
+.nav{display:flex;justify-content:space-between;align-items:center;gap:1rem;
+  margin:2.4rem 0 0;padding-top:1.5rem;border-top:1px solid var(--gray-200)}
+.nav a{font-size:14px;color:var(--black);text-decoration:none;border:1px solid var(--gray-200);
+  padding:.7rem 1.2rem;background:var(--white);transition:all .15s;display:inline-block}
+.nav a:hover{border-color:var(--black);background:var(--gray-100)}
+.nav a.go{background:var(--black);color:var(--white);border-color:var(--black)}
+.nav .sp{color:var(--gray-500);font-size:13px}
+/* 🔴 2026-09-02 1問1ページ担当2代目：★感想の導線（q05・q21・end の3か所）
+   ★★URL がまだ無いので、いまは灰色の1行だけ出す（→ common.js の SITE） */
+.formbox{margin:2.2rem 0 0;padding:1rem 1.1rem;border:1px solid var(--gray-200);
+  background:var(--gray-100)}
+.formbox .h{font-size:13px;font-weight:700;letter-spacing:.04em;color:var(--black);
+  margin:0 0 .6rem}
+.formbox .pend{font-size:14px;color:var(--gray-500)}
+/* 🔴 2026-09-02 1問1ページ担当2代目：★★【受け皿】── その問の JS が触るのに
+   このページには無い要素を置く枠。★★読者には1つも出しません（★空のタグだけ） */
+.offpage{display:none}
+@media (max-width:430px){
+  .steps.s21 div{font-size:9.5px;padding:.3rem 0}
+  .nav a{padding:.6rem .8rem;font-size:13.5px}
+  .prog .cnt{font-size:11.5px}
+  .fg{padding:.7rem .75rem}
+}

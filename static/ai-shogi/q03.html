@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow,noarchive">
+<meta name="description" content="つまみ2個では、届かないものがある ── 問3 2個では足りない">
+<meta property="og:title" content="AIの詰将棋 ── 問3 つまみ2個では、届かないものがある（第1章）">
+<meta property="og:description" content="つまみ2個では、届かないものがある ── 問3 2個では足りない">
+<title>AIの詰将棋 ── 問3 つまみ2個では、届かないものがある（第1章）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@300;400;600;700&family=Inter:wght@300;400;500;600;700&family=Noto+Serif+JP:wght@300;400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="common.css">
+<style>
+
+.offpage{display:none}
+:root{
+ --bg:#fff; --white:#fff; --black:#000;
+ --gray-100:#f9f9f9; --gray-200:#d9d9d9; --gray-500:#6e6e6e; --gray-600:#3f3f3f;
+ --accent:#019949;
+ --sans:'Inter',system-ui,sans-serif;
+ --serif:'Source Serif 4','Noto Serif JP',Georgia,serif;
+ --content-w:52.625rem;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--black);font-family:var(--sans);
+ -webkit-font-smoothing:antialiased}
+.wrap{max-width:var(--content-w);margin:0 auto;padding:0 1.5rem 5rem}
+.top{border-bottom:1px solid var(--gray-200);margin-bottom:2.4rem}
+.top .in{max-width:var(--content-w);margin:0 auto;padding:1.1rem 1.5rem;font-size:13px;
+ letter-spacing:.14em;text-transform:uppercase;color:var(--gray-500)}
+.top .in .tag{display:block;margin-top:.3rem;font-size:12.5px;letter-spacing:0;
+ text-transform:none;color:var(--gray-500);line-height:1.6;font-family:var(--serif)}
+.eyebrow{font-size:13px;font-weight:500;letter-spacing:.16em;text-transform:uppercase;
+ color:var(--gray-500);margin-bottom:.9rem}
+h1{font-family:var(--serif);font-size:2.1rem;font-weight:300;line-height:1.35;margin:0 0 .8rem}
+.lead b{color:var(--black)}
+.meta{font-size:13px;letter-spacing:.1em;color:var(--gray-500);padding-bottom:1.2rem;
+ border-bottom:1px solid var(--gray-200);margin-bottom:1.2rem}
+.steps{display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:2.4rem}
+.steps div{flex:1 1 5rem;padding:.55rem .3rem;text-align:center;font-size:12px;
+ border:1px solid var(--gray-200);color:var(--gray-500);background:var(--white)}
+.steps div.open{border-color:var(--black);color:var(--black)}
+.steps div.done{background:var(--black);border-color:var(--black);color:var(--white)}
+.card{border:1px solid var(--gray-200);padding:2rem;margin-bottom:2rem;background:var(--white)}
+.tagline{font-size:13px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;
+ color:var(--gray-500);margin-bottom:.9rem}
+.figbox{background:var(--gray-100);border:1px solid var(--gray-200);padding:1rem;margin:1.3rem 0}
+
+#p2,#p2m{max-width:420px;display:block;margin:0 auto}
+
+.panel{background:var(--gray-100);border:1px solid var(--gray-200);padding:1rem;margin:1.3rem 0}
+.panel .ctl{margin:.9rem 0 .2rem}
+.panel .togs{margin-top:.7rem}
+.panel .gauge{margin-top:.9rem}
+.panel .verdict{margin-top:.8rem;background:var(--white)}
+.two{display:flex;gap:1rem;flex-wrap:wrap}
+.two>div{flex:1 1 15rem;min-width:0}
+svg{display:block;width:100%;height:auto}
+
+
+.stick{position:sticky;top:0;z-index:5;background:var(--gray-100);
+       padding-bottom:.35rem;box-shadow:0 6px 8px -6px rgba(0,0,0,.18)}
+.stick svg{max-height:42vh;width:auto;max-width:100%;margin:0 auto}
+
+.stickbot{position:sticky;bottom:0;z-index:5;background:var(--gray-100);
+          padding-top:.4rem;box-shadow:0 -6px 8px -6px rgba(0,0,0,.18)}
+.ctl{margin:1.1rem 0 .2rem}
+.ctl label{display:flex;justify-content:space-between;align-items:baseline;font-size:14px;
+ margin-bottom:.35rem;gap:1rem}
+.ctl label span.n{font-weight:600;font-variant-numeric:tabular-nums;white-space:nowrap}
+input[type=range]{width:100%;accent-color:#000;height:1.4rem}
+.togs{display:flex;gap:.6rem;flex-wrap:wrap;margin-top:1.1rem;align-items:center}
+.btn{background:none;border:1px solid var(--gray-200);padding:.6rem 1.15rem;font-size:14px;
+ font-family:var(--sans);color:var(--black);cursor:pointer;transition:all .15s}
+.btn:hover{border-color:var(--black);background:var(--gray-100)}
+.btn.on{background:var(--black);color:var(--white);border-color:var(--black)}
+.btn.go{background:var(--black);color:var(--white);border-color:var(--black)}
+.btn.sm{font-size:13px;padding:.45rem .85rem;color:var(--gray-500)}
+.btn:disabled{opacity:.35;cursor:default}
+.gauge{margin:1.2rem 0 0}
+.gauge .row{display:flex;align-items:baseline;gap:.7rem;margin-bottom:.5rem}
+.gauge .u{font-size:14px;color:var(--gray-500)}
+.gtrack{height:10px;background:#e9e9e9;position:relative;overflow:hidden}
+.gfill{display:block;height:100%;background:#c00;transition:width .12s linear}
+.gfill.ok{background:var(--accent)}
+.gmark{position:absolute;top:-3px;bottom:-3px;width:2px;background:#000}
+.gcap{display:flex;justify-content:space-between;font-size:12px;color:var(--gray-500);
+ margin-top:.35rem}
+.read{font-size:15px;line-height:1.8;margin:.9rem 0 0;font-variant-numeric:tabular-nums}
+.big{font-family:var(--serif);font-size:2rem;font-weight:400;font-variant-numeric:tabular-nums;
+ line-height:1}
+.calc{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13.5px;line-height:2;
+ background:var(--white);border:1px solid var(--gray-200);padding:.9rem 1.1rem;margin:.9rem 0;
+ overflow-x:auto;white-space:pre}
+.verdict{margin-top:1.2rem;padding:.9rem 1.1rem;border:1px solid var(--gray-200);font-size:14px;
+ line-height:1.75;background:var(--gray-100)}
+.verdict.ok{border-color:var(--accent);background:#f2fbf6}
+.verdict.stuck{border-color:#c00;background:#fdf4f4}
+.next{margin-top:1rem;font-size:13px;color:var(--gray-500)}
+.src{border-left:2px solid var(--black);padding:.9rem 0 .9rem 1.1rem;margin:1.4rem 0;
+ font-size:14px;line-height:1.85;color:var(--gray-600)}
+.src .h{font-size:12px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;
+ color:var(--black);margin-bottom:.4rem}
+.src q{font-style:normal;color:var(--black)}
+.src .ref{font-size:13px;color:var(--gray-500);margin-top:.4rem;display:block}
+.box{border:1px solid var(--gray-200);padding:1.1rem 1.3rem;margin:1.3rem 0;background:var(--gray-100)}
+.box .h{font-size:12px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;
+ margin-bottom:.5rem}
+.mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+.sc-row{display:flex;align-items:center;gap:.75rem;margin-bottom:.6rem}
+.sc-label{width:3.2rem;font-size:14px;text-align:right;flex-shrink:0}
+.sc-track{flex:1;background:#e9e9e9;height:9px;position:relative}
+.sc-fill{display:block;height:100%;background:var(--black);transition:width .1s linear}
+.sc-fill.hit{background:var(--accent)}
+.sc-pct{width:3.4rem;font-size:14px;font-variant-numeric:tabular-nums}
+.sc-track .goal{position:absolute;top:-3px;bottom:-3px;width:1px;background:#c00}
+details{border-top:1px solid var(--gray-200);padding-top:1rem;margin-top:1.5rem}
+summary{font-size:14px;font-weight:500;cursor:pointer}
+.lg{font-size:14px;line-height:1.9;color:var(--gray-600);margin-top:.9rem}
+.lg table{width:100%;border-collapse:collapse;margin:.8rem 0;font-size:13px}
+.lg th,.lg td{padding:.45rem .6rem;border:1px solid var(--gray-200);text-align:left}
+.lg th{background:var(--gray-100);font-weight:600}
+.dtab th,.dtab td{padding:.35rem .5rem;border:1px solid var(--gray-200);text-align:right}
+.dtab th{background:var(--gray-100);font-weight:600;font-size:11.5px}
+.dtab tr.sum td{background:#f2fbf6;border-top:2px solid var(--black)}
+.mnum{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13px;line-height:1.9;
+ background:var(--white);border:1px solid var(--gray-200);padding:.6rem .8rem;margin-top:.5rem;
+ white-space:pre}
+.hide{display:none}
+.foot{border-top:1px solid var(--gray-200);margin-top:3rem;padding-top:1.5rem;font-size:13px;
+ color:var(--gray-500);line-height:1.8}
+.arrow{text-align:center;font-size:22px;color:var(--gray-500);margin:.5rem 0}
+
+@media (max-width:430px){
+  .wrap{padding-left:.5rem;padding-right:.5rem}
+  .card{padding-left:.75rem;padding-right:.75rem}
+  .figbox,.panel{padding-left:.5rem;padding-right:.5rem}
+  .top .in{padding-left:.5rem;padding-right:.5rem}
+  
+  
+  #p1 text,#p3 text,#p4 text,#p5 text,#p2d text,#mvFig text,#p2b text{font-size:17px}
+  
+  .cl .ic{width:38px;height:38px}
+  .cl{gap:.5rem;margin-bottom:.7rem}
+  
+  .cast2{padding:.7rem .75rem}
+  .cast2 .ic{width:46px;height:46px}
+  .cast2 .row{gap:.6rem}
+  .cast2 .tx2{font-size:13px;line-height:1.8}
+  
+}
+
+
+
+.cast2{border:1px solid var(--gray-200);background:var(--gray-100);
+  padding:1rem 1.1rem;margin:0 0 2.4rem}
+.cast2 .row{display:flex;gap:.9rem;align-items:flex-start}
+.cast2 .row+.row{margin-top:.9rem;padding-top:.9rem;border-top:1px solid var(--gray-200)}
+.cast2 .ic{width:54px;height:54px;border-radius:50%;flex-shrink:0;display:block;
+  border:2px solid var(--white);box-shadow:0 0 0 1px var(--gray-200),0 1px 3px rgba(0,0,0,.10)}
+.cast2 .nm2{display:block;font-size:15.5px;font-weight:700;margin-bottom:.2rem}
+.cast2 .rb{font-size:12px;font-weight:400;color:var(--gray-500);margin-left:.45rem}
+.cast2 .tx2{font-size:13.5px;line-height:1.85;color:var(--gray-600)}
+.cast2 .tx2 b{color:var(--black)}
+.cv{margin:1.6rem 0}
+.cl{display:flex;gap:.75rem;align-items:flex-start;margin:0 0 .85rem}
+.cl .ic{width:46px;height:46px;border-radius:50%;flex-shrink:0;display:block;
+  border:2px solid var(--white);box-shadow:0 0 0 1px var(--gray-200),0 1px 3px rgba(0,0,0,.10)}
+.cl .bb b{color:var(--black)}
+.cl .bb:before{content:'';position:absolute;left:-6px;top:15px;width:10px;height:10px;
+  background:inherit;border-left:1px solid;border-bottom:1px solid;border-color:inherit;
+  transform:rotate(45deg)}
+
+.cl.m .bb{background:#fff7ea;border-color:#efd6a6}
+.cl.d .bb{background:#eef4fa;border-color:#c3d9ee}
+.cl .nm{display:block;font-size:11.5px;font-weight:700;letter-spacing:.07em;margin-bottom:.15rem}
+.cl.m .nm{color:#b0700c}   
+.cl.d .nm{color:#2f6fb5}   
+
+.keyh{font-size:11.5px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--gray-500);margin:1.6rem 0 .5rem}
+</style>
+</head>
+<body>
+
+<div class="top"><div class="in">AIの詰将棋<span class="tag">将棋の詰将棋のように、AIの中身を1問ずつ切り出しました。全21問。</span></div></div>
+<div class="wrap">
+
+
+<div class="prog">
+ <div class="steps" id="steps"></div>
+ <div class="cnt" id="prog_cnt"></div>
+</div>
+<div class="chap" id="chap"></div>
+
+<!-- ══════════════════ c3 ══════════════════ -->
+<div class="card" id="c3">
+<div class="tagline">Question 3</div>
+<h2>つまみ2個では、届かないものがある</h2>
+<div id="d10"></div>
+<p class="lead">同じ2つのつまみで、<b>ずれを 3.0以下</b> にしてください。</p>
+
+
+<div class="panel">
+<div class="stick"><svg id="p3" viewBox="0 0 560 330"></svg></div>
+
+<div class="ctl">
+ <label for="b3"><span>つまみ <b>b</b>　線の高さ</span><span class="n" id="b3v">0</span></label>
+ <input type="range" id="b3" min="-20" max="100" step="1" value="0">
+</div>
+<div class="ctl">
+ <label for="a3"><span>つまみ <b>a</b>　線の傾き</span><span class="n" id="a3v">0.0</span></label>
+ <input type="range" id="a3" min="-100" max="200" step="1" value="0">
+</div>
+
+<div class="gauge">
+ <div class="row"><span class="big" id="e3">–</span><span class="u">点　＝ ずれ</span></div>
+ <div class="gtrack"><span class="gfill" id="g3" style="width:100%"></span>
+  <span class="gmark" id="m3"></span></div>
+ <div class="gcap"><span>0</span><span>目標 3.0 ↑</span><span>40</span></div>
+</div>
+
+<div class="verdict" id="j3">ずれを <b>3.0以下</b> にしてください。</div>
+<div class="togs">
+ <button class="btn" id="best3">いちばん良い直線にする</button>
+</div>
+</div>
+
+<div id="r3" class="hide">
+ <div id="d11"></div>
+ <div class="keyh">この問で覚えること</div>
+ 
+ <div class="verdict stuck">
+  <b>つまみが2個ではできません。</b><span class="mono">y = ax + b</span> は
+  <b>まっすぐな線</b>だけなので、<b>山の形が作れません。</b>
+  いちばん良い直線でも <b>ずれ 14.28</b>。目標 3.0 には<b>どう回しても届きません。</b><br>
+  <b>この問3 は「届かないことを確かめる問題」です。</b>ここで終わりなので、
+  <b>そのまま下の 問4 へ進んでください。</b>
+  <span style="color:var(--gray-500)">つまみを増やすと届きます。</span>
+ </div>
+</div>
+<div class="src">
+ <div class="h">役に立つところ</div>
+ <b>「回し方が悪い」のか「形が足りない」のか</b>を切り分けられます。ここは形が足りない側です。
+</div>
+</div>
+
+
+
+<div class="offpage" aria-hidden="true">
+ <button id="k2" type="button">2</button><button id="k3" type="button">3</button>
+ <button id="k4" type="button">4</button><button id="k5" type="button">5</button>
+</div>
+
+<div id="nav"></div>
+
+<div id="foot"></div>
+</div>
+
+
+<script src="common.js"></script>
+<script>
+
+var QBASE = 2;
+drawProg(3); drawChap(3, "");
+drawNav(["q02.html","問2 坂を下る"], ["q04.html","問4 つまみを増やす"]);
+drawFoot()   ;
+
+(function(){
+
+if (typeof s4clear === 'undefined') var s4clear = function(){};
+if (typeof slid4 === 'undefined') var slid4 = function(){};
+if (typeof up4 === 'undefined') var up4 = function(){};
+
+
+const $=id=>document.getElementById(id);
+const show=id=>$(id).classList.remove('hide');
+const rmseOf=(X,Y,f)=>Math.sqrt(X.reduce((s,x,i)=>s+(f(x)-Y[i])**2,0)/X.length);
+function gauge(fillId,markId,val,goal,max){
+  const g=$(fillId); g.style.width=Math.min(100,val/max*100)+'%';
+  g.classList.toggle('ok',val<=goal); $(markId).style.left=(goal/max*100)+'%';
+}
+
+function plot(el,X,Y,xr,yr,f,opt){
+  opt=opt||{}; const W=el.viewBox.baseVal.width||560, H=el.viewBox.baseVal.height||330;
+  const P={x0:opt.narrow?42:52, y0:H-64, x1:W-20, y1:48};
+  const sx=v=>P.x0+(v-xr[0])/(xr[1]-xr[0])*(P.x1-P.x0);
+  const sy=v=>P.y0+(v-yr[0])/(yr[1]-yr[0])*(P.y1-P.y0);
+  let s='';
+  for(let v=yr[0];v<=yr[1];v+=opt.ystep||20){
+    s+=`<line x1="${P.x0}" y1="${sy(v)}" x2="${P.x1}" y2="${sy(v)}" stroke="#ececec"/>`;
+    
+    s+=`<text x="${P.x0-12}" y="${sy(v)+4}" text-anchor="end" font-size="13" fill="#6e6e6e"
+         font-family="Inter">${v}</text>`;}
+  for(let v=xr[0];v<=xr[1];v+=opt.xstep||1){
+    s+=`<text x="${sx(v)}" y="${P.y0+17}" text-anchor="middle" font-size="13" fill="#6e6e6e"
+         font-family="Inter">${v}</text>`;}
+  s+=`<line x1="${P.x0}" y1="${P.y0}" x2="${P.x1}" y2="${P.y0}" stroke="#000"/>`;
+  s+=`<line x1="${P.x0}" y1="${P.y0}" x2="${P.x0}" y2="${P.y1}" stroke="#000"/>`;
+  
+  s+=`<text x="${P.x1}" y="${P.y0+52}" text-anchor="end" font-size="13" fill="#3f3f3f"
+       font-family="'Noto Serif JP',serif">${opt.xlab||''}</text>`;
+  
+  s+=`<text x="${P.x0-6}" y="20" font-size="13" fill="#3f3f3f"
+       font-family="'Noto Serif JP',serif">${opt.ylab||''}</text>`;
+  if(f){
+    let d='';
+    for(let i=0;i<=140;i++){const v=xr[0]+(xr[1]-xr[0])*i/140;
+      const yy=Math.max(yr[0]-200,Math.min(yr[1]+200,f(v)));
+      d+=(i?'L':'M')+sx(v).toFixed(1)+' '+sy(yy).toFixed(1);}
+    s+=`<clipPath id="cp${el.id}"><rect x="${P.x0}" y="${P.y1}" width="${P.x1-P.x0}"
+         height="${P.y0-P.y1}"/></clipPath>`;
+    s+=`<path d="${d}" fill="none" stroke="#019949" stroke-width="2.2"
+         clip-path="url(#cp${el.id})"/>`;
+    X.forEach((x,i)=>{ s+=`<line x1="${sx(x)}" y1="${sy(Y[i])}" x2="${sx(x)}"
+      y2="${sy(Math.max(yr[0]-20,Math.min(yr[1]+20,f(x))))}" stroke="#c00" stroke-width="1.8"
+      opacity=".85" clip-path="url(#cp${el.id})"/>`;});
+    
+    let USED=[];                                
+    
+    const PAD=5;
+    if(opt.pivot!=null && xr[0]<=0){
+      const F=17;
+      s+=`<circle cx="${sx(0)}" cy="${sy(opt.pivot)}" r="5.5" fill="#fff" stroke="#019949"
+           stroke-width="2"/>`;
+      const bx=sx(0)+9, by=sy(opt.pivot)-8;
+      s+=`<text x="${bx}" y="${by}" font-size="13" fill="#019949"
+           font-family="Inter">b</text>`;
+      
+      USED.push({x0:bx-PAD, x1:bx+0.28*F*2+PAD, y0:by-F*0.8-PAD, y1:by+F*0.2+PAD});
+    }
+    
+    if(opt.resid) X.forEach((x,i)=>{
+      
+      const F=17, ASC=F*0.8, DESC=F*0.2, M=11;  
+      const yp=sy(Y[i]);
+      const hx=(xr[1]-xr[0])*0.045;             /* 文字の横幅ぶんの x（データ単位）*/
+      let lo=1e9, hi=-1e9;
+      for(let k=-1;k<=1;k++){ const yy=sy(f(x+hx*k)); if(yy<lo)lo=yy; if(yy>hi)hi=yy; }
+      const d=Math.abs(Y[i]-f(x));
+      let up = yp<=lo;                          /* 点が線より上（画面では y が小さい）*/
+      let ty = up ? Math.min(yp,lo)-M-DESC : Math.max(yp,hi)+M+ASC;
+      if(up && ty-ASC < P.y1+2){ up=false; ty=Math.max(yp,hi)+M+ASC; }
+      if(!up && ty+DESC > P.y0-2){ up=true;  ty=Math.min(yp,lo)-M-DESC; }
+      if(ty-ASC < P.y1+2 || ty+DESC > P.y0-2) return;
+      const txt=d.toFixed(1), half=0.28*F*txt.length;
+      let tx=sx(x), an='middle';
+      if(tx-half < P.x0+3){ tx=P.x0+3; an='start'; }
+      else if(tx+half > P.x1-3){ tx=P.x1-3; an='end'; }
+      const bx0 = an==='start'? tx : an==='end'? tx-half*2 : tx-half;
+      const box={x0:bx0-PAD, x1:bx0+half*2+PAD, y0:ty-ASC-PAD, y1:ty+DESC+PAD};
+      if(USED.some(u=>u.x0<box.x1 && box.x0<u.x1 && u.y0<box.y1 && box.y0<u.y1)) return;
+      USED.push(box);
+      s+=`<text x="${tx.toFixed(1)}" y="${ty.toFixed(1)}" text-anchor="${an}"
+           font-size="13" fill="#c00" font-family="Inter" paint-order="stroke"
+           stroke="#fff" stroke-width="3.5"
+           stroke-linejoin="round">${txt}</text>`;});
+  }
+  X.forEach((x,i)=>{ s+=`<circle cx="${sx(x)}" cy="${sy(Y[i])}" r="4.2" fill="#000"/>`;});
+  
+  if(opt.anchors) opt.anchors.forEach((p,i)=>{
+    s+=`<circle cx="${sx(p[0]).toFixed(1)}" cy="${sy(p[1]).toFixed(1)}" r="6.5" fill="#ff8a2b"
+         stroke="#fff" stroke-width="2"/>`;
+    s+=`<text x="${sx(p[0]).toFixed(1)}" y="${(sy(p[1])-12).toFixed(1)}" text-anchor="middle"
+         font-size="13" fill="#c26100" font-family="Inter">${i+1}</text>`;});
+  el.innerHTML=s;
+}
+
+
+let A2=3, B2=20, st2=0, ok2=false, div2=false, path=[[3,20]];
+
+
+
+const X3=[2,3,4,5,6,7,8,9,10,11], Y3=[25,35,45,58,70,78,80,74,62,48];
+const XR3=[0,12], YR3=[0,100], GOAL3=3.0, OPT3={xlab:'睡眠時間',ylab:'集中力',xstep:2};
+let mv3=0, ok3=false;
+function up3(){
+  const a=(+$('a3').value)/10, b=+$('b3').value;
+  $('a3v').textContent=a.toFixed(1); $('b3v').textContent=b;
+  const f=x=>a*x+b, e=rmseOf(X3,Y3,f);
+  plot($('p3'),X3,Y3,XR3,YR3,f,Object.assign({pivot:b},OPT3));
+  $('e3').textContent=e.toFixed(2); gauge('g3','m3',e,GOAL3,40);
+  
+  $('j3').className='verdict'+(ok3?' stuck':'');
+  $('j3').innerHTML= ok3
+    ? `ずれはいま <b>${e.toFixed(2)}</b>。<b>まっすぐな線ではここが限界です。</b>`
+      +`<span style="color:var(--gray-500)">　目標 3.0 には届きません。下の 問4 へ進んでください。</span>`
+    : `ずれはいま <b>${e.toFixed(2)}</b>。目標は 3.0 以下です。`
+      +(e<16?`<br><span style="color:var(--gray-500)">
+        左を合わせると右が外れ、右を合わせると左が外れています。</span>`:'');
+  gate3Label();
+}
+
+
+
+
+function gate3Label(){ const b=$('best3'); if(b){ b.disabled=false; } }
+
+function pass3(){ if(!ok3){ ok3=true; mark(2,'done'); show('r3'); setK(2); up3(); } }
+function gate3(){ mv3++; gate3Label();
+  
+  if(mv3>=3) pass3(); }
+['a3','b3'].forEach(i=>{ $(i).oninput=up3; $(i).onchange=gate3; });
+$('best3').onclick=()=>{ $('a3').value=38; $('b3').value=33; up3(); pass3(); };
+
+const ANC={2:{K:[2,11],H:[41,74]}, 3:{K:[2,6.5,11],H:[22,81,55]},
+           4:{K:[2,5,8,11],H:[24,59,84,49]},
+           5:{K:[2,4.25,6.5,8.75,11],H:[25,47,78,79,48]}};
+let K4=2, H4=[50,50], ok4=false;
+function setK(n){
+  const old=ANC[K4].K.slice(), oldH=H4.slice();
+  K4=n;
+  
+  const f=x=>{ if(x<=old[0])return oldH[0];
+    if(x>=old[old.length-1])return oldH[oldH.length-1];
+    for(let i=0;i<old.length-1;i++) if(x<=old[i+1]){
+      const t=(x-old[i])/(old[i+1]-old[i]); return oldH[i]+(oldH[i+1]-oldH[i])*t; }
+    return oldH[oldH.length-1]; };
+  H4=ANC[n].K.map(k=>Math.round(f(k)));
+  [2,3,4,5].forEach(m=>$('k'+m).classList.toggle('on',m===n));
+  slid4(); up4();
+  
+  
+  s4clear(`つまみを ${n} 個にしました。<b>形はそのまま引き継ぎます</b>から、`
+   +`高さを合わせるまで ずれは変わりません。「1歩ずつ」を押してください。`);
+}
+[2,3,4,5].forEach(n=>$('k'+n).onclick=()=>setK(n));
+
+
+up3();
+gate3Label();
+
+
+var CV = {
+ "d10": [
+  [
+   "d",
+   "次は別のデータだ。入れるのは<b>睡眠時間</b>、出てくるのは<b>次の日の集中力</b>。10人ぶんある。"
+  ],
+  [
+   "m",
+   "寝れば寝るほど集中できるってこと？"
+  ],
+  [
+   "d",
+   "見てごらん。……<b>寝すぎても落ちている。</b>"
+  ],
+  [
+   "m",
+   "……ほんとだ。<b>山みたいな形</b>だ。"
+  ],
+  [
+   "d",
+   "そこだ。さっきと<b>同じつまみ2個</b>で、この山にズレ 3.0 まで近づけてくれ。"
+  ],
+  [
+   "m",
+   "やり方は同じだよね。b で高さ、a で傾き。楽勝だよ。"
+  ],
+  [
+   "d",
+   "……やってごらん、学くん。"
+  ]
+ ],
+ "d11": [
+  [
+   "m",
+   "博士、どう回しても届かないんだけど。僕が下手なの？"
+  ],
+  [
+   "d",
+   "下手じゃない。<b>届かないんだ。</b>"
+  ],
+  [
+   "m",
+   "えっ。"
+  ],
+  [
+   "d",
+   "<span class='mono'>y = ax + b</span> は<b>まっすぐな線</b>しか描けない。まっすぐな線で<b>山</b>が作れるか？"
+  ],
+  [
+   "m",
+   "……作れない。"
+  ],
+  [
+   "d",
+   "いちばん良い直線でも、ズレは <b>14.28</b> だ。3.0 には絶対に届かない。<b>この問は「届かないことを確かめる問」だったんだ。</b>"
+  ],
+  [
+   "m",
+   "先に言ってよ！"
+  ],
+  [
+   "d",
+   "先に言ったら確かめられないだろう！ ……学くん、ここは大事だよ。行き詰まったとき、疑うことは2つある。<b>回し方が悪いのか、形が足りないのか。</b>"
+  ],
+  [
+   "m",
+   "今回は？"
+  ],
+  [
+   "d",
+   "<b>形が足りない。</b>だから次で<b>形を増やす</b>。下の問4へ進んでごらん！"
+  ]
+ ]
+};
+drawCV(CV);
+})();
+</script>
+</body>
+</html>

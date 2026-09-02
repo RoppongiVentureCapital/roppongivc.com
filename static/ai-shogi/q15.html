@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow,noarchive">
+<meta name="description" content="次の語を当てる練習だけで、文法も事実も要約も付いてきます。つまみ2個を回して確かめます。">
+<meta property="og:title" content="AIの詰将棋 ── 問15 次の語を当てるだけで、ほかのことも付いてくる（第4章）">
+<meta property="og:description" content="次の語を当てる練習だけで、文法も事実も要約も付いてきます。つまみ2個を回して確かめます。">
+<title>AIの詰将棋 ── 問15 次の語を当てるだけで、ほかのことも付いてくる（第4章）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@300;400;600;700&family=Inter:wght@300;400;500;600;700&family=Noto+Serif+JP:wght@300;400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="common.css">
+<style>
+
+
+/* ⒜ */
+.cap{font-size:15px;overflow-wrap:anywhere;line-height:1.9}
+.ctl label{flex-wrap:wrap}
+input[type=range]{margin:0;min-width:0}
+.sc-label{width:5.4rem}
+.sc-pct{width:3.8rem}
+/* ⒝ */
+.ctl label span:first-child{min-width:0;overflow-wrap:anywhere}
+.qrow{display:flex;gap:.6rem;flex-wrap:wrap;align-items:center;margin-bottom:.7rem}
+.qrow .qt{flex:1 1 12rem;font-size:14px;min-width:0}
+#q16map,#q17map{max-width:560px}
+
+
+@media (max-width:430px){
+  .wrap{padding-left:.5rem;padding-right:.5rem}
+  .card{padding-left:.75rem;padding-right:.75rem}
+  .figbox,.panel{padding-left:.5rem;padding-right:.5rem}
+  .top .in{padding-left:.5rem;padding-right:.5rem}
+  
+  #w14 text,#rep14 text,#md15 text,#ai16 text,#splitFig text{font-size:17px}
+  
+  #q15map text,#q16map text,#q16step text,#q16win text,#q16agree text,
+  #q17map text,#q17adv text,#q17kind text,#q17draw text{font-size:17px}
+  
+  .cl .ic{width:38px;height:38px}
+  .cl{gap:.5rem;margin-bottom:.7rem}
+  
+  .cl .bb{padding:.55rem .75rem}
+  .cast2{padding:.7rem .75rem}
+  .cast2 .ic{width:46px;height:46px}
+  .cast2 .row{gap:.6rem}
+  .cast2 .tx2{font-size:13px;line-height:1.8}
+}
+
+
+var QBASE = 14;   
+drawProg(15); drawChap(15, "この章は<b>作り方</b>の章です。3段あって、<b>1段下るたびに 得るものと 失うものがあります</b>（積み上げではありません）。");
+drawNav(["q14.html", "問14 2つの語を同時に見る"], ["q16.html", "問16 好みで整える"]);
+drawFoot("5語と数字は作例です。");
+drawNest("nest", 4);
+
+
+
+
+const VOC = [
+  { w: '東京', f1: 1.0, f2: 0.0 },
+  { w: '大阪', f1: 0.9, f2: 0.0 },
+  { w: '電車', f1: 0.3, f2: 0.1 },
+  { w: '走る', f1: 0.0, f2: 1.0 },
+  { w: 'です', f1: 0.1, f2: 0.2 }
+];
+
+const SENT = [
+  { ctx: '日本の首都は', c1: 1, c2: 0, ans: 0 },
+  { ctx: '電車が速く', c1: 0, c2: 1, ans: 3 }
+];
+const GOAL14 = 0.20, LR14 = 3.0, AMAX14 = 30;
+let A14 = 0, B14 = 0, N14 = 0, ok14 = false;
+const Q14 = v => Math.min(AMAX14, Math.max(0, Math.round(v * 100) / 100));
+function prob14(a, b, s) {
+  const z = VOC.map(v => a * s.c1 * v.f1 + b * s.c2 * v.f2);
+  const mx = Math.max.apply(null, z);
+  const e = z.map(x => Math.exp(x - mx));
+  const t = e.reduce((p, q) => p + q, 0);
+  return e.map(x => x / t);
+}
+function loss14(a, b) {
+  let L = 0;
+  for (const s of SENT) L += -Math.log(prob14(a, b, s)[s.ans]);
+  return L / SENT.length;
+}
+function grad14(a, b) {
+  let ga = 0, gb = 0;
+  for (const s of SENT) {
+    const p = prob14(a, b, s);
+    for (let i = 0; i < VOC.length; i++) {
+      const d = p[i] - (i === s.ans ? 1 : 0);
+      ga += d * s.c1 * VOC[i].f1; gb += d * s.c2 * VOC[i].f2;
+    }
+  }
+  return [ga / SENT.length, gb / SENT.length];
+}
+
+function w14fig() {
+  let s = '';
+  SENT.forEach((sn, gi) => {
+    const base = gi === 0 ? 115 : 285;
+    const p = prob14(A14, B14, sn);
+    s += T(12, base, gi === 0 ? '①' : '②', { fs: 15, b: 1, c: '#000' });
+    s += `<line x1="56" y1="${base}" x2="500" y2="${base}" stroke="#000"/>`;
+    for (let i = 0; i < VOC.length; i++) {
+      const x = 60 + i * 90, h = Math.max(1, p[i] * 96), hit = (i === sn.ans);
+      s += `<rect x="${x}" y="${(base - h).toFixed(1)}" width="60" height="${h.toFixed(1)}"
+        fill="${hit ? '#019949' : '#9a9a9a'}" opacity="${hit ? '.9' : '.55'}"/>`;
+      
+      s += T(x + 30, base - h - 12, (p[i] * 100).toFixed(1) + '%',
+        { a: 'middle', fs: 13, c: hit ? '#019949' : '#6e6e6e', b: hit ? 1 : 0 });
+      
+      s += T(x + 30, base + 30, VOC[i].w,
+        { a: 'middle', fs: 14, f: JP, c: hit ? '#000' : '#6e6e6e', b: hit ? 1 : 0 });
+    }
+  });
+  $('w14').innerHTML = s;
+}
+function vt14() {
+  let s = '<tr><th style="text-align:left">語</th><th>地名らしさ</th><th>動きらしさ</th></tr>';
+  for (const v of VOC)
+    s += `<tr><td style="text-align:left">${v.w}</td><td>${v.f1.toFixed(1)}</td><td>${v.f2.toFixed(1)}</td></tr>`;
+  s += '<tr><th style="text-align:left">文脈①</th><td>1.0</td><td>0.0</td></tr>'
+     + '<tr><th style="text-align:left">文脈②</th><td>0.0</td><td>1.0</td></tr>';
+  $('vt14').innerHTML = s;
+}
+
+function rep14fig() {
+  let s = T(8, 26, '1回ぶん ＝ 320万トークン', { fs: 14, b: 1, c: '#000', f: JP });
+  for (let i = 0; i < 9; i++) s += BOX(60 + i * 36, 40, 28, 30, '#e8eef6');
+  s += T(60 + 9 * 36 + 6, 62, '…', { fs: 15 });
+  s += BOX(60 + 11 * 36, 40, 28, 30, '#e8eef6');
+  s += T(8, 104, 'これを 93,750 回（10万回のオーダー）', { fs: 14, b: 1, c: '#000', f: JP });
+  s += T(8, 144, '1回ぶんが 問2 の「1歩」です', { fs: 13, f: JP });
+  $('rep14').innerHTML = s;
+}
+function up14() {
+  $('a14').value = Math.round(A14 * 100); $('b14').value = Math.round(B14 * 100);
+  $('a14v').textContent = A14.toFixed(2); $('b14v').textContent = B14.toFixed(2);
+  $('n14').textContent = N14;
+  if ($('n14b')) $('n14b').textContent = N14.toLocaleString() + ' 回';
+  w14fig();
+  const e = loss14(A14, B14), er = R3(e);
+  $('e14').textContent = er.toFixed(3);
+  gauge('g14', 'm14', e, GOAL14, 2.0, true);
+  
+  const ok = er <= GOAL14;
+  $('j14').className = 'verdict' + (ok ? ' ok' : '');
+  const p0 = prob14(A14, B14, SENT[0])[0], p1 = prob14(A14, B14, SENT[1])[3];
+  $('j14').innerHTML = `① 東京 <b>${(p0 * 100).toFixed(1)}%</b>　② 走る <b>${(p1 * 100).toFixed(1)}%</b>`
+    + (ok ? '。届きました。' : '。目標は ずれ 0.20 以下。');
+  if (ok && !ok14) { ok14 = true; mark(0, 'done'); show('r14'); rep14fig(); }
+}
+function step14(n) {
+  for (let i = 0; i < n; i++) {
+    const g = grad14(A14, B14);
+    A14 = Q14(A14 - LR14 * g[0]); B14 = Q14(B14 - LR14 * g[1]);
+    N14++;
+  }
+  up14();
+}
+$('a14').oninput = () => { A14 = +$('a14').value / 100; up14(); };
+$('b14').oninput = () => { B14 = +$('b14').value / 100; up14(); };
+$('s14a').onclick = () => step14(1);
+$('s14b').onclick = () => step14(10);
+$('s14c').onclick = () => step14(100);
+$('r14b').onclick = () => { A14 = 0; B14 = 0; N14 = 0; up14(); };
+
+/* ══════════ 起動 ══════════ */
+vt14(); up14();
+
+
+(function(){
+  var CV = {
+ "e15a": [
+  [
+   "d",
+   "3段あるよ、学くん。第3章で「次の1語を確率で引く」ところまで見たな。今日は<b>その確率をどうやって作ったか</b>だ。"
+  ],
+  [
+   "m",
+   "作る側の話？"
+  ],
+  [
+   "d",
+   "そうだ。<b>まず1段目だよ。上の図を見たな。</b>"
+  ],
+  [
+   "m",
+   "見た。東京・大阪・電車・走る・です の5個。……<b>第3章の出口は5万個</b>だったよね。なんで5個なの。"
+  ],
+  [
+   "d",
+   "<b>5万本の棒は画面に入らんからだ。</b>この問だけ 5個に縮めた。<b>縮めたのは私だよ。</b>"
+  ],
+  [
+   "m",
+   "5万個ぶんの棒のうち、<b>5本だけ見てる</b>ってことか。"
+  ],
+  [
+   "d",
+   "そういうことだ。……そして<b>やることは 第1章と同じ</b>だよ。つまみを回して <b>ずれ</b> を小さくする。"
+  ],
+  [
+   "m",
+   "第1章と同じ？ あれが LLM の作り方なの？"
+  ],
+  [
+   "d",
+   "同じだ。<b>違うのは出口が【語】になったことだけ</b>だよ。<b>回してごらん。</b>"
+  ]
+ ],
+ "e15v": [
+  [
+   "m",
+   "博士、待って。<b>地名らしさ</b> とか <b>動きらしさ</b> って……<b>誰が決めたの。</b>"
+  ],
+  [
+   "d",
+   "<b>この問は私が決めた。</b>5語に2列、手で書いた10個の数字だ。"
+  ],
+  [
+   "m",
+   "じゃあ本物も、人が「この列は地名らしさ」って決めてるの？"
+  ],
+  [
+   "d",
+   "<b>決めていない。1つもだ。</b>"
+  ],
+  [
+   "m",
+   "え。"
+  ],
+  [
+   "d",
+   "<b>意味も機械が決める。</b>1語に 12,288個。……<b>どの列が何を表すのか、誰も知らんのだ。</b>"
+  ],
+  [
+   "m",
+   "誰も知らないのに動いてるの？"
+  ],
+  [
+   "d",
+   "動く。<b>当たるように決まった数字</b>だからな。……<b>人が手で書いた数字は 0個だよ。</b>"
+  ],
+  [
+   "m",
+   "……そこが 第1章と いちばん違うところか。"
+  ],
+  [
+   "d",
+   "そこだ！<b>第1章では私が意味を決めた。本物は 誰も決めていない。</b>"
+  ]
+ ],
+ "e15b": [
+  [
+   "m",
+   "博士、ずれって 第1章と同じ2乗和でしょ。"
+  ],
+  [
+   "d",
+   "ちがう。……<b>そこは絶対に混ぜないでくれ、学くん。</b>第1章は<b>数</b>を当てる問題だ。だから差を2乗して足した。今日は<b>どの語か</b>を当てる問題だよ。"
+  ],
+  [
+   "m",
+   "問題がちがうと 測り方も変わるの？"
+  ],
+  [
+   "d",
+   "変わる。<b>ずれ ＝ −log(正解の語の確率)。</b>正解に高い%を出せていれば 0 に近い。外すほど 跳ね上がる。"
+  ],
+  [
+   "m",
+   "……<b>log</b> って言われても、<b>言葉だけじゃ全然わからない。</b>"
+  ],
+  [
+   "d",
+   "<b>もっともだ！</b>言葉はやめよう。<b>数字で見てごらん。</b>下の表だ。"
+  ]
+ ],
+ "e15b2": [
+  [
+   "m",
+   "……<b>表の 20% のところが 1.609</b> だ。"
+  ],
+  [
+   "d",
+   "そこだ！<b>5語を平等に見ていると どの語も 20.0%。</b>そのときの ずれが <b>1.609</b> と決まる。<b>まだ何も学んでいない</b>状態だよ。"
+  ],
+  [
+   "m",
+   "当てると 0 に近づいて、外すと跳ね上がる。表のとおりだ。"
+  ],
+  [
+   "d",
+   "つかんだな。<b>では上のゲージの ずれ を下げてごらん。</b>［戻す］から［10歩］を1回だ。"
+  ],
+  [
+   "m",
+   "<b>0.355</b> だ。東京が <b>54.0%</b>。……［100歩］も押したら <b>0.164</b>。届いた。"
+  ],
+  [
+   "d",
+   "<b>63歩</b>で 0.20 を切るよ。……<b>下ったのは機械だ。</b>君は押しただけだからな。"
+  ]
+ ],
+ "e15c": [
+  [
+   "m",
+   "できた。……でもこれ、<b>次の語を当てる練習だけ</b>だよね。"
+  ],
+  [
+   "d",
+   "それだけだ。<b>だが 上手く当てようとすると、文法も事実も要約も付いてくる。</b>"
+  ],
+  [
+   "m",
+   "教えてないのに？"
+  ],
+  [
+   "d",
+   "教えていない。<b>上の表を見てごらん。</b>……「日本の首都は」の次を当てるには、東京が首都だと<b>知っていないと当たらん</b>だろう。"
+  ],
+  [
+   "m",
+   "……あ。<b>当てるために必要だから、付いてきた</b>のか。"
+  ],
+  [
+   "d",
+   "<b>そこだ！</b>文法も要約も同じだよ。<b>おまけで付いた ── 圧縮の副産物だ。</b>"
+  ],
+  [
+   "m",
+   "じゃあ、次の語を当てる練習をひたすらやれば賢くなるんだね。"
+  ],
+  [
+   "d",
+   "……<b>そこには代償があるよ。</b>選んでいるのは<b>正しいこと</b>ではない。<b>次に来そうなこと</b>だ。"
+  ],
+  [
+   "m",
+   "……<b>もっともらしい嘘</b>が出る。"
+  ],
+  [
+   "d",
+   "そこだ！<b>自信のある誤りが 原理的に出る。</b>直せる話ではないよ。この段の作りそのものだ。"
+  ],
+  [
+   "m",
+   "得たものと、失ったもの。"
+  ],
+  [
+   "d",
+   "<b>それが1段目だ。</b>……1段 下るたびに これがある。<b>積み上げではないよ。</b>次は【人の好み】だ。"
+  ]
+ ],
+ "e15z": [
+  [
+   "m",
+   "0.20 を切った。"
+  ],
+  [
+   "d",
+   "よし。<b>これを 本物の語数と つまみの数でやったのが 事前学習</b>だ。<b>下の表を見てごらん。</b>"
+  ]
+ ]
+};
+  drawCV(CV);
+
+  
+  function q15map() {
+    var h = document.getElementById('q15map');
+    if (!h) return;
+    var s = '';
+    /* 段1 文脈 */
+    s += QT(8, 26, '文脈', { fs: 13, c: '#6e6e6e' });
+    s += QBOX(150, 8, 260, 34, '#e8eef6');
+    s += QT(280, 31, '日本の首都は', { a: 'middle', fs: 15, b: 1, c: '#000', f: QJP });
+    s += QARR(280, 42, 62);
+    
+    s += QT(292, 58, '点を付ける', { fs: 13, f: QJP });
+    /* 段2 5語 */
+    for (var i = 0; i < VOC.length; i++) {
+      var x = 8 + i * 110, hit = (i === 0);
+      s += QBOX(x, 68, 102, 34, hit ? '#eaf7f0' : '#fff', hit ? '#019949' : '#000', hit ? 2 : 1);
+      s += QT(x + 51, 91, VOC[i].w, { a: 'middle', fs: 15, b: hit ? 1 : 0,
+        c: hit ? '#019949' : '#3f3f3f', f: QJP });
+    }
+    s += QT(8, 118, '出口の5語', { fs: 12, c: '#6e6e6e', f: QJP });
+    s += QARR(280, 122, 142);
+    s += QT(292, 138, '確率に直す', { fs: 13, f: QJP });
+    
+    for (var k = 0; k < VOC.length; k++) {
+      var x2 = 8 + k * 110, hit2 = (k === 0);
+      s += QBOX(x2, 148, 102, 34, '#f4f4f4', hit2 ? '#019949' : '#000', hit2 ? 2 : 1);
+      s += QT(x2 + 51, 171, '％', { a: 'middle', fs: 15, b: hit2 ? 1 : 0,
+        c: hit2 ? '#019949' : '#6e6e6e', f: QJP });
+    }
+    
+    s += QT(8, 198, '下の棒グラフ', { fs: 12, c: '#6e6e6e', f: QJP });
+    s += QARR(280, 202, 222);
+    /* 段4 正解 */
+    s += QBOX(150, 222, 260, 26, '#eaf7f0', '#019949', 2);
+    s += QT(280, 240, '正解「東京」の ％ だけを見る', { a: 'middle', fs: 14, b: 1,
+      c: '#019949', f: QJP });
+    h.innerHTML = s;
+  }
+
+  
+  function q15log() {
+    var h = document.getElementById('q15log');
+    if (!h) return;
+    var ROW = [[1.0, ''], [0.5, ''], [0.2, '5語を平等に見た値'], [0.1, '']];
+    var s = '';
+    for (var i = 0; i < ROW.length; i++) {
+      var p = ROW[i][0], L = -Math.log(p), w = Math.min(100, L / 2.0 * 100);
+      var mark = (p === 0.2);
+      s += '<div class="sc-row">'
+        + '<span class="sc-label">' + (p * 100).toFixed(0) + '%</span>'
+        + '<span class="sc-track"><span class="sc-fill'
+        
+        + '" style="width:' + w.toFixed(1) + '%"></span></span>'
+        + '<span class="sc-pct"' + (mark ? ' style="font-weight:700"' : '') + '>'
+        + L.toFixed(3) + '</span></div>';
+    }
+    s += '<table class="dtab" style="text-align:left">'
+      + '<tr><th style="text-align:left">正解の語に出した確率</th><th>ずれ</th>'
+      + '<th style="text-align:left"></th></tr>';
+    var NOTE = { '1': '全部 当てている', '0.5': '半々', '0.2': '5語を平等に見ている（＝0歩）',
+                 '0.1': 'ゲージ（0〜2.0）の外' };
+    for (var j = 0; j < ROW.length; j++) {
+      var q = ROW[j][0], L2 = -Math.log(q), on = (q === 0.2);
+      s += '<tr' + (on ? ' class="sum"' : '') + '>'
+        + '<td style="text-align:left">' + (q * 100).toFixed(0) + '%</td>'
+        + '<td>' + (on ? '<b>' + L2.toFixed(3) + '</b>' : L2.toFixed(3)) + '</td>'
+        + '<td style="text-align:left">' + NOTE[String(q)] + '</td></tr>';
+    }
+    s += '</table>'
+      + '<div class="cap" style="text-align:left;margin:.2rem 0 0">'
+      
+      + '語が <b>5つ</b> なら、平等に見たときは必ず <b>1.609</b> です'
+      + '（<b>1 ÷ 5 ＝ 0.2</b> の −log）。'
+      + '<span style="color:var(--gray-500)">5語に縮めたのは この問題なので、'
+      + 'この 1.609 も この問題が決めた数です。</span></div>';
+    h.innerHTML = s;
+  }
+
+  
+  function q15disp() {
+    var L = [], i;
+    for (i = 0; i < SENT.length; i++) L.push(-Math.log(prob14(A14, B14, SENT[i])[SENT[i].ans]));
+    var avg = +((L[0] + L[1]) / 2).toFixed(3);        
+    var l = [+L[0].toFixed(3), +L[1].toFixed(3)];
+    var need = +(avg * 2).toFixed(3), sum = +(l[0] + l[1]).toFixed(3);
+    if (sum !== need) {                               
+      var big = l[0] >= l[1] ? 0 : 1;
+      l[big] = +(need - l[1 - big]).toFixed(3);
+    }
+    return { l: l, avg: avg };
+  }
+  function q15flow() {
+    var h = document.getElementById('q15flow');
+    if (!h) return;
+    var pad = function (s, n) { s = String(s); while (s.length < n) s = ' ' + s; return s; };
+    var w4 = function (s) { s = String(s); while (s.length < 4) s += '　'; return s; };
+    var D = q15disp();
+    var s = 'いま a ＝ ' + A14.toFixed(2) + ' ／ b ＝ ' + B14.toFixed(2) + '\n\n';
+    /* ① 全語を出す */
+    var s0 = SENT[0], p0 = prob14(A14, B14, s0);
+    var z0 = VOC.map(function (v) { return A14 * s0.c1 * v.f1 + B14 * s0.c2 * v.f2; });
+    var mx0 = Math.max.apply(null, z0);
+    
+    var tie0 = z0.filter(function (v) { return v === mx0; }).length > 1;
+    s += '①「' + s0.ctx + '」\n';
+    s += '  ← 地名らしさ だけを見る\n';
+    s += '  点 ＝ a × 地名らしさ\n';
+    for (var i = 0; i < VOC.length; i++) {
+      s += '  ' + w4(VOC[i].w) + ' ' + pad(A14.toFixed(2), 5) + ' × ' + VOC[i].f1.toFixed(1)
+        + ' ＝ ' + pad(z0[i].toFixed(2), 5)
+        + (z0[i] === mx0 && !tie0 ? ' ←最大' : '') + '\n';
+    }
+    if (tie0) s += '  ↓ 5語とも同じ点 ＝ どれも同じ確率になる\n';
+    s += '  ↓ 確率に直す（上の棒グラフ）\n';
+    s += '  正解「' + VOC[s0.ans].w + '」の確率 ' + (p0[s0.ans] * 100).toFixed(1) + '%\n';
+    s += '  ずれ ＝ −log(確率) ＝ ' + D.l[0].toFixed(3) + '\n\n';
+    
+    var s1 = SENT[1], p1 = prob14(A14, B14, s1);
+    s += '②「' + s1.ctx + '」\n';
+    s += '  ← 動きらしさ だけを見る（もう1回）\n';
+    s += '  正解「' + VOC[s1.ans].w + '」の確率 ' + (p1[s1.ans] * 100).toFixed(1) + '%\n';
+    s += '  ずれ ＝ ' + D.l[1].toFixed(3) + '\n\n';
+    
+    s += 'この2つの ずれ の【平均】が\n';
+    s += '上のゲージの ずれ ' + D.avg.toFixed(3) + ' です';
+    h.textContent = s;
+  }
+
+  
+
+  
+  function q15who() {
+    var h = document.getElementById('q15who');
+    if (!h) return;
+    
+    var EX = [['東京', ['0.83', '−0.12', '0.44']],
+              ['大阪', ['0.79', '−0.09', '0.51']],
+              ['走る', ['−0.22', '0.63', '−0.08']]];
+    var s = '<tr><th style="text-align:left">語</th>'
+          + '<th>？</th><th>？</th><th>？</th><th>…</th><th>？</th></tr>';
+    for (var i = 0; i < EX.length; i++) {
+      s += '<tr><td style="text-align:left">' + EX[i][0] + '</td>'
+         + EX[i][1].map(function (v) { return '<td>' + v + '</td>'; }).join('')
+         + '<td>…</td><td>…</td></tr>';
+    }
+    s += '<tr class="sum"><td style="text-align:left">列の数</td>'
+       + '<td colspan="5"><b>12,288 列</b>（1語ぶん）</td></tr>';
+    h.innerHTML = s;
+    var c = document.getElementById('q15whoc');
+    if (c) c.innerHTML =
+      '<b>列に名前は付いていません。</b>どの列が何を表すのか、'
+      + '<b>作った人にも分かりません</b>。それでも当たるように数字が決まります。'
+      + '<span style="color:var(--gray-500)">上の数字は<b>作例</b>です'
+      + '（本物の値ではありません）。1語 12,288個 は '
+      + 'Brown et al. 2020 arXiv:2005.14165 Table 2.1 の d_model。</span>';
+  }
+
+  function q15why() {
+    var h = document.getElementById('q15why');
+    if (!h) return;
+    var ROW = [
+      ['「日本の首都は」の次を当てる', '東京が首都だと 知っている', '事実'],
+      ['「日本の首都は東京」の次を当てる', '「です」か「。」かを 選べる', '文法'],
+      ['長い文の「つまり」の次を当てる', 'どこが要点かを 選べる', '要約']
+    ];
+    var s = '<tr><th style="text-align:left">次の語を当てるには</th>'
+          + '<th style="text-align:left">何が要るか</th>'
+          + '<th style="text-align:left">だから付く</th></tr>';
+    for (var i = 0; i < ROW.length; i++) {
+      s += '<tr><td style="text-align:left">' + ROW[i][0] + '</td>'
+         + '<td style="text-align:left">' + ROW[i][1] + '</td>'
+         + '<td style="text-align:left"><b>' + ROW[i][2] + '</b></td></tr>';
+    }
+    s += '<tr class="sum"><td style="text-align:left">ただし 選んでいるのは</td>'
+       + '<td style="text-align:left">正しいこと ではなく'
+       + '<br><b>次に来そうなこと</b></td>'
+       + '<td style="text-align:left"><b>自信のある誤り</b></td></tr>';
+    h.innerHTML = s;
+  }
+
+  q15who(); q15why();
+  q15map(); q15log(); q15flow();
+  (function () {
+    var e14 = document.getElementById('e14');
+    if (!e14 || typeof MutationObserver === 'undefined') return;
+    new MutationObserver(function () { q15flow(); })
+      .observe(e14, { childList: true, characterData: true, subtree: true });
+  })();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,1137 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow,noarchive">
+<meta name="description" content="ずれの「地形」を下る ── 問2 坂を下る">
+<meta property="og:title" content="AIの詰将棋 ── 問2 ずれの「地形」を下る（第1章）">
+<meta property="og:description" content="ずれの「地形」を下る ── 問2 坂を下る">
+<title>AIの詰将棋 ── 問2 ずれの「地形」を下る（第1章）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@300;400;600;700&family=Inter:wght@300;400;500;600;700&family=Noto+Serif+JP:wght@300;400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="common.css">
+<style>
+
+.offpage{display:none}
+:root{
+ --bg:#fff; --white:#fff; --black:#000;
+ --gray-100:#f9f9f9; --gray-200:#d9d9d9; --gray-500:#6e6e6e; --gray-600:#3f3f3f;
+ --accent:#019949;
+ --sans:'Inter',system-ui,sans-serif;
+ --serif:'Source Serif 4','Noto Serif JP',Georgia,serif;
+ --content-w:52.625rem;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--black);font-family:var(--sans);
+ -webkit-font-smoothing:antialiased}
+.wrap{max-width:var(--content-w);margin:0 auto;padding:0 1.5rem 5rem}
+.top{border-bottom:1px solid var(--gray-200);margin-bottom:2.4rem}
+.top .in{max-width:var(--content-w);margin:0 auto;padding:1.1rem 1.5rem;font-size:13px;
+ letter-spacing:.14em;text-transform:uppercase;color:var(--gray-500)}
+.top .in .tag{display:block;margin-top:.3rem;font-size:12.5px;letter-spacing:0;
+ text-transform:none;color:var(--gray-500);line-height:1.6;font-family:var(--serif)}
+.eyebrow{font-size:13px;font-weight:500;letter-spacing:.16em;text-transform:uppercase;
+ color:var(--gray-500);margin-bottom:.9rem}
+h1{font-family:var(--serif);font-size:2.1rem;font-weight:300;line-height:1.35;margin:0 0 .8rem}
+.lead b{color:var(--black)}
+.meta{font-size:13px;letter-spacing:.1em;color:var(--gray-500);padding-bottom:1.2rem;
+ border-bottom:1px solid var(--gray-200);margin-bottom:1.2rem}
+.steps{display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:2.4rem}
+.steps div{flex:1 1 5rem;padding:.55rem .3rem;text-align:center;font-size:12px;
+ border:1px solid var(--gray-200);color:var(--gray-500);background:var(--white)}
+.steps div.open{border-color:var(--black);color:var(--black)}
+.steps div.done{background:var(--black);border-color:var(--black);color:var(--white)}
+.card{border:1px solid var(--gray-200);padding:2rem;margin-bottom:2rem;background:var(--white)}
+.tagline{font-size:13px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;
+ color:var(--gray-500);margin-bottom:.9rem}
+.figbox{background:var(--gray-100);border:1px solid var(--gray-200);padding:1rem;margin:1.3rem 0}
+
+#p2,#p2m{max-width:420px;display:block;margin:0 auto}
+
+.panel{background:var(--gray-100);border:1px solid var(--gray-200);padding:1rem;margin:1.3rem 0}
+.panel .ctl{margin:.9rem 0 .2rem}
+.panel .togs{margin-top:.7rem}
+.panel .gauge{margin-top:.9rem}
+.panel .verdict{margin-top:.8rem;background:var(--white)}
+.two{display:flex;gap:1rem;flex-wrap:wrap}
+.two>div{flex:1 1 15rem;min-width:0}
+svg{display:block;width:100%;height:auto}
+
+
+.stick{position:sticky;top:0;z-index:5;background:var(--gray-100);
+       padding-bottom:.35rem;box-shadow:0 6px 8px -6px rgba(0,0,0,.18)}
+.stick svg{max-height:42vh;width:auto;max-width:100%;margin:0 auto}
+
+.stickbot{position:sticky;bottom:0;z-index:5;background:var(--gray-100);
+          padding-top:.4rem;box-shadow:0 -6px 8px -6px rgba(0,0,0,.18)}
+.ctl{margin:1.1rem 0 .2rem}
+.ctl label{display:flex;justify-content:space-between;align-items:baseline;font-size:14px;
+ margin-bottom:.35rem;gap:1rem}
+.ctl label span.n{font-weight:600;font-variant-numeric:tabular-nums;white-space:nowrap}
+input[type=range]{width:100%;accent-color:#000;height:1.4rem}
+.togs{display:flex;gap:.6rem;flex-wrap:wrap;margin-top:1.1rem;align-items:center}
+.btn{background:none;border:1px solid var(--gray-200);padding:.6rem 1.15rem;font-size:14px;
+ font-family:var(--sans);color:var(--black);cursor:pointer;transition:all .15s}
+.btn:hover{border-color:var(--black);background:var(--gray-100)}
+.btn.on{background:var(--black);color:var(--white);border-color:var(--black)}
+.btn.go{background:var(--black);color:var(--white);border-color:var(--black)}
+.btn.sm{font-size:13px;padding:.45rem .85rem;color:var(--gray-500)}
+.btn:disabled{opacity:.35;cursor:default}
+.gauge{margin:1.2rem 0 0}
+.gauge .row{display:flex;align-items:baseline;gap:.7rem;margin-bottom:.5rem}
+.gauge .u{font-size:14px;color:var(--gray-500)}
+.gtrack{height:10px;background:#e9e9e9;position:relative;overflow:hidden}
+.gfill{display:block;height:100%;background:#c00;transition:width .12s linear}
+.gfill.ok{background:var(--accent)}
+.gmark{position:absolute;top:-3px;bottom:-3px;width:2px;background:#000}
+.gcap{display:flex;justify-content:space-between;font-size:12px;color:var(--gray-500);
+ margin-top:.35rem}
+.read{font-size:15px;line-height:1.8;margin:.9rem 0 0;font-variant-numeric:tabular-nums}
+.big{font-family:var(--serif);font-size:2rem;font-weight:400;font-variant-numeric:tabular-nums;
+ line-height:1}
+.calc{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13.5px;line-height:2;
+ background:var(--white);border:1px solid var(--gray-200);padding:.9rem 1.1rem;margin:.9rem 0;
+ overflow-x:auto;white-space:pre}
+.verdict{margin-top:1.2rem;padding:.9rem 1.1rem;border:1px solid var(--gray-200);font-size:14px;
+ line-height:1.75;background:var(--gray-100)}
+.verdict.ok{border-color:var(--accent);background:#f2fbf6}
+.verdict.stuck{border-color:#c00;background:#fdf4f4}
+.next{margin-top:1rem;font-size:13px;color:var(--gray-500)}
+.src{border-left:2px solid var(--black);padding:.9rem 0 .9rem 1.1rem;margin:1.4rem 0;
+ font-size:14px;line-height:1.85;color:var(--gray-600)}
+.src .h{font-size:12px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;
+ color:var(--black);margin-bottom:.4rem}
+.src q{font-style:normal;color:var(--black)}
+.src .ref{font-size:13px;color:var(--gray-500);margin-top:.4rem;display:block}
+.box{border:1px solid var(--gray-200);padding:1.1rem 1.3rem;margin:1.3rem 0;background:var(--gray-100)}
+.box .h{font-size:12px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;
+ margin-bottom:.5rem}
+.mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+.sc-row{display:flex;align-items:center;gap:.75rem;margin-bottom:.6rem}
+.sc-label{width:3.2rem;font-size:14px;text-align:right;flex-shrink:0}
+.sc-track{flex:1;background:#e9e9e9;height:9px;position:relative}
+.sc-fill{display:block;height:100%;background:var(--black);transition:width .1s linear}
+.sc-fill.hit{background:var(--accent)}
+.sc-pct{width:3.4rem;font-size:14px;font-variant-numeric:tabular-nums}
+.sc-track .goal{position:absolute;top:-3px;bottom:-3px;width:1px;background:#c00}
+details{border-top:1px solid var(--gray-200);padding-top:1rem;margin-top:1.5rem}
+summary{font-size:14px;font-weight:500;cursor:pointer}
+.lg{font-size:14px;line-height:1.9;color:var(--gray-600);margin-top:.9rem}
+.lg table{width:100%;border-collapse:collapse;margin:.8rem 0;font-size:13px}
+.lg th,.lg td{padding:.45rem .6rem;border:1px solid var(--gray-200);text-align:left}
+.lg th{background:var(--gray-100);font-weight:600}
+.dtab th,.dtab td{padding:.35rem .5rem;border:1px solid var(--gray-200);text-align:right}
+.dtab th{background:var(--gray-100);font-weight:600;font-size:11.5px}
+.dtab tr.sum td{background:#f2fbf6;border-top:2px solid var(--black)}
+.mnum{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13px;line-height:1.9;
+ background:var(--white);border:1px solid var(--gray-200);padding:.6rem .8rem;margin-top:.5rem;
+ white-space:pre}
+.hide{display:none}
+.foot{border-top:1px solid var(--gray-200);margin-top:3rem;padding-top:1.5rem;font-size:13px;
+ color:var(--gray-500);line-height:1.8}
+.arrow{text-align:center;font-size:22px;color:var(--gray-500);margin:.5rem 0}
+
+@media (max-width:430px){
+  .wrap{padding-left:.5rem;padding-right:.5rem}
+  .card{padding-left:.75rem;padding-right:.75rem}
+  .figbox,.panel{padding-left:.5rem;padding-right:.5rem}
+  .top .in{padding-left:.5rem;padding-right:.5rem}
+  
+  
+  #p1 text,#p3 text,#p4 text,#p5 text,#p2d text,#mvFig text,#p2b text{font-size:17px}
+  
+  .cl .ic{width:38px;height:38px}
+  .cl{gap:.5rem;margin-bottom:.7rem}
+  
+  .cast2{padding:.7rem .75rem}
+  .cast2 .ic{width:46px;height:46px}
+  .cast2 .row{gap:.6rem}
+  .cast2 .tx2{font-size:13px;line-height:1.8}
+  
+}
+
+
+
+.cast2{border:1px solid var(--gray-200);background:var(--gray-100);
+  padding:1rem 1.1rem;margin:0 0 2.4rem}
+.cast2 .row{display:flex;gap:.9rem;align-items:flex-start}
+.cast2 .row+.row{margin-top:.9rem;padding-top:.9rem;border-top:1px solid var(--gray-200)}
+.cast2 .ic{width:54px;height:54px;border-radius:50%;flex-shrink:0;display:block;
+  border:2px solid var(--white);box-shadow:0 0 0 1px var(--gray-200),0 1px 3px rgba(0,0,0,.10)}
+.cast2 .nm2{display:block;font-size:15.5px;font-weight:700;margin-bottom:.2rem}
+.cast2 .rb{font-size:12px;font-weight:400;color:var(--gray-500);margin-left:.45rem}
+.cast2 .tx2{font-size:13.5px;line-height:1.85;color:var(--gray-600)}
+.cast2 .tx2 b{color:var(--black)}
+.cv{margin:1.6rem 0}
+.cl{display:flex;gap:.75rem;align-items:flex-start;margin:0 0 .85rem}
+.cl .ic{width:46px;height:46px;border-radius:50%;flex-shrink:0;display:block;
+  border:2px solid var(--white);box-shadow:0 0 0 1px var(--gray-200),0 1px 3px rgba(0,0,0,.10)}
+.cl .bb b{color:var(--black)}
+.cl .bb:before{content:'';position:absolute;left:-6px;top:15px;width:10px;height:10px;
+  background:inherit;border-left:1px solid;border-bottom:1px solid;border-color:inherit;
+  transform:rotate(45deg)}
+
+.cl.m .bb{background:#fff7ea;border-color:#efd6a6}
+.cl.d .bb{background:#eef4fa;border-color:#c3d9ee}
+.cl .nm{display:block;font-size:11.5px;font-weight:700;letter-spacing:.07em;margin-bottom:.15rem}
+.cl.m .nm{color:#b0700c}   
+.cl.d .nm{color:#2f6fb5}   
+
+.keyh{font-size:11.5px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--gray-500);margin:1.6rem 0 .5rem}
+</style>
+</head>
+<body>
+
+<div class="top"><div class="in">AIの詰将棋<span class="tag">将棋の詰将棋のように、AIの中身を1問ずつ切り出しました。全21問。</span></div></div>
+<div class="wrap">
+
+
+<div class="prog">
+ <div class="steps" id="steps"></div>
+ <div class="cnt" id="prog_cnt"></div>
+</div>
+<div class="chap" id="chap"></div>
+
+<!-- ══════════════════ c2 ══════════════════ -->
+<div class="card" id="c2">
+<div class="tagline">Question 2</div>
+<h2>ずれの「地形」を下る</h2>
+
+
+<div id="d4"></div>
+
+
+
+<div class="figbox">
+ <div class="cap">データと線　── <b>つまみを動かすと、この線が動きます</b></div>
+ <svg id="p2" viewBox="0 0 300 250"></svg>
+</div>
+
+
+<div class="panel">
+   
+   <div class="cap">ずれの地図（真上から見たところ。オレンジが歩いた跡）</div>
+   <svg id="p2m" viewBox="0 0 300 250"></svg>
+   
+   <div class="cap" style="font-size:12px;color:#3f3f3f;text-align:left;margin-top:.3rem">
+    緑の筋が谷底。<b>オレンジが歩いた跡です。</b></div>
+ 
+ <div class="stickbot">
+ <div class="ctl">
+  
+  <label for="lr"><span><b>1歩の大きさ</b>（学習率）</span><span class="n" id="lrv">0.030</span></label>
+  <input type="range" id="lr" min="5" max="80" step="1" value="30">
+ </div>
+ <div class="togs">
+  <button class="btn go" id="step1">1歩ずつ</button>
+  <button class="btn go" id="step10">10歩</button>
+  <button class="btn" id="rst2">はじめの場所に戻す</button>
+ </div>
+ <div class="gauge">
+  <div class="row"><span class="big" id="e2">–</span><span class="u">点　＝ ずれ　／
+   <span id="st2">0</span> 歩</span></div>
+  <div class="gtrack"><span class="gfill" id="g2" style="width:100%"></span>
+   <span class="gmark" id="m2"></span></div>
+  <div class="gcap"><span>0</span><span>目標 1.5 ↑</span><span>30</span></div>
+ </div>
+ </div><!-- /stickbot -->
+ <div class="verdict" id="j2">「1歩ずつ」を数回押して、地図の上で点が動くのを見てください。</div>
+</div>
+
+
+<div class="figbox">
+ 
+ <div class="cap">ずれの地形を斜めから見た図　── 緑の筋が谷底、
+  <span style="color:#ff8a2b">オレンジの丸</span>がいまいる場所。
+  <span style="color:var(--gray-500)">高さは見やすいように誇張しています</span></div>
+ 
+ <svg id="p2b" viewBox="0 0 560 172"></svg>
+</div>
+
+<div id="d5"></div>
+
+<!-- ══════ ①いまの線のどこがダメか ══════ -->
+<h3>どこがダメかは、表を見れば分かります</h3>
+<div id="d6"></div>
+
+<div class="panel">
+ <div class="cap">いま　a ＝ <b id="d_a">3.00</b>　b ＝ <b id="d_b">20.00</b>　／　ずれ
+  <b id="d_L">27.18</b></div>
+ <div style="overflow-x:auto"><table class="dtab" id="dtab"></table></div>
+ <svg id="p2d" viewBox="0 0 560 212"></svg>
+ 
+ <div class="ctl">
+  <label for="d_bs"><span>つまみ <b>b</b>　線の高さ</span><span class="n" id="d_bv">20.0</span></label>
+  <input type="range" id="d_bs" min="0" max="60" step="1" value="20">
+ </div>
+ <div class="ctl">
+  <label for="d_as"><span>つまみ <b>a</b>　線の傾き</span><span class="n" id="d_av">3.0</span></label>
+  <input type="range" id="d_as" min="0" max="150" step="1" value="30">
+ </div>
+ <div class="cap" style="margin-top:.8rem">この表から読めること</div>
+ <div class="verdict" id="d_j">–</div>
+</div>
+
+<!-- ══════ ②【測る】 ══════ -->
+<h3>【測る】　つまみ1本だけを 1 上げて、ずれを見る</h3>
+<div id="d7"></div>
+
+<div class="panel">
+ <div class="two">
+  <div>
+   <div class="cap"><b>b（高さ）を 1 上げる</b>（a は止めたまま）</div>
+   <svg id="p2nb" viewBox="0 0 300 168"></svg>
+   <div class="mnum" id="mb">–</div>
+  </div>
+  <div>
+   <div class="cap"><b>a（傾き）を 1 上げる</b>（b は止めたまま）</div>
+   <svg id="p2na" viewBox="0 0 300 168"></svg>
+   <div class="mnum" id="ma">–</div>
+  </div>
+ </div>
+ <div class="verdict" id="m_j">–</div>
+</div>
+
+
+
+
+<!-- ══════ ③【動かす】 ══════ -->
+
+<div id="d8"></div>
+
+<h3>【動かす】　測り終わったら、測った分だけ a と b を書き換える</h3>
+
+<div class="panel">
+ <div class="cap">押すと、いま測った分だけ両方が動きます</div>
+ <div class="togs" style="margin-top:.5rem">
+  <button class="btn go" id="mstep">1歩ずつ</button>
+  <button class="btn go" id="mstep10">10歩</button>
+  <button class="btn sm" id="mrst">はじめの場所に戻す</button>
+ </div>
+ 
+ <svg id="mvFig" viewBox="0 0 560 152"></svg>
+ <div style="overflow-x:auto"><table class="dtab" id="mvtab" style="max-width:30rem"></table></div>
+ <div class="cap" id="mv_at" style="margin:.2rem 0 0"></div>
+ <div class="verdict" id="mv_j">ボタンを押してください。</div>
+
+ 
+ 
+</div>
+
+<div id="r2" class="hide">
+ <div id="d9"></div>
+ <div class="keyh">この問で覚えること</div>
+ <div class="verdict ok">
+  <b>これが勾配降下法です。</b>力を数えて、その向きへ少し動かし、繰り返す。
+  GPT-3 は <b>10万回ほど</b>。
+ </div>
+</div>
+<div class="src">
+ <div class="h">役に立つところ</div>
+ <b>学習が進まないときは、まず「1歩の大きさ（学習率）」を疑います。</b>大きすぎると発散し、小さすぎると着きません。
+</div>
+</div>
+
+
+
+<div class="offpage" aria-hidden="true">
+ <button id="k2" type="button">2</button><button id="k3" type="button">3</button>
+ <button id="k4" type="button">4</button><button id="k5" type="button">5</button>
+</div>
+
+<div id="nav"></div>
+
+<div id="foot"></div>
+</div>
+
+
+<div class="offpage" aria-hidden="true">
+
+</div>
+
+<script src="common.js"></script>
+<script>
+
+var QBASE = 1;
+drawProg(2); drawChap(2, "");
+drawNav(["q01.html","問1 つまみを回す"], ["q03.html","問3 2個では足りない"]);
+drawFoot()   ;
+
+(function(){
+
+if (typeof s4clear === 'undefined') var s4clear = function(){};
+if (typeof slid4 === 'undefined') var slid4 = function(){};
+if (typeof up3 === 'undefined') var up3 = function(){};
+if (typeof up4 === 'undefined') var up4 = function(){};
+
+
+const $=id=>document.getElementById(id);
+const show=id=>$(id).classList.remove('hide');
+
+const R2=v=>+v.toFixed(2);
+function gauge(fillId,markId,val,goal,max){
+  const g=$(fillId); g.style.width=Math.min(100,val/max*100)+'%';
+  g.classList.toggle('ok',val<=goal); $(markId).style.left=(goal/max*100)+'%';
+}
+
+function plot(el,X,Y,xr,yr,f,opt){
+  opt=opt||{}; const W=el.viewBox.baseVal.width||560, H=el.viewBox.baseVal.height||330;
+  const P={x0:opt.narrow?42:52, y0:H-64, x1:W-20, y1:48};
+  const sx=v=>P.x0+(v-xr[0])/(xr[1]-xr[0])*(P.x1-P.x0);
+  const sy=v=>P.y0+(v-yr[0])/(yr[1]-yr[0])*(P.y1-P.y0);
+  let s='';
+  for(let v=yr[0];v<=yr[1];v+=opt.ystep||20){
+    s+=`<line x1="${P.x0}" y1="${sy(v)}" x2="${P.x1}" y2="${sy(v)}" stroke="#ececec"/>`;
+    
+    s+=`<text x="${P.x0-12}" y="${sy(v)+4}" text-anchor="end" font-size="13" fill="#6e6e6e"
+         font-family="Inter">${v}</text>`;}
+  for(let v=xr[0];v<=xr[1];v+=opt.xstep||1){
+    s+=`<text x="${sx(v)}" y="${P.y0+17}" text-anchor="middle" font-size="13" fill="#6e6e6e"
+         font-family="Inter">${v}</text>`;}
+  s+=`<line x1="${P.x0}" y1="${P.y0}" x2="${P.x1}" y2="${P.y0}" stroke="#000"/>`;
+  s+=`<line x1="${P.x0}" y1="${P.y0}" x2="${P.x0}" y2="${P.y1}" stroke="#000"/>`;
+  
+  s+=`<text x="${P.x1}" y="${P.y0+52}" text-anchor="end" font-size="13" fill="#3f3f3f"
+       font-family="'Noto Serif JP',serif">${opt.xlab||''}</text>`;
+  
+  s+=`<text x="${P.x0-6}" y="20" font-size="13" fill="#3f3f3f"
+       font-family="'Noto Serif JP',serif">${opt.ylab||''}</text>`;
+  if(f){
+    let d='';
+    for(let i=0;i<=140;i++){const v=xr[0]+(xr[1]-xr[0])*i/140;
+      const yy=Math.max(yr[0]-200,Math.min(yr[1]+200,f(v)));
+      d+=(i?'L':'M')+sx(v).toFixed(1)+' '+sy(yy).toFixed(1);}
+    s+=`<clipPath id="cp${el.id}"><rect x="${P.x0}" y="${P.y1}" width="${P.x1-P.x0}"
+         height="${P.y0-P.y1}"/></clipPath>`;
+    s+=`<path d="${d}" fill="none" stroke="#019949" stroke-width="2.2"
+         clip-path="url(#cp${el.id})"/>`;
+    X.forEach((x,i)=>{ s+=`<line x1="${sx(x)}" y1="${sy(Y[i])}" x2="${sx(x)}"
+      y2="${sy(Math.max(yr[0]-20,Math.min(yr[1]+20,f(x))))}" stroke="#c00" stroke-width="1.8"
+      opacity=".85" clip-path="url(#cp${el.id})"/>`;});
+    
+    let USED=[];                                
+    
+    const PAD=5;
+    if(opt.pivot!=null && xr[0]<=0){
+      const F=17;
+      s+=`<circle cx="${sx(0)}" cy="${sy(opt.pivot)}" r="5.5" fill="#fff" stroke="#019949"
+           stroke-width="2"/>`;
+      const bx=sx(0)+9, by=sy(opt.pivot)-8;
+      s+=`<text x="${bx}" y="${by}" font-size="13" fill="#019949"
+           font-family="Inter">b</text>`;
+      
+      USED.push({x0:bx-PAD, x1:bx+0.28*F*2+PAD, y0:by-F*0.8-PAD, y1:by+F*0.2+PAD});
+    }
+    
+    if(opt.resid) X.forEach((x,i)=>{
+      
+      const F=17, ASC=F*0.8, DESC=F*0.2, M=11;  
+      const yp=sy(Y[i]);
+      const hx=(xr[1]-xr[0])*0.045;             /* 文字の横幅ぶんの x（データ単位）*/
+      let lo=1e9, hi=-1e9;
+      for(let k=-1;k<=1;k++){ const yy=sy(f(x+hx*k)); if(yy<lo)lo=yy; if(yy>hi)hi=yy; }
+      const d=Math.abs(Y[i]-f(x));
+      let up = yp<=lo;                          /* 点が線より上（画面では y が小さい）*/
+      let ty = up ? Math.min(yp,lo)-M-DESC : Math.max(yp,hi)+M+ASC;
+      if(up && ty-ASC < P.y1+2){ up=false; ty=Math.max(yp,hi)+M+ASC; }
+      if(!up && ty+DESC > P.y0-2){ up=true;  ty=Math.min(yp,lo)-M-DESC; }
+      if(ty-ASC < P.y1+2 || ty+DESC > P.y0-2) return;
+      const txt=d.toFixed(1), half=0.28*F*txt.length;
+      let tx=sx(x), an='middle';
+      if(tx-half < P.x0+3){ tx=P.x0+3; an='start'; }
+      else if(tx+half > P.x1-3){ tx=P.x1-3; an='end'; }
+      const bx0 = an==='start'? tx : an==='end'? tx-half*2 : tx-half;
+      const box={x0:bx0-PAD, x1:bx0+half*2+PAD, y0:ty-ASC-PAD, y1:ty+DESC+PAD};
+      if(USED.some(u=>u.x0<box.x1 && box.x0<u.x1 && u.y0<box.y1 && box.y0<u.y1)) return;
+      USED.push(box);
+      s+=`<text x="${tx.toFixed(1)}" y="${ty.toFixed(1)}" text-anchor="${an}"
+           font-size="13" fill="#c00" font-family="Inter" paint-order="stroke"
+           stroke="#fff" stroke-width="3.5"
+           stroke-linejoin="round">${txt}</text>`;});
+  }
+  X.forEach((x,i)=>{ s+=`<circle cx="${sx(x)}" cy="${sy(Y[i])}" r="4.2" fill="#000"/>`;});
+  
+  if(opt.anchors) opt.anchors.forEach((p,i)=>{
+    s+=`<circle cx="${sx(p[0]).toFixed(1)}" cy="${sy(p[1]).toFixed(1)}" r="6.5" fill="#ff8a2b"
+         stroke="#fff" stroke-width="2"/>`;
+    s+=`<text x="${sx(p[0]).toFixed(1)}" y="${(sy(p[1])-12).toFixed(1)}" text-anchor="middle"
+         font-size="13" fill="#c26100" font-family="Inter">${i+1}</text>`;});
+  el.innerHTML=s;
+}
+
+
+const X1=[0,1,2,3,4,5,6,7], Y1=[32,40,45,55,58,68,72,80];
+const XR1=[0,8], YR1=[0,100], GOAL1=3.0,
+      
+      OPT1={xlab:'勉強した時間',ylab:'点数',resid:true};
+let ok1=false;
+function pass1(){ ok1=true; mark(0,'done'); show('r1'); show('c2'); buildMap(); up2(); }
+
+const AR=[0,15], BR=[0,60], GOAL2=1.5, LRMAX=0.0549;
+const mseOf=(a,b)=>X1.reduce((s,x,i)=>s+(a*x+b-Y1[i])**2,0)/X1.length;
+const rm2=(a,b)=>Math.sqrt(mseOf(a,b));
+const grad2=(a,b)=>{ let ga=0,gb=0;
+  for(let i=0;i<X1.length;i++){ const r=a*X1[i]+b-Y1[i];
+    ga+=2*r*X1[i]/X1.length; gb+=2*r/X1.length; } return [ga,gb]; };
+
+let A2=3, B2=20, st2=0, ok2=false, div2=false, path=[[3,20]];
+let MAPBG='';   
+const MP={x0:44,y0:206,x1:288,y1:22};
+const mx_=a=>MP.x0+(a-AR[0])/(AR[1]-AR[0])*(MP.x1-MP.x0);
+const my_=b=>MP.y0-(b-BR[0])/(BR[1]-BR[0])*(MP.y0-MP.y1);
+
+const BP={ox:90, oy:178, wa:300, wb:140, hb:60, hz:95};
+const bx_=(a,b)=>BP.ox+(a-AR[0])/(AR[1]-AR[0])*BP.wa+(b-BR[0])/(BR[1]-BR[0])*BP.wb;
+const by_=(a,b,t)=>BP.oy-(b-BR[0])/(BR[1]-BR[0])*BP.hb-t*BP.hz;
+let BIRDBG='', BLO=0, BHI=1;
+
+function birdT(a,b){ return (Math.log(mseOf(a,b))-BLO)/(BHI-BLO); }
+function buildBird(){
+  if(BIRDBG)return;
+  let lo=1e18, hi=0;
+  for(let i=0;i<=40;i++)for(let j=0;j<=40;j++){
+    const v=mseOf(AR[0]+(AR[1]-AR[0])*i/40, BR[0]+(BR[1]-BR[0])*j/40);
+    if(v<lo)lo=v; if(v>hi)hi=v;}
+  BLO=Math.log(lo); BHI=Math.log(hi);
+  let s='';
+  const NA=9, NB=7, M=36;
+  for(let j=0;j<=NB;j++){
+    const b=BR[0]+(BR[1]-BR[0])*j/NB; let d='';
+    for(let i=0;i<=M;i++){ const a=AR[0]+(AR[1]-AR[0])*i/M;
+      d+=(i?'L':'M')+bx_(a,b).toFixed(1)+' '+by_(a,b,birdT(a,b)).toFixed(1);}
+    s+=`<path d="${d}" fill="none" stroke="#8fa3b5" stroke-width="0.9" opacity="0.75"/>`;}
+  for(let i=0;i<=NA;i++){
+    const a=AR[0]+(AR[1]-AR[0])*i/NA; let d='';
+    for(let j=0;j<=M;j++){ const b=BR[0]+(BR[1]-BR[0])*j/M;
+      d+=(j?'L':'M')+bx_(a,b).toFixed(1)+' '+by_(a,b,birdT(a,b)).toFixed(1);}
+    s+=`<path d="${d}" fill="none" stroke="#8fa3b5" stroke-width="0.9" opacity="0.55"/>`;}
+  
+  let dv='';
+  for(let i=0;i<=M;i++){ const a=AR[0]+(AR[1]-AR[0])*i/M;
+    const b=Math.max(BR[0],Math.min(BR[1],56.25-3.5*a));
+    dv+=(i?'L':'M')+bx_(a,b).toFixed(1)+' '+by_(a,b,birdT(a,b)).toFixed(1);}
+  s+=`<path d="${dv}" fill="none" stroke="#019949" stroke-width="2.6"/>`;
+  
+  s+=`<text x="${bx_(AR[1],BR[0])+6}" y="${by_(AR[1],BR[0],birdT(AR[1],BR[0]))+6}"
+       font-size="13" fill="#3f3f3f" font-family="'Noto Serif JP',serif">a</text>`
+   +`<text x="${bx_(AR[0],BR[1])-8}" y="${by_(AR[0],BR[1],birdT(AR[0],BR[1]))-8}"
+       text-anchor="end" font-size="13" fill="#3f3f3f"
+       font-family="'Noto Serif JP',serif">b</text>`;
+  BIRDBG=s;
+}
+function drawBird(){
+  buildBird();
+  let dot='';
+  if(isFinite(A2)&&A2>=AR[0]&&A2<=AR[1]&&B2>=BR[0]&&B2<=BR[1]){
+    const t=birdT(A2,B2);
+    dot=`<circle cx="${bx_(A2,B2).toFixed(1)}" cy="${by_(A2,B2,t).toFixed(1)}" r="5"
+          fill="#ff8a2b" stroke="#fff" stroke-width="1.6"/>`;
+  }
+  $('p2b').innerHTML=BIRDBG+dot;
+}
+function buildMap(){
+  if(MAPBG)return;
+  const NA=45, NB=30, w=(MP.x1-MP.x0)/NA, h=(MP.y0-MP.y1)/NB;
+  let lo=1e9, hi=0, V=[];
+  for(let i=0;i<NA;i++){V[i]=[];for(let j=0;j<NB;j++){
+    const e=rm2(AR[0]+(AR[1]-AR[0])*(i+0.5)/NA, BR[0]+(BR[1]-BR[0])*(j+0.5)/NB);
+    V[i][j]=e; if(e<lo)lo=e; if(e>hi)hi=e;}}
+  let s='';
+  for(let i=0;i<NA;i++)for(let j=0;j<NB;j++){
+    
+    const t=(Math.log(V[i][j])-Math.log(lo))/(Math.log(hi)-Math.log(lo));
+    const R=Math.round(27+t*(245-27)), G=Math.round(42+t*(246-42)), B=Math.round(68+t*(250-68));
+    s+=`<rect x="${(MP.x0+i*w).toFixed(1)}" y="${(MP.y1+(NB-1-j)*h).toFixed(1)}"
+         width="${(w+0.7).toFixed(1)}" height="${(h+0.7).toFixed(1)}"
+         fill="rgb(${R},${G},${B})"/>`;}
+  /* 枠と目盛り */
+  s+=`<rect x="${MP.x0}" y="${MP.y1}" width="${MP.x1-MP.x0}" height="${MP.y0-MP.y1}"
+       fill="none" stroke="#000"/>`;
+  [0,5,10,15].forEach(a=>s+=`<text x="${mx_(a)}" y="${MP.y0+16}" text-anchor="middle"
+    font-size="10.5" fill="#6e6e6e" font-family="Inter">${a}</text>`);
+  
+  [0,20,40,60].forEach(b=>s+=`<text x="${MP.x0-11}" y="${my_(b)+4}" text-anchor="end"
+    font-size="10.5" fill="#6e6e6e" font-family="Inter">${b}</text>`);
+  
+  s+=`<text x="${MP.x1}" y="${MP.y0+40}" text-anchor="end" font-size="11.5" fill="#3f3f3f"
+       font-family="'Noto Serif JP',serif">つまみ a</text>`;
+  
+  s+=`<text x="${MP.x0+2}" y="${MP.y1-8}" font-size="11.5" fill="#3f3f3f"
+       font-family="'Noto Serif JP',serif">つまみ b</text>`;
+  /* 谷底 */
+  const bx=mx_(6.762), by=my_(32.58);
+  s+=`<path d="M${bx-6} ${by-6}L${bx+6} ${by+6}M${bx+6} ${by-6}L${bx-6} ${by+6}"
+       stroke="#fff" stroke-width="2.4"/>`;
+  MAPBG=s;
+}
+function drawMap(){
+  
+  if(!$('p2m').querySelector('#mppath'))
+    $('p2m').innerHTML=`<g>${MAPBG}</g><g id="mppath"></g>`;
+  let s='';
+  const cl=(a,b)=>[Math.max(AR[0],Math.min(AR[1],a)),Math.max(BR[0],Math.min(BR[1],b))];
+  let d='';
+  path.forEach((p,i)=>{const [a,b]=cl(p[0],p[1]);
+    d+=(i?'L':'M')+mx_(a).toFixed(1)+' '+my_(b).toFixed(1);});
+  s+=`<path d="${d}" fill="none" stroke="#ff8a2b" stroke-width="1.8" opacity=".95"/>`;
+  path.forEach(p=>{const [a,b]=cl(p[0],p[1]);
+    s+=`<circle cx="${mx_(a).toFixed(1)}" cy="${my_(b).toFixed(1)}" r="1.8" fill="#ff8a2b"/>`;});
+  const [ca,cb]=cl(A2,B2);
+  s+=`<circle cx="${mx_(ca).toFixed(1)}" cy="${my_(cb).toFixed(1)}" r="5" fill="#ff8a2b"
+       stroke="#fff" stroke-width="1.6"/>`;
+  if(div2) s+=`<text x="${(MP.x0+MP.x1)/2}" y="${MP.y1+22}" text-anchor="middle" font-size="13"
+    fill="#fff" font-family="'Noto Serif JP',serif">地図の外へ飛び出しました</text>`;
+  $('mppath').innerHTML=s;
+}
+
+function up2(){
+  const f=x=>A2*x+B2, e=div2?Infinity:rm2(A2,B2);
+  plot($('p2'),X1,Y1,XR1,YR1,f,Object.assign({pivot:B2,narrow:1},OPT1));
+  drawMap(); drawBird(); diffTab(); diffFig(); nudge();
+  $('e2').textContent=div2?'∞':e.toFixed(2); $('st2').textContent=st2;
+  gauge('g2','m2',div2?30:R2(e),GOAL2,30);
+  const lr=(+$('lr').value)/1000; $('lrv').textContent=lr.toFixed(3);
+  const ok=!div2&&R2(e)<=GOAL2;
+  $('j2').className='verdict'+(ok?' ok':(div2?' stuck':''));
+  $('j2').innerHTML = div2
+    ? `<b>飛び越えました。</b>1歩が大きすぎると、谷の反対側のもっと高いところに着き、
+       そこの傾きはもっと急なので、次はもっと遠くへ飛びます。<b>戻ってきません。</b><br>
+       1歩を <b>${LRMAX.toFixed(4)} 以下</b>にして「はじめの場所に戻す」を押してください。`
+    : ok
+    ? `<b>${st2}歩で ずれ ${e.toFixed(2)}。谷底に着きました</b>（最小は 1.28）。<br>
+       1歩の大きさを変えて、かかる歩数が変わるのを見てください。
+       <b>${LRMAX.toFixed(4)} を超えると発散します。</b>`
+    : (st2===0 ? `まず「1歩ずつ」を数回押して、地図の上で点が動くのを見てください。`
+       : `${st2}歩で ずれ <b>${e.toFixed(2)}</b>。目標 1.5 まで下げてください。`
+         +(lr<0.012?`<br><span style="color:var(--gray-500)">1歩が小さいので、
+            何百歩もかかります。「はじめから谷底まで走らせる」を押すか、1歩を大きくしてください。</span>`:''));
+  if(ok&&!ok2){ ok2=true; mark(1,'done'); show('r2'); show('c3'); up3(); }
+}
+
+
+
+const NH=1;   
+
+function diffTab(){
+  if(div2){$('dtab').innerHTML='';return}
+  let cells={t:'',y:'',p:'',d:''};
+  X1.forEach((x,i)=>{ const pr=A2*x+B2, d=pr-Y1[i];
+    cells.t+=`<td>${x}</td>`; cells.y+=`<td>${Y1[i]}</td>`;
+    cells.p+=`<td>${pr.toFixed(1)}</td>`;
+    cells.d+=`<td style="color:${d<0?'#c00':'#019949'}"><b>${d>=0?'＋':'−'}${Math.abs(d).toFixed(1)}</b></td>`;});
+  $('dtab').innerHTML=
+   `<tr><th>時間</th>${cells.t}</tr>`
+  +`<tr><th>実際</th>${cells.y}</tr>`
+  +`<tr><th>線</th>${cells.p}</tr>`
+  +`<tr><th>差（線−実際）</th>${cells.d}</tr>`;
+  $('d_a').textContent=A2.toFixed(2); $('d_b').textContent=B2.toFixed(2);
+  $('d_L').textContent=Math.sqrt(mseOf(A2,B2)).toFixed(2);
+  
+  if($('d_as')){ $('d_as').value=Math.round(A2*10); $('d_bs').value=Math.round(B2);
+    $('d_av').textContent=A2.toFixed(1); $('d_bv').textContent=B2.toFixed(1); }
+  /* 表から読み取れる2つのこと */
+  const D=X1.map((x,i)=>A2*x+B2-Y1[i]);
+  const allNeg=D.every(v=>v<0), allPos=D.every(v=>v>0);
+  const grows=Math.abs(D[7])>Math.abs(D[0]);
+  let m=[];
+  if(allNeg) m.push('差が<b>全部マイナス</b> → 線がデータより下にある → <b>b（高さ）を上げる</b>');
+  else if(allPos) m.push('差が<b>全部プラス</b> → 線がデータより上にある → <b>b（高さ）を下げる</b>');
+  else m.push('差にプラスとマイナスが混ざっている → 高さはだいぶ合っている');
+  const r0=D[0], r7=D[7];
+  if(r7<r0-1) m.push('右へ行くほど<b>下に外れている</b> → <b>a（傾き）を急にする</b>');
+  else if(r7>r0+1) m.push('右へ行くほど<b>上に外れている</b> → <b>a（傾き）をゆるくする</b>');
+  else m.push('左右の外れ方が同じくらい → 傾きはだいぶ合っている');
+  $('d_j').className='verdict';
+  $('d_j').innerHTML='① '+m[0]+'<br>② '+m[1];
+}
+function diffFig(){
+  if(div2){$('p2d').innerHTML='';return}
+  const P={x0:52,y0:150,x1:540,y1:16}, mid=(P.y0+P.y1)/2;
+  const D=X1.map((x,i)=>A2*x+B2-Y1[i]);
+  const mx=Math.max(45,...D.map(Math.abs));
+  const bw=(P.x1-P.x0)/X1.length*0.52;
+  let s=`<line x1="${P.x0}" y1="${mid}" x2="${P.x1}" y2="${mid}" stroke="#000"/>`;
+  s+=`<text x="${P.x0-7}" y="${mid+4}" text-anchor="end" font-size="13" fill="#6e6e6e"
+       font-family="Inter">0</text>`;
+  D.forEach((d,i)=>{
+    const cx=P.x0+(P.x1-P.x0)*(i+0.5)/X1.length;
+    
+    const h=Math.abs(d)/mx*(mid-P.y1-23);
+    const up=d>0, col=up?'#019949':'#c00';
+    s+=`<rect x="${(cx-bw/2).toFixed(1)}" y="${(up?mid-h:mid).toFixed(1)}"
+         width="${bw.toFixed(1)}" height="${h.toFixed(1)}" fill="${col}" opacity=".85"/>`;
+    s+=`<text x="${cx.toFixed(1)}" y="${(up?mid-h-5:mid+h+13).toFixed(1)}" text-anchor="middle"
+         font-size="13" fill="${col}" font-family="Inter">${d>=0?'＋':'−'}${Math.abs(d).toFixed(0)}</text>`;
+    s+=`<text x="${cx.toFixed(1)}" y="${(P.y0+16)}" text-anchor="middle" font-size="13"
+         fill="#6e6e6e" font-family="Inter">${X1[i]}</text>`;});
+  
+  
+  s+=`<text x="${P.x1}" y="${P.y0+46}" text-anchor="end" font-size="13" fill="#3f3f3f"
+       font-family="'Noto Serif JP',serif">時間</text>`;
+  $('p2d').innerHTML=s;
+}
+function nudge(){
+  if(div2){$('mb').textContent='';$('ma').textContent='';return}
+  const L0=mseOf(A2,B2), Lb=mseOf(A2,B2+NH), La=mseOf(A2+NH,B2);
+  
+  const arrows=(el,amt,lab)=>{
+    const P={x0:34,y0:120,x1:288,y1:18};
+    const mx=7.6;                                  /* 目盛りの上限（a の最大 +7 に合わせる） */
+    let g=`<line x1="${P.x0}" y1="${P.y0}" x2="${P.x1}" y2="${P.y0}" stroke="#000"/>`;
+    g+=`<text x="${P.x0-6}" y="${P.y0+4}" text-anchor="end" font-size="10" fill="#6e6e6e"
+         font-family="Inter">0</text>`;
+    X1.forEach((x,i)=>{
+      const cx=P.x0+(P.x1-P.x0)*(i+0.5)/X1.length;
+      const v=amt(x), h=v/mx*(P.y0-P.y1-14);
+      if(v>0.001){
+        g+=`<line x1="${cx.toFixed(1)}" y1="${P.y0}" x2="${cx.toFixed(1)}"
+             y2="${(P.y0-h).toFixed(1)}" stroke="#ff8a2b" stroke-width="5"/>`;
+        g+=`<path d="M${cx.toFixed(1)} ${(P.y0-h-8).toFixed(1)}l-5 8l10 0Z" fill="#ff8a2b"/>`;
+        g+=`<text x="${cx.toFixed(1)}" y="${(P.y0-h-13).toFixed(1)}" text-anchor="middle"
+             font-size="10.5" fill="#c26100" font-family="Inter">+${v}</text>`;
+      }else{
+        g+=`<circle cx="${cx.toFixed(1)}" cy="${P.y0}" r="3" fill="#9aa"/>`;
+        g+=`<text x="${cx.toFixed(1)}" y="${P.y0-9}" text-anchor="middle" font-size="10.5"
+             fill="#6e6e6e" font-family="Inter">0</text>`;}
+      g+=`<text x="${cx.toFixed(1)}" y="${P.y0+15}" text-anchor="middle" font-size="10"
+           fill="#6e6e6e" font-family="Inter">${x}</text>`;});
+    
+    
+    g+=`<text x="${P.x1}" y="${P.y0+40}" text-anchor="end" font-size="10.5" fill="#3f3f3f"
+         font-family="'Noto Serif JP',serif">時間</text>`;
+    g+=`<text x="${P.x0-2}" y="${P.y1+2}" font-size="10.5" fill="#3f3f3f"
+         font-family="'Noto Serif JP',serif">${lab}</text>`;
+    $(el).innerHTML=g;
+  };
+  arrows('p2nb',()=>NH,'予測が動く量　全員おなじ');
+  arrows('p2na',x=>x*NH,'予測が動く量　時間の分だけ');
+  
+  const R=v=>Math.sqrt(Math.max(0,v));
+  const fmt=(L1)=>`ずれ  ${R(L0).toFixed(2)} → ${R(L1).toFixed(2)}\n`
+   +`      ${(L1-L0>=0?'＋':'−')}${Math.abs(R(L1)-R(L0)).toFixed(2)}\n`
+   +`→ ${L1<L0?'上げるべき':(L1>L0?'下げるべき':'そのまま')}`;
+  $('mb').textContent=fmt(Lb); $('ma').textContent=fmt(La);
+  
+  
+  $('m_j').className='verdict';
+  
+  $('m_j').innerHTML=
+    `<b>矢印は予測が動く量。その下の数字は、そのとき ずれ が動く量です。</b>`
+   +`<br><b>つまみはまだ動いていません。</b>`
+   +`<span style="color:var(--gray-500)">　この2つを、次にそのまま使います。</span>`;
+}
+
+function step2(n){
+  if(div2){up2();return}
+  const lr=(+$('lr').value)/1000;
+  for(let k=0;k<n;k++){
+    const [ga,gb]=grad2(A2,B2); A2-=lr*ga; B2-=lr*gb; st2++;
+    path.push([A2,B2]);
+    
+    if(!isFinite(A2)||Math.abs(A2)>60||Math.abs(B2)>240){div2=true;break}
+  }
+  if(path.length>400)path=path.slice(-400);
+  up2();
+}
+
+
+function mvFig(a0,b0,a1,b1,r0,r1){
+  
+  const still = (a0===a1 && b0===b1);
+  const rows=[['つまみ a（傾き）',a0,a1,0,15],['つまみ b（高さ）',b0,b1,0,60],['ずれ',r0,r1,0,30]];
+  
+  const P={x0:150,x1:436};
+  let s='';
+  rows.forEach((r,i)=>{
+    const y=26+i*36;
+    const sx=v=>P.x0+(Math.max(r[3],Math.min(r[4],v))-r[3])/(r[4]-r[3])*(P.x1-P.x0);
+    s+=`<text x="${P.x0-14}" y="${y+5}" text-anchor="end" font-size="13" fill="#3f3f3f"
+         font-family="'Noto Serif JP',serif">${r[0]}</text>`;
+    s+=`<line x1="${P.x0}" y1="${y}" x2="${P.x1}" y2="${y}" stroke="#e0e0e0" stroke-width="3"/>`;
+    const x0=sx(r[1]), x1=sx(r[2]), col=(i===2?(r[2]<r[1]?'#019949':'#c00'):'#2f6fb5');
+    
+    if(Math.abs(x1-x0)>1.5){
+      s+=`<line x1="${x0.toFixed(1)}" y1="${y}" x2="${x1.toFixed(1)}" y2="${y}"
+           stroke="${col}" stroke-width="4"/>`;
+      const dir=x1>x0?1:-1;
+      s+=`<path d="M${x1.toFixed(1)} ${y}l${-7*dir} -5v10z" fill="${col}"/>`;
+    }
+    s+=`<circle cx="${x0.toFixed(1)}" cy="${y}" r="4.5" fill="#fff" stroke="#6e6e6e" stroke-width="2"/>`;
+    s+=`<circle cx="${x1.toFixed(1)}" cy="${y}" r="5.5" fill="${col}" stroke="#fff" stroke-width="1.6"/>`;
+    const nd=(i===2?4:2);
+    s+=`<text x="${P.x1+8}" y="${y+5}" font-size="13" fill="${col}" font-weight="600"
+         font-family="Inter">${r[2].toFixed(nd)}</text>`;
+  });
+  s+=`<text x="10" y="140" font-size="12.5" fill="#6e6e6e" font-family="'Noto Serif JP',serif">`
+   +(still?`いまの場所です。[1歩ずつ] を押すと ●が動きます`
+         :`○が動く前　●が動いた後。3本とも同時に動きます`)+`</text>`;
+  $('mvFig').innerHTML=s;
+}
+
+const RT=v=>Math.sqrt(Math.max(0,v));
+
+const RA0=3, RB0=20;
+function oneStep(){
+  const a0=A2,b0=B2,L0=mseOf(A2,B2);
+  step2(1);
+  gate2();
+  const L1=mseOf(A2,B2), da=A2-a0, db=B2-b0;
+  const nd0=Math.abs(L1-L0)<0.05?4:(L0<10?2:1);
+  $('mvtab').innerHTML=
+   `<tr><th></th><th>動かす前</th><th>動かした後</th><th>動いた量</th></tr>`
+  +`<tr><th>a（傾き）</th><td>${a0.toFixed(2)}</td><td>${A2.toFixed(2)}</td>
+     <td><b>${da>=0?'＋':'−'}${Math.abs(da).toFixed(2)}</b></td></tr>`
+  +`<tr><th>b（高さ）</th><td>${b0.toFixed(2)}</td><td>${B2.toFixed(2)}</td>
+     <td><b>${db>=0?'＋':'−'}${Math.abs(db).toFixed(2)}</b></td></tr>`
+  +`<tr class="sum"><th>ずれ</th><td>${RT(L0).toFixed(nd0)}</td><td>${RT(L1).toFixed(nd0)}</td>
+     <td><b>${L1-L0>=0?'＋':'−'}${Math.abs(RT(L1)-RT(L0)).toFixed(nd0)}</b></td></tr>`;
+  
+  $('mv_at').innerHTML=`測った場所は <b>a＝${a0.toFixed(2)} ／ b＝${b0.toFixed(2)}</b>（動かす前）です。`;
+  
+  mvFig(a0,b0,A2,B2,RT(L0),RT(L1));
+  const dL=L1-L0, dR=RT(L1)-RT(L0);
+  const nd = Math.abs(dR)<0.05 ? 4 : 2;
+  $('mv_j').className='verdict'+(dL<-1e-9?' ok':(dL>1e-9?' stuck':''));
+  
+  $('mv_j').innerHTML=`<b>a と b が同時に動きました。</b>　`
+   +(Math.abs(dR)<0.0005
+     ? `<b>ずれはもう変わりません（${RT(L0).toFixed(4)}）。谷底です。</b>`
+       +`<span style="color:var(--gray-500)">　[はじめの場所に戻す] を押すと、大きく動くところが見られます。</span>`
+     : `ずれ ${RT(L0).toFixed(nd)} → <b>${RT(L1).toFixed(nd)}</b>`
+       +`（${dR>=0?'＋':'−'}${Math.abs(dR).toFixed(nd)}）`);
+}
+
+function mvClear(msg){
+  $('mvtab').innerHTML=''; $('mv_at').innerHTML='';
+  
+  mvFig(A2,B2,A2,B2,RT(mseOf(A2,B2)),RT(mseOf(A2,B2)));
+  $('mv_j').className='verdict'; $('mv_j').innerHTML=msg;
+}
+
+
+let mv2=0;
+function gate2Label(){}
+function gate2(){ mv2++; }
+
+$('step1').onclick=oneStep;
+$('mstep').onclick=oneStep;
+
+function tenSteps(){ for(let k=0;k<10;k++) oneStep(); }
+$('step10').onclick=tenSteps;
+$('mstep10').onclick=tenSteps;
+$('mrst').onclick=()=>$('rst2').click();
+
+['d_as','d_bs'].forEach(id=>{ const e=$(id); if(!e)return;
+  e.oninput=()=>{ A2=(+$('d_as').value)/10; B2=+$('d_bs').value;
+    path=[[A2,B2]]; st2=0; div2=false;
+    mvClear('つまみを手で動かしました。「1歩ずつ」を押すと、ここから下ります。');
+    up2(); };
+  e.onchange=()=>{ gate2(); }; });
+$('lr').oninput=()=>{ $('lrv').textContent=((+$('lr').value)/1000).toFixed(3); up2();
+  
+  if($('mvtab').innerHTML)
+    mvClear('1歩の大きさを変えました。「1歩ずつ」を押すと、この大きさで動きます。'); };
+$('rst2').onclick=()=>{ 
+  A2=RA0; B2=RB0; st2=0; div2=false; path=[[A2,B2]]; up2();
+  mvClear(`<b>はじめの場所（a＝3.00 ／ b＝20.00）に戻しました。</b>`
+   +`<span style="color:var(--gray-500)">「1歩ずつ」を押すと、ここから動きます。</span>`); };
+
+const ANC={2:{K:[2,11],H:[41,74]}, 3:{K:[2,6.5,11],H:[22,81,55]},
+           4:{K:[2,5,8,11],H:[24,59,84,49]},
+           5:{K:[2,4.25,6.5,8.75,11],H:[25,47,78,79,48]}};
+let K4=2, H4=[50,50], ok4=false;
+function setK(n){
+  const old=ANC[K4].K.slice(), oldH=H4.slice();
+  K4=n;
+  
+  const f=x=>{ if(x<=old[0])return oldH[0];
+    if(x>=old[old.length-1])return oldH[oldH.length-1];
+    for(let i=0;i<old.length-1;i++) if(x<=old[i+1]){
+      const t=(x-old[i])/(old[i+1]-old[i]); return oldH[i]+(oldH[i+1]-oldH[i])*t; }
+    return oldH[oldH.length-1]; };
+  H4=ANC[n].K.map(k=>Math.round(f(k)));
+  [2,3,4,5].forEach(m=>$('k'+m).classList.toggle('on',m===n));
+  slid4(); up4();
+  
+  
+  s4clear(`つまみを ${n} 個にしました。<b>形はそのまま引き継ぎます</b>から、`
+   +`高さを合わせるまで ずれは変わりません。「1歩ずつ」を押してください。`);
+}
+[2,3,4,5].forEach(n=>$('k'+n).onclick=()=>setK(n));
+
+
+buildMap(); up2();
+mvFig(A2,B2,A2,B2,RT(mseOf(A2,B2)),RT(mseOf(A2,B2)));
+gate2Label();
+
+
+var CV = {
+ "d4": [
+  [
+   "m",
+   "1,750億個のつまみ（パラメータ）って、どうやって回すの。"
+  ],
+  [
+   "d",
+   "待ってくれ。まず<b>なぜ</b>回したいのかをはっきりさせよう。ズレを小さくして、何が嬉しい？"
+  ],
+  [
+   "m",
+   "うーん……8人にぴったり合うと気持ちいい？"
+  ],
+  [
+   "d",
+   "気持ちよさじゃない！ この8人は<b>君がもう点数を知っている</b>連中だ。だが世の中には<b>9人目</b>がいる。"
+  ],
+  [
+   "m",
+   "9人目？"
+  ],
+  [
+   "d",
+   "<b>まだ点数を知らない9人目</b>だ。ズレが小さい線は、その9人目もよく当てる。<b>だから小さくしたい。</b>"
+  ],
+  [
+   "m",
+   "じゃあズレを <b>0</b> にすれば完璧じゃない？"
+  ],
+  [
+   "d",
+   "……学くん。そこがいちばん恐ろしいところだ。<b>8人にぴったり合わせた線は、9人目を外す。</b>"
+  ],
+  [
+   "m",
+   "えっ、逆じゃない？"
+  ],
+  [
+   "d",
+   "逆だ。だが今日は言わない。<b>第2章</b> でやる。楽しみは取っておくものだ！"
+  ],
+  [
+   "m",
+   "含み持たせるなあ……。で、回し方は？"
+  ],
+  [
+   "d",
+   "3つだけだ。<b>⑴ 足元の坂を測る　⑵ その分だけ動かす　⑶ 繰り返す。</b>この問では、その3つを順にやるよ。"
+  ],
+  [
+   "m",
+   "坂？ 坂なんてどこにあるの。"
+  ],
+  [
+   "d",
+   "つまみが2個しかないから、<b>組み合わせを全部 絵に描ける</b>。それが下の地図だ。横が a、縦が b。<b>暗いほどズレが小さくて、× が谷底</b>だ。"
+  ],
+  [
+   "m",
+   "地図の上を歩くってこと？"
+  ],
+  [
+   "d",
+   "そうだ。<b>行きたいのは × だ。</b>行こう！"
+  ]
+ ],
+ "d5": [
+  [
+   "m",
+   "押したら動いた！ ……でも最初の1歩がすごく大きくて、そのあと小さくなるんだけど。"
+  ],
+  [
+   "d",
+   "歩く幅は<b>坂の急さに比例</b>している。急なところでは大きく、平らなところでは小さい。"
+  ],
+  [
+   "m",
+   "谷底に近づくと、勝手に止まる？"
+  ],
+  [
+   "d",
+   "<b>ひとりでに小さくなる。</b>誰も減らしていない。よくできているだろう！"
+  ],
+  [
+   "m",
+   "じゃあ<b>1歩の大きさ</b>を上げれば速いんじゃない？"
+  ],
+  [
+   "d",
+   "上げてごらん。……ただし <b>0.0549</b> を超えると、<b>谷を飛び越えて戻ってこない。</b>"
+  ],
+  [
+   "m",
+   "戻ってこない？"
+  ],
+  [
+   "d",
+   "向こう岸はもっと急だ。次はもっと遠くへ飛ぶ。そこはもっと急だ。もっと飛ぶ。……<b>止まらなくなる！</b>"
+  ],
+  [
+   "m",
+   "それ見たい。"
+  ],
+  [
+   "d",
+   "見てごらん！ 壊れ方を知っておくのは大事だ。……ところで学くん、1つ言っておくことがある。<b>機械はこの地図を見ていない。</b>"
+  ],
+  [
+   "m",
+   "えっ。じゃあ、どうやって谷底に行くの。"
+  ],
+  [
+   "d",
+   "見えているのは<b>足元の傾きだけ</b>だ。それだけで下れる。<b>その傾きを出すのが微分だ。</b>"
+  ],
+  [
+   "m",
+   "微分って、高校でやるあれ？"
+  ],
+  [
+   "d",
+   "あれだ！ だが計算はしなくていい。ここから先は、<b>それが何をしているのか</b>を君の目で見る。"
+  ]
+ ],
+ "d6": [
+  [
+   "d",
+   "まずは<b>どこがダメか</b>を見る。8人ぶんの<b>差</b>を並べるだけだ。"
+  ],
+  [
+   "m",
+   "差？"
+  ],
+  [
+   "d",
+   "<b>差 ＝ 線 − 実際。</b>マイナスなら、線がその人より<b>下</b>にあるということだ。"
+  ],
+  [
+   "m",
+   "……全部マイナスだ。"
+  ],
+  [
+   "d",
+   "なら線が<b>全体的に下</b>にある。<b>b を上げてくれ</b>と、表が言っているわけだ。"
+  ],
+  [
+   "m",
+   "表が喋るの？"
+  ],
+  [
+   "d",
+   "喋るとも！ 右へ行くほど外れ方が大きければ、<b>a が足りない</b>。それも読める。"
+  ]
+ ],
+ "d7": [
+  [
+   "d",
+   "次は<b>測る</b>だ。ここが今日の山場だよ、学くん。"
+  ],
+  [
+   "m",
+   "何を測るの。"
+  ],
+  [
+   "d",
+   "<b>つまみを1本だけ、1 上げてみる。</b>もう1本は止めたままだ。そしてズレがどう動くか見る。"
+  ],
+  [
+   "m",
+   "片方だけ？ 両方いっぺんに測ればいいのに。"
+  ],
+  [
+   "d",
+   "それでは<b>どっちが効いたのか分からない</b>だろう！ 片方を止めるから分かるんだ。"
+  ],
+  [
+   "m",
+   "なるほど。"
+  ],
+  [
+   "d",
+   "そして学くん、この「<b>片方だけ</b>」という考え方には名前が付いている。<b>偏微分</b>だ。"
+  ],
+  [
+   "m",
+   "出た、難しい名前。"
+  ],
+  [
+   "d",
+   "名前だけだ！ <b>「偏」は「片方だけ」という意味だよ。</b>やっているのは、いま君が見たこと ── それ以上のことは何もしていない。"
+  ]
+ ],
+ "d8": [
+  [
+   "m",
+   "測ったなら、その分だけ<b>片方ずつ</b>動かせばいいんじゃない？"
+  ],
+  [
+   "d",
+   "できる。だが学くん、いま測ったのは<b>いま立っている1点</b>での効き方だ。"
+  ],
+  [
+   "m",
+   "1点？"
+  ],
+  [
+   "d",
+   "<b>a を動かせば、立っている場所が変わる。</b>場所が変われば <b>b の効き方も変わる</b>。動いた先の効き方は、まだ測っていない。"
+  ],
+  [
+   "m",
+   "じゃあ測り直せばいいじゃない。"
+  ],
+  [
+   "d",
+   "それが<b>次の1歩</b>だ！ 1歩の中では測り直さない。<b>測る → 両方いっぺんに動かす → また測る。</b>この順番は崩さない。"
+  ],
+  [
+   "m",
+   "あ、だから同時なんだ。"
+  ],
+  [
+   "d",
+   "そういうことだ。測った分は、動く前に<b>両方まとめて使い切る。</b>"
+  ]
+ ],
+ "d9": [
+  [
+   "m",
+   "着いた！ 谷底だ！"
+  ],
+  [
+   "d",
+   "<b>やったな、学くん。いまやったのが「勾配降下法」だ。</b>"
+  ],
+  [
+   "m",
+   "さっきの3つだよね。測って、動かして、繰り返す。"
+  ],
+  [
+   "d",
+   "その通り！ そしてな ── <b>GPT-3 は、これを10万回ほどやった。</b>"
+  ],
+  [
+   "m",
+   "10万回！ 僕、いま何回やった？"
+  ],
+  [
+   "d",
+   "数十回だ。桁は違うが、<b>やっていることはまったく同じ</b>だよ。"
+  ],
+  [
+   "m",
+   "……博士。AI って、地味だね。"
+  ],
+  [
+   "d",
+   "地味だ！ 実に地味だ。だが<b>これが全部だ。</b>ここから先は<b>形の話</b>になる。行こう！"
+  ]
+ ]
+};
+drawCV(CV);
+})();
+</script>
+</body>
+</html>

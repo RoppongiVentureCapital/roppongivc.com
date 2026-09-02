@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow,noarchive">
+<meta name="description" content="AIの中身を1問ずつ切り出しました。全21問、ブラウザで手を動かします。">
+<meta property="og:title" content="AIの詰将棋 ── AIの中身を1問ずつ、手を動かして確かめる">
+<meta property="og:description" content="AIの中身を1問ずつ切り出しました。全21問、ブラウザで手を動かします。">
+<title>AIの詰将棋 ── AIの中身を1問ずつ、手を動かして確かめる</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@300;400;600;700&family=Inter:wght@300;400;500;600;700&family=Noto+Serif+JP:wght@300;400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="common.css">
+<style>
+
+
+.startbar{display:flex;gap:.9rem;align-items:center;flex-wrap:wrap;margin:1.4rem 0 0}
+.startbar .btn{padding:.85rem 1.9rem;font-size:15px}
+.startbar .note{font-size:15px;color:var(--gray-500);line-height:1.9}
+
+.dtab td.l,.dtab th.l{text-align:left}
+.dtab td.c,.dtab th.c{text-align:center}
+.dtab td.l a{color:var(--black)}
+
+.pt{margin:1.6rem 0 0}
+.pt:first-child{margin-top:0}
+.pt .n{font-size:13px;font-weight:700;letter-spacing:.14em;color:var(--gray-500)}
+.pt .t{font-size:15px;font-weight:700;line-height:1.7;margin:.15rem 0 .35rem}
+.pt p{font-size:15px;line-height:1.9;color:var(--gray-600);margin:0 0 .4rem}
+.pt p b{color:var(--black)}
+
+.pyr{display:flex;gap:1rem;flex-wrap:wrap;margin:.6rem 0 0}
+.pyr>div{flex:1 1 15rem;min-width:0}
+.pyr svg{display:block;width:100%;height:auto}
+.qt{border-left:3px solid var(--black);padding:.15rem 0 .15rem 1.1rem;margin:1.1rem 0;
+  font-size:15px;line-height:1.9}
+</style>
+</head>
+<body>
+
+<div class="top"><div class="in">AIの詰将棋<span class="tag">将棋の詰将棋のように、AIの中身を1問ずつ切り出しました。全21問。</span></div></div>
+<div class="wrap">
+
+<!-- ══════════════════ ① タイトル ＋ サブタイトル1行 ＋ [ はじめる ] ══════════════════ -->
+<div class="card">
+<div class="tagline">AIの詰将棋</div>
+<h1>AIの中身を、1問ずつ 手を動かして確かめる</h1>
+<p class="lead" style="margin:0">全21問。<b>読むだけの問題はありません。</b>
+ インストールも環境構築もいりません ── ブラウザで開くだけです。</p>
+<div class="startbar">
+ <a class="btn go" href="q01.html">はじめる</a>
+ <span class="note">問1から順に進みます。<b>途中でやめても構いません。</b></span>
+</div>
+</div>
+
+<!-- ══════════════════ ② 何が学べるか（図1枚 ＋ 表）══════════════════ -->
+<div class="card">
+<h2>何が学べるか</h2>
+
+<div id="nest"></div>
+
+<table class="dtab">
+<tr><th class="c"></th><th class="l">章</th><th class="l">中身</th><th class="c">問</th><th class="c">目安</th></tr>
+<tr><td class="c">1</td><td class="l"><a href="q01.html">機械学習の基礎</a></td>
+    <td class="l">AIは「入れると出てくる箱」。つまみを回す・坂を下る・確率に直す</td>
+    <td class="c">1〜5</td><td class="c">10分</td></tr>
+<tr><td class="c">2</td><td class="l"><a href="q06.html">深層学習</a></td>
+    <td class="l">列を増やす・単位をそろえる・層を入れる・深くすると壊れる</td>
+    <td class="c">6〜11</td><td class="c">15分</td></tr>
+<tr><td class="c">3</td><td class="l"><a href="q12.html">LLMは何を見ているか</a></td>
+    <td class="l">次の1語を確率で選ぶ・どの語を見るか（注目）</td>
+    <td class="c">12〜14</td><td class="c">10分</td></tr>
+<tr><td class="c">4</td><td class="l"><a href="q15.html">どうやって作るか</a></td>
+    <td class="l">次の語を当てる訓練・人の好みで整える・正誤で鍛える</td>
+    <td class="c">15〜17</td><td class="c">10分</td></tr>
+<tr><td class="c">5</td><td class="l"><a href="q18.html">本物のデータで使う</a></td>
+    <td class="l">タイタニック891人。ここから先はKaggle</td>
+    <td class="c">18〜21</td><td class="c">12分</td></tr>
+</table>
+
+</div>
+
+<!-- ══════════════════ ③ プロダクトの特徴（4つ ＋ 比較表）══════════════════ -->
+<div class="card">
+
+<h2>プロダクトの特徴</h2>
+
+<div class="pt">
+ <div class="n">1</div>
+ <div class="t">対話で読みながら、そのまま自分で動かせます</div>
+ <p>博士と高校2年生のやり取りで進みます。
+  説明を読むのではなく、会話を追っていくと分かる形にしました。</p>
+ <p>対話形式でわかりやすいAIの入門書は、世の中にたくさんあります。
+  触って動かせるAIの可視化ツールも、いくつかあります。<b>ただし、その2つは別々です。</b></p>
+ 
+ <table class="dtab">
+ <tr><th class="l"></th><th class="c">読み物として読める</th><th class="c">自分で動かせる</th></tr>
+ 
+ <tr><td class="l">対話形式の入門書</td><td class="c">○</td><td class="c">×</td></tr>
+ <tr><td class="l">AIの可視化ツール</td><td class="c">×</td><td class="c">○</td></tr>
+ <tr class="sum"><td class="l"><b>AIの詰将棋</b></td><td class="c"><b>○</b></td><td class="c"><b>○</b></td></tr>
+ </table>
+ <p>私たちが探した限り、両方を1つにしたものは見つかりませんでした。だから作りました。</p>
+</div>
+
+<div class="pt">
+ <div class="n">2</div>
+ 
+ <div class="t">全21問、自分で手を動かします</div>
+ <p><b>読むだけの問題は1つもありません。</b>
+  つまみを回す問題と、選んで答える問題があります。動かすと、その場で数が変わります。</p>
+</div>
+
+<div class="pt">
+ <div class="n">3</div>
+ <div class="t">画面の数字は、すべて実測値です</div>
+ 
+ <p>AIは難しいので分かりやすく書く必要がありますが、分かりやすくすると嘘になります。
+  だから機構は原論文32本に紐づけました。
+  そして、このゲームのために<b>簡単にした場所</b>は「ここは簡単にしました」と書いてあります。</p>
+</div>
+
+<div class="pt">
+ <div class="n">4</div>
+ <div class="t">準備がいりません</div>
+ <p>インストールも環境構築も不要。ブラウザで開くだけ。スマートフォンでもできます。</p>
+</div>
+</div>
+
+<!-- ══════════════════ ④ なぜ作ったか（図1枚 ＋ 本文）══════════════════ -->
+<div class="card">
+<h2>なぜ作ったか</h2>
+
+
+<div class="figbox">
+ <div class="cap" style="text-align:left"><b>上の層と下の層の境界が下がると、つくる側の割合が増える</b></div>
+ <div class="pyr">
+  <div>
+   <svg viewBox="0 0 300 250" role="img" aria-label="いまのピラミッド。上のほうがAI研究人材、下がAIを使う人">
+    <text x="0" y="16" font-size="13" font-weight="700" font-family="Inter,system-ui,sans-serif" fill="#6e6e6e">いま</text>
+    
+    <path d="M78 40 L102.5 103 L53.5 103 Z" fill="#f2fbf6"/>
+    <path d="M78 40 L148 220 L8 220 Z" fill="none" stroke="#019949" stroke-width="1.6"/>
+    <line x1="53.5" y1="103" x2="102.5" y2="103" stroke="#019949" stroke-width="1.6"/>
+    <line x1="8" y1="220" x2="148" y2="220" stroke="#019949" stroke-width="1.6"/>
+    <!-- ラベルは三角形の右側 -->
+    <line x1="102.5" y1="103" x2="150" y2="86" stroke="#d9d9d9"/>
+    <text x="154" y="80" font-size="12.5" font-family="Inter,system-ui,sans-serif" fill="#1a1a1a">AI研究人材</text>
+    <text x="154" y="96" font-size="12.5" font-family="Inter,system-ui,sans-serif" fill="#6e6e6e">（AIをつくる人）</text>
+    <line x1="130" y1="180" x2="150" y2="172" stroke="#d9d9d9"/>
+    <text x="154" y="176" font-size="12.5" font-family="Inter,system-ui,sans-serif" fill="#1a1a1a">AIを使う人</text>
+   </svg>
+  </div>
+  <div>
+   <svg viewBox="0 0 300 250" role="img" aria-label="入口の障壁を下げたピラミッド。境界線が下がり、AI研究人材の層が広がる">
+    <text x="0" y="16" font-size="13" font-weight="700" font-family="Inter,system-ui,sans-serif" fill="#019949">入口の障壁を下げると</text>
+    <path d="M78 40 L121.4 152 L34.6 152 Z" fill="#f2fbf6"/>
+    <path d="M78 40 L148 220 L8 220 Z" fill="none" stroke="#019949" stroke-width="1.6"/>
+    
+    <line x1="53.5" y1="103" x2="102.5" y2="103" stroke="#d9d9d9" stroke-dasharray="3 3"/>
+    <line x1="34.6" y1="152" x2="121.4" y2="152" stroke="#019949" stroke-width="2.2"/>
+    <line x1="8" y1="220" x2="148" y2="220" stroke="#019949" stroke-width="1.6"/>
+    
+    <line x1="78" y1="106" x2="78" y2="144" stroke="#019949" stroke-width="1.4"/>
+    <path d="M78 150 l-4.5 -7 h9 z" fill="#019949"/>
+    <line x1="121.4" y1="152" x2="150" y2="132" stroke="#d9d9d9"/>
+    <text x="154" y="126" font-size="12.5" font-family="Inter,system-ui,sans-serif" fill="#1a1a1a">AI研究人材</text>
+    <text x="154" y="142" font-size="12.5" font-family="Inter,system-ui,sans-serif" fill="#6e6e6e">（AIをつくる人）</text>
+    <line x1="136" y1="200" x2="150" y2="194" stroke="#d9d9d9"/>
+    <text x="154" y="198" font-size="12.5" font-family="Inter,system-ui,sans-serif" fill="#1a1a1a">AIを使う人</text>
+   </svg>
+  </div>
+ </div>
+ <table class="dtab">
+ <tr><th class="l">図</th><th class="l">境界線</th><th class="l">言っていること</th></tr>
+ <tr><td class="l">左（いま）</td><td class="l">上のほう</td>
+     <td class="l">つくる側は ひとにぎり。原理を学ぶ入口が狭い</td></tr>
+ <tr><td class="l">右（下げると）</td><td class="l">下がる</td>
+     <td class="l">つくる側の割合が増える。<b>上の層を下に広げる</b></td></tr>
+ </table>
+ <div class="cap" style="text-align:left">破線は もとの境界線です。<b>変えたいのは この線の高さです。</b></div>
+</div>
+
+
+<p class="lead">AI人材は「つくる側」と「使う側」に分けて語られます。
+ 国の議論の中心は使う側の底上げで、原理を学ぶ必要性の話はあまり出てきません。</p>
+
+<p class="lead">2026年7月、AIと2時間議論する場（Agora）で、国際人工知能オリンピック（IOAI）2025
+ メダリスト・開成高校3年の山井勇人さんがこう話しました。</p>
+
+<div class="qt">このLLM自体も、すぐに前提が変わっていってしまいそうなので、その原理みたいな部分は、学校で教えればいいのにな、とは思いますね。</div>
+
+<p class="lead">彼が増やしたいのは、使う側ではありません。<b>つくる側の裾野</b>です。</p>
+
+
+<p class="lead">三角形の境界を下げるというのは、国の規模の話です。
+ これは、その全体を動かすものではありません。<b>入口を1つ増やすために作りました。</b>
+ その2時間で生まれた案を、2か月かけて形にしたものがこのプロダクトです。</p>
+
+
+<div class="togs" id="agora"></div>
+</div>
+
+<!-- ══════════════════ ⑤ [ はじめる ]（再掲）══════════════════ -->
+<div class="card">
+<h2>はじめる</h2>
+<p class="lead" style="margin:0">問1は<b>つまみを2個 回すだけ</b>です。数式は読まなくても進みます。</p>
+<div class="startbar">
+ <a class="btn go" href="q01.html">はじめる</a>
+ 
+ <span class="note">第1章（問1〜5）で10分ほどです。</span>
+</div>
+</div>
+
+<div id="foot"></div>
+</div>
+
+<script src="common.js"></script>
+<script>
+
+
+drawNest("nest", 0, { head: false, outside: false });
+
+drawFoot();
+
+
+(function(){
+  var h = document.getElementById('agora'); if (!h) return;
+  h.innerHTML = SITE.agora
+    ? '<a class="btn" href="' + SITE.agora + '" target="_blank" rel="noopener">'
+      + '2時間で何が起きたかを読む →</a>'
+    : '<span style="font-size:15px;color:var(--gray-500);line-height:1.9">'
+      + '2時間で何が起きたかを読む記事は準備中です</span>';
+})();
+</script>
+</body>
+</html>

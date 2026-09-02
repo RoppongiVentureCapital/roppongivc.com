@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow,noarchive">
+<meta name="description" content="正誤を報酬にすると点をごまかせません。ただし正誤が付けられるものだけです。">
+<meta property="og:title" content="AIの詰将棋 ── 問17 正誤なら 点をごまかせない（第4章）">
+<meta property="og:description" content="正誤を報酬にすると点をごまかせません。ただし正誤が付けられるものだけです。">
+<title>AIの詰将棋 ── 問17 正誤なら 点をごまかせない（第4章）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@300;400;600;700&family=Inter:wght@300;400;500;600;700&family=Noto+Serif+JP:wght@300;400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="common.css">
+<style>
+
+
+/* ⒜ */
+.cap{font-size:15px;overflow-wrap:anywhere;line-height:1.9}
+.ctl label{flex-wrap:wrap}
+input[type=range]{margin:0;min-width:0}
+.sc-label{width:5.4rem}
+.sc-pct{width:3.8rem}
+/* ⒝ */
+.ctl label span:first-child{min-width:0;overflow-wrap:anywhere}
+.qrow{display:flex;gap:.6rem;flex-wrap:wrap;align-items:center;margin-bottom:.7rem}
+.qrow .qt{flex:1 1 12rem;font-size:14px;min-width:0}
+#q16map,#q17map{max-width:560px}
+
+
+@media (max-width:430px){
+  .wrap{padding-left:.5rem;padding-right:.5rem}
+  .card{padding-left:.75rem;padding-right:.75rem}
+  .figbox,.panel{padding-left:.5rem;padding-right:.5rem}
+  .top .in{padding-left:.5rem;padding-right:.5rem}
+  
+  #w14 text,#rep14 text,#md15 text,#ai16 text,#splitFig text{font-size:17px}
+  
+  #q15map text,#q16map text,#q16step text,#q16win text,#q16agree text,
+  #q17map text,#q17adv text,#q17kind text,#q17draw text{font-size:17px}
+  
+  .cl .ic{width:38px;height:38px}
+  .cl{gap:.5rem;margin-bottom:.7rem}
+  
+  .cl .bb{padding:.55rem .75rem}
+  .cast2{padding:.7rem .75rem}
+  .cast2 .ic{width:46px;height:46px}
+  .cast2 .row{gap:.6rem}
+  .cast2 .tx2{font-size:13px;line-height:1.8}
+}
+
+
+var QBASE = 14;   
+drawProg(17); drawChap(17, "");
+drawNav(["q16.html", "問16 好みで整える"], ["q18.html", "問18 組で決める"]);
+drawFoot("5語と数字は作例です。");
+
+
+
+/* ══════════════════════════════════════════════════════════════
+   問17 ── 正誤で伸ばす（RLVR）
+   ══════════════════════════════════════════════════════════════ */
+let G16 = [1, 0, 1, 0];
+function gt16() {
+  $('gt16').innerHTML = G16.map((r, i) =>
+    `<button class="btn${r ? ' on' : ''}" id="g16b${i}">解答${i + 1}　${r ? '○' : '✕'}</button>`).join('');
+  G16.forEach((r, i) => $('g16b' + i).onclick = () => { G16[i] = 1 - G16[i]; gt16(); ug16(); });
+}
+function ug16() {
+  const n = G16.length;
+  const m = G16.reduce((p, q) => p + q, 0) / n;
+  const sd = Math.sqrt(G16.reduce((p, q) => p + (q - m) ** 2, 0) / n);   
+  let s = '<tr><th></th>' + G16.map((r, i) => `<th>解答${i + 1}</th>`).join('') + '</tr>'
+    + '<tr><th style="text-align:left">r</th>' + G16.map(r => `<td>${r}</td>`).join('') + '</tr>'
+    + '<tr class="sum"><td style="text-align:left"><b>Â</b></td>'
+    + G16.map(r => `<td>${sd > 0 ? ((r - m) / sd).toFixed(3) : '–'}</td>`).join('') + '</tr>';
+  $('gtab16').innerHTML = s;
+  $('jg16').className = 'verdict' + (sd > 0 ? '' : ' stuck');
+  $('jg16').innerHTML = sd > 0
+    ? `平均 <b>${m.toFixed(3)}</b>　標準偏差 <b>${sd.toFixed(3)}</b>`
+    : `平均 <b>${m.toFixed(3)}</b>　標準偏差 <b>0.000</b> ── 4つが同じ点なので、
+       <b>どれを強めるか決められません</b>。`;
+}
+
+const ITEM = [
+  { t: '2次方程式の答え', y: 1 },
+  { t: 'この文章はおもしろいか', y: 0 },
+  { t: '書いたコードがテストを通るか', y: 1 },
+  { t: 'この謝罪文は誠実か', y: 0 },
+  { t: '数学オリンピックの答えの数値', y: 1 },
+  { t: '2つの詩のどちらが良いか', y: 0 }
+];
+let SEL = ITEM.map(() => null), ok16 = false;
+function sr16() {
+  $('sr16').innerHTML = ITEM.map((it, i) =>
+    `<div class="qrow"><span class="qt">${it.t}</span>`
+    + `<button class="btn sm${SEL[i] === 1 ? ' on' : ''}" id="y16${i}">判定できる</button>`
+    + `<button class="btn sm${SEL[i] === 0 ? ' on' : ''}" id="n16${i}">できない</button></div>`).join('');
+  ITEM.forEach((it, i) => {
+    $('y16' + i).onclick = () => { SEL[i] = 1; sr16(); up16(); };
+    $('n16' + i).onclick = () => { SEL[i] = 0; sr16(); up16(); };
+  });
+}
+function ai16fig() {
+  let s = T(8, 26, 'AIME 2024 の pass@1（%）', { fs: 14, b: 1, c: '#000', f: JP });
+  const bars = [
+    { v: 15.6, l: '事前学習だけ', c: '#9a9a9a' },
+    { v: 77.9, l: '正誤で伸ばす', c: '#019949' },
+    { v: 59.0, l: '模範解答を挟む', c: '#c00' }
+  ];
+  s += `<line x1="60" y1="170" x2="530" y2="170" stroke="#000"/>`;
+  bars.forEach((b, i) => {
+    const x = 80 + i * 160, h = b.v / 100 * 130;
+    s += `<rect x="${x}" y="${(170 - h).toFixed(1)}" width="100" height="${h.toFixed(1)}"
+      fill="${b.c}" opacity=".8"/>`;
+    
+    s += T(x + 50, 170 - h - 14, b.v.toFixed(1), { a: 'middle', fs: 15, b: 1, c: b.c });
+    s += T(x + 50, 200, b.l, { a: 'middle', fs: 13, f: JP });
+  });
+  $('ai16').innerHTML = s;
+}
+function up16() {
+  const n = SEL.reduce((t, v, i) => t + (v === ITEM[i].y ? 1 : 0), 0);
+  const done = SEL.every(v => v !== null);
+  $('c16n').textContent = n;
+  gauge('g16', 'm16', n, 6, 6, false);
+  const ok = n === 6;
+  $('j16').className = 'verdict' + (ok ? ' ok' : '');
+  $('j16').innerHTML = !done
+    ? `6つを仕分けてください。いま <b>${SEL.filter(v => v !== null).length}</b> / 6 を選びました。`
+    : ok ? '<b>6つ全部です。</b>正誤が判定できるものだけ、この報酬が使えます。'
+         : `<b>${n}</b> / 6 が当たりです。もう一度見てください。`;
+  if (ok && !ok16) { ok16 = true; mark(2, 'done'); show('r16'); ai16fig(); splitFig(); }
+}
+
+
+function splitFig() {
+  let s = '';
+  
+  s += BOX(8, 8, 264, 284, '#fff');
+  s += T(140, 34, '作る工程（順番がある）', { a: 'middle', fs: 14, b: 1, c: '#000', f: JP });
+  const L = ['大量に練習する', '好みで整える', '正誤で伸ばす'];
+  L.forEach((t, i) => {
+    const y = 56 + i * 82;
+    s += BOX(24, y, 232, 38, i === 0 ? '#e8eef6' : (i === 1 ? '#f5eee8' : '#e8f6ee'));
+    s += T(140, y + 25, t, { a: 'middle', fs: 14, b: 1, c: '#000', f: JP });
+    if (i < 2) {
+      s += `<line x1="40" y1="${y + 38}" x2="40" y2="${y + 72}" stroke="#000"/>`
+        + `<path d="M40 ${y + 78}l-4-6h8z" fill="#000"/>`;
+      s += T(64, y + 68, '得る／失う', { fs: 13, c: '#c00', f: JP });
+    }
+  });
+  /* 右：使い方 */
+  s += BOX(288, 8, 264, 284, '#fff');
+  s += T(420, 34, '使い方（順番なし）', { a: 'middle', fs: 14, b: 1, c: '#000', f: JP });
+  const U = ['温度', '思考の誘導', '文脈に入れる', '道具を呼ぶ'];
+  U.forEach((t, i) => {
+    const y = 56 + i * 48;
+    s += BOX(304, y, 232, 36, '#f4f4f4');
+    s += T(420, y + 24, t, { a: 'middle', fs: 14, c: '#000', f: JP });
+  });
+  s += T(420, 274, '組み合わせて使う', { a: 'middle', fs: 13, c: '#6e6e6e', f: JP });
+  $('splitFig').innerHTML = s;
+}
+
+/* ══════════ 起動 ══════════ */
+gt16(); ug16();
+sr16(); up16();
+splitFig();
+
+
+(function(){
+  var CV = {
+ "e17a": [
+  [
+   "d",
+   "3段目だ。……学くん、好みではなく<b>「合っているか」</b>を点にしたらどうなる。"
+  ],
+  [
+   "m",
+   "合ってるかって、答えが決まってるものだけ？"
+  ],
+  [
+   "d",
+   "そうだ。数学の答え。コードがテストを通るか。<b>正誤なら点をごまかせない。</b>"
+  ],
+  [
+   "m",
+   "好みだと ごまかせるの。"
+  ],
+  [
+   "d",
+   "ごまかせる。<b>無難で礼儀正しいものに高い点が付く</b>からな。……<b>正誤は嘘をつかん。</b>"
+  ],
+  [
+   "m",
+   "誰が やったの、これ。"
+  ],
+  [
+   "d",
+   "<b>2025年1月の DeepSeek の論文だ。上の図を見てごらん。</b>……問16 と違うところが2つあるよ。<b>人の見本の答えを1つも使わない。</b>そして<b>採点するのは機械だ。</b>"
+  ],
+  [
+   "m",
+   "人は 何もしないの？"
+  ],
+  [
+   "d",
+   "人がやるのは<b>問題を選ぶことと、採点のしかたを決めること</b>だけだ。……<b>下の4つに ○✕ を付けてごらん。</b>いま <b>○✕○✕</b> になっているよ。"
+  ]
+ ],
+ "e17b": [
+  [
+   "m",
+   "平均が <b>0.500</b>、標準偏差が <b>0.500</b>。……Â が <b>1.000</b> と <b>-1.000</b> だ。"
+  ],
+  [
+   "d",
+   "見えたな！ <b>平均より上を強め、下を抑える。</b>それがこの式の全部だよ。"
+  ],
+  [
+   "m",
+   "4つのうち2つ当たったから、平均 0.500 か。"
+  ],
+  [
+   "d",
+   "そうだ。……では<b>4つ全部を ○ にしてごらん。</b>"
+  ],
+  [
+   "m",
+   "え。……<b>標準偏差が 0.000</b> になって、Â が出ない。"
+  ],
+  [
+   "d",
+   "<b>そこだ！</b>全部 同じ点だと<b>どれを強めるか決められん。</b>"
+  ],
+  [
+   "m",
+   "差がないと動かせないんだ。"
+  ],
+  [
+   "d",
+   "<b>差が要る。</b>……ここが大事だよ。<b>正解の文は1つも使っていない。</b>○✕だけだ。"
+  ],
+  [
+   "m",
+   "模範解答なしで、そっちが良いの？"
+  ],
+  [
+   "d",
+   "<b>模範解答を あいだに挟むと、点が下がる</b>んだ。人が書いた答えは<b>見直しや検証の手が抜けていることが多い</b>からな。"
+  ],
+  [
+   "m",
+   "教えたのに下がるのか。"
+  ],
+  [
+   "d",
+   "下がる。……<b>そこは機械に探させたほうがいい。</b>"
+  ]
+ ],
+ "e17c": [
+  [
+   "m",
+   "6つ全部 当たった。"
+  ],
+  [
+   "d",
+   "よし。……ここで<b>いちばん大事なことを1つ</b>見せる。<b>下の図だ。</b>"
+  ],
+  [
+   "m",
+   "上の2本と 下の2本？"
+  ],
+  [
+   "d",
+   "<b>上は 1回だけ答えさせて当たった率。</b>これは<b>15.6% から 77.9% に上がった。</b>"
+  ],
+  [
+   "m",
+   "5倍近い。すごいじゃん。"
+  ],
+  [
+   "d",
+   "……<b>下を見てごらん。何回も答えさせて 1回でも当たった率だ。</b>"
+  ],
+  [
+   "m",
+   "……<b>ほとんど変わってない。</b>"
+  ],
+  [
+   "d",
+   "<b>そこだ！</b>……<b>出せる答えの範囲は 広がっていない。</b>その中から<b>正しいものを選び出せるようになった</b>んだ。"
+  ],
+  [
+   "m",
+   "新しく解けるようになったんじゃないの？"
+  ],
+  [
+   "d",
+   "<b>そこは言い切れん。</b>原典も<b>「自分たちのやり方のせいかもしれない」と保留している</b>。……<b>いまの測り方では そう見える</b>、までだ。"
+  ]
+ ],
+ "e17z": [
+  [
+   "m",
+   "じゃあ<b>これで全部やればいい</b>んだね。"
+  ],
+  [
+   "d",
+   "……<b>言えん。効くのは 正誤が判定できるところだけ</b>だ。原典が書いている ── <b>執筆のようなタスクでは、信頼できる点の付け方が作れない。</b>"
+  ],
+  [
+   "m",
+   "詩のどちらが良いか、とか。"
+  ],
+  [
+   "d",
+   "そうだ。……そしてもう1つ。<b>人の模範解答を あいだに挟むと 点が下がる</b>んだったな。"
+  ],
+  [
+   "m",
+   "教えたのに 下がるやつ。"
+  ],
+  [
+   "d",
+   "そうだ。<b>77.9 が 59.0 まで落ちた。</b>……<b>人が渡すべきは 答えではなく、良い問題と 採点のしかただ。</b>"
+  ],
+  [
+   "m",
+   "じゃあ、この問で分かったのは 何？"
+  ],
+  [
+   "d",
+   "<b>正誤で点を付けると、もともと出せていた答えから 正しいものを選び出せるようになる</b> ── これだ。<b>ただし 正誤が付けられるものだけ</b>だよ。"
+  ]
+ ],
+ "e17z2": [
+  [
+   "m",
+   "これが 3段目。"
+  ],
+  [
+   "d",
+   "そうだ。<b>これが RLVR だ。</b>……1段目で<b>賢さ</b>、2段目で<b>振る舞い</b>、3段目で<b>選び出す力</b>。3つとも別のものだよ。"
+  ]
+ ],
+ "e18a": [
+  [
+   "d",
+   "最後に、いちばん大事な区別だ。……<b>「AI は平均に流れる」</b>と<b>「AI が数学オリンピックを解く」</b>。どっちが本当だ？"
+  ],
+  [
+   "m",
+   "……矛盾してない？"
+  ],
+  [
+   "d",
+   "<b>どちらも本当だ。段がちがう。</b>"
+  ],
+  [
+   "m",
+   "段。"
+  ],
+  [
+   "d",
+   "<b>平均に流れるのは1段目</b>の話。<b>数学オリンピックは3段目</b>の話だ。混ぜると、必ずどちらかで崩れるよ。"
+  ],
+  [
+   "m",
+   "じゃあ<b>思考の誘導</b>は？ 3段目の上の段？"
+  ],
+  [
+   "d",
+   "<b>逆だ。</b>あれは<b>使い方</b>の側で、しかも<b>2022年</b>。3段目は<b>2024年</b>だよ。"
+  ],
+  [
+   "m",
+   "年も逆なんだ。上に積んでるんじゃないのか。"
+  ],
+  [
+   "d",
+   "積んでいない。<b>入れ子</b>だ。……<b>いま作る工程の話か、使い方の話か。まずそこを分けてくれ。</b>それが今日の持ち帰りだ。"
+  ]
+ ]  ,
+ "e18b": [
+  [
+   "d",
+   "ここまでが<b>作り方</b>だよ。次の語を当てて下地を作り、人の好みで整えて、正誤で鍛える。3段とも、下るたびに 得るものと 失うものがあったね。……<b>次は 君が自分で手を動かす番だよ。</b>"
+  ],
+  [
+   "m",
+   "同じやり方でやるの？"
+  ],
+  [
+   "d",
+   "そこが面白いところだよ。<b>道具が変わる。</b>次の章で渡すのは<b>本物のデータ</b>だ ── 891人ぶんの表。……<b>坂を下らない機械</b>もあるのだよ。"
+  ]
+ ]
+};
+  drawCV(CV);
+
+  
+
+  
+  function q17map() {
+    var h = document.getElementById('q17map');
+    if (!h) return;
+    var s = '', G = '#019949', GY = '#6e6e6e', BK = '#3f3f3f';
+
+    
+    s += QBOX(0, 4, 556, 214, '#fafafa', '#d9d9d9', 1);
+    var STEP = [['第3章', '形をつくる', '（Transformer）'],
+                ['問15', '大量に読ませる', '（事前学習）'],
+                ['問16', '人の好みで整える', '（RLHF）'],
+                ['この問', '正誤で伸ばす', '（RLVR）']];
+    for (var i = 0; i < 4; i++) {
+      var y = 44 + i * 44, on = (i === 3), c = on ? G : GY;
+      if (on) s += QBOX(8, y - 26, 540, 36, '#eaf7f0', G, 2);
+      s += QT(18, y, STEP[i][0], { fs: 14, b: 1, c: c, f: QJP });
+      s += QT(96, y, STEP[i][1], { fs: 15, b: on ? 1 : 0, c: BK, f: QJP });
+      s += QT(300, y, STEP[i][2], { fs: 14, c: GY, f: QJP });
+      if (on) s += QT(538, y, 'いまここ', { a: 'end', fs: 14, b: 1, c: G, f: QJP });
+      if (i < 3) s += '<path d="M64 ' + (y + 12) + 'l5 8h-10z" fill="' + GY + '"/>';
+    }
+    /* 上の帯の【この問】の行から 下の段へ */
+    s += '<path d="M548 176 h6 v68 h-286" fill="none" stroke="' + G
+      + '" stroke-width="1.5" stroke-dasharray="4 3"/>';
+    s += '<path d="M262 244 l7 -4.5 v9 z" fill="' + G + '"/>';
+
+    /* 下の段：この問の中身 */
+    s += QT(4, 250, 'この問（問17）の中の手順', { fs: 15, b: 1, c: G, f: QJP });
+    /* ① 同じ問題に いくつも答えさせる */
+    s += QT(4, 296, '① いくつも答えさせる', { fs: 14, b: 1, c: G, f: QJP });
+    s += QBOX(228, 278, 68, 34, '#f4f4f4', BK, 1);
+    s += QT(262, 300, 'LLM', { a: 'middle', fs: 15, b: 1, c: BK });
+    s += QARW(302, 330, 296, G);
+    for (var k = 0; k < 4; k++) s += QDOC(336 + k * 42, 278, 34, 34, '#fff', G);
+    s += QT(402, 336, '4つの答え', { a: 'middle', fs: 13, c: G, f: QJP });
+    /* ② 機械が採点する */
+    s += QBOX(0, 356, 556, 62, '#f6fbf8', G, 2);
+    s += QT(10, 380, '② 機械が採点する', { fs: 14, b: 1, c: G, f: QJP });
+    s += QT(216, 380, '正解 1 ／ 誤り 0', { fs: 14, b: 1, c: BK, f: QJP });
+    s += QT(538, 380, 'いまここ', { a: 'end', fs: 14, b: 1, c: G, f: QJP });
+    s += QT(10, 408, '人の見本の答えは 1つも使わない', { fs: 13, c: GY, f: QJP });
+    /* ③ 平均より上を強める */
+    s += QT(4, 452, '③ 平均より上を強め、下を抑える', { fs: 14, b: 1, c: GY, f: QJP });
+    s += QT(376, 452, '（Â でやる）', { fs: 13, c: GY, f: QJP });
+    h.innerHTML = s;
+  }
+
+  
+  function q17adv() {
+    var h = document.getElementById('q17adv');
+    if (!h) return;
+    var s = '', G = '#019949', GY = '#6e6e6e', BK = '#3f3f3f', R = '#c00';
+    var x0 = 60, W = 420, y = 96;
+    /* 数直線（0 と 1） */
+    s += '<line x1="' + x0 + '" y1="' + y + '" x2="' + (x0 + W) + '" y2="' + y
+      + '" stroke="' + BK + '"/>';
+    s += QT(x0, y + 34, '誤り 0', { a: 'middle', fs: 14, c: R, f: QJP });
+    s += QT(x0 + W, y + 34, '正解 1', { a: 'middle', fs: 14, c: G, f: QJP });
+    
+    
+    s += '<line x1="' + x0 + '" y1="' + (y - 6) + '" x2="' + x0 + '" y2="' + (y + 6)
+      + '" stroke="' + BK + '"/>';
+    s += '<line x1="' + (x0 + W) + '" y1="' + (y - 6) + '" x2="' + (x0 + W) + '" y2="'
+      + (y + 6) + '" stroke="' + BK + '"/>';
+    for (var i = 0; i < 2; i++) {
+      s += '<circle cx="' + (x0 + i * 22) + '" cy="' + (y - 26) + '" r="9" fill="' + R
+        + '" opacity=".75"/>';
+      s += '<circle cx="' + (x0 + W - i * 22) + '" cy="' + (y - 26) + '" r="9" fill="' + G
+        + '" opacity=".85"/>';
+    }
+    s += QT(x0 - 4, y - 52, '答え2つ', { a: 'middle', fs: 13, c: R, f: QJP });
+    s += QT(x0 + W + 4, y - 52, '答え2つ', { a: 'middle', fs: 13, c: G, f: QJP });
+    /* 平均の線 */
+    var xm = x0 + W / 2;
+    s += '<line x1="' + xm + '" y1="' + (y - 62) + '" x2="' + xm + '" y2="' + (y + 12)
+      + '" stroke="' + BK + '" stroke-dasharray="4 3"/>';
+    s += QT(xm, y - 74, '平均', { a: 'middle', fs: 14, b: 1, c: BK, f: QJP });
+    /* 上を強める・下を抑える */
+    s += QT(x0 + W - 40, y + 74, '強める（＋）', { a: 'middle', fs: 15, b: 1, c: G, f: QJP });
+    s += QT(x0 + 40, y + 74, '抑える（−）', { a: 'middle', fs: 15, b: 1, c: R, f: QJP });
+    s += QT(xm, y + 104, '4つあるので 4で割る', { a: 'middle', fs: 13, c: BK, f: QJP });
+    s += QARW(xm + 16, xm + 110, y + 50, G);
+    s += '<line x1="' + (xm - 16) + '" y1="' + (y + 50) + '" x2="' + (xm - 103) + '" y2="'
+      + (y + 50) + '" stroke="' + R + '" stroke-width="1.5"/>';
+    s += '<path d="M' + (xm - 110) + ' ' + (y + 50) + 'l7-4.5v9z" fill="' + R + '"/>';
+    h.innerHTML = s;
+  }
+
+  
+  function q17kind() {
+    var h = document.getElementById('q17kind');
+    if (!h) return;
+    var s = '', G = '#019949', GY = '#6e6e6e', BK = '#3f3f3f', R = '#c00';
+    s += QBOX(0, 8, 272, 130, '#f6fbf8', G, 2);
+    s += QT(136, 42, '機械が採点できる', { a: 'middle', fs: 15, b: 1, c: G, f: QJP });
+    s += QT(136, 78, '答えが', { a: 'middle', fs: 14, c: BK, f: QJP });
+    s += QT(136, 108, '1つに決まる', { a: 'middle', fs: 16, b: 1, c: G, f: QJP });
+    s += QBOX(284, 8, 272, 130, '#fff', R, 1);
+    s += QT(420, 42, '機械が採点できない', { a: 'middle', fs: 15, b: 1, c: R, f: QJP });
+    s += QT(420, 78, '答えが', { a: 'middle', fs: 14, c: BK, f: QJP });
+    s += QT(420, 108, '読む人で変わる', { a: 'middle', fs: 16, b: 1, c: R, f: QJP });
+    h.innerHTML = s;
+  }
+
+  
+  function q17draw() {
+    var h = document.getElementById('q17draw');
+    if (!h) return;
+    var s = '', G = '#019949', GY = '#6e6e6e', BK = '#3f3f3f';
+    var x0 = 190, W = 300;
+    var bar = function (y, pct, lab, col, strong, num) {
+      var t = QT(4, y + 16, lab, { fs: 14, b: strong ? 1 : 0, c: strong ? col : GY, f: QJP });
+      t += QBOX(x0, y, W, 22, '#fff', '#d9d9d9', 1);
+      t += '<rect x="' + x0 + '" y="' + y + '" width="' + (W * pct / 100) + '" height="22"'
+        + ' fill="' + col + '" opacity="' + (strong ? 0.9 : 0.4) + '"/>';
+      if (num) t += QT(x0 + W + 8, y + 16, num, { fs: 15, b: 1, c: strong ? col : GY });
+      return t;
+    };
+    
+    s += QT(4, 22, '1回だけ答えさせて 当たった率', { fs: 15, b: 1, c: BK, f: QJP });
+    s += bar(44, 15.6, '事前学習だけ', GY, false, '15.6%');
+    s += bar(78, 77.9, '正誤で伸ばす', G, true, '77.9%');
+    
+    s += QT(4, 156, '何回も答えさせて 1回でも当たった率', { fs: 15, b: 1, c: BK, f: QJP });
+    s += bar(178, 92, '事前学習だけ', GY, false, '');
+    s += bar(212, 92, '正誤で伸ばす', G, true, '');
+    s += QT(x0 + W + 8, 212, '同じ', { fs: 14, b: 1, c: BK, f: QJP });
+    s += QT(4, 268, '出せる答えの範囲は 広がっていない', { fs: 15, b: 1, c: BK, f: QJP });
+    h.innerHTML = s;
+  }
+
+  q17map(); q17adv(); q17kind(); q17draw();
+})();
+</script>
+</body>
+</html>
