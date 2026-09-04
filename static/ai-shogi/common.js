@@ -9,7 +9,7 @@ function drawTop(){
   var box = document.querySelector('.top .in'); if (!box) return;
   var tag = box.querySelector('.tag');
   var sub = tag ? tag.innerHTML : '';
-  box.innerHTML =
+  var inner =
     '<svg class="em" viewBox="0 0 44 44" aria-label="AIの詰将棋">'
     + '<path d="M22 3 L36 10.5 L33 40 L11 40 L8 10.5 Z" fill="#fff" stroke="#1a1a1a" stroke-width="2.2" stroke-linejoin="round"/>'
     + '<path d="M22 6.6 L32.8 12.4 L30.4 37 L13.6 37 L11.2 12.4 Z" fill="none" stroke="#1a1a1a" stroke-width="1"/>'
@@ -18,6 +18,17 @@ function drawTop(){
     + '</svg>'
     + '<span class="ti"><b class="nm">AIの詰将棋</b>'
     + '<span class="tag">' + sub + '</span></span>';
+  /* 🔴 2026-09-04 A：★★上のバー一帯を【はじめのページへのリンク】にする（★山田様の指定）
+     ★「問題のところでもどこでも、1番上のアイコンとかタイトル名とか一帯をクリックすると
+       トップページ（はじめのページ）に行けるように」
+     ★★はじめのページ自身では包まない ── ★自分に飛ぶリンクを置かないため。
+       ★判定は【ファイル名】で行う（★末尾が / のときも index.html とみなす）
+     ★★★href は index.html（★相対）── ★絶対パス（/…）は禁止（→ A105 の検査⑵）
+     ★見た目は包む前と同じ（★色を継ぐ・下線なし）。→ common.css の .top .in>.home */
+  var here = location.pathname.split('/').pop() || 'index.html';
+  if (here === 'index.html') { box.innerHTML = inner; return; }
+  box.innerHTML = '<a class="home" href="index.html" aria-label="AIの詰将棋 はじめのページへ">'
+                + inner + '</a>';
 }
 /* ══════════════════════════════════════════════════════════════════════════
    AIの詰将棋 ── common.js（23ページで共有）

@@ -39,6 +39,21 @@ body{margin:0;background:var(--bg);color:var(--black);font-family:var(--sans);
 .top .in{max-width:var(--content-w);margin:0 auto;padding:1.5rem 1.5rem;
   display:flex;align-items:center;gap:1rem}
 .top .em{width:52px;height:52px;flex-shrink:0;display:block}
+/* ══════════════════════════════════════════════════════════════════════════
+   🔴 2026-09-04 A：★★上のバー一帯を【はじめのページへのリンク】にした（★山田様の指定）。
+     ★エンブレム・タイトル・説明文をまとめて <a class="home"> で包んでいる（→ common.js drawTop）。
+   ★★包むと flex の子が <a> 1つになるので、★並べる指定を <a> にも持たせる
+     （★こうしないと エンブレムとタイトルが縦に積まれます）
+   ★見た目は包む前と同じにする ── ★色を継ぐ・下線を出さない。
+     ★押せることは【指カーソル】と【重ねたときだけ出る下線】で示す
+   ★★はじめのページ自身では包みません（★自分に飛ぶリンクを置かない。→ common.js）
+   ══════════════════════════════════════════════════════════════════════════ */
+.top .in>.home{display:flex;align-items:center;gap:1rem;min-width:0;flex:1 1 auto;
+  color:inherit;text-decoration:none;cursor:pointer}
+.top .in>.home:hover .nm{text-decoration:underline;text-decoration-thickness:1px;
+  text-underline-offset:3px}
+.top .in>.home:focus-visible{outline:2px solid var(--black);outline-offset:3px;
+  border-radius:4px}
 .top .ti{min-width:0}
 .top .ti .nm{display:block;font-family:var(--serif);font-size:1.75rem;font-weight:600;
   line-height:1.2;letter-spacing:.02em;color:var(--black)}
@@ -51,6 +66,7 @@ body{margin:0;background:var(--bg);color:var(--black);font-family:var(--sans);
   .pv .sg.on .lb .tt{display:inline}
 
   .top .in{padding:1.1rem 1.1rem;gap:.7rem}
+  .top .in>.home{gap:.7rem}
   .top .em{width:42px;height:42px}
   .top .ti .nm{font-size:1.3rem}
   .top .in .tag{font-size:12.5px}
@@ -148,7 +164,13 @@ summary{font-size:14px;font-weight:500;cursor:pointer}
  color:var(--gray-500);line-height:1.8}
 
 /* ══════ 会話の見た目（★03 の 150〜177 行の写し。★5本で完全に同一）══════ */
-   ══════════════════════════════════════════════════════════════════════════ */
+/* 🔴 2026-09-04 A：★★ここに【開き記号と対応しない閉じ行】が1行 余っていました（★退避に記録あり）。
+   ★★★実害が出ていました ── ★CSS の解析が「その行＋次の .cast2 の中身」までを
+     ★1つの壊れた規則として捨てるため、★common.css の .cast2{…} が【生きていませんでした】
+     （★実測：common.css 側の cast2 系は 7件しか無く、★.cast2 そのものが落ちていた）。
+   ★見た目に出ていなかったのは、★各ページの <style> が同じ .cast2 を持っていて後勝ちだったから。
+   ★★★q15〜17 で本文が消えた事故と【同じ編集事故の裏返し】です
+     （★あちらは閉じ行が落ちた。★こちらは閉じ行が余った）→ A105 の検査⑾ */
 .cast2{border:1px solid var(--gray-200);background:var(--gray-100);
   padding:1rem 1.1rem;margin:0 0 2.4rem}
 .cast2 .row{display:flex;gap:.9rem;align-items:flex-start}
