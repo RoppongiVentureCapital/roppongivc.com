@@ -50,10 +50,173 @@ input[type=range]{margin:0;min-width:0}
 }
 
 
+</style>
+</head>
+<body>
+
+<div class="top"><div class="in">AIの詰将棋<span class="tag">将棋の詰将棋のように、AIの中身を1問ずつ切り出しました。全21問。</span></div></div>
+<div class="wrap">
+
+
+<div class="prog">
+ <div class="steps" id="steps"></div>
+ <div class="cnt" id="prog_cnt"></div>
+</div>
+<div class="chap" id="chap"></div>
+
+<!-- ══════════════════ 問17 ══════════════════ -->
+<div class="card" id="c16">
+
+<div class="tagline">Question 17</div>
+
+<h2>正誤なら 点をごまかせない。ただし 正誤が付くものだけ</h2>
+
+
+<div class="figbox">
+ <div class="cap" style="text-align:left"><b>いま どこの話をしているのか</b>　──
+  <b>上の帯</b>が これまでの章と この問の位置です。
+  <b>下の段</b>は この問の中身で、<b>2025年1月・DeepSeek の論文1本</b>のやり方です
+  （DeepSeek-R1・arXiv:2501.12948）。
+  <b>問16 と違うのは 2つ</b> ── <b>人の見本の答えを 1つも使いません</b>。
+  <b>採点するのは 人ではなく 機械</b>です
+  （数値を照合したり、コードのテストを走らせたりします）。
+  <b>このあと あなたに押してもらう ○✕ は、その機械の代わり</b>です。
+  <span style="color:var(--gray-500)">いまの各社が同じやり方をしているかは、この論文には
+  書いていません。</span></div>
+ <svg id="q17map" viewBox="0 0 560 470"></svg>
+</div>
+
+<div id="e17a"></div>
+
+
+<div class="figbox">
+ <div class="cap" style="text-align:left"><b>Â（アドバンテージ）は 何をする数か</b>　──
+  <b>平均より上か 下か</b>を測る数です。
+  <b>上なら 強め（＋）、下なら 抑える（−）</b>。
+  <b>ばらつきで割る</b>のは、問題ごとに ものさしを そろえるためです
+  （<b>4つあるので 4で割る</b>）</div>
+ <svg id="q17adv" viewBox="0 0 560 210"></svg>
+</div>
+
+<div class="panel">
+ <div class="cap"><b>4つの解答</b>に ○✕ を付けます（押すと入れ替わる）</div>
+ <div class="togs" style="margin-top:0" id="gt16"></div>
+ <table class="dtab" id="gtab16"></table>
+ <div class="calc">Â ＝ ( r − 平均 ) ÷ 標準偏差
+r ＝ 正解 1 ・ 誤り 0</div>
+ <div class="cap">＋を強め、−を抑えます。標準偏差は<b>4で割る</b></div>
+ <div class="verdict" id="jg16">–</div>
+</div>
+
+
+<div id="e17b"></div>
+
+
+<div class="figbox">
+ <div class="cap" style="text-align:left"><b>「正誤が付けられる」とは どういうことか</b>　──
+  <b>答えが1つに決まる</b>なら 機械が採点できます。
+  <b>読む人によって変わる</b>なら 採点できません</div>
+ <svg id="q17kind" viewBox="0 0 560 170"></svg>
+</div>
+
+<div class="panel">
+ <div class="cap"><b>機械で正誤が判定できるのはどれですか</b></div>
+ <div id="sr16"></div>
+ <div class="gauge">
+  <div class="row"><span class="big" id="c16n">0</span><span class="u">/ 6 当たり</span></div>
+  <div class="gtrack"><span class="gfill" id="g16"></span><span class="gmark" id="m16"></span></div>
+  <div class="gcap"><span>0</span><span>目標 6</span><span>6</span></div>
+ </div>
+ <div class="verdict" id="j16">–</div>
+</div>
+
+<div id="e17c"></div>
+
+
+<div class="figbox">
+ <div class="cap" style="text-align:left"><b>1回だけ引く と、何回も引く</b>　──
+  <b>上の2本</b>は <b>1回だけ答えさせて 当たった率</b>（AIME 2024 という数学のテスト。
+  <b>模範解答を使わない版</b>で測った値です）。
+  <b>下の2本</b>は <b>何回も答えさせて 1回でも当たった率</b>で、
+  <b>ほとんど変わりません</b>。
+  <span style="color:var(--gray-500)">下の2本は「変わらない」ことを見せるための模式です
+  （原典に数値はありません）。原典自身が「自分たちのやり方のせいかもしれない」と保留しています。</span></div>
+ <svg id="q17draw" viewBox="0 0 560 300"></svg>
+</div>
+
+
+<div id="e17z"></div>
+
+<div id="r16" class="hide">
+ <div id="e17z2"></div>
+ <div class="keyh">この問で覚えること</div>
+ 
+ <div class="verdict ok">
+  <b>これが RLVR（正誤を報酬にする強化学習）です。</b>
+ </div>
+ <div class="panel">
+  <div class="cap"><b>AIME 2024 の pass@1（%）</b></div>
+  <svg id="ai16" viewBox="0 0 560 220"></svg>
+  <table class="dtab" style="text-align:left">
+   <tr><th style="text-align:left">得る</th><td style="text-align:left">模範解答を使わず、
+     正誤と形だけを報酬にして <b>15.6% → 77.9%</b></td></tr>
+   <tr><th style="text-align:left">失う</th><td style="text-align:left">模範解答をあいだに挟むと
+     <b>77.9 → 59.0</b> に下がる</td></tr>
+  </table>
+  <div class="cap">pass@1 は<b>何回か試した正答率の平均</b>で、「1回で当てた率」ではありません</div>
+ </div>
+ <div class="src">
+  <div class="h">原典</div>
+  DeepSeek-AI 2025（DeepSeek-R1）arXiv:2501.12948 Table 3
+ </div>
+ 
+ <div class="src">
+  <div class="h">役に立つところ</div>
+  <b>この鍛え方が効くのは、正誤が機械で判定できるところだけです。</b>
+  計算・コード・数値の照合は伸びます。
+  <span class="ref">読む人によって答えが変わる仕事（文章の良さ・謝罪の誠実さ）は、ここでは伸びません。伸びたという話が来たら、何を正解にしたのかを先に聞きます。</span>
+ </div>
+</div>
+</div>
+
+<!-- ══════════════════ 締め ══════════════════ -->
+<div class="card">
+<div class="tagline">summary</div>
+<h2>いま「作る工程」の話か、「使い方」の話か</h2>
+<div class="figbox"><svg id="splitFig" viewBox="0 0 560 300"></svg></div>
+
+<div id="e18a"></div>
+
+<div class="cap" style="text-align:left">
+ <b>作る工程は順番があり、後戻りできません。使い方は順番がなく、組み合わせます。</b></div>
+<div class="verdict">
+ <b>「AIは平均に流れる」と「数学オリンピックを解く」は別の段の話です。</b>
+</div>
+</div>
+
+
+<div class="card">
+<div class="tagline">next</div>
+<h2>ここから先は、あなたが手を動かす番です</h2>
+<div id="e18b"></div>
+<div class="verdict">
+ <b>次の章だけは、この入れ子の外です。道具が変わります。</b>
+</div>
+</div>
+
+
+<div id="nav"></div>
+
+<div id="foot"></div>
+</div>
+
+<script src="common.js"></script>
+<script>
+
 var QBASE = 14;   
 drawProg(17); drawChap(17, "");
 drawNav(["q16.html", "問16 好みで整える"], ["q18.html", "問18 組で決める"]);
-drawFoot("5語と数字は作例です。");
+drawFoot()   ;
 
 
 

@@ -50,10 +50,168 @@ input[type=range]{margin:0;min-width:0}
 }
 
 
+</style>
+</head>
+<body>
+
+<div class="top"><div class="in">AIの詰将棋<span class="tag">将棋の詰将棋のように、AIの中身を1問ずつ切り出しました。全21問。</span></div></div>
+<div class="wrap">
+
+
+<div class="prog">
+ <div class="steps" id="steps"></div>
+ <div class="cnt" id="prog_cnt"></div>
+</div>
+<div class="chap" id="chap"></div>
+
+
+<div id="nest"></div>
+
+<!-- ══════════════════ 問15 ══════════════════ -->
+<div class="card" id="c14">
+
+<div class="tagline">Question 15</div>
+
+<h2>次の語を当てるだけで、ほかのことも付いてくる</h2>
+
+
+
+<div class="figbox">
+ 
+ <div class="cap"><b>この問がやっていること</b>　── 出口の5語は、第3章で見た
+  <b>5万個の部品</b>を <b>5個に縮めたもの</b>です（縮めたのは この問題）。
+  数字は<b>下の棒グラフ</b>に出ます</div>
+ <svg id="q15map" viewBox="0 0 560 250"></svg>
+</div>
+
+<div id="e15a"></div>
+
+<p class="lead"><b>ずれを 0.20 以下</b>に。</p>
+
+<div class="panel">
+ <div class="cap"><b>①「日本の首都は」の次は？</b>　<b>②「電車が速く」の次は？</b><br>棒が5語の確率</div>
+ <svg id="w14" viewBox="0 0 560 330"></svg>
+ <div class="calc">スコア ＝ a × 地名らしさ ＋ b × 動きらしさ
+確率 ＝ softmax(スコア)
+ずれ ＝ −log(正解の語の確率) の 2文の平均</div>
+ <div class="ctl">
+  <label for="a14"><span><b>a</b>　地名らしさ</span><span class="n" id="a14v">0.00</span></label>
+  <input type="range" id="a14" min="0" max="3000" step="1" value="0">
+ </div>
+ <div class="ctl">
+  <label for="b14"><span><b>b</b>　動きらしさ</span><span class="n" id="b14v">0.00</span></label>
+  <input type="range" id="b14" min="0" max="3000" step="1" value="0">
+ </div>
+ <div class="togs">
+  <button class="btn go" id="s14a">1歩</button>
+  <button class="btn go" id="s14b">10歩</button>
+  <button class="btn go" id="s14c">100歩</button>
+  <button class="btn sm" id="r14b">戻す</button>
+  <span style="font-size:13px;color:var(--gray-500)"><b id="n14">0</b> 歩</span>
+ </div>
+ <div class="gauge">
+  <div class="row"><span class="big" id="e14">–</span><span class="u">ずれ</span></div>
+  <div class="gtrack"><span class="gfill" id="g14"></span><span class="gmark" id="m14"></span></div>
+  <div class="gcap"><span>0</span><span>目標 0.20</span><span>2.0</span></div>
+ </div>
+ <div class="verdict" id="j14">–</div>
+</div>
+
+
+<div class="figbox">
+ <div class="cap"><b>いま つまみを回すと 何が起きているか</b>　──
+  <b>つまみを動かすと この数字が全部 動きます</b></div>
+ <div class="calc" id="q15flow">–</div>
+</div>
+
+
+<div id="e15b"></div>
+
+
+<div class="figbox">
+ <div class="cap"><b>ずれ ＝ −log（正解の語に出した確率）</b>　──
+  当てるほど <b>0</b> に近づき、外すほど 跳ね上がります。
+  <b>物差しは上のゲージと同じ 0〜2.0</b> です</div>
+ <div id="q15log"></div>
+</div>
+
+<div id="e15b2"></div>
+
+<div class="panel">
+ <div class="cap"><b>本物は1語に 12,288個</b>の数字</div>
+ <table class="dtab" id="vt14" style="text-align:left"></table>
+</div>
+
+
+<div class="figbox">
+ <div class="cap"><b>この数字を決めたのは 誰か</b>　── <b>上の表</b>の2列
+  （地名らしさ・動きらしさ）は <b>私が手で書きました</b>。本物は こうなります</div>
+ <table class="dtab" id="q15who" style="text-align:left"></table>
+ <div class="cap" style="text-align:left" id="q15whoc"></div>
+</div>
+
+<div id="e15v"></div>
+
+
+<div class="figbox">
+ <div class="cap"><b>なぜ 文法も事実も要約も付いてくるのか</b>　──
+  次の語を当てるために <b>必要だから</b>です</div>
+ <table class="dtab" id="q15why" style="text-align:left"></table>
+</div>
+
+<div id="e15c"></div>
+
+<div id="r14" class="hide">
+ <div id="e15z"></div>
+ <div class="keyh">この問で覚えること</div>
+ 
+ <div class="verdict ok">
+  <b>これが事前学習です。</b>
+ </div>
+ <div class="panel">
+  <div class="cap"><b>1回ぶんと回数</b></div>
+  <svg id="rep14" viewBox="0 0 560 170"></svg>
+  <table class="dtab" style="text-align:left">
+   <tr><th style="text-align:left"></th><th>この問</th><th>GPT-3</th></tr>
+   
+   <tr><td style="text-align:left">機械が決めるつまみ</td><td>2 個（a・b）</td><td>1,750億 個 ぜんぶ</td></tr>
+   <tr><td style="text-align:left">人が手で書いた数字</td><td>10 個（5語 × 2列）</td><td>0 個</td></tr>
+   <tr><td style="text-align:left">練習した語</td><td>2文</td><td>3,000億 語</td></tr>
+   <tr><td style="text-align:left">出口の語</td><td>5 語</td><td>5万 語</td></tr>
+   <tr><td style="text-align:left">繰り返し</td><td id="n14b">0 回</td><td>93,750 回</td></tr>
+  </table>
+ </div>
+ <div class="src">
+  <div class="h">原典</div>
+  Brown et al. 2020（GPT-3）arXiv:2005.14165 Table 2.1
+  <span class="ref">300B ÷ 3.2M ＝ 93,750 回。<b>10万回のオーダー</b>です。
+   
+   語の数字（1語 12,288個 × 5万語ぶん）も、<b>この 1,750億個の中に入っています</b>。
+   1語に 12,288個 は Table 2.1 の d_model です。</span>
+ </div>
+ 
+ <div class="src">
+  <div class="h">役に立つところ</div>
+  <b>もっともらしい嘘は、あとから直せる不具合ではありません。</b>
+  次に来そうな語を選ぶという<b>作りそのもの</b>から出てきます。
+  <span class="ref">だから「使う側が確かめる」を工程に入れます。消える見込みのある欠陥として待たないこと。</span>
+ </div>
+</div>
+</div>
+
+
+<div id="nav"></div>
+
+<div id="foot"></div>
+</div>
+
+<script src="common.js"></script>
+<script>
+
 var QBASE = 14;   
 drawProg(15); drawChap(15, "この章は<b>作り方</b>の章です。3段あって、<b>1段下るたびに 得るものと 失うものがあります</b>（積み上げではありません）。");
 drawNav(["q14.html", "問14 2つの語を同時に見る"], ["q16.html", "問16 好みで整える"]);
-drawFoot("5語と数字は作例です。");
+drawFoot()   ;
 drawNest("nest", 4);
 
 

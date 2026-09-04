@@ -50,10 +50,163 @@ input[type=range]{margin:0;min-width:0}
 }
 
 
+</style>
+</head>
+<body>
+
+<div class="top"><div class="in">AIの詰将棋<span class="tag">将棋の詰将棋のように、AIの中身を1問ずつ切り出しました。全21問。</span></div></div>
+<div class="wrap">
+
+
+<div class="prog">
+ <div class="steps" id="steps"></div>
+ <div class="cnt" id="prog_cnt"></div>
+</div>
+<div class="chap" id="chap"></div>
+
+<!-- ══════════════════ 問16 ══════════════════ -->
+<div class="card" id="c15">
+
+<div class="tagline">Question 16</div>
+
+<h2>賢くはならない。振る舞いが 誰かの好みにそろう</h2>
+
+
+<div class="figbox">
+ 
+ <div class="cap" style="text-align:left"><b>いま どこの話をしているのか</b>　──
+  <b>上の帯</b>が これまでの章と この問の位置です。
+  <b>下るたびに 得るものと 失うものがあります</b>（積み上げではありません）。
+  <b>下の段</b>は この問の中身で、<b>2022年3月・OpenAI の論文1本</b>のやり方です
+  （「指示に従わせる」arXiv:2203.02155。整えた相手は <b>GPT-3</b>・2020年・つまみ 1,750億個）。
+  <b>下の段の ①②③ は【この問（問16）の中だけの手順】</b>です
+  （<b>問15・問17 とは関係ありません</b>）。<b>問15 でできた LLM に 人が手を入れる順番</b>で、
+  <b>あなたが押すのは ② だけ</b>です。
+  <span style="color:var(--gray-500)">できたものの「使い方」（思考の誘導など）は この列の外で、
+  最後の問で出てきます。いまの各社が同じやり方をしているかは、この論文には書いていません。</span></div>
+ <svg id="q16map" viewBox="0 0 560 620"></svg>
+</div>
+
+<div id="e16a"></div>
+
+
+<div class="figbox">
+ <div class="cap" style="text-align:left"><b>A と B は何が違うのか</b>　──
+  どちらが「良い」かは <b>決まっていません</b>。押した人の好みが そのまま点になります</div>
+ <table class="dtab" id="q16ab" style="text-align:left"></table>
+</div>
+
+<p class="lead">3組とも<b>選んだ側の予測を 80% 以上</b>に。</p>
+
+
+<div class="panel">
+ <div class="cap"><b>良いと思う方を押してください。</b>正解はありません</div>
+ <div id="pr15"></div>
+</div>
+<div class="calc">P ＝ σ( r(選んだ方) − r(選ばなかった方) )
+ずれ ＝ −log P の 3組の平均</div>
+<div class="cap">σ はシグモイド。つまみは <b>6個の r（報酬）</b>で、これを機械に動かさせます</div>
+
+
+<div id="e16b"></div>
+
+
+<div class="figbox">
+ 
+ <div class="cap" style="text-align:left"><b>［10歩］で 何をしているのか</b>　──
+  <b>あなたが押した通りになるように、点の付け方を 直しています</b>。
+  <b>問1〜2 と同じ坂下り</b>で、違うのは <b>ずれの測り方</b>だけ ──
+  <b>人が押した方に 高い点が付いているか</b>を測ります。
+  <span style="color:var(--gray-500)">ここで作っているのは「点の付け方」です。
+  LLM 本体（上の図の ③）は、この画面ではまだ 1歩も動いていません。</span></div>
+ <svg id="q16step" viewBox="0 0 560 250"></svg>
+</div>
+
+<div class="panel">
+ <div class="togs" style="margin-top:0">
+  <button class="btn go" id="s15a">1歩</button>
+  <button class="btn go" id="s15b">10歩</button>
+  <button class="btn go" id="s15c">100歩</button>
+  <button class="btn sm" id="r15b">戻す</button>
+  
+  <span style="font-size:13px;color:var(--gray-500)"><b id="n15">0</b> 歩<span id="h15"></span></span>
+ </div>
+ <div class="gauge">
+  <div class="row"><span class="big" id="w15">–</span><span class="u">% いちばん低い組</span></div>
+  <div class="gtrack"><span class="gfill" id="g15"></span><span class="gmark" id="m15"></span></div>
+  <div class="gcap"><span>0</span><span>目標 80%</span><span>100</span></div>
+ </div>
+ <div class="verdict" id="j15">–</div>
+</div>
+
+
+<div id="e16c"></div>
+
+
+<div class="figbox">
+ 
+ <div class="cap" style="text-align:left"><b>物差しが 2つあります</b>　──
+  <b>同じものを 2つの測り方で測っています。どちらで測るかで 答えが逆になります</b>。
+  <b>13億・1,750億 は つまみ（パラメータ）の数</b>です</div>
+ <svg id="q16win" viewBox="0 0 560 340"></svg>
+ <table class="dtab" id="q16wint" style="text-align:left"></table>
+</div>
+
+
+<div class="figbox">
+ <div class="cap" style="text-align:left"><b>「一致率 7割」とは何か</b>　──
+  40人の多数決ではありません。<b>同じ1問を 2人に見せて、同じ方を選んだか</b>を数えたものです</div>
+ <svg id="q16agree" viewBox="0 0 560 150"></svg>
+</div>
+
+
+<div id="e16z"></div>
+
+<div id="r15" class="hide">
+ <div id="e16z2"></div>
+ <div class="keyh">この問で覚えること</div>
+ 
+ <div class="verdict ok">
+  <b>これが RLHF（人の好みによる強化学習）です。</b>
+ </div>
+ <div class="panel">
+  <div class="cap"><b>答えの型の散らばり</b>（模式）</div>
+  <svg id="md15" viewBox="0 0 560 200"></svg>
+  <table class="dtab" style="text-align:left">
+   <tr><th style="text-align:left">得る</th><td style="text-align:left">有用性。同じ大きさの
+     整える前に <b>85%</b> 勝つ。<b>13億が 1,750億より好まれた</b></td></tr>
+   <tr><th style="text-align:left">失う</th><td style="text-align:left">一部の力が下がる
+     （SQuAD・DROP・HellaSwag・WMT15）。<b>較正が壊れる 0.007 → 0.074</b></td></tr>
+  </table>
+ </div>
+ <div class="src">
+  <div class="h">原典</div>
+  Ouyang et al. 2022（InstructGPT）arXiv:2203.02155 §4.2
+  <span class="ref">0.007 → 0.074 は OpenAI 2023（GPT-4）arXiv:2303.08774 Figure 8。</span>
+ </div>
+ 
+ <div class="src">
+  <div class="h">役に立つところ</div>
+  <b>「誰の好みに合わせたか」が公開されているのは、この論文の約40人の例だけです。</b>
+  ふだん使う道具が誰の好みで整えられたかは、ふつう分かりません。
+  <span class="ref">出力の癖は、その道具を整えた人たちの癖だと思って読みます。他社が同じやり方をしているかは、この論文には書いていません。</span>
+ </div>
+</div>
+</div>
+
+
+<div id="nav"></div>
+
+<div id="foot"></div>
+</div>
+
+<script src="common.js"></script>
+<script>
+
 var QBASE = 14;   
 drawProg(16); drawChap(16, "");
 drawNav(["q15.html", "問15 大量に練習する"], ["q17.html", "問17 正誤で伸ばす"]);
-drawFoot("5語と数字は作例です。");
+drawFoot()   ;
 
 
 
