@@ -1,0 +1,15 @@
+{{- /* 図。src が無いあいだは「未作成」の枠と、描くための指定をそのまま出す。
+       ★HTMLの行頭に空白を入れないこと。コラムの中で使うと .Inner が markdownify を
+         通るので、4文字以上の字下げがあるとコードブロックに化ける（実際に化けた）
+       ★2026-09-05 w= を足した。縦長のスクリーンショット（スマホ画面など）を
+         本文幅いっぱいに広げると縦が1,500pxを超えるので、幅を指定して抑える */ -}}
+<figure class="a-fig{{ if .Get "wide" }} a-fig-wide{{ end }}">
+<div class="a-fig-frame{{ if .Get "src" }} has-img{{ end }}">
+{{- if .Get "src" }}
+<img src="{{ .Get "src" | relURL }}" alt="図{{ .Get "n" }}"{{ with .Get "w" }} style="max-width:{{ . }}px"{{ end }}>
+{{- else }}
+<span class="a-fig-todo"><span class="a-fig-no">図 {{ .Get "n" }}</span><br>画像は未作成</span>
+{{- end }}
+</div>
+<figcaption class="a-fig-cap"><span class="a-fig-no">図 {{ .Get "n" }}</span>　{{ .Inner | markdownify }}</figcaption>
+</figure>

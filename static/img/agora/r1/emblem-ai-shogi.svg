@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 44 44" role="img" aria-label="AIの詰将棋">
+<!-- ★ゲーム側（static/ai-shogi/common.js の drawTop）のエンブレムをそのまま持ってきたもの。
+     将棋の駒（五角形）の中に【AI】。★両方を同じ絵にしておくこと -->
+<path d="M22 3 L36 10.5 L33 40 L11 40 L8 10.5 Z" fill="#fff" stroke="#1a1a1a" stroke-width="2.2" stroke-linejoin="round"/>
+<path d="M22 6.6 L32.8 12.4 L30.4 37 L13.6 37 L11.2 12.4 Z" fill="none" stroke="#1a1a1a" stroke-width="1"/>
+<text x="22" y="29" text-anchor="middle" font-size="15" font-weight="700"
+      font-family="Inter,system-ui,sans-serif" fill="#1a1a1a" letter-spacing="0.5">AI</text>
+</svg>

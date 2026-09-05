@@ -1,0 +1,31 @@
+{{ define "head" }}
+<meta name="robots" content="noindex,nofollow">
+<link rel="stylesheet" href="{{ "css/agora-article.css" | relURL }}">
+{{ end }}
+
+{{ define "main" }}
+<article class="agora-article">
+
+  {{/* ヒーロー ── ★2026-09-04 白地・写真を左・見出しを右（山田様の選定）。
+       写真は front matter の hero_photo。無ければ文字だけで成立する */}}
+  <header class="a-hero">
+    <div class="a-hero-inner">
+      {{ with .Params.hero_photo }}
+      <div class="a-hero-photo"><img src="{{ . | relURL }}" alt="{{ $.Params.hero_photo_alt | default "" }}" width="300" height="400"></div>
+      {{ end }}
+      <div class="a-hero-text">
+        {{ with .Params.hero_label }}<span class="a-hero-label">{{ . }}</span>{{ end }}
+        {{ with .Params.headline }}<h1 class="a-hero-title">{{ . | safeHTML }}</h1>{{ end }}
+        <p class="a-hero-meta">{{ .Date.Format "2006年1月2日" }}</p>
+      </div>
+    </div>
+  </header>
+
+  {{ with .Params.draftnote }}<div class="a-note">{{ . | safeHTML }}</div>{{ end }}
+
+  <div class="a-body">
+    {{ .Content }}
+  </div>
+
+</article>
+{{ end }}

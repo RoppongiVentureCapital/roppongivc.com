@@ -1,0 +1,13 @@
+{{- /* コラム ★2026-09-04 折りたたみ式にした（山田様の指示）。
+       ★以前は「折りたたまない」方針だった（docs/105 §2-10 根拠4／§4-8 で却下）。
+         理由は「図10枚のうち5枚がコラムの中にあり、隠すと図が半分消える」ため。
+         → 方針変更なので、元に戻す場合はこのファイルを details/summary から
+           aside の常時展開に戻すだけでよい。
+       ★HTMLの行頭に空白を入れないこと（markdownify が字下げをコードブロックと解釈する） */ -}}
+<details class="a-col a-out">
+<summary class="a-col-sum">
+<span class="a-col-tag">コラム {{ .Get "n" }}</span>
+<span class="a-col-title">{{ .Get "title" }}</span>
+</summary>
+<div class="a-col-inner">{{ .Inner | markdownify }}</div>
+</details>

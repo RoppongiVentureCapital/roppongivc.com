@@ -1,0 +1,96 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 348" role="img"
+     aria-label="この日のAIの使い方。1、5人で議論する。進行役と4人。2、話しているあいだ、AIが録音を自動で、即時に文字起こしする。3、その記録のファイルをAIに渡し、指示も加える。4、返ってきた回答を全員で読み、批評する。この日は、これをくり返した。">
+<!--
+  ★余白のルール（fig-kaggle・fig-agent と同じ）基準単位 8px。外周 32
+  ★書体は1つだけ。差は大きさ・太さ・色だけ
+  ★色 ── 人間＝白地に細枠／AI＝灰の濃い枠（記事の発言ブロックの約束と同じ）
+  ★★番号（①②③）は使わない。コラム1の①道具の中身／②手続き／③結論とぶつかるため
+    ここでは 1 2 3 4 の丸数字ではなく、小さな見出し番号にとどめる
+  ★出所 ── record-log 付記「当日のAIへの投げ込みと出力（時系列）」＝当日のAI投入は4回
+    （21:02／21:17-19／21:34／21:47）。文字起こしは自動、AIへは記録のファイルを渡している
+-->
+<style>
+text{
+  font-family:'Hiragino Kaku Gothic ProN','Hiragino Sans','Yu Gothic','Meiryo','Helvetica Neue',Arial,sans-serif;
+  font-weight:400; fill:#333;
+}
+.eyebrow{font-size:13.5px;font-weight:600;fill:#8a8a8a;letter-spacing:.02em}
+.deck{font-size:27px;font-weight:600;fill:#111}
+.step{font-size:11.5px;font-weight:600;fill:#b8b8b8}
+.label{font-size:14px;font-weight:600;fill:#111}
+.sub{font-size:11.5px;fill:#8a8a8a}
+.badge{font-size:9.5px;font-weight:600;fill:#fff}
+.foot{font-size:14px;font-weight:600;fill:#111}
+</style>
+
+<rect width="760" height="348" fill="#fff"/>
+
+<text class="eyebrow" x="32" y="34">この日のAIの使い方</text>
+<text class="deck" x="32" y="72">議論しながら、記録をそのままAIに渡す</text>
+
+<!-- ============ 1 5人で議論 ============ -->
+<rect x="32" y="100" width="156" height="164" rx="6" fill="#fff" stroke="#c4c4c4" stroke-width="1"/>
+<text class="step" x="48" y="122">1</text>
+<g fill="#c4c4c4">
+  <circle cx="74" cy="152" r="6"/><rect x="67" y="161" width="14" height="14" rx="4"/>
+  <circle cx="110" cy="152" r="6"/><rect x="103" y="161" width="14" height="14" rx="4"/>
+  <circle cx="146" cy="152" r="6"/><rect x="139" y="161" width="14" height="14" rx="4"/>
+  <circle cx="92" cy="188" r="6"/><rect x="85" y="197" width="14" height="14" rx="4"/>
+  <circle cx="128" cy="188" r="6"/><rect x="121" y="197" width="14" height="14" rx="4"/>
+</g>
+<text class="label" x="48" y="238">5人で議論する</text>
+<text class="sub" x="48" y="256">進行役＋4人</text>
+
+<path d="M192 182 L206 182" stroke="#9a9a9a" stroke-width="1.5" fill="none"/>
+<path d="M206 178 L212 182 L206 186 Z" fill="#9a9a9a"/>
+
+<!-- ============ 2 文字起こし ============ -->
+<rect x="212" y="100" width="156" height="164" rx="6" fill="#fff" stroke="#c4c4c4" stroke-width="1"/>
+<text class="step" x="228" y="122">2</text>
+<rect x="248" y="140" width="76" height="74" rx="3" fill="#fff" stroke="#c4c4c4" stroke-width="1"/>
+<g stroke="#d4d4d4" stroke-width="2">
+  <path d="M258 156 L314 156"/><path d="M258 168 L314 168"/>
+  <path d="M258 180 L314 180"/><path d="M258 192 L296 192"/>
+</g>
+<rect x="308" y="130" width="26" height="16" rx="4" fill="#9a9a9a"/>
+<text class="badge" x="321" y="141" text-anchor="middle">AI</text>
+<text class="label" x="228" y="238">AIが文字起こし</text>
+<text class="sub" x="228" y="256">録音から自動で、即時に</text>
+
+<path d="M372 182 L386 182" stroke="#9a9a9a" stroke-width="1.5" fill="none"/>
+<path d="M386 178 L392 182 L386 186 Z" fill="#9a9a9a"/>
+
+<!-- ============ 3 AIに渡す ============ -->
+<rect x="392" y="100" width="156" height="164" rx="6" fill="#f7f7f7" stroke="#9a9a9a" stroke-width="1.5"/>
+<text class="step" x="408" y="122">3</text>
+<rect x="412" y="146" width="42" height="52" rx="3" fill="#fff" stroke="#c4c4c4" stroke-width="1"/>
+<g stroke="#d4d4d4" stroke-width="2">
+  <path d="M420 160 L446 160"/><path d="M420 170 L446 170"/><path d="M420 180 L438 180"/>
+</g>
+<path d="M460 172 L474 172" stroke="#9a9a9a" stroke-width="1.5" fill="none"/>
+<path d="M474 168 L480 172 L474 176 Z" fill="#9a9a9a"/>
+<rect x="486" y="146" width="46" height="52" rx="6" fill="#fff" stroke="#9a9a9a" stroke-width="1.5"/>
+<text class="label" x="509" y="177" text-anchor="middle" style="font-size:13px">AI</text>
+<text class="label" x="408" y="238">記録をAIに渡す</text>
+<text class="sub" x="408" y="256">指示も加える</text>
+
+<path d="M552 182 L566 182" stroke="#9a9a9a" stroke-width="1.5" fill="none"/>
+<path d="M566 178 L572 182 L566 186 Z" fill="#9a9a9a"/>
+
+<!-- ============ 4 回答を読む ============ -->
+<rect x="572" y="100" width="156" height="164" rx="6" fill="#fff" stroke="#c4c4c4" stroke-width="1"/>
+<text class="step" x="588" y="122">4</text>
+<rect x="600" y="138" width="100" height="60" rx="6" fill="#f7f7f7" stroke="#9a9a9a" stroke-width="1.5"/>
+<g stroke="#b8b8b8" stroke-width="2">
+  <path d="M612 154 L688 154"/><path d="M612 166 L688 166"/><path d="M612 178 L664 178"/>
+</g>
+<path d="M614 198 L614 208 L628 198 Z" fill="#f7f7f7" stroke="#9a9a9a" stroke-width="1.5"/>
+<text class="label" x="588" y="238">回答を全員で読む</text>
+<text class="sub" x="588" y="256">その場で批評する</text>
+
+<!-- 戻りの矢印 -->
+<path d="M700 276 L700 292 L110 292 L110 276" stroke="#c4c4c4" stroke-width="1.5" fill="none"/>
+<path d="M106 280 L110 274 L114 280 Z" fill="#c4c4c4"/>
+
+<text class="foot" x="32" y="332">この日は、これをくり返した</text>
+</svg>

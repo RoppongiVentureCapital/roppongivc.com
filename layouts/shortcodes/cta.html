@@ -1,0 +1,17 @@
+{{- /* 触れるCTA。★製品名とサブタイトルは必ずセット（docs/105 §3-1）。「AI詰将棋」と「の」を抜かない
+       ★2026-09-05 エンブレムを追加。ゲーム側（static/ai-shogi/common.js drawTop）と同じ
+         将棋の駒（五角形）＋【AI】の絵を出す。★両方を同じ絵に保つこと */ -}}
+<div class="a-cta a-out">
+<div class="a-cta-head">
+<img class="a-cta-em" src="{{ "img/agora/r1/emblem-ai-shogi.svg" | relURL }}" alt="">
+<div class="a-cta-ti">
+<div class="a-cta-name">{{ .Get "name" | default "AIの詰将棋" }}</div>
+<p class="a-cta-sub">{{ .Get "sub" | default "将棋の詰将棋のように、AIの中身を1問ずつ切り出しました。全21問。" }}</p>
+</div>
+</div>
+<a class="a-btn" href="{{ .Get "href" | default "#" }}">{{ .Get "label" | default "はじめる" }}</a>
+{{- with .Get "href2" }}<a class="a-btn a-btn-ghost" href="{{ . }}">{{ $.Get "label2" }}</a>{{ end }}
+{{- with .Get "note" }}
+<p class="a-cta-note">{{ . | safeHTML }}</p>
+{{- end }}
+</div>

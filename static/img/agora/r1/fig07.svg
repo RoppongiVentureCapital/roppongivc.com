@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 414" role="img"
+     aria-label="AIが出せるのは候補だけ。何を狙うかと、どれが本物かは、人間の側にある。人間が方向を出し、AIが非自明な連結を大量に出し、人間が反例を当てて選び抜く。">
+<!-- 余白 16/24/28/64 ＋外周32。書体は1つ。箱と矢印の羅列をやめ、上の罫線と番号で順序を示す -->
+<style>
+text{font-family:'Hiragino Kaku Gothic ProN','Hiragino Sans','Yu Gothic','Meiryo','Helvetica Neue',Arial,sans-serif;font-weight:400;fill:#333}
+.eyebrow{font-size:13.5px;font-weight:600;fill:#8a8a8a}
+.deck{font-size:27px;font-weight:600;fill:#111}
+.who{font-size:13.5px;font-weight:600}
+.label{font-size:20px;font-weight:600;fill:#111}
+.body{font-size:16.5px}
+.micro{font-size:14px;fill:#9a9a9a}
+</style>
+
+<text class="eyebrow" x="32" y="44">創造の分担 ── この2時間の実演</text>
+
+<text class="deck" x="32" y="108">AIが出せるのは候補だけ。</text>
+<text class="deck" x="32" y="148">狙いと判定は、人間の側にある。</text>
+
+<line x1="32"  y1="204" x2="221" y2="204" stroke="#019949" stroke-width="3"/>
+<text class="who"   x="32" y="230" fill="#019949">人間</text>
+<text class="label" x="32" y="258">01　方向</text>
+<text class="body"  x="32" y="290">何を価値ある</text>
+<text class="body"  x="32" y="318">新しさとして狙うか</text>
+
+<line x1="285" y1="204" x2="474" y2="204" stroke="#c4c4c4" stroke-width="3"/>
+<text class="who"   x="285" y="230" fill="#8a8a8a">AI</text>
+<text class="label" x="285" y="258">02　候補</text>
+<text class="body"  x="285" y="290">非自明な連結を</text>
+<text class="body"  x="285" y="318">高速で大量に出す</text>
+
+<line x1="538" y1="204" x2="727" y2="204" stroke="#019949" stroke-width="3"/>
+<text class="who"   x="538" y="230" fill="#019949">人間</text>
+<text class="label" x="538" y="258">03　判定</text>
+<text class="body"  x="538" y="290">本物かこじつけかを</text>
+<text class="body"  x="538" y="318">反例を当てて選び抜く</text>
+
+<line x1="32" y1="366" x2="728" y2="366" stroke="#e2e2e2" stroke-width="1"/>
+<text class="micro" x="32" y="398">候補はほとんど外れ。01 と 03 は、人間しかできない</text>
+</svg>

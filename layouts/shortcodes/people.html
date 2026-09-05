@@ -1,0 +1,20 @@
+{{- /* 参加者の一覧。アイコン＋名前＋正式な肩書き。
+       ★ここは肩書きを略さない（docs/105 §2-3-1）。短縮するのは発言ブロックだけ。
+       ★HTMLの行頭に空白を入れない */ -}}
+{{- $dir := "img/agora/r1/avatars" -}}
+<div class="a-people">
+{{- range .Params }}
+{{- $p := split . "|" }}
+<div class="a-person">
+{{- if ge (len $p) 3 }}
+<div><img class="a-person-av" src="{{ printf "%s/%s" $dir (index $p 2) | relURL }}" alt="{{ index $p 0 }}"></div>
+{{- else }}
+<div></div>
+{{- end }}
+<div>
+<div class="a-person-name">{{ index $p 0 }}</div>
+<div class="a-person-role">{{ index $p 1 }}</div>
+</div>
+</div>
+{{- end }}
+</div>

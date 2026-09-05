@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-label="AI">
+<!-- ★人の顔にしない。AIだけは記号にする。
+     並べたときに「これは人ではない」が一目でわかり、
+     発言ブロックのリズムは1本のまま保てる -->
+<rect width="256" height="256" fill="#14181d"/>
+<g stroke="#019949" stroke-width="6" fill="none" stroke-linecap="round">
+  <path d="M96 96 L128 78 L160 96"/>
+  <path d="M96 96 L96 132 L128 150 L160 132 L160 96"/>
+  <path d="M128 78 L128 150"/>
+  <path d="M96 132 L64 150"/>
+  <path d="M160 132 L192 150"/>
+  <path d="M128 150 L128 186"/>
+</g>
+<g fill="#019949">
+  <circle cx="128" cy="78"  r="9"/>
+  <circle cx="96"  cy="96"  r="8"/>
+  <circle cx="160" cy="96"  r="8"/>
+  <circle cx="96"  cy="132" r="8"/>
+  <circle cx="160" cy="132" r="8"/>
+  <circle cx="128" cy="150" r="9"/>
+  <circle cx="64"  cy="150" r="7"/>
+  <circle cx="192" cy="150" r="7"/>
+  <circle cx="128" cy="186" r="7"/>
+</g>
+</svg>

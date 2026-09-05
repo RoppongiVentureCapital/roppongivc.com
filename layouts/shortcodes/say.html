@@ -1,0 +1,33 @@
+{{- /* 発言ブロック。★記事内の「誰かの発言」は全部これに統一する。
+       使い方: {{< say who="yamai" >}}発言{{< /say >}}
+       ★苗字だけ＋ひと言の肩書き（正式な肩書きはヒーロー・リード・5人一覧に置く）
+       ★2026-09-03 吹き出しに変更（.a-say-bub）。話者ごとの色は CSS の .s-<who> が持つ。
+       ★運営3人は Members ページの写真に差し替え済み
+       ★2026-09-04 山井さんも【本人の写真 yamai.jpg】に差し替えた（★写真を頂いた）。
+         ★北村さんは顔を出さないシルエット（kitamura.jpg）。
+         ★飯塚さんは許諾待ちのため、そのシルエットを左右反転して90%にしたもの（iizuka.jpg）。
+           許諾が取れたら本人の写真から作り直す。★iizuka.svg は消していない
+         ★糸永さんは 2026-09-04 に顔の大きさを揃えて作り直した（顔幅 32.2% → 40.6%）
+       ★運営3人の肩書きには団体名を付ける。★ここだけは【六本木VC】と略す
+         （2026-09-04 山田様の指示。「カタカナだと長すぎる」。★これは意図的な例外で、
+          本文・リード・5人一覧は「六本木ベンチャーキャピタル」のまま。★戻さないこと）
+       ★HTMLの行頭に空白を入れないこと（markdownify が字下げをコードブロックにする） */ -}}
+{{- $dir := "img/agora/r1/avatars" -}}
+{{- $who := dict
+  "yamai"    (dict "n" "山井" "r" "AI五輪メダリスト" "f" "yamai.jpg")
+  "iizuka"   (dict "n" "飯塚" "r" "高校1年"         "f" "iizuka.jpg")
+  "kitamura" (dict "n" "北村" "r" "六本木VC運営・数学アドバイザー" "f" "kitamura.jpg")
+  "itonaga"  (dict "n" "糸永" "r" "六本木VC運営・連続起業家"        "f" "itonaga.jpg")
+  "yamada"   (dict "n" "山田" "r" "六本木VC運営・進行役"          "f" "yamada.jpg")
+  "ai"       (dict "n" "AI"   "r" "Claude Fable 5"  "f" "ai.svg")
+-}}
+{{- $k := .Get "who" -}}
+{{- $p := index $who $k -}}
+{{- if not $p }}{{ errorf "say: 知らない話者です → %q" $k }}{{ end -}}
+<div class="a-say s-{{ $k }}">
+<div><img class="a-say-av" src="{{ printf "%s/%s" $dir $p.f | relURL }}" alt="{{ $p.n }}" loading="lazy"></div>
+<div class="a-say-main">
+<div class="a-say-head"><span class="a-say-name">{{ $p.n }}</span><span class="a-say-role">{{ $p.r }}</span></div>
+<div class="a-say-bub">{{ .Inner | markdownify }}</div>
+</div>
+</div>

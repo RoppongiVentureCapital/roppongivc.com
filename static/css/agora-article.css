@@ -1,0 +1,368 @@
+/* ============================================================
+   Agora 第1回 記事レイアウト
+   ★ style.css は一切変更しない。色・書体はすべて :root 変数を継承する
+     （--accent #019949 / --serif / --sans / --content-w）
+
+   ★ 幅の作り（2026-09-02）
+     本文・コラム・比較表・CTA は全部 842px（--a-text-w）で統一。
+     図だけ 802px（SVGの viewBox 760 がほぼ 1:1 で出る幅）。
+     旧版は図とコラムを 1120px まで広げていたが、
+     ・図は 1.36倍に拡大されて文字が大きすぎた
+     ・コラムと表が本文の左右から飛び出して落ち着かなかった
+     ので、はみ出しはやめた。負のマージンと transform も使っていない
+     （margin の一括指定に上書きされて画面外に飛ぶ事故があったため）。
+
+   ★ コラムは折りたたまない（docs/105 §2-10 根拠4）
+     「分離」は見分けがつくことであって、隠すことではない。
+     図10枚のうち5枚がコラムの中にあるので、隠すとざっと流したときに図が半分消える。
+   ============================================================ */
+
+.agora-article{
+  --a-text-w: 52.625rem;   /* 842px  文章。style.css の --content-w と同値 */
+  --a-wide-w: 70rem;       /* 1120px 図・コラム・広い表 */
+  font-family: var(--sans);
+  padding-bottom: 5rem;
+}
+
+/* ============ ヒーロー ============
+   ★JIWA の記事（layouts/jiwa/single.html の .blog-hero-title-bar）と
+     同じ色・同じ構成に合わせる。紺は #003380、角丸6px、本文幅に収める */
+/* ★2026-09-04 紺のベタ塗り帯をやめ、白地・写真を左・見出しを右にした。
+   理由 ── 肩書きが36px・h1が22pxで大きさの順が逆転しており、見出しが主役でなかった。
+   参考にした構造（実際に読んで確認）── サイボウズ式・logmi はどちらも
+   「小さなラベル → 日付 → h1が最大」で、肩書きを見出しの上に大きく置いていない。
+   ★書体は .agora-article の var(--sans) をそのまま継承する（肩書きと同じ書体）。 */
+.a-hero{ padding:2.5rem 2.5rem 0; }
+.a-hero-inner{
+  max-width:var(--a-text-w); margin:0 auto;   /* ★842px。紺の帯だった頃と同じ幅 */
+  display:flex; gap:2.5rem; align-items:flex-start;
+}
+.a-hero-photo{ flex:0 0 264px; }
+.a-hero-photo img{ display:block; width:100%; height:auto; aspect-ratio:3/4; object-fit:cover; }
+/* 上下の罫線が写真の上端・下端と揃う */
+.a-hero-text{
+  flex:1 1 auto; min-width:0; align-self:stretch; min-height:352px;
+  display:flex; flex-direction:column;
+  border-top:1px solid var(--gray-200); border-bottom:1px solid var(--gray-200);
+  padding:1.2rem 0;
+}
+.a-hero-label{ font-size:14px; color:var(--gray-500); letter-spacing:.04em; }
+/* ★ここが一番大きい（2026-09-04） */
+.a-hero-title{
+  margin:1.2rem 0 0;
+  font-size:clamp(1.35rem,2.9vw,2.25rem); font-weight:700;
+  line-height:1.4; letter-spacing:-.01em; color:var(--black);
+}
+.a-hero-meta{ font-size:14px; color:var(--gray-500); margin-top:auto; }
+
+/* ============ 本文の枠 ============ */
+.a-body{
+  max-width:var(--a-wide-w); margin:0 auto; padding:3.5rem 2.5rem 0;
+  font-size:16.5px; line-height:1.95; font-weight:400;
+}
+
+/* ★直下の要素は既定で842pxの中央寄せ（＝文章の幅） */
+.a-body > *{
+  max-width:var(--a-text-w);
+  margin-left:auto; margin-right:auto;
+}
+/* ★コラム・比較表・CTAも本文と同じ842pxに揃える（2026-09-02 変更）
+   以前は1120pxまで広げていたが、本文の左右から飛び出して落ち着かなかった。
+   横幅を広げるのは読みやすさに効かないので、全部同じ左右幅で通す */
+.a-body > .a-out{ max-width:var(--a-text-w); }
+
+/* ---- 文章要素 ★margin の一括指定では必ず左右を auto にする ---- */
+.a-body > p{ margin-top:0; margin-bottom:1.6rem; }
+.a-body h2{
+  font-size:1.5rem; font-weight:700; line-height:1.45;
+  margin:4.5rem auto 1.5rem; padding-bottom:.6rem; border-bottom:2px solid var(--black);
+}
+.a-body > h2:first-child{ margin-top:0; }
+.a-body h3{ font-size:1.15rem; font-weight:600; line-height:1.6; margin:3rem auto 1rem; }
+.a-body > ul, .a-body > ol{
+  margin:1.2rem auto 1.8rem; padding-left:1.5rem;   /* 字下げは padding で。margin-left は auto のまま */
+}
+.a-body li{ margin-bottom:.7rem; }
+.a-body strong{ font-weight:600; }
+.a-body a{ color:#0a6ebd; text-decoration:underline; text-underline-offset:2px; }
+/* ★ボタンは本文リンクの指定を受けない（青い下線が付いた） */
+.a-cta a{ text-decoration:none; }
+/* ★2026-09-05 CTAが盤の色（薄いクリーム）になったので、リンクを一律 #fff にするのをやめた。
+   ★以前は .a-cta a{color:#fff} が入っていて、【感想を送る】が白地に白文字で消えていた */
+.a-body a.a-btn, .a-cta a.a-btn{ color:#fff; text-decoration:none; }
+.a-cta a.a-btn-ghost{ color:#1a1a1a; }
+.a-body > hr{ border:0; border-top:1px solid var(--gray-200); margin:3.5rem auto; }
+
+/* ============ 発言ブロック ============
+   ★記事内の「誰かの発言」は全部この形に統一する（2026-09-02）
+     以前は ①引用ブロック（黒い縦罫）と ②本文中の「名前＋鉤括弧」が混在していた。
+   ★2026-09-03 吹き出しに作り直した。
+     土台は ai-shogi/common.css の .cl（博士・学の会話UI）── 46pxの丸アイコン＋
+     しっぽ付きの吹き出し＋話者ごとの地色。★彩度は記事用に落としてある。
+     色はアバターの背景色に合わせる（★ゲーム側で「アイコンの背景色に文字色を合わせる」
+     と決めた規則をそのまま持ってくる）。★逆にしないこと */
+.a-say{
+  display:grid; grid-template-columns:46px 1fr; gap:.9rem;
+  max-width:var(--a-text-w); margin:1.6rem auto; align-items:start;
+}
+.a-say-av{
+  width:46px; height:46px; border-radius:50%; display:block; object-fit:cover;
+  border:2px solid #fff;
+  box-shadow:0 0 0 1px rgba(0,0,0,.09), 0 1px 3px rgba(0,0,0,.10);
+}
+.a-say-head{ display:flex; align-items:baseline; gap:.55rem; margin:.1rem 0 .3rem; flex-wrap:wrap; }
+.a-say-name{ font-size:13px; font-weight:700; letter-spacing:.06em; line-height:1.3; }
+.a-say-role{ font-size:11.5px; color:#5f666d; line-height:1.3; }  /* ★2026-09-04 薄すぎたので濃くした（#9a9a9a → #5f666d） */
+/* 吹き出し本体。★しっぽは背景と枠線を継承した正方形を45度回す（.cl .bb と同じ作り） */
+.a-say-bub{
+  position:relative; min-width:0;
+  padding:.85rem 1.15rem;
+  border:1px solid; border-radius:.9rem;
+  font-size:16.5px; line-height:1.9;
+}
+.a-say-bub:before{
+  content:''; position:absolute; left:-6px; top:17px; width:10px; height:10px;
+  background:inherit; border-left:1px solid; border-bottom:1px solid; border-color:inherit;
+  transform:rotate(45deg);
+}
+.a-say-bub p{ margin:0 0 .85rem; }
+.a-say-bub p:first-child{ margin-top:0; }
+.a-say-bub p:last-child{ margin-bottom:0; }
+.a-say-bub strong{ font-weight:700; color:#111; }
+.a-say-bub ul, .a-say-bub ol{ margin:.5rem 0 .85rem; padding-left:1.3rem; }
+.a-say-bub li{ margin-bottom:.35rem; }
+
+/* ---- 話者ごとの色（★アバターの背景色に合わせる）---- */
+.a-say.s-yamai    .a-say-bub{ background:#f2faf5; border-color:#bcdfc9; }
+.a-say.s-yamai    .a-say-name{ color:#0b7a45; }
+.a-say.s-iizuka   .a-say-bub{ background:#f2f4fb; border-color:#c4cbe6; }
+.a-say.s-iizuka   .a-say-name{ color:#33478f; }
+.a-say.s-kitamura .a-say-bub{ background:#eff5fa; border-color:#c3d9ee; }
+.a-say.s-kitamura .a-say-name{ color:#2f6fb5; }
+.a-say.s-itonaga  .a-say-bub{ background:#f8f3fb; border-color:#dccbe9; }
+.a-say.s-itonaga  .a-say-name{ color:#6b4a8f; }
+.a-say.s-yamada   .a-say-bub{ background:#f6f7f8; border-color:#d7dade; }
+.a-say.s-yamada   .a-say-name{ color:#4a5158; }
+/* ★2026-09-04 AIは人ではない。地色は灰のまま、枠だけ濃くして人間と分ける。
+   ★濃い灰＋白文字の反転も試したが、5〜6章のAIの長い出力が読みにくく却下（山田様）。
+   ★以前は名前を緑にしていたが、山井さんの緑（#0b7a45）とほぼ同色だったので黒にした */
+.a-say.s-ai       .a-say-bub{ background:#f1f4f4; border-color:#8b9598; border-width:1.5px; font-size:16px; }
+.a-say.s-ai       .a-say-bub:before{ border-left-width:1.5px; border-bottom-width:1.5px; }
+.a-say.s-ai       .a-say-name{ color:#111; letter-spacing:.12em; }
+
+
+/* ============ 引用（発言ではないもの）============
+   1章の主張の一文、ゲームの台詞など。★発言ブロックと混ぜない */
+.a-body > blockquote{
+  border-left:3px solid var(--black); background:none;
+  padding:.2rem 0 .2rem 1.6rem; margin:2rem auto;
+  font-family:var(--serif); font-size:17.5px; line-height:1.8; font-style:normal;
+}
+.a-body blockquote p{ margin:0 0 .8rem; }
+.a-body blockquote p:last-child{ margin-bottom:0; }
+.a-body blockquote strong{ font-weight:600; }
+
+/* ---- 表（文章幅に収まるもの）---- */
+.a-body > table{ width:100%; border-collapse:collapse; font-size:15px; margin:1.8rem auto; }
+.a-body th, .a-body td{
+  padding:.7rem 1rem; border:1px solid var(--gray-200); text-align:left; vertical-align:top;
+}
+.a-body th{ background:var(--gray-100); font-weight:600; }
+
+/* ============ コラム ★常に開いている ============ */
+.a-col{
+  margin:3.25rem auto 3.5rem;
+  background:#fdfaf1;                      /* ★2026-09-04 緑→砂色。緑は山井さんの吹き出しに残す */
+  border:1px solid #e6ddc6;
+  border-left:4px solid #8a6d1f;
+  border-radius:4px;
+  padding:1.35rem 2.25rem;
+}
+/* ★2026-09-04 折りたたみの見出し行 */
+.a-col-sum{
+  cursor:pointer; list-style:none; display:block; position:relative;
+  padding-right:2.2rem;
+}
+.a-col-sum::-webkit-details-marker{ display:none; }
+.a-col-sum::after{
+  content:''; position:absolute; right:.35rem; top:.9rem;
+  width:9px; height:9px; border-right:2px solid #8a6d1f; border-bottom:2px solid #8a6d1f;
+  transform:rotate(45deg); transition:transform .15s;
+}
+.a-col[open] > .a-col-sum::after{ transform:rotate(-135deg); top:1.15rem; }
+.a-col[open]{ padding-bottom:1.5rem; }
+.a-col-tag{
+  display:block;
+  font-size:12px; font-weight:700; letter-spacing:.14em;
+  color:#8a6d1f; margin-bottom:.4rem;
+}
+.a-col-title{ display:block; font-size:1.2rem; font-weight:700; line-height:1.55; margin:0; }
+.a-col-inner{ font-size:15.5px; line-height:1.9; margin-top:1.2rem; }
+.a-col-inner p{ margin-bottom:1.2rem; }
+.a-col-inner p:last-child{ margin-bottom:0; }
+.a-col-inner ul, .a-col-inner ol{ margin:1rem 0 1.4rem; padding-left:1.5rem; }
+.a-col-inner li{ margin-bottom:.5rem; }
+.a-col-inner blockquote{
+  border-left:2px solid var(--gray-200); padding:.1rem 0 .1rem 1.1rem; margin:1.2rem 0;
+  font-family:var(--serif); font-size:16px; line-height:1.8;
+}
+.a-col-inner table{ width:100%; border-collapse:collapse; font-size:14.5px; margin:1.3rem 0; }
+.a-col-inner th, .a-col-inner td{
+  padding:.6rem .85rem; border:1px solid #e6ddc6; text-align:left; vertical-align:top;
+  background:#fff;
+}
+.a-col-inner th{ background:#f6f0e0; font-weight:600; }
+.a-col-end{ border:0; border-top:1px solid #e6ddc6; margin:1.5rem 0 0; }
+
+/* ============ 図 ============
+   ★PCでは本文幅より狭い 802px までに収める。
+     以前は 1120px の枠いっぱいに出していたので、viewBox 760 のSVGが 1.36倍に
+     拡大され、文字が大きすぎて読みにくかった。
+     802 − 左右のパディング40 ＝ 762 ≒ viewBox 760 なので、ほぼ 1:1 で出る（＝設計どおりの字の大きさ）。
+     狭い画面では width:100% で縮む */
+.a-fig{ max-width:802px; margin:2.75rem auto 3rem; }
+.a-fig-frame{
+  border:1px dashed var(--gray-200); border-radius:4px; background:var(--gray-100);
+  min-height:200px; display:flex; align-items:center; justify-content:center;
+  padding:2rem; text-align:center;
+}
+.a-fig-frame img{ border-radius:4px; width:100%; height:auto; }
+/* 実物の画像が入ったら、破線の仮枠をやめる */
+.a-fig-frame.has-img{
+  border:1px solid var(--gray-200); background:#fff;
+  min-height:0; padding:1.25rem; display:block;
+}
+.a-fig-no{ font-size:12px; font-weight:700; letter-spacing:.14em; color:var(--accent); }
+.a-fig-todo{ font-size:14px; color:var(--gray-500); line-height:1.9; }
+.a-fig-cap{ font-size:13.5px; line-height:1.85; color:var(--gray-600); margin-top:.8rem; }
+.a-fig-cap p{ margin:0; }
+/* コラムの中の図（図4〜8）も同じ幅に収める */
+.a-col .a-fig{ max-width:802px; }
+.a-col .a-fig-frame{ background:#fff; }
+
+/* ============ 触れるCTA ============
+   ★2026-09-05 濃紺（#0A2463）をやめた。山田様「この背景のこい青色がダサい」。
+     ★詰将棋なので【将棋盤の色】にした。作りは吹き出しと同じ
+       ＝薄い地色 ＋ ひとつ濃い枠 ＋ 文字は黒。
+     ★目立たせるのは背景ではなく、緑のボタン（--accent）に任せる。
+     ★コラムの砂色（#fdfaf1）より一段黄色を強くして、枠を2pxにして区別する */
+.a-cta{
+  margin:2.5rem auto 3rem; background:#fdf5e3; color:var(--black);
+  border:2px solid #dcc48d; border-radius:6px; padding:2rem 2.25rem;
+}
+.a-cta-name{ font-size:1.55rem; font-weight:700; line-height:1.35; margin-bottom:.5rem; }
+.a-cta-sub{ font-size:15px; color:#6a5c42; line-height:1.75; margin-bottom:1.35rem; }
+.a-cta-note{ font-size:13.5px; color:#8a7b60; line-height:1.8; margin-top:1rem; }
+.a-btn{
+  display:inline-block; background:var(--accent); color:#fff;
+  font-size:15px; font-weight:600; letter-spacing:.03em;
+  padding:.85rem 2rem; border-radius:4px; transition:opacity .15s;
+}
+.a-btn:hover{ opacity:.85; }
+.a-btn-ghost{ background:#fff; color:var(--black); border:1px solid #cdb377; margin-left:.6rem; }
+
+/* ============ 参加者の一覧 ============ */
+.a-people{ margin:2rem auto 2.5rem; }
+.a-person{
+  display:grid; grid-template-columns:54px 1fr; gap:1rem;
+  padding:1rem 0; border-top:1px solid var(--gray-200); align-items:center;
+}
+.a-people .a-person:last-child{ border-bottom:1px solid var(--gray-200); }
+.a-person-av{
+  width:54px; height:54px; border-radius:50%; display:block; object-fit:cover;
+  border:2px solid #fff;
+  box-shadow:0 0 0 1px rgba(0,0,0,.09), 0 1px 3px rgba(0,0,0,.10);
+}
+.a-person-name{ font-size:16px; font-weight:700; line-height:1.6; }
+.a-person-role{ font-size:14.5px; line-height:1.75; color:var(--gray-600); }
+
+/* ============ 広い表（比較表）============ */
+.a-out > table{ width:100%; border-collapse:collapse; font-size:15px; margin:1.8rem 0; }
+.a-out > table th, .a-out > table td{
+  padding:.7rem 1rem; border:1px solid var(--gray-200); text-align:left; vertical-align:top;
+}
+.a-out > table th{ background:var(--gray-100); font-weight:600; }
+
+/* ============ 編集用の注記 ★公開時に消す ============ */
+.a-note{
+  max-width:var(--a-text-w); margin:2rem auto 0; padding:1rem 1.25rem;
+  background:#fff8e1; border:1px solid #f0dfa8; border-radius:4px;
+  font-size:13.5px; line-height:1.85; color:#6b5a1e;
+}
+.a-note strong{ font-weight:700; }
+
+/* ============ スマホ ============ */
+@media(max-width:768px){
+  .a-hero{ padding:3rem 1.5rem 2.5rem; }
+  /* ★2026-09-04 スマホでも【横並びのまま】。写真を小さくして幅を作る */
+  .a-hero-inner{ gap:1.1rem; }
+  .a-hero-photo{ flex:0 0 30%; max-width:132px; }
+  .a-hero-text{ min-height:0; padding:.5rem 0; }
+  .a-hero-label{ font-size:12.5px; }
+  .a-hero-title{ font-size:clamp(1.15rem,5.2vw,1.5rem); line-height:1.45; margin-top:.7rem; }
+  .a-hero-meta{ font-size:13px; margin-top:1rem; }
+  .a-body{ padding:2.5rem 1.5rem 0; font-size:16px; line-height:1.9; }
+  .a-body h2{ font-size:1.3rem; margin:3.5rem auto 1.2rem; }
+  .a-body > blockquote{ font-size:16.5px; padding-left:1.1rem; }
+  /* ★2026-09-04 コラムを画面幅いっぱいに逃がすのをやめ、本文と同じ幅に揃えた */
+  .a-col{
+    margin-left:0; margin-right:0;
+    padding:1.1rem 1.25rem; border-radius:4px; border-left-width:4px;
+  }
+  .a-col[open]{ padding-bottom:1.25rem; }
+  .a-col-sum{ padding-right:1.9rem; }
+  .a-col-title{ font-size:1.1rem; }
+  .a-cta{ padding:1.5rem 1.25rem; }
+  .a-btn{ display:block; text-align:center; }
+  .a-btn-ghost{ margin-left:0; margin-top:.6rem; }
+  .a-body table, .a-col-inner table, .a-out > table{ font-size:13.5px; }
+  .a-body th, .a-body td, .a-col-inner th, .a-col-inner td,
+  .a-out > table th, .a-out > table td{ padding:.5rem .6rem; }
+  .a-person{ grid-template-columns:54px 1fr; gap:.75rem; }
+  /* ★2026-09-04 図も本文と同じ幅に揃えた（画面の端まで逃がすのをやめた）。
+     ★以前はスマホで端まで使っていた（縮むと図の中の文字が読めなくなるため）。
+       → コラムを本文幅に揃えたので、図だけ飛び出すと落ち着かない。
+         図の中の文字が小さくなる分は、読者がピンチで拡大できる範囲に収める */
+  .a-fig{ max-width:none; margin-left:0; margin-right:0; }
+  .a-fig-frame.has-img{ border-left:1px solid var(--gray-200); border-right:1px solid var(--gray-200); border-radius:4px; padding:.6rem; }
+  .a-fig-cap{ padding:0; }
+  /* コラムの中の図も本文と同じ扱い */
+  .a-col .a-fig{ margin-left:0; margin-right:0; }
+  .a-col .a-fig-cap{ padding:0; }
+}
+
+/* ============ AA図（コードブロック）★2026-09-05 追加 ============
+   ★これまで pre にどのCSSも当たっていなかった。style.css の指定は
+     `.blog-single .content pre` スコープで、この記事は `.a-body` なので効いていない。
+     そのため（1）本文との行間がゼロで詰まって見える
+            （2）折り返さず横スクロールの器も無いので、スマホで左右にはみ出す
+     の2つが起きていた。
+   ★style.css は触っていない。ここだけに足す。戻すときはこのブロックを消せばよい */
+.a-body pre, .a-col-inner pre{
+  margin:2rem auto; padding:1.2rem 0;
+  overflow-x:auto; -webkit-overflow-scrolling:touch;
+  font-size:13px; line-height:1.8; color:#333;
+  background:none; border:0;
+  border-top:1px solid var(--gray-200);
+  border-bottom:1px solid var(--gray-200);
+}
+.a-body pre code, .a-col-inner pre code{
+  background:none; padding:0; font-size:inherit; white-space:pre;
+}
+@media (max-width:600px){
+  .a-body pre, .a-col-inner pre{ font-size:11.5px; line-height:1.7; padding:1rem 0; }
+}
+
+/* ---- CTAのエンブレム（将棋の駒＋AI）★2026-09-05 追加 ---- */
+.a-cta-head{ display:flex; align-items:center; gap:1rem; margin-bottom:1.4rem; }
+.a-cta-em{ width:52px; height:52px; flex-shrink:0; display:block; }
+.a-cta-ti{ min-width:0; }
+.a-cta-head .a-cta-name{ margin-bottom:.28rem; }
+.a-cta-head .a-cta-sub{ margin:0; }
+@media (max-width:600px){ .a-cta-em{ width:44px; height:44px; } }
+
+/* ---- 横長の図を本文より広く出す ★2026-09-05 追加 ----
+   ★2枚を左右に並べた図（対話＋例題）は 802px だと文字が読めないため、
+     1120px（--a-wide-w）まで許す。★使うのは fig に wide="1" を付けたときだけ */
+.a-fig-wide{ max-width:var(--a-wide-w); }
+@media (max-width:1180px){ .a-fig-wide{ max-width:100%; } }

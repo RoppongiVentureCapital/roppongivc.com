@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 580" role="img"
+     aria-label="三角形が2枚。上の層がAI研究人材（AIをつくる人）、下の層がAIを使う人。2枚目では2つの層の境界線が下がり、AI研究人材の割合が増えている。">
+<style>
+text{font-family:'Hiragino Kaku Gothic ProN','Hiragino Sans','Yu Gothic','Meiryo','Helvetica Neue',Arial,sans-serif;fill:#111}
+.hd{font-size:21px;font-weight:600;fill:#019949}
+.lb{font-size:22px}
+.sm{font-size:19px;fill:#6e6e6e}
+.tri{fill:none;stroke:#333;stroke-width:2}
+.up{fill:#019949;fill-opacity:.10}
+.bd{stroke:#019949;stroke-width:2.5}
+.old{stroke:#b9b9b9;stroke-width:2;stroke-dasharray:5 5}
+.ld{stroke:#d9d9d9;stroke-width:1}
+</style>
+
+<!-- ============ 1枚目：いま ============ -->
+<text class="hd" x="40" y="34">いま</text>
+<polygon class="up" points="170,52 213,112 127,112"/>
+<polygon class="tri" points="170,52 300,232 40,232"/>
+<line class="bd" x1="127" y1="112" x2="213" y2="112"/>
+
+<line class="ld" x1="216" y1="104" x2="326" y2="88"/>
+<text class="lb" x="334" y="82">AI研究人材</text>
+<text class="sm" x="334" y="108">（AIをつくる人）</text>
+
+<line class="ld" x1="262" y1="180" x2="326" y2="180"/>
+<text class="lb" x="334" y="187">AIを使う人</text>
+
+<!-- ============ 2枚目：増やしたいのは、この形 ============ -->
+<text class="hd" x="40" y="316">増やしたいのは、この形</text>
+<polygon class="up" points="170,334 257,454 83,454"/>
+<polygon class="tri" points="170,334 300,514 40,514"/>
+
+<line class="old" x1="127" y1="394" x2="213" y2="394"/>
+<line class="bd" x1="83" y1="454" x2="257" y2="454"/>
+
+<!-- 境界線が下がることを示す矢印 -->
+<line x1="170" y1="400" x2="170" y2="442" stroke="#019949" stroke-width="2.5"/>
+<polygon points="170,452 164,438 176,438" fill="#019949"/>
+
+<line class="ld" x1="240" y1="420" x2="326" y2="400"/>
+<text class="lb" x="334" y="394">AI研究人材</text>
+<text class="sm" x="334" y="420">（AIをつくる人）</text>
+
+<line class="ld" x1="278" y1="484" x2="326" y2="484"/>
+<text class="lb" x="334" y="491">AIを使う人</text>
+
+<text class="sm" x="40" y="558">破線＝もとの境界線。最初の参入障壁を下げると、境界線が下がる</text>
+</svg>

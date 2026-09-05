@@ -1,0 +1,89 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 556" role="img"
+     aria-label="AIの訓練で目指しているもの3つ。1、見たものをなぞる。材料はインターネットの文章、練習は次の1語を当てること。2、人が押した方へ寄せる。材料は人がどちらかを押した記録、練習は押された方に高い点が付くようにすること。3、機械で正誤が付くもの。材料は数学とコード、練習は機械が正解と照らすこと。この3つに、これは価値ある新しさかを測る物差しはない。2で新しさを押させればいいとはならない。ありふれた答えには多くの人が良いと押すが、本物の新しさは少数にしか価値が分からないので、点が付かず訓練で消える。棒の長さは説明のための模式。">
+<!--
+  ★余白のルール（fig-kaggle・fig-agent・fig-howto と同じ）基準単位 8px。外周 32
+  ★書体は1つだけ。差は大きさ・太さ・色だけ
+  ★★fig04.svg の差し替え。旧版は①を「ありがち＝よく見るパターン」と書いていたが、
+    これは誤り。次の1語を当てる訓練は珍しい語にも正しい確率を付けるよう鍛える。
+    無難さが出るのは「出すときの選び方」で、そこはコラム4の図が扱う。
+    ★旧 fig04.svg は消していない（戻せるように残す）
+  ★下段の棒は長さの比だけを示す模式。実測値ではない
+-->
+<style>
+text{
+  font-family:'Hiragino Kaku Gothic ProN','Hiragino Sans','Yu Gothic','Meiryo','Helvetica Neue',Arial,sans-serif;
+  font-weight:400; fill:#333;
+}
+.eyebrow{font-size:13.5px;font-weight:600;fill:#8a8a8a;letter-spacing:.02em}
+.deck{font-size:27px;font-weight:600;fill:#111}
+.no{font-size:12px;font-weight:600;fill:#fff}
+.label{font-size:14px;font-weight:600;fill:#111}
+.sub{font-size:11.5px;fill:#8a8a8a}
+.mid{font-size:15px;font-weight:600;fill:#111}
+.bar{font-size:12.5px;fill:#333}
+.note{font-size:11.5px;fill:#b8b8b8}
+</style>
+
+<rect width="760" height="556" fill="#fff"/>
+
+<text class="eyebrow" x="32" y="34">AIの訓練で目指しているもの</text>
+<text class="deck" x="32" y="72">3つある。どれも「新しさ」ではない</text>
+
+<!-- ===== 上段 3つの訓練 ===== -->
+<g>
+  <rect x="32" y="100" width="216" height="176" rx="6" fill="#fff" stroke="#c4c4c4" stroke-width="1"/>
+  <circle cx="60" cy="128" r="11" fill="#9a9a9a"/><text class="no" x="60" y="132" text-anchor="middle">1</text>
+  <text class="label" x="80" y="133">見たものをなぞる</text>
+  <path d="M52 156 L228 156" stroke="#ececec" stroke-width="1"/>
+  <text class="sub" x="52" y="182">材料</text><text class="sub" x="88" y="182" fill="#333">インターネットの文章</text>
+  <text class="sub" x="52" y="208">練習</text><text class="sub" x="88" y="208" fill="#333">次の1語を当てる</text>
+  <text class="sub" x="52" y="244">珍しい語にも、正しい</text>
+  <text class="sub" x="52" y="260">確率を付けるよう鍛える</text>
+</g>
+
+<path d="M252 188 L266 188" stroke="#9a9a9a" stroke-width="1.5" fill="none"/>
+<path d="M266 184 L272 188 L266 192 Z" fill="#9a9a9a"/>
+
+<g>
+  <rect x="272" y="100" width="216" height="176" rx="6" fill="#fff" stroke="#c4c4c4" stroke-width="1"/>
+  <circle cx="300" cy="128" r="11" fill="#9a9a9a"/><text class="no" x="300" y="132" text-anchor="middle">2</text>
+  <text class="label" x="320" y="133">人が押した方へ寄せる</text>
+  <path d="M292 156 L468 156" stroke="#ececec" stroke-width="1"/>
+  <text class="sub" x="292" y="182">材料</text><text class="sub" x="328" y="182" fill="#333">人がどちらかを押した記録</text>
+  <text class="sub" x="292" y="208">練習</text><text class="sub" x="328" y="208" fill="#333">押された方に高い点</text>
+  <text class="sub" x="292" y="244">多数決で点が付く</text>
+</g>
+
+<path d="M492 188 L506 188" stroke="#9a9a9a" stroke-width="1.5" fill="none"/>
+<path d="M506 184 L512 188 L506 192 Z" fill="#9a9a9a"/>
+
+<g>
+  <rect x="512" y="100" width="216" height="176" rx="6" fill="#fff" stroke="#c4c4c4" stroke-width="1"/>
+  <circle cx="540" cy="128" r="11" fill="#9a9a9a"/><text class="no" x="540" y="132" text-anchor="middle">3</text>
+  <text class="label" x="560" y="133">機械で正誤が付くもの</text>
+  <path d="M532 156 L708 156" stroke="#ececec" stroke-width="1"/>
+  <text class="sub" x="532" y="182">材料</text><text class="sub" x="568" y="182" fill="#333">数学・コード</text>
+  <text class="sub" x="532" y="208">練習</text><text class="sub" x="568" y="208" fill="#333">機械が正解と照らす</text>
+  <text class="sub" x="532" y="244">正解表が書ける場所だけ</text>
+</g>
+
+<!-- ===== 中間の一行 ===== -->
+<rect x="32" y="304" width="696" height="52" rx="6" fill="#fdf0ee" stroke="#c0392b" stroke-width="1"/>
+<text class="mid" x="52" y="336">この3つに、「これは価値ある新しさか」を測る物差しは入っていない</text>
+
+<!-- ===== 下段 多数決では拾えない ===== -->
+<text class="eyebrow" x="32" y="404">では、②で「どちらが新しいか」を押させればよいのか</text>
+
+<rect x="32" y="422" width="696" height="94" rx="6" fill="#f7f7f7" stroke="#c4c4c4" stroke-width="1"/>
+
+<text class="bar" x="52" y="456">ありふれた答え</text>
+<rect x="176" y="446" width="300" height="13" rx="2" fill="#9a9a9a"/>
+<text class="sub" x="490" y="456" fill="#333">多くの人が「良い」と押す</text>
+
+<text class="bar" x="52" y="492">本物の新しさ</text>
+<rect x="176" y="482" width="17" height="13" rx="2" fill="#c0392b"/>
+<text class="sub" x="490" y="486" fill="#333">少数にしか価値が分からない</text>
+<text class="sub" x="490" y="503" fill="#c0392b">→ 点が付かないので、訓練で消える</text>
+
+<text class="note" x="32" y="540">棒の長さは説明のための模式で、実測値ではない。</text>
+</svg>
