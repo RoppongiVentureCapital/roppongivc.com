@@ -118,7 +118,10 @@
   position:relative; min-width:0;
   padding:.85rem 1.15rem;
   border:1px solid; border-radius:.9rem;
-  font-size:16.6px; line-height:1.831;   /* ★2026-09-06 夕 本文と完全に同じにした（山田様の指示）。以前は 16.5px 共通で、本文が PC16.5／スマホ16 だったためスマホでだけ吹き出しが0.5px大きいという食い違いがあった */
+  font-size:16.6px; line-height:1.70;   /* ★2026-09-06 夜 行間だけ 1.831 → 1.70（行の高さ 30.39 → 28.22px）。文字は本文と同じ16.6pxのまま。
+     ★理由 ── 吹き出しの行幅はスマホで227.8px（13.7文字）で、本文327px（19.7文字）の70%しかない。
+       行が短いほど同じ行間でも縦の空きが目立つ（目が次の行頭へ戻る距離が短く、行数も増えるため）。
+       山田様「吹き出しのほうだけ行間が広く見える。横幅が狭いから目立つ」＝観察どおり */
 }
 .a-say-bub:before{
   content:''; position:absolute; left:-6px; top:17px; width:10px; height:10px;
