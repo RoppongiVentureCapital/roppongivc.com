@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 306 530" role="img"
+     aria-label="AIが出せるのは候補だけ。何を狙うかと、どれが本物かは、人間の側にある。人間が方向を出し、AIが非自明な連結を大量に出し、人間が反例を当てて選び抜く。">
+<!--
+  ★スマホ用の縦版（図7 fig07）。パソコン用は fig07.svg（横長 760×414）をそのまま使う
+  ★viewBox 306 ＝ 画面375pxで図が出る実寸。書いた数字がそのまま見える大きさになる
+  ★最小14px（図5で確定した基準）
+  ★横に並んでいた3つの列（01 方向／02 候補／03 判定）を縦に積んだ。
+    上の罫線で区切る作りは元の図のまま（箱と矢印を使わない設計を保っている）
+  ★色 ── 人間＝緑の罫線／AI＝灰の罫線（元の図と同じ）
+  ★説明の2行の折り返しは元の図と同じ位置に保った。3つが同じ形に並ぶことが
+    この図の主題（役割の対比）なので、1行にまとめると横並びが崩れる
+  ★★足元の註「候補はほとんど外れ。01と03は、人間しかできない」は削除した
+    （2026-09-06 山田様「意味不明だから消せ」）。★横長版からも消した
+  ★★番号は 01/02/03 → 1/2/3 にした（2026-09-06 山田様の指示。★横長版も同じ）
+-->
+<style>
+text{font-family:'Hiragino Kaku Gothic ProN','Hiragino Sans','Yu Gothic','Meiryo','Helvetica Neue',Arial,sans-serif;font-weight:400;fill:#333}
+.eyebrow{font-size:14px;font-weight:600;fill:#7d7d7d}
+.deck{font-size:22px;font-weight:600;fill:#111}
+.who{font-size:14px;font-weight:600}
+.label{font-size:20px;font-weight:600;fill:#111}
+.body{font-size:16px}
+</style>
+
+<rect width="306" height="530" fill="#fff"/>
+
+<text class="eyebrow" x="14" y="22">創造の分担 ── この2時間の実演</text>
+
+<text class="deck" x="14" y="58">AIが出せるのは候補だけ。</text>
+<text class="deck" x="14" y="86">狙いと判定は、</text>
+<text class="deck" x="14" y="114">人間の側にある。</text>
+
+<!-- ============ 01 方向（人間） ============ -->
+<line x1="14" y1="150" x2="292" y2="150" stroke="#019949" stroke-width="3"/>
+<text class="who"   x="14" y="172" fill="#019949">人間</text>
+<text class="label" x="14" y="200">1　方向</text>
+<text class="body"  x="14" y="228">何を価値ある</text>
+<text class="body"  x="14" y="252">新しさとして狙うか</text>
+
+<!-- ============ 02 候補（AI） ============ -->
+<line x1="14" y1="278" x2="292" y2="278" stroke="#c4c4c4" stroke-width="3"/>
+<text class="who"   x="14" y="300" fill="#7d7d7d">AI</text>
+<text class="label" x="14" y="328">2　候補</text>
+<text class="body"  x="14" y="356">非自明な連結を</text>
+<text class="body"  x="14" y="380">高速で大量に出す</text>
+
+<!-- ============ 03 判定（人間） ============ -->
+<line x1="14" y1="406" x2="292" y2="406" stroke="#019949" stroke-width="3"/>
+<text class="who"   x="14" y="428" fill="#019949">人間</text>
+<text class="label" x="14" y="456">3　判定</text>
+<text class="body"  x="14" y="484">本物かこじつけかを</text>
+<text class="body"  x="14" y="508">反例を当てて選び抜く</text>
+
+</svg>

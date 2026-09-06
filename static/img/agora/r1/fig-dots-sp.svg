@@ -1,0 +1,75 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 306 566" role="img"
+     aria-label="AIが学習した要素を点で表した図。点は28個あり、2つ選ぶ組み合わせは28かける27わる2で378通り。そのうち1本だけ、将棋とKaggleを結ぶ線が緑で引かれている。実際にAIが持っている要素はこれよりはるかに多く、点の数は説明のための模式である。">
+<!--
+  ★スマホ用の縦版（図8 fig-dots）。パソコン用は fig-dots.svg（横長 760×400）をそのまま使う
+  ★viewBox 306 ＝ 画面375pxで図が出る実寸。書いた数字がそのまま見える大きさになる
+  ★最小14px（図5で確定した基準）
+  ★点の並びを 7列×4段 → 4列×7段に組み替えた。点の数は28個のまま（4×7＝28）
+    ★28個であることが 28×27÷2＝378 の検算の根拠なので、数は絶対に変えない
+  ★緑の線は、いちばん離れた2点（2段目の左から2番目 と 7段目の右端）を結んでいる。
+    横長版と同じく「隣り合っていない2点を1本だけ結ぶ」形を保っている
+  ★★元の横長版から落としたもの ──
+    足元の小さい註「実際にAIが持っている要素は、これよりはるかに多い。
+    点の数は説明のための模式で、実測ではない。」
+    → 記事のキャプションが同じことを言っているため（「点の数は説明のための模式で、
+      実際の要素の数はこれよりはるかに多い。」）
+  ★28×27÷2＝378 の式は図に残した。読者が検算できる形にするため（→ 105 の仕事のしかた 7）
+-->
+<style>
+text{
+  font-family:'Hiragino Kaku Gothic ProN','Hiragino Sans','Yu Gothic','Meiryo','Helvetica Neue',Arial,sans-serif;
+  font-weight:400; fill:#333;
+}
+.eyebrow{font-size:14px;font-weight:600;fill:#7d7d7d;letter-spacing:.02em}
+.deck{font-size:22px;font-weight:600;fill:#111}
+.nd{fill:#c9c9c9}
+.hi{fill:#019949}
+.tag{font-size:14px;font-weight:600;fill:#019949}
+.foot{font-size:14px;font-weight:600;fill:#111}
+</style>
+
+<rect width="306" height="566" fill="#fff"/>
+
+<text class="eyebrow" x="14" y="22">AIが学習した要素</text>
+<text class="deck" x="14" y="58">まだ引かれていない線が、</text>
+<text class="deck" x="14" y="86">残っている</text>
+
+<rect x="14" y="104" width="278" height="344" rx="6" fill="#fff" stroke="#e0e0e0" stroke-width="1.5"/>
+
+<!-- 緑の連結（点より先に引いて、点を上に載せる） -->
+<line x1="118" y1="188" x2="254" y2="408" stroke="#019949" stroke-width="2.5"/>
+
+<!-- 1段目 y=144 -->
+<circle class="nd" cx="50" cy="144" r="5"/><circle class="nd" cx="118" cy="144" r="5"/>
+<circle class="nd" cx="186" cy="144" r="5"/><circle class="nd" cx="254" cy="144" r="5"/>
+<!-- 2段目 y=188（118 が将棋） -->
+<circle class="nd" cx="50" cy="188" r="5"/>
+<circle class="nd" cx="186" cy="188" r="5"/><circle class="nd" cx="254" cy="188" r="5"/>
+<!-- 3段目 y=232 -->
+<circle class="nd" cx="50" cy="232" r="5"/><circle class="nd" cx="118" cy="232" r="5"/>
+<circle class="nd" cx="186" cy="232" r="5"/><circle class="nd" cx="254" cy="232" r="5"/>
+<!-- 4段目 y=276 -->
+<circle class="nd" cx="50" cy="276" r="5"/><circle class="nd" cx="118" cy="276" r="5"/>
+<circle class="nd" cx="186" cy="276" r="5"/><circle class="nd" cx="254" cy="276" r="5"/>
+<!-- 5段目 y=320 -->
+<circle class="nd" cx="50" cy="320" r="5"/><circle class="nd" cx="118" cy="320" r="5"/>
+<circle class="nd" cx="186" cy="320" r="5"/><circle class="nd" cx="254" cy="320" r="5"/>
+<!-- 6段目 y=364 -->
+<circle class="nd" cx="50" cy="364" r="5"/><circle class="nd" cx="118" cy="364" r="5"/>
+<circle class="nd" cx="186" cy="364" r="5"/><circle class="nd" cx="254" cy="364" r="5"/>
+<!-- 7段目 y=408（254 が Kaggle） -->
+<circle class="nd" cx="50" cy="408" r="5"/><circle class="nd" cx="118" cy="408" r="5"/>
+<circle class="nd" cx="186" cy="408" r="5"/>
+
+<!-- 連結された2点 -->
+<circle class="hi" cx="118" cy="188" r="8"/>
+<text class="tag" x="118" y="168" text-anchor="middle">将棋</text>
+<circle class="hi" cx="254" cy="408" r="8"/>
+<text class="tag" x="254" y="432" text-anchor="middle">Kaggle</text>
+
+<!-- 足元 -->
+<path d="M14 478 L292 478" stroke="#ececec" stroke-width="1"/>
+<text class="foot" x="14" y="504">点は28個。2つ選ぶ組み合わせは</text>
+<text class="foot" x="14" y="526">28 × 27 ÷ 2 ＝ 378通り</text>
+<text class="foot" x="14" y="548">緑の線は、そのうちの1本</text>
+</svg>

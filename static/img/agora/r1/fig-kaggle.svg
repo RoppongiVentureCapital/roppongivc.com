@@ -31,11 +31,11 @@ text{
 .axis{stroke:#d4d4d4;stroke-width:1}
 </style>
 
-<text class="eyebrow" x="32" y="30">Kaggle</text>
+<text class="eyebrow" x="32" y="30">Kaggleの仕組み</text>
 <text class="deck" x="32" y="62">世界最大の機械学習コンペティション</text>
 
 <!-- ============ ① 表が配られる（32〜228）============ -->
-<text class="label" x="32" y="112">① 同じ表が配られる</text>
+<text class="label" x="32" y="112">1　同じ表が配られる</text>
 <text class="theme" x="32" y="134">テーマ例 ── タイタニック号の乗客</text>
 <rect class="box" x="32" y="146" width="196" height="180" rx="3"/>
 <line class="thr" x1="32" y1="170" x2="228" y2="170"/>
@@ -63,7 +63,7 @@ text{
 <path class="arrow" d="M256 227l6 5-6 5"/>
 
 <!-- ============ ② 学習させて予測を出す（274〜488）============ -->
-<text class="label" x="274" y="112">② 学習させて、予測を出す</text>
+<text class="label" x="274" y="112">2　学習させて、予測を出す</text>
 <text class="theme" x="274" y="134">乗客の特徴から、生死を当てる</text>
 <rect class="box" x="274" y="146" width="214" height="180" rx="3"/>
 <g stroke="#e2e2e2" stroke-width="1">
@@ -94,8 +94,8 @@ text{
 <line class="arrow" x1="500" y1="232" x2="522" y2="232"/>
 <path class="arrow" d="M516 227l6 5-6 5"/>
 
-<!-- ============ ③ 正解率で順位がつく（534〜728）============ -->
-<text class="label" x="534" y="112">③ 正解率で順位がつく</text>
+<!-- ============ 3　正解率で順位がつく（534〜728）============ -->
+<text class="label" x="534" y="112">3　正解率で順位がつく</text>
 <text class="theme" x="534" y="134">当たった割合が、そのまま点数</text>
 <rect class="box" x="534" y="146" width="194" height="180" rx="3"/>
 <line class="thr" x1="534" y1="170" x2="728" y2="170"/>

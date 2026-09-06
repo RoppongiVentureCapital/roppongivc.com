@@ -230,6 +230,8 @@
   padding:2rem; text-align:center;
 }
 .a-fig-frame img{ border-radius:4px; width:100%; height:auto; }
+/* ★2026-09-06 picture は既定で inline なので、下に行の隙間ができる。ブロックにする */
+.a-fig-frame picture{ display:block; }
 /* 実物の画像が入ったら、破線の仮枠をやめる */
 .a-fig-frame.has-img{
   border:1px solid var(--gray-200); background:#fff;

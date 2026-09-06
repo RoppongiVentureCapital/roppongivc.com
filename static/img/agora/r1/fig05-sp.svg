@@ -1,0 +1,72 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 306 646" role="img"
+     aria-label="上は雑な問いのときの確率分布。ありふれた答えに山が立ち、新しいものは裾に埋もれる。下は条件を重ねたあと。分布そのものが作り替えられ、さっきまで裾だった場所に新しい山が立つ。">
+<!--
+  ★スマホ用の縦版（図6 fig05）★案1 ── 左右2つのグラフを上下2段にした
+  ★viewBox 306 ＝ 画面375pxで図が出る実寸。書いた数字がそのまま見える大きさになる
+  ★最小14px（図5で確定した基準）
+  ★★2つのグラフの横軸の位置と棒の幅を完全に揃えている（棒22px・間6px・左端x=32）。
+    上下に積んでも「さっきまで裾だった場所に山が立った」が読み取れるようにするため。
+    ★左右に並べた案2（fig05-sp2.svg）と見比べてください
+  ★棒の高さは横長版の比を0.85倍にしたもの（最大118 → 100）。長さの比は変えていない
+  ★足元の2行は、意味のまとまりで4行に折った（「温度を下げるのは、」「条件を足すのは、」で切る）
+-->
+<style>
+text{font-family:'Hiragino Kaku Gothic ProN','Hiragino Sans','Yu Gothic','Meiryo','Helvetica Neue',Arial,sans-serif;fill:#111}
+.tt{font-size:17px;font-weight:600}
+.ax{font-size:14px;fill:#7d7d7d}
+.cp{font-size:14px;fill:#333}
+.b1{fill:#c9c9c9}
+.b2{fill:#019949}
+</style>
+
+<rect width="306" height="646" fill="#fff"/>
+
+<!-- ============ 上段 雑な問い ============ -->
+<text class="tt" x="14" y="24">雑な問い</text>
+<text class="ax" x="14" y="46">確率</text>
+
+<rect class="b1" x="32"  y="172" width="22" height="8"/>
+<rect class="b1" x="60"  y="158" width="22" height="22"/>
+<rect class="b1" x="88"  y="138" width="22" height="42"/>
+<rect class="b1" x="116" y="107" width="22" height="73"/>
+<rect class="b1" x="144" y="80"  width="22" height="100"/>
+<rect class="b1" x="172" y="107" width="22" height="73"/>
+<rect class="b1" x="200" y="138" width="22" height="42"/>
+<rect class="b1" x="228" y="158" width="22" height="22"/>
+<rect class="b1" x="256" y="172" width="22" height="8"/>
+<line x1="26" y1="180" x2="284" y2="180" stroke="#333" stroke-width="1.5"/>
+
+<text class="cp" x="14" y="208">ありふれた答えに山が立つ。</text>
+<text class="cp" x="14" y="230">新しいものは裾に埋もれて出てこない</text>
+
+<line x1="14" y1="256" x2="292" y2="256" stroke="#e6e6e6" stroke-width="1"/>
+
+<!-- ============ 下段 条件を重ねたあと ============ -->
+<text class="tt" x="14" y="286">条件を重ねたあと</text>
+<text class="ax" x="14" y="308">確率</text>
+
+<text class="cp" x="211" y="336" text-anchor="middle" fill="#019949" font-weight="600">さっきまで裾だった場所</text>
+<line x1="211" y1="342" x2="211" y2="350" stroke="#019949" stroke-width="2"/>
+<polygon points="211,356 205,346 217,346" fill="#019949"/>
+
+<rect class="b1" x="32"  y="442" width="22" height="10"/>
+<rect class="b1" x="60"  y="442" width="22" height="10"/>
+<rect class="b1" x="88"  y="440" width="22" height="12"/>
+<rect class="b1" x="116" y="442" width="22" height="10"/>
+<rect class="b1" x="144" y="444" width="22" height="8"/>
+<rect class="b1" x="172" y="442" width="22" height="10"/>
+<rect class="b2" x="200" y="352" width="22" height="100"/>
+<rect class="b1" x="228" y="442" width="22" height="10"/>
+<rect class="b1" x="256" y="444" width="22" height="8"/>
+<line x1="26" y1="452" x2="284" y2="452" stroke="#333" stroke-width="1.5"/>
+
+<text class="cp" x="14" y="480">分布そのものが作り替えられ、</text>
+<text class="cp" x="14" y="502">埋もれていた場所に新しい山が立つ</text>
+
+<!-- ============ 足元 ============ -->
+<line x1="14" y1="528" x2="292" y2="528" stroke="#e6e6e6" stroke-width="1"/>
+<text class="cp" x="14" y="554" fill="#555">温度を下げるのは、</text>
+<text class="cp" x="14" y="576" fill="#555">同じ分布の中で山を選びやすくするだけ</text>
+<text class="cp" x="14" y="606" fill="#555">条件を足すのは、</text>
+<text class="cp" x="14" y="628" fill="#555">分布そのものを変形させる操作</text>
+</svg>

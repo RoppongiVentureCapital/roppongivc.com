@@ -1,0 +1,75 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 306 684" role="img"
+     aria-label="AIエージェントにKaggleのコンペを丸ごと走らせた記録。人間が渡したのは、指示文1枚と、3つの決めごと（答え合わせの分け方、出力の形、実験の記録）だけ。あとはAIエージェントが、下調べと手がかりの列を約140個つくること、3つのモデルを学習させて混ぜ方を調整すること、提出までを自分で行った。改善のくり返しも自分で回している。Kaggleが採点する。人間が書いたプログラムは、ほぼない。">
+<!--
+  ★スマホ用の縦版（図3 fig-agent）。パソコン用は fig-agent.svg（横長 760×372）をそのまま使う
+  ★viewBox 306 ＝ 画面375pxで図が出る実寸。書いた数字がそのまま見える大きさになる
+    画面375px → 1.00倍 ／ 390px → 1.05倍 ／ 430px → 1.18倍
+  ★最小14px（図5で確定した基準）。足元だけ15px（16pxだと1行に入らないため）
+  ★横に並んでいた3つの箱（人間 → AIエージェント → Kaggle）を縦に積んだ
+  ★色は元の図と同じ ── 人間＝白地に細枠／AI＝灰の濃い枠／Kaggle＝緑
+  ★★番号（①②③）は使わない（コラム1の①②③とぶつかるため。→ 105 §8-8 ⑪）
+  ★折り返したもの ── 肩の小見出し／大見出し／箇条書きの1つめと2つめ
+    306幅・左右余白14pxでは、14pxの文字は1行19文字が上限
+  ★出所 ── Andrey Lukyanenko 氏（Kaggle Competition Master・Meta）2026年7月公開の記録
+    https://andlukyane.com/blog/kaggle-antigravity-s6e7
+-->
+<style>
+text{
+  font-family:'Hiragino Kaku Gothic ProN','Hiragino Sans','Yu Gothic','Meiryo','Helvetica Neue',Arial,sans-serif;
+  font-weight:400; fill:#333;
+}
+.eyebrow{font-size:14px;font-weight:600;fill:#7d7d7d;letter-spacing:.02em}
+.deck{font-size:22px;font-weight:600;fill:#111}
+.label{font-size:17px;font-weight:600;fill:#111}
+.cell{font-size:14px;fill:#333}
+.sub{font-size:14px;fill:#7d7d7d}
+.tick{font-size:14px;fill:#9a9a9a}
+.foot{font-size:14px;font-weight:600;fill:#111}
+</style>
+
+<rect width="306" height="684" fill="#fff"/>
+
+<text class="eyebrow" x="14" y="22">AIエージェントに、</text>
+<text class="eyebrow" x="14" y="40">Kaggleのコンペを丸ごと走らせた記録</text>
+<text class="deck" x="14" y="76">人間が渡したのは、</text>
+<text class="deck" x="14" y="104">最初の指示だけ</text>
+
+<!-- ============ 人間（128〜298） ============ -->
+<rect x="14" y="128" width="278" height="170" rx="6" fill="#fff" stroke="#c4c4c4" stroke-width="1"/>
+<text class="label" x="30" y="154">人間</text>
+<text class="cell"  x="30" y="184">指示文 1枚</text>
+<text class="cell"  x="30" y="212">決めごと 3つ</text>
+<text class="sub"   x="44" y="236">答え合わせの分け方</text>
+<text class="sub"   x="44" y="258">出力の形</text>
+<text class="sub"   x="44" y="280">実験の記録</text>
+
+<path d="M147 302 L153 308 L159 302" stroke="#9a9a9a" stroke-width="1.5" fill="none"/>
+
+<!-- ============ AIエージェント（316〜518・★AIなので灰の濃い枠） ============ -->
+<rect x="14" y="316" width="278" height="202" rx="6" fill="#f7f7f7" stroke="#9a9a9a" stroke-width="1.5"/>
+<text class="label" x="30" y="342">AIエージェント</text>
+
+<text class="tick" x="30" y="372">▸</text>
+<text class="cell" x="48" y="372">下調べ。手がかりの列を</text>
+<text class="cell" x="48" y="392">約140個つくる</text>
+
+<text class="tick" x="30" y="422">▸</text>
+<text class="cell" x="48" y="422">3つのモデルを学習させ、</text>
+<text class="cell" x="48" y="442">混ぜ方を調整</text>
+
+<text class="tick" x="30" y="472">▸</text>
+<text class="cell" x="48" y="472">提出する</text>
+
+<text class="sub" x="30" y="502">改善のくり返しも、自分で回した</text>
+
+<path d="M147 522 L153 528 L159 522" stroke="#019949" stroke-width="1.5" fill="none"/>
+
+<!-- ============ Kaggle（536〜612） ============ -->
+<rect x="14" y="536" width="278" height="76" rx="6" fill="#f2faf5" stroke="#019949" stroke-width="1"/>
+<text class="label" x="30" y="562">Kaggle</text>
+<text class="cell" x="30" y="592">採点</text>
+
+<!-- 足元 -->
+<path d="M14 640 L292 640" stroke="#ececec" stroke-width="1"/>
+<text class="foot" x="14" y="666">人間が書いたプログラム ── ほぼなし</text>
+</svg>

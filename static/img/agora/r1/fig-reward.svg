@@ -72,7 +72,7 @@ text{
 <text class="mid" x="52" y="336">この3つに、「これは価値ある新しさか」を測る物差しは入っていない</text>
 
 <!-- ===== 下段 多数決では拾えない ===== -->
-<text class="eyebrow" x="32" y="404">では、②で「どちらが新しいか」を押させればよいのか</text>
+<text class="eyebrow" x="32" y="404">では、2で「どちらが新しいか」を押させればよいのか</text>
 
 <rect x="32" y="422" width="696" height="94" rx="6" fill="#f7f7f7" stroke="#c4c4c4" stroke-width="1"/>
 

@@ -2,11 +2,22 @@
        ★HTMLの行頭に空白を入れないこと。コラムの中で使うと .Inner が markdownify を
          通るので、4文字以上の字下げがあるとコードブロックに化ける（実際に化けた）
        ★2026-09-05 w= を足した。縦長のスクリーンショット（スマホ画面など）を
-         本文幅いっぱいに広げると縦が1,500pxを超えるので、幅を指定して抑える */ -}}
+         本文幅いっぱいに広げると縦が1,500pxを超えるので、幅を指定して抑える
+       ★2026-09-06 src-sp= を足した（スマホ用の縦長版に差し替えるため）。
+         ★SVGの中に @media を書く方法では横長↔縦長の切り替えはできない。
+           縦横比を決めているのは viewBox 属性で、これはCSSのプロパティではないため
+           @media の中から書き換えられない。だから別ファイルにして picture で切り替える
+         ★境目の768pxは agora-article.css のメディアクエリと同じ値。図と本文が同時に切り替わる
+         ★picture は読み込むのは片方だけなので、通信量は増えない */ -}}
 <figure class="a-fig{{ if .Get "wide" }} a-fig-wide{{ end }}">
 <div class="a-fig-frame{{ if .Get "src" }} has-img{{ end }}">
 {{- if .Get "src" }}
+{{- $sp := .Get "src-sp" }}
+{{- if $sp }}
+<picture><source media="(max-width:768px)" srcset="{{ $sp | relURL }}"><img src="{{ .Get "src" | relURL }}" alt="図{{ .Get "n" }}"{{ with .Get "w" }} style="max-width:{{ . }}px"{{ end }}></picture>
+{{- else }}
 <img src="{{ .Get "src" | relURL }}" alt="図{{ .Get "n" }}"{{ with .Get "w" }} style="max-width:{{ . }}px"{{ end }}>
+{{- end }}
 {{- else }}
 <span class="a-fig-todo"><span class="a-fig-no">図 {{ .Get "n" }}</span><br>画像は未作成</span>
 {{- end }}
