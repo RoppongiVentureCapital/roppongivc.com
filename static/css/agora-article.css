@@ -111,14 +111,14 @@
   box-shadow:0 0 0 1px rgba(0,0,0,.09), 0 1px 3px rgba(0,0,0,.10);
 }
 .a-say-head{ display:flex; align-items:baseline; gap:.55rem; margin:.1rem 0 .3rem; flex-wrap:wrap; }
-.a-say-name{ font-size:13.5px;   /* ★2026-09-06 13px → 14px */ font-weight:700; letter-spacing:.06em; line-height:1.3; }
-.a-say-role{ font-size:12px;   /* ★2026-09-06 11.5px → 12.5px */ color:#3c4249; line-height:1.3; }  /* ★2026-09-04 薄すぎたので濃くした（#9a9a9a → #5f666d） */
+.a-say-name{ font-size:13px; font-weight:700; letter-spacing:.06em; line-height:1.3; }   /* ★2026-09-06 夕 13.5px → 13px に戻した */
+.a-say-role{ font-size:11.5px;   /* ★2026-09-06 夕 12px → 11.5px に戻した */ color:#3c4249; line-height:1.3; }  /* ★色は #3c4249 のまま（2段階濃くしたもの。サイズとは別の対応） */
 /* 吹き出し本体。★しっぽは背景と枠線を継承した正方形を45度回す（.cl .bb と同じ作り） */
 .a-say-bub{
   position:relative; min-width:0;
   padding:.85rem 1.15rem;
   border:1px solid; border-radius:.9rem;
-  font-size:17px; line-height:1.95;   /* ★2026-09-06 16.5px/1.9 → 17px/1.95（吹き出し） */
+  font-size:16.5px; line-height:1.9;   /* ★2026-09-06 夕 変更前に戻した。山田様「吹き出しはもともとのサイズで普通の大きさに見えていた」。17px/1.95（行の高さ33.15px）は文字と倍率を二重に上げた状態だった */
 }
 .a-say-bub:before{
   content:''; position:absolute; left:-6px; top:17px; width:10px; height:10px;
@@ -146,7 +146,7 @@
 /* ★2026-09-04 AIは人ではない。地色は灰のまま、枠だけ濃くして人間と分ける。
    ★濃い灰＋白文字の反転も試したが、5〜6章のAIの長い出力が読みにくく却下（山田様）。
    ★以前は名前を緑にしていたが、山井さんの緑（#0b7a45）とほぼ同色だったので黒にした */
-.a-say.s-ai       .a-say-bub{ background:#f1f4f4; border-color:#8b9598; border-width:1.5px; }   /* ★2026-09-06 font-size:16px を削除。人間の吹き出しと同じ18pxを継ぐ */
+.a-say.s-ai       .a-say-bub{ background:#f1f4f4; border-color:#8b9598; border-width:1.5px; font-size:16px; }   /* ★2026-09-06 夕 font-size:16px を戻した（吹き出しを変更前に戻す指示） */
 .a-say.s-ai       .a-say-bub:before{ border-left-width:1.5px; border-bottom-width:1.5px; }
 .a-say.s-ai       .a-say-name{ color:#111; letter-spacing:.12em; }
 
