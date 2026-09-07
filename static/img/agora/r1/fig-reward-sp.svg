@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 306 1056" role="img"
-     aria-label="AIの訓練で目指しているもの3つ。1、見たものをなぞる。材料はインターネットの文章、練習は次の1語を当てること。2、人が押した方へ寄せる。材料は人がどちらかを押した記録、練習は押された方に高い点が付くようにすること。3、機械で正誤が付くもの。材料は数学とコード、練習は機械が正解と照らすこと。この3つに、これは価値ある新しさかを測る物差しはない。2で新しさを押させればいいとはならない。ありふれた答えには多くの人が良いと押すが、本物の新しさは少数にしか価値が分からないので、点が付かず訓練で消える。棒の長さは説明のための模式。">
+     aria-label="AIの訓練で目指しているもの3つ。1、見たものをなぞる。材料はインターネットの文章、練習は次の1語を当てること。2、人が好む方へ寄せる。材料は2つを見せて人が良いと思ったほうを選んだ記録、練習は選ばれた方に高い点が付くようにすること。3、機械で正誤が付くもの。材料は数学とコード、練習は機械が正解と照らすこと。この3つに、これは価値ある新しさかを測る物差しはない。2で新しさを選ばせればいいとはならない。ありふれた答えには多くの人が良いと選ぶが、本物の新しさは少数にしか価値が分からないので、点が付かず訓練で消える。棒の長さは説明のための模式。">
 <!--
   ★スマホ用の縦版（図4 fig-reward）。パソコン用は fig-reward.svg（横長 760×556）をそのまま使う
   ★viewBox 306 ＝ 画面375pxで図が出る実寸。書いた数字がそのまま見える大きさになる
@@ -50,13 +50,13 @@ text{
 
 <path d="M147 282 L153 288 L159 282" stroke="#9a9a9a" stroke-width="1.5" fill="none"/>
 
-<!-- ============ 2 人が押した方へ寄せる（296〜464） ============ -->
+<!-- ============ 2 人が好む方へ寄せる（296〜464） ============ -->
 <rect x="14" y="296" width="278" height="168" rx="6" fill="#fff" stroke="#c4c4c4" stroke-width="1"/>
 <circle cx="42" cy="322" r="11" fill="#9a9a9a"/><text class="no" x="42" y="327" text-anchor="middle">2</text>
-<text class="label" x="62" y="328">人が押した方へ寄せる</text>
+<text class="label" x="62" y="328">人が好む方へ寄せる</text>
 <path d="M30 344 L276 344" stroke="#ececec" stroke-width="1"/>
-<text class="key" x="30" y="370">材料</text><text class="val" x="68" y="370">人がどちらかを押した記録</text>
-<text class="key" x="30" y="396">練習</text><text class="val" x="68" y="396">押された方に高い点</text>
+<text class="key" x="30" y="370">材料</text><text class="val" x="68" y="370">良いほうを人が選んだ記録</text>
+<text class="key" x="30" y="396">練習</text><text class="val" x="68" y="396">選ばれた方に高い点</text>
 <text class="sub" x="30" y="426">多数決で点が付く</text>
 
 <path d="M147 468 L153 474 L159 468" stroke="#9a9a9a" stroke-width="1.5" fill="none"/>
@@ -78,13 +78,13 @@ text{
 
 <!-- ============ 下段 多数決では拾えない ============ -->
 <text class="eyebrow" x="14" y="814">では、2で「どちらが新しいか」を</text>
-<text class="eyebrow" x="14" y="836">押させればよいのか</text>
+<text class="eyebrow" x="14" y="836">選ばせればよいのか</text>
 
 <rect x="14" y="852" width="278" height="186" rx="6" fill="#f7f7f7" stroke="#c4c4c4" stroke-width="1"/>
 
 <text class="bar" x="30" y="882">ありふれた答え</text>
 <rect x="30" y="892" width="230" height="13" rx="2" fill="#9a9a9a"/>
-<text class="sub" x="30" y="928" fill="#333">多くの人が「良い」と押す</text>
+<text class="sub" x="30" y="928" fill="#333">多くの人が「良い」と選ぶ</text>
 
 <text class="bar" x="30" y="964">本物の新しさ</text>
 <rect x="30" y="974" width="13" height="13" rx="2" fill="#c0392b"/>

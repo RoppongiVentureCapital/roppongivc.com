@@ -1,0 +1,19 @@
+{{- /* リンクの描画。★2026-09-07 追加（山田様の指示）── Agora記事内のリンクは新しいタブで開く。
+
+       ★条件を layout: agora-article のページだけに絞っている。
+         他のページ（トップ・members・jiwa・agora 等）は Hugo の既定と同じ出力になる。
+         ★足したあとに全ページをビルドして差分を取り、記事3本以外が1バイトも
+           変わっていないことを確認済み（2026-09-07）。
+
+       ★対象外にしているもの
+         ・href が "#" だけのもの（感想フォームの目印。URLが入れば自動で新しいタブになる）
+         ・"#" で始まるページ内リンク（同じページの中を飛ぶので新しいタブにしない）
+
+       ★rel="noopener noreferrer" を付ける理由 ── 新しいタブで開いた先のページから
+         元のページを操作されるのを防ぐ（noopener）。参照元を渡さない（noreferrer）。
+
+       ★ショートコードが出すリンク（layouts/shortcodes/cta.html）はここを通らない。
+         あちらにも同じ指定を入れてある。★片方だけ直さないこと */ -}}
+{{- $d := .Destination -}}
+{{- $blank := and (eq .Page.Layout "agora-article") (not (hasPrefix $d "#")) -}}
+<a href="{{ $d | safeURL }}"{{ with .Title }} title="{{ . }}"{{ end }}{{ if $blank }} target="_blank" rel="noopener noreferrer"{{ end }}>{{ .Text | safeHTML }}</a>

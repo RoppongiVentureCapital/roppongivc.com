@@ -9,5 +9,5 @@
 <span class="a-col-tag">コラム {{ .Get "n" }}</span>
 <span class="a-col-title">{{ .Get "title" }}</span>
 </summary>
-<div class="a-col-inner">{{ .Inner | markdownify }}</div>
+<div class="a-col-inner">{{ .Page.RenderString (dict "display" "block") .Inner }}</div>
 </details>

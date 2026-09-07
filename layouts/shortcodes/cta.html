@@ -9,8 +9,13 @@
 <p class="a-cta-sub">{{ .Get "sub" | default "将棋の詰将棋のように、AIの中身を1問ずつ切り出しました。全21問。" }}</p>
 </div>
 </div>
-<a class="a-btn" href="{{ .Get "href" | default "#" }}">{{ .Get "label" | default "はじめる" }}</a>
-{{- with .Get "href2" }}<a class="a-btn a-btn-ghost" href="{{ . }}">{{ $.Get "label2" }}</a>{{ end }}
+{{- /* ★2026-09-07 リンクは新しいタブで開く（山田様の指示）。
+       ★href が "#" のときだけ付けない（感想フォームの目印。URLが入れば自動で付く）
+       ★markdownのリンクは layouts/_default/_markup/render-link.html が同じことをしている。
+         ★片方だけ直さないこと */ -}}
+{{- $h := .Get "href" | default "#" -}}
+<a class="a-btn" href="{{ $h }}"{{ if ne $h "#" }} target="_blank" rel="noopener noreferrer"{{ end }}>{{ .Get "label" | default "はじめる" }}</a>
+{{- with .Get "href2" }}<a class="a-btn a-btn-ghost" href="{{ . }}"{{ if ne . "#" }} target="_blank" rel="noopener noreferrer"{{ end }}>{{ $.Get "label2" }}</a>{{ end }}
 {{- with .Get "note" }}
 <p class="a-cta-note">{{ . | safeHTML }}</p>
 {{- end }}

@@ -29,7 +29,15 @@
          ★Oxford・Cambridge 訪問は入れていない（★他の3つが順位・選出という結果なのに対し
            訪問は結果ではなく、並べると1つだけ弱く見えるため。★山田様も「入れないのは賛成」）
          ★リンクは貼らない（2026-09-06 山田様「もういい。AI五輪も貼れってなるし」）
-       ★HTMLの行頭に空白を入れないこと（markdownify が字下げをコードブロックにする） */ -}}
+       ★HTMLの行頭に空白を入れないこと（markdownify が字下げをコードブロックにする）
+       ★★2026-09-07 注意 ── ここは markdownify のままにしてある。
+         markdownify はショートコードの中でページ文脈を失うため（.Page が home になる）、
+         layouts/_default/_markup/render-link.html の「Agora記事のリンクは新しいタブ」が効かない。
+         ★いま吹き出しの中にリンクは1本も無いので問題は出ていない。
+         ★吹き出しの中にリンクを入れるときは、column.html と同じ
+           {{ .Page.RenderString (dict "display" "block") .Inner }} に替えること。
+           ★★ただし単純に替えると1行だけの吹き出しが <p> で包まれて余白が変わる（61件全部）。
+             替えるなら見た目を実機で確認すること */ -}}
 {{- $dir := "img/agora/r1/avatars" -}}
 {{- $who := dict
   "yamai"    (dict "n" "山井" "r" "AI五輪メダリスト" "f" "yamai.jpg")

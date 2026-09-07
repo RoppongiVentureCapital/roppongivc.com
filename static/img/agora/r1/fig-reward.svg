@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 556" role="img"
-     aria-label="AIの訓練で目指しているもの3つ。1、見たものをなぞる。材料はインターネットの文章、練習は次の1語を当てること。2、人が押した方へ寄せる。材料は人がどちらかを押した記録、練習は押された方に高い点が付くようにすること。3、機械で正誤が付くもの。材料は数学とコード、練習は機械が正解と照らすこと。この3つに、これは価値ある新しさかを測る物差しはない。2で新しさを押させればいいとはならない。ありふれた答えには多くの人が良いと押すが、本物の新しさは少数にしか価値が分からないので、点が付かず訓練で消える。棒の長さは説明のための模式。">
+     aria-label="AIの訓練で目指しているもの3つ。1、見たものをなぞる。材料はインターネットの文章、練習は次の1語を当てること。2、人が好む方へ寄せる。材料は2つを見せて人が良いと思ったほうを選んだ記録、練習は選ばれた方に高い点が付くようにすること。3、機械で正誤が付くもの。材料は数学とコード、練習は機械が正解と照らすこと。この3つに、これは価値ある新しさかを測る物差しはない。2で新しさを選ばせればいいとはならない。ありふれた答えには多くの人が良いと選ぶが、本物の新しさは少数にしか価値が分からないので、点が付かず訓練で消える。棒の長さは説明のための模式。">
 <!--
   ★余白のルール（fig-kaggle・fig-agent・fig-howto と同じ）基準単位 8px。外周 32
   ★書体は1つだけ。差は大きさ・太さ・色だけ
@@ -47,10 +47,10 @@ text{
 <g>
   <rect x="272" y="100" width="216" height="176" rx="6" fill="#fff" stroke="#c4c4c4" stroke-width="1"/>
   <circle cx="300" cy="128" r="11" fill="#9a9a9a"/><text class="no" x="300" y="132" text-anchor="middle">2</text>
-  <text class="label" x="320" y="133">人が押した方へ寄せる</text>
+  <text class="label" x="320" y="133">人が好む方へ寄せる</text>
   <path d="M292 156 L468 156" stroke="#ececec" stroke-width="1"/>
-  <text class="sub" x="292" y="182">材料</text><text class="sub" x="328" y="182" fill="#333">人がどちらかを押した記録</text>
-  <text class="sub" x="292" y="208">練習</text><text class="sub" x="328" y="208" fill="#333">押された方に高い点</text>
+  <text class="sub" x="292" y="182">材料</text><text class="sub" x="328" y="182" fill="#333">良いほうを人が選んだ記録</text>
+  <text class="sub" x="292" y="208">練習</text><text class="sub" x="328" y="208" fill="#333">選ばれた方に高い点</text>
   <text class="sub" x="292" y="244">多数決で点が付く</text>
 </g>
 
@@ -72,13 +72,13 @@ text{
 <text class="mid" x="52" y="336">この3つに、「これは価値ある新しさか」を測る物差しは入っていない</text>
 
 <!-- ===== 下段 多数決では拾えない ===== -->
-<text class="eyebrow" x="32" y="404">では、2で「どちらが新しいか」を押させればよいのか</text>
+<text class="eyebrow" x="32" y="404">では、2で「どちらが新しいか」を選ばせればよいのか</text>
 
 <rect x="32" y="422" width="696" height="94" rx="6" fill="#f7f7f7" stroke="#c4c4c4" stroke-width="1"/>
 
 <text class="bar" x="52" y="456">ありふれた答え</text>
 <rect x="176" y="446" width="300" height="13" rx="2" fill="#9a9a9a"/>
-<text class="sub" x="490" y="456" fill="#333">多くの人が「良い」と押す</text>
+<text class="sub" x="490" y="456" fill="#333">多くの人が「良い」と選ぶ</text>
 
 <text class="bar" x="52" y="492">本物の新しさ</text>
 <rect x="176" y="482" width="17" height="13" rx="2" fill="#c0392b"/>
