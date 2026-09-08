@@ -16,7 +16,8 @@
       <div class="a-hero-text">
         {{ with .Params.hero_label }}<span class="a-hero-label">{{ . }}</span>{{ end }}
         {{ with .Params.headline }}<h1 class="a-hero-title">{{ . | safeHTML }}</h1>{{ end }}
-        <p class="a-hero-meta">{{ .Date.Format "2006年1月2日" }}</p>
+        {{/* ★2026-09-08 夕 og:image に合わせて、日付の下に発行元を出す（山田様の指示） */}}
+        <p class="a-hero-meta">{{ .Date.Format "2006年1月2日" }}<br>六本木ベンチャーキャピタル</p>
       </div>
     </div>
   </header>

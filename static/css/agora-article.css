@@ -58,7 +58,7 @@
   font-size:clamp(1.35rem,2.9vw,2.25rem); font-weight:700;
   line-height:1.4; letter-spacing:-.01em; color:var(--black);
 }
-.a-hero-meta{ font-size:14px; color:#444; margin-top:auto; }
+.a-hero-meta{ font-size:16px; color:#2a2a2a; line-height:1.75; margin-top:auto; }   /* ★2026-09-08 夕 14px/#444 → 16px/#2a2a2a（2段階濃く）。発行元の行が入るので line-height を指定 */
 
 /* ============ 本文の枠 ============ */
 .a-body{
@@ -312,7 +312,7 @@
   .a-hero-text{ min-height:0; padding:.5rem 0; }
   .a-hero-label{ font-size:16.5px; }   /* ★2026-09-08 夕 12.5px → 16.5px */
   .a-hero-title{ font-size:clamp(1.15rem,5.2vw,1.5rem); line-height:1.45; margin-top:.7rem; }
-  .a-hero-meta{ font-size:13px; margin-top:1rem; }
+  .a-hero-meta{ font-size:15px; margin-top:1rem; }   /* ★2026-09-08 夕 13px → 15px */
   .a-body{ padding:2.5rem 1.5rem 0; font-size:16.6px; line-height:1.831; }   /* ★2026-09-06 16px/1.9 → 17px/1.95 */
   .a-body h2{ font-size:1.3rem; margin:3.5rem auto 1.2rem; }
   .a-body > blockquote{ font-size:18px; padding-left:1.1rem; }   /* ★2026-09-06 16.5px → 18px */
