@@ -6,8 +6,19 @@
    ★★★戻さないこと
      ✗ h2 を明朝（--serif）に戻さない（★却下）
      ✗ .lead / .chap / .fg / .nst / .cap を 15px 未満にしない（★「小さい」で3回 却下）
-     ✗ 16px に上げない（★★「全体的に大きい」で却下。★2026-09-02 13:4x）
-   ★対話（.cl .bb）は 15px／行間1.9。★上の方の文字はこれに合わせている
+   🔴🔴 2026-09-06：★★★「16px に上げない」（★2026-09-02 13:4x の却下）は【山田様が解除しました】。
+     ★山田様「ゲームの吹き出しが、Agora記事と比べて小さいし灰色っぽくて薄い。記事より見づらい」
+     ★「これは気にするな、記事に合わせろ」→ ★記事の 16.6px に合わせました。★却下は無効です
+   🔴🔴🔴 2026-09-06 21:0x：★★★行間を記事に合わせました（★1.9 は【誤り】でした）
+     ★山田様「記事の行間これじゃないよな。なんか今見た目が間延びしてて間抜けなんだよ。記事と合わせろよ」
+     ★★なぜ間延びしたか ── ★1.9 は文字が 15px だった頃の倍率です。
+       変更前 15px × 1.9  ＝ 28.5px   ★偶然、記事とほぼ同じだった
+       記事   16.6px × 1.70 ＝ 28.22px
+       誤り   16.6px × 1.9  ＝ 31.54px ★文字を上げたのに倍率を据え置いたので 3.3px 伸びた
+     ✅ 吹き出し（.cl .bb）  16.6px × 1.70  ＝ 28.22px（★記事の吹き出しと同じ）
+     ✅ 本文相当             16.6px × 1.831 ＝ 30.39px（★記事の本文と同じ）
+        ★.chap ／ .lead ／ .cap ／ .fg .ft ／ .fg .fn ／ .nst .lb ／ .nst .sb
+     ★★「15px 未満にしない」の却下は【まだ有効】です（★今回は上げる方向なので衝突しません）
    ★表（.dtab）だけ 12.5 → 14px（★山田様が「チープ」と指摘した箇所） */
 /* ══════════════════════════════════════════════════════════════════════════
    AIの詰将棋 ── common.css（23ページで共有）
@@ -23,9 +34,11 @@
    ★@media (max-width:430px) の【SVG の id 一覧】は本ごとに違うので各ページに残します（→ A が承認）
    ══════════════════════════════════════════════════════════════════════════ */
 
+/* 🔴 2026-09-06：★灰色を記事に合わせて2段階 濃くした（--gray-500 #6e6e6e→#444 ／ --gray-600 #3f3f3f→#2a2a2a）
+   ★★★同じ :root が【18ページの <style> にも】あります（q01〜q14・q18〜q21）。★後勝ちなので両方 直すこと */
 :root{
  --bg:#fff; --white:#fff; --black:#000;
- --gray-100:#f9f9f9; --gray-200:#d9d9d9; --gray-500:#6e6e6e; --gray-600:#3f3f3f;
+ --gray-100:#f9f9f9; --gray-200:#d9d9d9; --gray-500:#444; --gray-600:#2a2a2a;
  --accent:#019949;
  --sans:'Inter',system-ui,sans-serif;
  --serif:'Source Serif 4','Noto Serif JP',Georgia,serif;
@@ -76,7 +89,7 @@ body{margin:0;background:var(--bg);color:var(--black);font-family:var(--sans);
 h1{font-family:var(--serif);font-size:2.1rem;font-weight:300;line-height:1.35;margin:0 0 .8rem}
 h2{font-family:var(--sans);font-size:1.375rem;font-weight:600;line-height:1.4;margin:0 0 1rem}
 h3{font-family:var(--sans);font-size:1.125rem;font-weight:600;margin:1.4rem 0 .6rem}
-.lead{font-size:16.5px;line-height:1.9;color:var(--gray-600);margin:0 0 1.1rem}
+.lead{font-size:16.6px;line-height:1.831;color:var(--gray-600);margin:0 0 1.1rem}
 .lead b{color:var(--black)}
 .meta{font-size:13px;letter-spacing:.1em;color:var(--gray-500);padding-bottom:1.2rem;
  border-bottom:1px solid var(--gray-200);margin-bottom:1.2rem}
@@ -97,7 +110,7 @@ h3{font-family:var(--sans);font-size:1.125rem;font-weight:600;margin:1.4rem 0 .6
 .panel .verdict{margin-top:.8rem;background:var(--white)}
 .two{display:flex;gap:1rem;flex-wrap:wrap}
 .two>div{flex:1 1 15rem;min-width:0}
-.cap{font-size:15px;color:var(--gray-500);margin-bottom:.5rem;line-height:1.9}
+.cap{font-size:16.6px;color:var(--gray-500);margin-bottom:.5rem;line-height:1.831}
 svg{display:block;width:100%;height:auto}
 .ctl{margin:1.1rem 0 .2rem}
 .ctl label{display:flex;justify-content:space-between;align-items:baseline;font-size:14px;
@@ -177,19 +190,36 @@ summary{font-size:14px;font-weight:500;cursor:pointer}
 .cast2 .row+.row{margin-top:.9rem;padding-top:.9rem;border-top:1px solid var(--gray-200)}
 .cast2 .ic{width:54px;height:54px;border-radius:50%;flex-shrink:0;display:block;
   border:2px solid var(--white);box-shadow:0 0 0 1px var(--gray-200),0 1px 3px rgba(0,0,0,.10)}
-.cast2 .nm2{display:block;font-size:15.5px;font-weight:700;margin-bottom:.2rem}
-.cast2 .rb{font-size:12px;font-weight:400;color:var(--gray-500);margin-left:.45rem}
-.cast2 .tx2{font-size:13.5px;line-height:1.85;color:var(--gray-600)}
+/* 🔴🔴 2026-09-07 A：★★登場人物の紹介を【記事に合わせた】
+   ★★★山田様「ここらへんも文字小さいのよ。記事と同じサイズって言っただろ」
+     「行間も記事に合わせろよ」（2026-09-07）
+   ★直す前 ── 名前 15.5px ／ ふりがな 12px ／ 説明文 13.5px×1.85（★スマホは 13px×1.8）
+   ★★名前は【本文より小さくしない】── .tx2 を 16.6px にすると 15.5px の名前が
+     本文より小さくなる（→ index の .pt .t で踏んだのと同じ型）。★18px に上げた
+   ★★各ページの <style> にも同じ4規則があるので、★common.css だけでは効かない
+     （★A112_size.py が18ページ＋@media 21ページを機械で直した） */
+.cast2 .nm2{display:block;font-size:18px;line-height:1.5;font-weight:700;margin-bottom:.2rem}
+.cast2 .rb{font-size:14px;font-weight:400;color:var(--gray-500);margin-left:.45rem}
+.cast2 .tx2{font-size:16.6px;line-height:1.831;color:var(--gray-600)}
 .cast2 .tx2 b{color:var(--black)}
 .cv{margin:1.6rem 0}
 .cl{display:flex;gap:.75rem;align-items:flex-start;margin:0 0 .85rem}
 .cl .av{width:46px;flex-shrink:0;text-align:center}
-.cl .av .nm{display:block;font-size:10.5px;font-weight:700;letter-spacing:.03em;
+/* 🔴🔴 2026-09-06：★★★話者名は【この1つだけ】です（★drawCV が .av の中に1個 出す）。
+   ★★下の .cl .nm は【同じ要素に当たる別の規則】で、詳細度 (0,3,0)>(0,2,0) なので
+     ★こちらが勝ちます。★11.5px は効いていませんでした（★実測 10.5px）。
+   ★★★2か所に名前が出ているわけではありません。★消すと話者名が【全部 消えます】
+     （★アイコンの下に名前を置く形は §5-40 ⒞ で山田様が指定して確定したもの）
+   → ★記事の下限に合わせて 10.5px → 14px にしました */
+.cl .av .nm{display:block;font-size:14px;font-weight:700;letter-spacing:.03em;
   line-height:1.25;margin-top:.24rem}
 .cl .ic{width:46px;height:46px;border-radius:50%;flex-shrink:0;display:block;
   border:2px solid var(--white);box-shadow:0 0 0 1px var(--gray-200),0 1px 3px rgba(0,0,0,.10)}
-.cl .bb{position:relative;min-width:0;padding:.65rem .95rem;font-size:15px;line-height:1.9;
-  border:1px solid var(--gray-200);border-radius:.85rem;background:var(--white);color:var(--gray-600)}
+/* 🔴🔴 2026-09-06：★★color:var(--gray-600) を【削除】して本文の黒を継がせた（★山田様「灰色っぽくて薄い」）
+   ★台詞は23ページで996件あり、その本文が全部 灰色で、太字だけが黒でした
+   ★font-size 15px → 16.6px（★記事の本文と同じ）。★★行間 1.9 は動かしません（→ 冒頭の注記） */
+.cl .bb{position:relative;min-width:0;padding:.65rem .95rem;font-size:16.6px;line-height:1.70;
+  border:1px solid var(--gray-200);border-radius:.85rem;background:var(--white)}
 .cl .bb b{color:var(--black)}
 .cl .bb:before{content:'';position:absolute;left:-6px;top:15px;width:10px;height:10px;
   background:inherit;border-left:1px solid;border-bottom:1px solid;border-color:inherit;
@@ -201,7 +231,10 @@ summary{font-size:14px;font-weight:500;cursor:pointer}
    ✗✗ 戻さないこと ── 博士＝オレンジ／学＝青 は【逆】です */
 .cl.m .bb{background:#fff7ea;border-color:#efd6a6}
 .cl.d .bb{background:#eef4fa;border-color:#c3d9ee}
-.cl .nm{display:block;font-size:11.5px;font-weight:700;letter-spacing:.07em;margin-bottom:.15rem}
+/* 🔴 2026-09-06：★font-size:11.5px を外しました ── ★上の .cl .av .nm と【同じ要素】に当たり、
+   ★詳細度で負けていて【効いていなかった】ため（★死んだ値を残すと次の担当が誤読します）。
+   ★★この規則は色（.cl.m / .cl.d）と margin-bottom のためだけに残します */
+.cl .nm{display:block;font-weight:700;letter-spacing:.07em;margin-bottom:.15rem}
 .cl.m .nm{color:#b0700c}   /* 🔴 学 → オレンジ（★アイコンの背景に合わせた）*/
 .cl.d .nm{color:#2f6fb5}   /* 🔴 博士 → 青（★同じ）*/
 .keyh{font-size:11.5px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;
@@ -209,20 +242,29 @@ summary{font-size:14px;font-weight:500;cursor:pointer}
 /* ══════ 「いま どこの話か」の入れ子図（★02 から持ち上げ）══════ */
 .fg{border:1px solid var(--gray-200);border-radius:.6rem;background:var(--white);
   padding:.9rem 1rem;margin:0 0 .85rem}
-.fg .ft{font-size:15px;font-weight:700;letter-spacing:.04em;color:var(--black);
+.fg .ft{font-size:16.6px;line-height:1.831;font-weight:700;letter-spacing:.04em;color:var(--black);
   margin:0 0 .65rem}
-.fg .fn{font-size:15px;line-height:1.9;color:var(--gray-600);margin:.65rem 0 0}
+.fg .fn{font-size:16.6px;line-height:1.831;color:var(--gray-600);margin:.65rem 0 0}
 .fg .fn b{color:var(--black)}
 .fg .fn+.fn{margin-top:.4rem}
 .nst{border:2px solid var(--gray-200);border-radius:.5rem;padding:.55rem .6rem}
-.nst .lb{font-size:15px;font-weight:700;color:var(--black);margin:0 0 .3rem}
-.nst .sb{font-size:15px;color:var(--gray-600);margin:0 0 .5rem;line-height:1.9}
+.nst .lb{font-size:16.6px;line-height:1.831;font-weight:700;color:var(--black);margin:0 0 .3rem}
+.nst .sb{font-size:16.6px;color:var(--gray-600);margin:0 0 .5rem;line-height:1.831}
 .nst.a{border-color:#c3d9ee;background:#f6fafd}
 .nst.b{border-color:#bcdfc9;background:#f5fbf7}
 .nst.c{border-color:#efd6a6;background:#fffaf0}
 .fg table{width:100%;border-collapse:collapse;margin:.5rem 0 0;font-size:14px}
 .fg th,.fg td{padding:.4rem .5rem;border:1px solid var(--gray-200);text-align:left}
 .fg th{background:var(--gray-100);font-weight:600}
+/* 🔴🔴 2026-09-07 A：★★呼び名／やること／章 の表だけを【本文と同じ大きさ】にした
+   ★★★山田様「ここらへんも文字小さいのよ。記事と同じサイズって言っただろ」（2026-09-07）
+   ★★なぜ別クラス（.ntab）にしたか ── ★.fg table は【会話の中の図の表】と共有されており、
+     ★q12・q13・q14 の表は【4〜5列】あって 12.5px でようやく 314px に収まっている（実測）。
+     ★共通の .fg table を上げると そちらが横にあふれる。→ 呼び名の表だけ切り出した
+   ★詳細度 .fg table.ntab (0,2,1) ＞ 各ページの .fg table (0,1,1) なので、
+     ★★q12〜q14 の <style> の 12.5px には【負けない】（★順番に関係なく効く） */
+.fg table.ntab{font-size:16.6px;line-height:1.831}
+.fg table.ntab th,.fg table.ntab td{padding:.5rem .6rem}
 .fg svg.dg{display:block;width:100%;max-width:520px;height:auto;margin:.5rem auto .2rem}
 
 /* ══════════════════════════════════════════════════════════════════════════
@@ -252,7 +294,7 @@ summary{font-size:14px;font-weight:500;cursor:pointer}
 .prog .cnt{font-size:12.5px;color:var(--gray-500);
   display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap}
 .prog .cnt b{color:var(--black);font-weight:600;font-size:14px}
-.chap{font-size:15px;line-height:1.9;color:var(--gray-600);
+.chap{font-size:16.6px;line-height:1.831;color:var(--gray-600);
   padding-bottom:1.2rem;border-bottom:1px solid var(--gray-200);margin-bottom:1.7rem}
 .chap b{color:var(--black)}
 .nav{display:flex;justify-content:space-between;align-items:center;gap:1rem;
@@ -277,4 +319,17 @@ summary{font-size:14px;font-weight:500;cursor:pointer}
   .nav a{padding:.6rem .8rem;font-size:13.5px}
   .prog .cnt{font-size:11.5px}
   .fg{padding:.7rem .75rem}
+  /* 🔴🔴 2026-09-07 A：★★カードの中の図は【カードの余白まで広げる】
+     ★★★実測 ── index.html の入れ子図は .card の余白（32px×2）に食われて
+       ★250px しか幅がなく、★同じ単位でも実効フォントが q01 の 348px より 28% 小さくなっていた
+       （★index 9.32px → ★★スマホで「全然見えない」の主因のひとつ）
+     → ★カードの左右の余白ぶんだけ外へ出す。★描画幅 250px → 318px（★27%増）
+     ★★図だけが対象（.fg）。★本文は1pxも動かない */
+  .card>.fg{margin-left:-2rem;margin-right:-2rem;border-radius:0;border-left:0;border-right:0}
+  /* 🔴🔴🔴 2026-09-07 A：★★入れ子図の文字は【common.js の drawNest が幅で決めます】
+     ★★★ここで CSS から font-size を上げては【いけません】──
+       ★文字だけ大きくしても座標が付いてこないので、★★「いまここ」が内側の箱に食い込み、
+       ★q06 では「ディープラーニング（深層学習）」と 9.00px 重なります（★実際に踏みました）。
+     → ★★座標と文字の大きさは【同じ場所（drawNest）で決める】。
+        ★変えたら A111_svgfit.js で必ず測り直すこと */
 }

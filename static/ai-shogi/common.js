@@ -206,7 +206,13 @@ function drawChap(q, intro) {
      （★書いてしまうと 23ページ 触ることになります）
    ★form / agora が空のときは ボタンを出さず、★灰色で1行だけ出します
    ══════════════════════════════════════════════════════════════════════════ */
-var SITE = { ver: 'v1.0', date: '2026-09-02', form: '', agora: '' };
+/* 🔴🔴 2026-09-07 A：★★agora に記事の URL を入れました（★山田様が指定 2026-09-07）
+   ★https://www.roppongivc.com/m3v8k1qz6p/  ── ★本番で 200 を確認済み
+   ★★これ1行で【4か所】に効きます ── index の［2時間で何が起きたかを読む］と
+     ★q05・q21・end の drawForm の［この教材の元になった記事へ］
+   ★form（感想フォーム）は まだ空です。★URL を頂いたらここに入れます */
+var SITE = { ver: 'v1.0', date: '2026-09-02', form: '',
+             agora: 'https://www.roppongivc.com/m3v8k1qz6p/' };
 
 /* ★フッタ（★23ページ一括。★版と日付は SITE から読む） */
 function drawFoot(note) {
@@ -317,35 +323,93 @@ function drawNest(id, ch, o) {
     { t: 'ディープラーニング（深層学習）', f: '#f5fbf7', s: '#77bb92', n: 2 },
     { t: 'LLM（大規模言語モデル）',      f: '#fffaf0', s: '#dcae5c', n: 3 }
   ];
-  var W = 560, PAD = 26, TOP = 30, BH = 34;
+  /* 🔴🔴🔴 2026-09-07 A【文字の大きさを「描画幅から逆算」する形にした】
+     ★★★山田様「ここの図解の中にある字のフォントも小さい。スマホサイズにしたとき全然見えない。
+       ちゃんとそれもスペースあるんだから本文と同じフォントサイズになるようにしろスマホサイズでも」
+     ★★★「問題あるなら 16.6 にする必要はないから、とにかくちゃんと見える範囲で、
+       支障のない範囲で大きくしろ」（2026-09-07）
+
+     ★★★なぜ固定の数字にできないのか（★実測）
+       SVG の font-size は【viewBox の単位】なので  実効px ＝ 単位 × (描画幅 ÷ 560)。
+       ★描画幅がページによって違う ──
+         q01 348px（★.wrap の中）／ q12 340px ／ index 250px（★.card の余白32px×2に食われる）／
+         PC 520px（★max-width）
+       → ★★1つの数字では どのページも 16.6px にできない。★だから【逆算する】。
+
+     ★やり方
+       ⑴ 先に空の SVG を置いて【本当の描画幅】を測る
+       ⑵ 単位 ＝ 16.6px × 560 ÷ 描画幅
+       ⑶ ★★ただし【いちばん長いラベルが枠に収まる上限】で頭を打つ ──
+          「ディープラーニング（深層学習）」は15文字あり、
+          いちばん内側から2番目の枠の内側（460単位）に入る上限は 28単位。
+          ★これを超えると枠から出るので、そこで止める（★16.6px に届かない幅では小さいままにする）
+       ⑷ 「いまここ」が1行に入らないときは【2行】に落とし、帯もその分 厚くする
+          ★★1行のまま文字だけ上げると、q06 で「ディープラーニング（深層学習）」と
+            9.00px 重なった（★A111_svgfit.js が捕まえた。★目視では気づけない）
+
+     ★実効の結果（実測）  index 15.9px ／ q01 16.8px ／ q12 16.4px ／ PC 16.7px
+       ★直す前は index 6.7px ／ q01 9.3px でした */
+  var W = 560, TARGET = 16.6;
+  h.className = 'fg';
+  h.innerHTML = (oHead ? '<div class="ft">いま どこの話をしているのか</div>' : '')
+              + '<svg class="dg" viewBox="0 0 560 100"></svg>';
+  var rw = h.querySelector('svg.dg').getBoundingClientRect().width || 348;
+
+  /* ★全角＝1.0em ／ 半角＝0.68em で見積もる（★実測より安全側。
+     ★実測 "LLM（大規模言語モデル）" 12.01em に対し 見積り 12.04em） */
+  var emw = function (s) {
+    var n = 0;
+    for (var i = 0; i < s.length; i++) n += (s.charCodeAt(i) < 0x2E80 ? 0.68 : 1.0);
+    return n;
+  };
+  var PAD = 22, TOP = 8, ASC = 0.80, DESC = 0.20, TP = 10, GAP = 8, BP = 10;
+  var inner = function (i) { return (W - 28 - i * PAD * 2) - 28; };   /* 枠の内側の使える幅 */
+  var cap = 999;
+  for (var i = 0; i < 3; i++) cap = Math.min(cap, inner(i) / emw(C[i].t) * 0.94);  /* ★6%の余裕 */
+  var FL = Math.max(15, Math.min(Math.floor(cap), Math.round(TARGET * W / rw)));
+  var FN = Math.round(FL * 0.88), FO = FN;
+
+  /* ★「いまここ」が1行に入るか（★いちばん厳しい枠で判定して全部そろえる） */
+  var TWO = false;
+  for (var i = 0; i < 3; i++)
+    if (emw(C[i].t) * FL + 16 + emw('いまここ') * FN > inner(i)) TWO = true;
+
+  var L1 = TP + ASC * FL;
+  var L2 = TWO ? (L1 + DESC * FL + GAP + ASC * FN) : L1;
+  var BH  = Math.ceil(L2 + DESC * (TWO ? FN : FL) + BP);   /* 1段ぶんの帯の厚み */
+  var IH  = BH + Math.round(FL * 0.7);                     /* いちばん内側の箱（★帯＋中身） */
+  var BOT = Math.max(14, Math.round(BH * 0.22));           /* 下の食い込み */
+  var HH = [BH + (BH + IH + BOT) + BOT, BH + IH + BOT, IH];
   var g = '';
   for (var i = 0; i < 3; i++) {
-    var x = 14 + i * PAD, y = TOP + i * BH,
-        w = W - 28 - i * PAD * 2, hh = 214 - i * BH * 2 + (i * 12);
+    var x = 14 + i * PAD, y = TOP + i * BH, w = W - 28 - i * PAD * 2, hh = HH[i];
     var on = (C[i].n === ch) || (i === 2 && ch === 4);
-    g += '<rect x="' + x + '" y="' + y + '" width="' + w + '" height="' + hh + '" rx="7"'
+    g += '<rect x="' + x + '" y="' + y + '" width="' + w + '" height="' + hh + '" rx="8"'
        + ' fill="' + C[i].f + '" stroke="' + C[i].s + '" stroke-width="' + (on ? 3 : 1.6) + '"/>'
-       + '<text x="' + (x + 12) + '" y="' + (y + 21) + '" font-size="15" font-weight="700"'
+       + '<text class="nl" x="' + (x + 14) + '" y="' + (y + L1).toFixed(1) + '" font-size="' + FL + '" font-weight="700"'
        + ' font-family="Inter,system-ui,sans-serif" fill="#1a1a1a">' + C[i].t + '</text>';
-    if (on) g += '<text x="' + (x + w - 12) + '" y="' + (y + 21) + '" font-size="14" font-weight="700"'
+    if (on) g += '<text class="nb" x="' + (x + w - 14) + '" y="' + (y + L2).toFixed(1) + '" font-size="' + FN + '" font-weight="700"'
        + ' text-anchor="end" font-family="Inter,system-ui,sans-serif" fill="#c0392b">いまここ</text>';
   }
+  var BOTY = TOP + HH[0];
   /* 🔴 2026-09-02 1問1ページ担当2代目：★「第5章 は この外」＋破線は o.outside===false で出しません
      （★トップページには下に5章の表があるので重複。→ 山田様「ここでいらない」）
      ★出さないときは viewBox の高さも詰めます（★下に空きが残らないように） */
-  var VBH = 300;
+  var VBH;
   if (oOut) {
-    g += '<line x1="14" y1="272" x2="546" y2="272" stroke="#d9d9d9" stroke-dasharray="4 3"/>'
-       + '<text x="20" y="290" font-size="14" font-family="Inter,system-ui,sans-serif" fill="#6e6e6e">'
+    g += '<line x1="14" y1="' + (BOTY + 22) + '" x2="546" y2="' + (BOTY + 22) + '"'
+       + ' stroke="#d9d9d9" stroke-dasharray="4 3"/>'
+       + '<text class="no" x="20" y="' + (BOTY + 22 + FO * 1.6).toFixed(1) + '" font-size="' + FO + '"'
+       + ' font-family="Inter,system-ui,sans-serif" fill="#444">'
        + '第5章 は この外（道具が変わる）</text>';
-  } else { VBH = 258; }
-  h.className = 'fg';
+    VBH = Math.ceil(BOTY + 22 + FO * 1.6 + FO * 0.55);
+  } else { VBH = BOTY + 14; }
   var mark = function (n) { return ch === n ? '　<b>← いまここ</b>' : ''; };
   h.innerHTML =
     (oHead ? '<div class="ft">いま どこの話をしているのか</div>' : '')
   + '<svg class="dg" viewBox="0 0 560 ' + VBH + '" role="img" aria-label="機械学習の中に深層学習、その中に LLM">'
   +   g + '</svg>'
-  + '<table><tr><th>呼び名</th><th>やること</th><th>章</th></tr>'
+  + '<table class="ntab"><tr><th>呼び名</th><th>やること</th><th>章</th></tr>'
   +   '<tr><td>機械学習</td><td>データを見て、機械が自分でつまみを決める。人が数字を手で書かない。</td>'
   +     '<td>第1章' + mark(1) + '</td></tr>'
   +   '<tr><td>深層学習</td><td>掛けて足す箱を何段も重ねて、あいだで折り曲げる。</td>'
@@ -354,6 +418,21 @@ function drawNest(id, ch, o) {
   +   '<tr><td>LLM</td><td>やることは「次の1語を当てる」だけ。それを出口5万語まで大きくしたもの。</td>'
   +     '<td>第3章・第4章' + (ch === 3 || ch === 4 ? '　<b>← いまここ</b>' : '') + '</td></tr>'
   + '</table>';
+  /* 🔴 2026-09-07 A：★★幅が変わったら描き直す（★スマホを横に倒したとき／窓の大きさを変えたとき）
+     ★★文字の大きさを【描画幅から逆算】しているので、★描いたあとに幅が変わると古い値のままになる。
+     ★250ms まとめてから1回だけ描き直す（★resize を毎回 拾うと重い）。★登録は1回だけ */
+  drawNest._c = (drawNest._c || []).filter(function (a) { return a[0] !== id; });
+  drawNest._c.push([id, ch, o]);
+  if (!drawNest._hook) {
+    drawNest._hook = true;
+    var tid = null;
+    window.addEventListener('resize', function () {
+      clearTimeout(tid);
+      tid = setTimeout(function () {
+        drawNest._c.slice().forEach(function (a) { drawNest(a[0], a[1], a[2]); });
+      }, 250);
+    });
+  }
   /* 🔴 2026-09-02 1問1ページ担当2代目：★★図の下の3段落を【全ページから消しました】
      （★山田様の指定 2026-09-02 21:1x「ここいらない。他のページも全部これ出るんでしょ？全部消して」）
      ★消したもの ── ✗「ChatGPT のように文章を作って返す道具を 生成AI と呼びます…」
@@ -363,5 +442,41 @@ function drawNest(id, ch, o) {
        （★index.html だけ o.outside===false で出しません）
      ★★これに伴い 第3引数の notes は使わなくなりました（★渡されても無害です） */
 }
+
+/* ══════════════════════════════════════════════════════════════════════════
+   🔴🔴 2026-09-07 A【新設】★★外へ出るリンクは【必ず別タブ】で開く
+   ★★★山田様の指定（2026-09-07）「リンクは別タブで開くようにして。
+     ゲーム上にあるリンクは全て別タブで開くようにして」
+
+   ★★対象 ── ★href が http:// https:// mailto: で始まるもの（＝ゲームの外に出るリンク）
+   ★★対象にしないもの ── ★ゲームの中のページ遷移（q01.html・index.html など）
+     ★理由：★［はじめる］［戻る］［次へ］［章の一覧］［上のバー］［進み具合の帯］は
+       ★★全部ゲーム内の移動で、実測すると 1ページに 4〜27本 あります。
+       ★これを別タブにすると、通してプレイするだけでタブが20枚 以上 開き、
+       ★★「いまどこにいるか」が分からなくなります（★迷子対策と正面から衝突します）。
+     ★★★もし「ゲーム内の移動も別タブに」というご指示でしたら、
+       ★下の EXT の判定を外すだけで そうできます（★1行）。★山田様のご判断を仰ぎます
+
+   ★なぜ CSS でなく JS で当てるのか ── ★★静的に書き忘れても効くようにするため。
+     ★実測：★いま外へ出るリンクは 静的7本（Amazon 1・六本木VC 1・Agora 1・Kaggle 4）と
+       ★JS が作る3本。★どれも既に target="_blank" が付いていましたが、
+       ★★次に足す人が忘れても これで拾えます
+   ★rel="noopener" も一緒に付けます（★別タブ側から元のページを触られないようにするため）
+   ══════════════════════════════════════════════════════════════════════════ */
+function extBlank(root) {
+  var as = (root || document).querySelectorAll('a[href]');
+  for (var i = 0; i < as.length; i++) {
+    var h = as[i].getAttribute('href') || '';
+    if (/^(https?:|mailto:)/i.test(h)) {
+      as[i].setAttribute('target', '_blank');
+      var r = as[i].getAttribute('rel') || '';
+      if (r.indexOf('noopener') < 0) as[i].setAttribute('rel', (r + ' noopener').trim());
+    }
+  }
+}
+/* ★★あとから JS が書いたリンク（drawForm・drawNest・index の #agora）にも効かせるため、
+   ★読み込み直後と、少し遅らせて もう1回 当てる（★各ページの起動行は common.js の後に走る） */
+if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', function () { extBlank(); setTimeout(extBlank, 0); });
+else { extBlank(); setTimeout(extBlank, 0); }
 
 drawTop();
