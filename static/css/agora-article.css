@@ -46,7 +46,12 @@
   border-top:1px solid var(--gray-200); border-bottom:1px solid var(--gray-200);
   padding:1.2rem 0;
 }
-.a-hero-label{ font-size:14px; color:#444; letter-spacing:.04em; }
+.a-hero-label{
+  /* ★2026-09-08 夕 og:image と同じ体裁にした（山田様の指示）。
+     og:image 側は 1200px幅で 27px・#019949・weight600・letter-spacing1.5。
+     記事のヒーローは842px幅なので 27×842/1200 ≒ 19px を採った */
+  font-size:19px; color:#019949; font-weight:600; letter-spacing:.06em;
+}
 /* ★ここが一番大きい（2026-09-04） */
 .a-hero-title{
   margin:1.2rem 0 0;
@@ -254,7 +259,7 @@
 .a-cta{
   /* ★2026-09-08 製品名を Deep Black Box にしたので、将棋盤の色（#fdf5e3／枠#dcc48d）をやめた。
      地色は薄い灰、枠は緑（--accent と同じ #019949）。★目立たせる役は枠とボタンが担う */
-  margin:2.5rem auto 3rem; background:#f4f5f6; color:var(--black);
+  margin:2.5rem auto 3rem; background:#e9ecef; color:var(--black);   /* ★2026-09-08 夕 #f4f5f6 は白との差が10しかなくPCで白く見えたので濃くした */
   border:2px solid #019949; border-radius:6px; padding:2rem 2.25rem;
 }
 .a-cta-name{ font-size:1.55rem; font-weight:700; line-height:1.35; margin-bottom:.5rem; }
@@ -305,7 +310,7 @@
   .a-hero-inner{ gap:1.1rem; }
   .a-hero-photo{ flex:0 0 30%; max-width:132px; }
   .a-hero-text{ min-height:0; padding:.5rem 0; }
-  .a-hero-label{ font-size:12.5px; }
+  .a-hero-label{ font-size:16.5px; }   /* ★2026-09-08 夕 12.5px → 16.5px */
   .a-hero-title{ font-size:clamp(1.15rem,5.2vw,1.5rem); line-height:1.45; margin-top:.7rem; }
   .a-hero-meta{ font-size:13px; margin-top:1rem; }
   .a-body{ padding:2.5rem 1.5rem 0; font-size:16.6px; line-height:1.831; }   /* ★2026-09-06 16px/1.9 → 17px/1.95 */
