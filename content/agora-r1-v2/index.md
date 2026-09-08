@@ -1,5 +1,5 @@
 ---
-title: "AI五輪メダリストの開成高校生が、AI人材拡大のためAIと議論した思考記録"
+title: "AI五輪メダリストの開成高校生が、AI人材拡大のため、AIと議論した思考記録"
 date: 2026-09-10
 draft: false
 layout: "agora-article"
@@ -13,7 +13,7 @@ _build:
   publishResources: true
 description: "答えの決まった問題を解く力は、AIに置き換わっていく。では、その力を極めた高校生は、答えのない問題に向かったとき何をするのか。国際人工知能オリンピック（IOAI）2025 メダリスト・開成高校3年の山井勇人さんが出したテーマは「Kaggleを民主化したい」。5人とAIの2時間の記録。"
 hero_label: "Agora ｜ 第1回・本番の記録"
-headline: "AI五輪メダリストの開成高校生が、AI人材拡大のためAIと議論した思考記録"
+headline: "AI五輪メダリストの開成高校生が、AI人材拡大のため、AIと議論した思考記録"
 hero_photo: "img/agora/r1/hero-yamai.jpg"
 hero_photo_alt: "山井 勇人さん"
 ---
