@@ -323,6 +323,30 @@ summary{font-size:14px;font-weight:500;cursor:pointer}
    ★loading="lazy" にしてある（★★測るときは先に全部スクロールする → §5-44 ⑻） */
 .shot{display:block;width:100%;height:auto;border:1px solid var(--gray-200);border-radius:.3rem;
   margin:0 0 .5rem;background:var(--white)}
+/* 🔴 2026-09-09 A：★★トップページの図のキャプションだけ 2px 下げた（★山田様の指定 2026-09-09）
+   ★★★「記事側では14px→12pxに下げます。ゲームのトップページ側にも図のキャプションがあれば、
+     同じように2px下げてください」
+   ★★.cap は【触っていない】── ★.cap は23ページの図で使われており、
+     ★§5-43 ⑹ で山田様の指示により 15px → 16.6px に【上げた】ものなので、
+     ★★下げると そちらの指示を打ち消してしまう。→ ★トップの図だけ別クラスにした */
+.fcap{font-size:14.6px;color:var(--gray-500);margin-bottom:.5rem;line-height:1.831}
+.fcap b{color:var(--black)}
+/* 🔴🔴 2026-09-09 A：★★章ごとの折りたたみ（▸ 詳しく）── ★トップページの「何が学べるか」
+   ★★★山田様の指定（2026-09-09）。★文言は書かれたものを1文字も変えていない
+   ★本文と同じ 16.6px / 行間1.831（→§5-44）。★見出しは太字にする（★折りたたみの題なので）
+   ★項目の頭の【用語】だけ太字（★§5-46 ⑷ の法則は『上のほう』と『紹介文』の話。★ここは中身） */
+.ch{border:1px solid var(--gray-200);border-radius:.4rem;margin:.6rem 0 0;background:var(--white)}
+.ch+.ch{margin-top:.45rem}
+.ch>summary{cursor:pointer;padding:.75rem .9rem;font-size:16.6px;line-height:1.831;
+  font-weight:700;color:var(--black);list-style:none}
+.ch>summary::-webkit-details-marker{display:none}
+.ch>summary::before{content:'▸ ';color:var(--gray-500)}
+.ch[open]>summary::before{content:'▾ '}
+.ch>summary:hover{text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px}
+.ch ul{margin:0;padding:0 .9rem .9rem 2rem;list-style:disc}
+.ch li{font-size:16.6px;line-height:1.831;color:var(--gray-600);margin:0 0 .55rem}
+.ch li:last-child{margin-bottom:0}
+.ch li b{color:var(--black)}
 
 /* ══════════════════════════════════════════════════════════════════════════
    🔴 2026-09-02 1問1ページ担当【新設】進み具合の帯（全21問）／章の表示／戻る・次へ
