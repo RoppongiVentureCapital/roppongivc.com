@@ -68,7 +68,14 @@ body{margin:0;background:var(--bg);color:var(--black);font-family:var(--sans);
 .top .in>.home:focus-visible{outline:2px solid var(--black);outline-offset:3px;
   border-radius:4px}
 .top .ti{min-width:0}
-.top .ti .nm{display:block;font-family:var(--serif);font-size:1.75rem;font-weight:600;
+/* 🔴🔴 2026-09-09 A：★★製品名のフォントを【サンセリフ】に揃えた（★山田様の指定 2026-09-09）
+   ★★★「1番上のこれがトップページと他のページでフォントが多分違う」
+   ★実測（直す前）── ★上のバー 20.8px【明朝】／★はじめる枠 24.8px【サンセリフ】
+     → ★★index の中で同じ製品名が2種類のフォントで出ていた
+   ★★★サンセリフに揃えた理由 ── ★はじめる枠は記事の .a-cta と同じにする必要があり、
+     ★記事の本番を測ったら【Inter（サンセリフ）】だった。★だから逆には揃えられない
+   ★★§5-40 ⒝ の「タイトル1.75rem明朝」からは変わっている（★山田様の指定による変更） */
+.top .ti .nm{display:block;font-family:var(--sans);font-size:1.75rem;font-weight:600;
   line-height:1.2;letter-spacing:.02em;color:var(--black)}
 .top .in .tag{display:block;margin-top:.28rem;font-size:13.5px;letter-spacing:0;
   color:var(--gray-500);line-height:1.6;font-weight:400}
@@ -298,6 +305,11 @@ summary{font-size:14px;font-weight:500;cursor:pointer}
 .fg table.ntab{font-size:16.6px;line-height:1.831}
 .fg table.ntab th,.fg table.ntab td{padding:.5rem .6rem}
 .fg svg.dg{display:block;width:100%;max-width:520px;height:auto;margin:.5rem auto .2rem}
+/* 🔴 2026-09-09 A：★★画面の写真（記事の図9・図10 をゲームにも入れた）
+   ★width/height を属性で書いてあるので、★読み込む前から場所を取る（★ガタつかない）
+   ★loading="lazy" にしてある（★★測るときは先に全部スクロールする → §5-44 ⑻） */
+.shot{display:block;width:100%;height:auto;border:1px solid var(--gray-200);border-radius:.3rem;
+  margin:0 0 .5rem;background:var(--white)}
 
 /* ══════════════════════════════════════════════════════════════════════════
    🔴 2026-09-02 1問1ページ担当【新設】進み具合の帯（全21問）／章の表示／戻る・次へ
