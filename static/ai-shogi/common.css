@@ -207,20 +207,29 @@ input[type=range]:disabled{opacity:.35;cursor:default}
 
 /* ★★C案1 「動かせる」と分かるようにする ── ★つまみの右に ◀ ▶ を出し、
      ★★★一度動かしたら消す（→ common.js の markRanges が .rgw / .moved を付けます） */
-/* 🔴🔴🔴 2026-09-09 A：★★★印の【置き場所を上に作る】── ★自己申告2回目
+/* 🔴🔴🔴🔴 2026-09-09 A：★★★★印は【そのページの1本目のつまみだけ】に出す ── ★自己申告3回目
    ★1度目 right:2px・上下中央 → ★つまみが右寄りだと重なった（★q13 の t13 は初期値92%）
-   ★2度目 top:1px にしただけ → ★★まだ重なる。★44px の枠に【36px のつまみ】が入っているので、
-     ★★★縦にずらす余地が 4px しかありません（★27本 全部で重なりを測って分かりました）
-   ★3度目（これ）── ★.rgw に上の余白 16px を【常に確保】して、そこに印を置く。
-     ★★★.moved になっても padding は残すので【高さが変わらず、レイアウトが動きません】 */
-.rgw{position:relative;display:block;padding-top:16px}
-.rgw::after{
+   ★2度目 top:1px → ★44px の枠に 36px のつまみが入っているので、縦の余地が4pxしかなく まだ重なる
+   ★3度目 .rgw 全部に上の余白16px → ★★★これが【重大な劣化】を起こしました。
+     ★★★★実測（検証セッション 2026-09-09 15:03。★390x844）──
+       ★q09 はつまみが【10本】あり、1本あたり 22.4px → 60px（44＋印16）にしたので【+376px】。
+       ★★会話を読む窓が【454px（15行）→ 78px（2.6行）】になりました。
+       ★★★390x664（実機に近い高さ）では【窓が0以下】── ★実機で会話が読めません。
+     → ★★★押しやすさを取って【読めなさ】を作ってしまった。★これが3度目の誤りです。
+   ★4度目（これ）── ★★印は【1本目だけ】。★2本目以降は場所を取りません（padding 0）。
+     ★★1本で「動かせる」と分かれば足りる。★山田様の「文字で目立たせる」も守れます。
+     ★効果（実測の見込み）── q09 −144px ／ q10 −112px ／ 2本以上ある問すべてに効く
+   ★★★.rgw--hint は common.js の markRanges が【ページの1本目にだけ】付けます */
+.rgw{position:relative;display:block}
+.rgw--hint{padding-top:16px}
+.rgw--hint::after{
   content:'◀ 指で動かす ▶';position:absolute;right:20px;top:0;line-height:16px;
   font-size:12px;font-weight:700;color:#019949;letter-spacing:.04em;
   pointer-events:none;                  /* ★★印が指を邪魔しない */
   animation:rgpulse 1.6s ease-in-out infinite;
 }
-.rgw.moved::after{content:none;animation:none}
+/* ★★動かしたら印だけ消す。★padding は残すので【高さが変わらず、レイアウトが動きません】 */
+.rgw--hint.moved::after{content:none;animation:none}
 @keyframes rgpulse{0%,100%{opacity:.45}50%{opacity:1}}
 @media (prefers-reduced-motion:reduce){.rgw::after{animation:none;opacity:.8}}
 

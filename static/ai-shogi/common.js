@@ -349,6 +349,79 @@ function drawChap(q, intro) {
 var SITE = { ver: 'v1.0', date: '2026-09-02', form: '',
              agora: 'https://www.roppongivc.com/m3v8k1qz6p/' };
 
+/* ══════════════════════════════════════════════════════════════════════════
+   ★★★原典（出典）── ★★ここ1か所に集める。★書き方が二度とばらけないように
+   🔴🔴🔴🔴 2026-09-09 A：★★★★山田様の指摘（2026-09-09）
+     「Brown et al. 2020 Table 2.1 ── これって何？ 関連論文？ リンクもつけずに、
+      この出典の書き方って中途半端じゃない？ 論文タイトルすらないんじゃないの？
+      一般的にこういうときどう書くべきかって作法が全くなってないんじゃないの？」
+   ★★★直す前の実態（★実測）── ★リンクは【全ページ0件】／★論文タイトルは【1つもない】／
+     ★書き方が【5通り】に分かれていた ──
+       ✗「Brown et al. 2020 Table 2.1」（★番号もタイトルもない。★いちばん悪い形）
+       ✗「Ouyang et al. 2022 §4.2」（★番号なし）
+       ✗「arXiv:2501.12948（Nature 645:633-638）」（★著者なし）
+   ★★★出どころ ── 20260611_GenronAI/原論文解説/99_原典照合ログ.md の見出し
+     ★★原論文32本のうち31本を【全文取得して照合済み】の記録です。★手で打ち直していません
+   ★★使い方  ref('vaswani2017', '§3.2 Eq.1')  → ★著者・年・タイトル・通称・番号・該当箇所＋リンク
+   ══════════════════════════════════════════════════════════════════════════ */
+var REF = {
+  vaswani2017: { a: 'Vaswani et al.', y: 2017, t: 'Attention Is All You Need',
+                 alias: 'Transformer の原論文', ax: '1706.03762' },
+  brown2020:   { a: 'Brown et al.',   y: 2020, t: 'Language Models are Few-Shot Learners',
+                 alias: 'GPT-3 の論文',        ax: '2005.14165' },
+  kaplan2020:  { a: 'Kaplan et al.',  y: 2020, t: 'Scaling Laws for Neural Language Models',
+                 alias: '規模と性能の関係',    ax: '2001.08361' },
+  ouyang2022:  { a: 'Ouyang et al.',  y: 2022, t: 'Training Language Models to Follow Instructions with Human Feedback',
+                 alias: 'InstructGPT の論文',  ax: '2203.02155' },
+  openai2023:  { a: 'OpenAI',         y: 2023, t: 'GPT-4 Technical Report',
+                 alias: 'GPT-4 の技術報告',    ax: '2303.08774' },
+  deepseek2025:{ a: 'DeepSeek-AI',    y: 2025, t: 'DeepSeek-R1: Incentivizing Reasoning Capability in LLMs via Reinforcement Learning',
+                 alias: 'DeepSeek-R1 の論文',  ax: '2501.12948', extra: 'Nature 645:633-638' }
+};
+
+/* ★出典を1つ書く（★loc ＝ 該当箇所。★「Table 2.1」「§3.2 Eq.1」など）
+   ★★リンクは arXiv の要旨ページへ（★誰でも無料で読めます）
+   ★★★形 ── 著者 年「タイトル」（通称）arXiv:番号 該当箇所 */
+function ref(key, loc) {
+  var r = REF[key];
+  if (!r) return '';
+  return r.a + ' ' + r.y + '「' + r.t + '」'
+       + (r.alias ? '（' + r.alias + '）' : '')
+       + ' <a href="https://arxiv.org/abs/' + r.ax + '" target="_blank" rel="noopener">arXiv:' + r.ax + '</a>'
+       + (r.extra ? '（' + r.extra + '）' : '')
+       + (loc ? ' ' + loc : '');
+}
+/* ★★複数の出典を並べる（★／で区切る） */
+function refs() {
+  var out = [];
+  for (var i = 0; i < arguments.length; i += 2) out.push(ref(arguments[i], arguments[i + 1]));
+  return out.join(' ／ ');
+}
+
+/* ★★出典を HTML から呼ぶ ── <span class="ref" data-ref="brown2020" data-loc="Table 2.1"></span>
+   ★★★これで【各ページには鍵と該当箇所だけ】が残り、★書き方は common.js の1か所で決まります。
+   ★複数並べるときは | で区切る ── data-ref="vaswani2017|kaplan2020" data-loc="§3.1|Appendix C"
+   ★★★次に出典を足す人は【REF に1行 足して data-ref を書く】だけです */
+function drawRefs() {
+  var es = document.querySelectorAll('[data-ref]');
+  for (var i = 0; i < es.length; i++) {
+    var e = es[i];
+    var keys = (e.getAttribute('data-ref') || '').split('|');
+    var locs = (e.getAttribute('data-loc') || '').split('|');
+    var out = [];
+    for (var j = 0; j < keys.length; j++) {
+      var r = ref(keys[j], locs[j] || '');
+      if (r) out.push(r);
+      else out.push('★未登録の出典: ' + keys[j]);   /* ★★間違いを黙って隠さない */
+    }
+    var head = e.getAttribute('data-head');
+    e.innerHTML = (head ? head + ' ' : '') + out.join(' ／ ');
+  }
+  return es.length;
+}
+if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', drawRefs);
+else drawRefs();
+
 /* ★フッタ（★23ページ一括。★版と日付は SITE から読む）
    🔴🔴 2026-09-08 A：★★フッタに【六本木ベンチャーキャピタル】へのリンクを足した
      ★★★山田様「六本木VCのロゴって今のスマホで見た上のところあまりスペースないけど
@@ -395,12 +468,21 @@ function markRanges() {
     if (r.parentNode && r.parentNode.className === 'rgw') continue;   /* ★二重に包まない */
     if (r.disabled) continue;
     var w = document.createElement('span');
-    w.className = 'rgw';
+    /* 🔴🔴 2026-09-09 A：★★印は【そのページの1本目のつまみだけ】に付ける（→ common.css の .rgw--hint）
+       ★★★理由：★印の場所16pxを全部のつまみに確保したら、★つまみが10本ある q09 で
+         ★★会話を読む窓が【454px（15行）→ 78px（2.6行）】になりました（★検証セッションの実測）。
+       ★1本目で「動かせる」と分かれば足ります */
+    w.className = markRanges._first ? 'rgw' : 'rgw rgw--hint';
+    markRanges._first = true;
     r.parentNode.insertBefore(w, r);
     w.appendChild(r);
     /* ★動かしたら印を消す（★input は動かした瞬間・change は指を離したとき） */
     (function (r2, w2) {
-      var off = function () { w2.className = 'rgw moved'; paintRange(r2); };
+      /* ★★class を組み立て直す（★--hint が付いている1本目は それを保ったまま moved にする） */
+      var off = function () {
+        w2.className = (w2.className.indexOf('rgw--hint') >= 0 ? 'rgw rgw--hint moved' : 'rgw moved');
+        paintRange(r2);
+      };
       r2.addEventListener('input', off);
       r2.addEventListener('change', off);
       r2.addEventListener('keydown', off);
@@ -426,8 +508,15 @@ setInterval(function () {
 function drawFoot(note) {
   var h = document.getElementById('foot'); if (!h) return;
   h.className = 'foot';
+  /* 🔴🔴🔴 2026-09-09 A：★★★著作権表示にした（★山田様の指定 2026-09-09）
+     ★★直す前は社名がただ並んでいるだけで、★★★何の関係なのかを示していませんでした
+       （★リンク先が六本木VC なので「関連会社か？ 広告か？」と読まれる形）。
+     ★★★© は【誰が作って誰が権利を持つか】を1行で示す標準の印です。
+     ★年は SITE.date から取ります（★直書きしない → 検査⑹） */
   h.innerHTML = 'Deep Black Box ' + SITE.ver + ' ／ ' + SITE.date
-    + ' ／ <a href="https://www.roppongivc.com/" target="_blank" rel="noopener">六本木ベンチャーキャピタル</a>'
+    + '　© ' + SITE.date.slice(0, 4)
+    + ' <a href="https://www.roppongivc.com/" target="_blank" rel="noopener">六本木ベンチャーキャピタル</a>'
+    + '　|　無断転載を禁じます'
     + (note ? '<br>' + note : '');
 }
 

@@ -203,12 +203,25 @@ summary{font-size:14px;font-weight:500;cursor:pointer}
 <div class="tagline">Question 1</div>
 <h2>つまみを2個、手で回してみる</h2>
 <div id="d1a"></div>
+
+
 <div class="box">
- <div class="h">いまから作る箱</div>
- <div style="text-align:center;font-size:15px;line-height:2.2">
-  <b>勉強した時間</b>　→　<span class="mono" style="border:1px solid #000;padding:.35rem .9rem">
-  y = a × 時間 + b</span>　→　<b>テストの点数</b>
- </div>
+ <div class="h">いまから作るもの</div>
+ <div class="fg"><svg viewBox="0 0 400 280" role="img"
+   aria-label="入力の勉強した時間から、y = a × 時間 + b を通って、出力のテストの点数が出る図">
+  <rect x="40" y="4" width="320" height="70" rx="6" fill="#f6fafd" stroke="#7ea9d4" stroke-width="1.6"/>
+  <text x="52" y="26" font-size="17" font-weight="700" font-family="Inter,system-ui,sans-serif" fill="#666">入力</text>
+  <text x="200" y="58" font-size="24" text-anchor="middle" font-family="Inter,system-ui,sans-serif" fill="#1a1a1a">勉強した時間</text>
+  <line x1="200" y1="80" x2="200" y2="96" stroke="#9a9a9a" stroke-width="2.2"/>
+  <polygon points="200,106 193,94 207,94" fill="#9a9a9a"/>
+  <rect x="8" y="110" width="384" height="56" rx="6" fill="#fff" stroke="#1a1a1a" stroke-width="2.2"/>
+  <text x="200" y="146" font-size="24" text-anchor="middle" font-family="ui-monospace,SFMono-Regular,Menlo,monospace" fill="#1a1a1a">y = a × 時間 + b</text>
+  <line x1="200" y1="172" x2="200" y2="188" stroke="#9a9a9a" stroke-width="2.2"/>
+  <polygon points="200,198 193,186 207,186" fill="#9a9a9a"/>
+  <rect x="40" y="202" width="320" height="70" rx="6" fill="#fffaf0" stroke="#dcae5c" stroke-width="1.6"/>
+  <text x="52" y="224" font-size="17" font-weight="700" font-family="Inter,system-ui,sans-serif" fill="#666">出力</text>
+  <text x="200" y="256" font-size="24" text-anchor="middle" font-family="Inter,system-ui,sans-serif" fill="#1a1a1a">テストの点数</text>
+ </svg></div>
 </div>
 <div id="d1b"></div>
 
@@ -256,8 +269,8 @@ summary{font-size:14px;font-weight:500;cursor:pointer}
 </div>
 <div class="src">
  <div class="h">役に立つところ</div>
- <b>AIは「入れると出てくる箱」。</b>中身は掛け算と足し算で、つまみの数字を変えているだけです。
- <span class="ref">Brown et al. 2020 Table 2.1</span>
+ <b>AI は 入力を1つ受けて 出力を1つ返すもの。</b>中身は掛け算と足し算で、つまみの数字を変えています。
+ 
 </div>
 </div>
 
@@ -525,15 +538,19 @@ var CV = {
   ],
   [
    "d",
-   "よし、本題だ。まずこれを見てくれ ── <b>箱</b>だ！"
+   "よし、本題だ。まずこれを見てくれ。左に<b>入力</b>、右に<b>出力</b>がある。"
+  ],
+  [
+   "f",
+   "<svg viewBox=\"0 0 560 150\" role=\"img\" aria-label=\"左の入力から中へ、中から右の出力へ矢印が伸びている図\"><rect x=\"14\" y=\"46\" width=\"120\" height=\"58\" rx=\"6\" fill=\"#f6fafd\" stroke=\"#7ea9d4\" stroke-width=\"1.8\"/><text x=\"74\" y=\"38\" font-size=\"27\" font-weight=\"700\" text-anchor=\"middle\" font-family=\"Inter,system-ui,sans-serif\" fill=\"#1a1a1a\">入力</text><text x=\"74\" y=\"82\" font-size=\"27\" text-anchor=\"middle\" font-family=\"Inter,system-ui,sans-serif\" fill=\"#444\">数を1つ</text><line x1=\"140\" y1=\"75\" x2=\"206\" y2=\"75\" stroke=\"#9a9a9a\" stroke-width=\"2.4\"/><polygon points=\"218,75 204,67 204,83\" fill=\"#9a9a9a\"/><rect x=\"224\" y=\"36\" width=\"112\" height=\"78\" rx=\"6\" fill=\"#fff\" stroke=\"#1a1a1a\" stroke-width=\"2.4\"/><text x=\"280\" y=\"84\" font-size=\"40\" font-weight=\"700\" text-anchor=\"middle\" font-family=\"Inter,system-ui,sans-serif\" fill=\"#c0392b\">？</text><line x1=\"342\" y1=\"75\" x2=\"408\" y2=\"75\" stroke=\"#9a9a9a\" stroke-width=\"2.4\"/><polygon points=\"420,75 406,67 406,83\" fill=\"#9a9a9a\"/><rect x=\"426\" y=\"46\" width=\"120\" height=\"58\" rx=\"6\" fill=\"#fffaf0\" stroke=\"#dcae5c\" stroke-width=\"1.8\"/><text x=\"486\" y=\"38\" font-size=\"27\" font-weight=\"700\" text-anchor=\"middle\" font-family=\"Inter,system-ui,sans-serif\" fill=\"#1a1a1a\">出力</text><text x=\"486\" y=\"82\" font-size=\"27\" text-anchor=\"middle\" font-family=\"Inter,system-ui,sans-serif\" fill=\"#444\">数を1つ</text><text x=\"280\" y=\"138\" font-size=\"24\" text-anchor=\"middle\" font-family=\"Inter,system-ui,sans-serif\" fill=\"#666\">中で何をしているかは、これから見ます</text></svg>"
   ],
   [
    "m",
-   "箱？"
+   "入力と出力？"
   ],
   [
    "d",
-   "そうだ、箱だ！ 何かを<b>入れると、何かが出てくる</b>。それだけの箱だ。数学ではこれを<b>関数</b>と呼ぶ。"
+   "入力に数を1つ入れると、出力に数が1つ出てくる。<b>それだけだ</b>。数学ではこれを<b>関数</b>と呼ぶ。"
   ],
   [
    "m",
@@ -541,7 +558,7 @@ var CV = {
   ],
   [
    "d",
-   "それだけだ。……だがな学くん、<b>ChatGPT も、この箱なんだ。</b>"
+   "それだけだ。……だがな学くん、<b>ChatGPT も 入力と出力が1つずつだ。</b>"
   ],
   [
    "m",
@@ -549,21 +566,25 @@ var CV = {
   ],
   [
    "d",
-   "入れるのは文章。出てくるのは<b>次に来る単語</b>。箱の形はまったく同じだ。だから箱から始める。"
+   "入力は文章。出力は<b>次に来る単語</b>。入口と出口の形はまったく同じだ。だからここから始める。"
+  ],
+  [
+   "f",
+   "<svg viewBox=\"0 0 560 118\" role=\"img\" aria-label=\"ChatGPT は 文章を入力して 次に来る単語を出力する図\"><rect x=\"8\" y=\"34\" width=\"152\" height=\"56\" rx=\"6\" fill=\"#f6fafd\" stroke=\"#7ea9d4\" stroke-width=\"1.8\"/><text x=\"84\" y=\"26\" font-size=\"27\" font-weight=\"700\" text-anchor=\"middle\" font-family=\"Inter,system-ui,sans-serif\" fill=\"#1a1a1a\">入力</text><text x=\"84\" y=\"70\" font-size=\"27\" text-anchor=\"middle\" font-family=\"Inter,system-ui,sans-serif\" fill=\"#444\">文章</text><line x1=\"166\" y1=\"62\" x2=\"190\" y2=\"62\" stroke=\"#9a9a9a\" stroke-width=\"2.4\"/><polygon points=\"202,62 188,54 188,70\" fill=\"#9a9a9a\"/><rect x=\"208\" y=\"28\" width=\"84\" height=\"68\" rx=\"6\" fill=\"#fff\" stroke=\"#1a1a1a\" stroke-width=\"2.4\"/><text x=\"250\" y=\"70\" font-size=\"34\" font-weight=\"700\" text-anchor=\"middle\" font-family=\"Inter,system-ui,sans-serif\" fill=\"#c0392b\">？</text><line x1=\"298\" y1=\"62\" x2=\"322\" y2=\"62\" stroke=\"#9a9a9a\" stroke-width=\"2.4\"/><polygon points=\"334,62 320,54 320,70\" fill=\"#9a9a9a\"/><rect x=\"340\" y=\"34\" width=\"212\" height=\"56\" rx=\"6\" fill=\"#fffaf0\" stroke=\"#dcae5c\" stroke-width=\"1.8\"/><text x=\"446\" y=\"26\" font-size=\"27\" font-weight=\"700\" text-anchor=\"middle\" font-family=\"Inter,system-ui,sans-serif\" fill=\"#1a1a1a\">出力</text><text x=\"446\" y=\"70\" font-size=\"27\" text-anchor=\"middle\" font-family=\"Inter,system-ui,sans-serif\" fill=\"#444\">次に来る単語</text></svg>"
   ],
   [
    "m",
-   "じゃあ、今日作る箱は何を入れるの？"
+   "じゃあ、今日の入力と出力は何？"
   ],
   [
    "d",
-   "<b>勉強した時間</b>だ。出てくるのは<b>テストの点数</b>。下の図が、その箱だ。"
+   "入力は<b>勉強した時間</b>。出力は<b>テストの点数</b>。下の図がそれだ。"
   ]
  ],
  "d1b": [
   [
    "d",
-   "8人ぶんの記録がある。そして箱には<b>つまみが2個</b>しか付いていない。<b>a</b> と <b>b</b> だ。"
+   "8人ぶんの記録がある。そして<b>つまみは2個</b>しかない。<b>a</b> と <b>b</b> だ。"
   ],
   [
    "m",
