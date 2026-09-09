@@ -136,7 +136,103 @@ svg{display:block;width:100%;height:auto}
 .ctl label{display:flex;justify-content:space-between;align-items:baseline;font-size:14px;
  margin-bottom:.35rem;gap:1rem}
 .ctl label span.n{font-weight:600;font-variant-numeric:tabular-nums;white-space:nowrap}
-input[type=range]{width:100%;accent-color:#000;height:1.4rem}
+/* 🔴 2026-09-09 A：★ここにあった input[type=range]{width:100%;accent-color:#000;height:1.4rem} は
+   ★★下の「スマホの操作性」の塊にまとめました（★当たり判定 22px → 44px）。
+   ★min-width:0 は q15〜17 の <style> から移したものです（★A122_touch.py が外しました） */
+input[type=range]{min-width:0}
+/* ══════════════════════════════════════════════════════════════════════════
+   🔴🔴🔴🔴 2026-09-09 A：★★★★スマホの操作性（★山田様の指示 2026-09-09）
+   ★★★山田様の訴え（★全部 実測で裏が取れました）
+     ⑴「最初のつまみが左端になっていて、押しにくい、なかなか反応しなくて、
+        動かないんじゃないかと思っちゃう。そこで離脱するぞ」
+     ⑵「これ動かせるって気づかない人もいる」
+     ⑶「長押しでコピーとかそういう選択肢がでたり、紛らわしい」
+     ⑷「連打してると画面拡大とかになって押しにくい」
+   ★★★直す前の実測（390px・スマホ）
+     つまみの当たり判定の高さ 22px（★Apple の推奨は44px）
+       ★★さらに9ページは @media で【20px に縮めていた】（→ A122_touch.py が外した）
+     つまみの初期位置 ── 初期値＝最小値なので【枠のいちばん左端】と同じ x
+     touch-action auto ── ★ダブルタップ拡大が生きていて、連打と区別されない
+     user-select 未指定 ── ★長押しで選択・コピーが出る
+   ★★★D（長押しで連続実行）は【入れていません】── ★山田様「拡大とかならなかったら連打でいい」
+   ══════════════════════════════════════════════════════════════════════════ */
+
+/* ★A-3 つまみの当たり判定を 22px → 44px にする（★見た目のレールは細いまま）
+   ★★-webkit-appearance:none にして、レールとつまみを自分で描く。
+     ★★★理由：accent-color のままだと つまみの大きさを変えられず、
+       ★iOS と Android で見え方も揃わない（★山田様にお伝えした懸念）
+   ★B案1 レールを左右20px内側に寄せる ── ★つまみが最小値でも画面端から20px内側に来る。
+     ★★★値の範囲（min/max/step）は【1つも変えていません】 */
+input[type=range]{
+  -webkit-appearance:none;appearance:none;
+  display:block;width:calc(100% - 40px);margin:0 20px;
+  height:44px;background:transparent;cursor:pointer;
+  /* ★A-1 ダブルタップ拡大を止める（★ピンチ拡大は残す） */
+  touch-action:manipulation;
+  /* ★A-2 長押しの選択・コピーを止める（★操作する部品だけ。★本文には掛けません） */
+  -webkit-user-select:none;user-select:none;-webkit-touch-callout:none;
+  -webkit-tap-highlight-color:transparent;
+}
+/* ★レール（★太さは見た目のまま 4px）
+   🔴🔴 2026-09-09 A：★★★左側の【黒い塗り分け】を自分で描く（★自己申告）
+     ★-webkit-appearance:none にしたら accent-color が効かなくなり、
+       ★★1度目の版では【左が黒く塗られる表示が消えていました】── ★値の大きさが目で分からない退化。
+     ★★撮った画像を自分で見て気づきました（→§5-47 ⑸⑴「描かれた中身を数える」の型）
+     ★--p は common.js の paintRange() が値から計算して入れます（★0〜100%） */
+input[type=range]::-webkit-slider-runnable-track{
+  height:4px;border-radius:2px;
+  background:linear-gradient(to right,
+    var(--black) 0 var(--p,0%), var(--gray-200) var(--p,0%) 100%);
+}
+input[type=range]::-moz-range-track{
+  height:4px;border-radius:2px;
+  background:linear-gradient(to right,
+    var(--black) 0 var(--p,0%), var(--gray-200) var(--p,0%) 100%);
+}
+/* ★つまみ（★28px 相当 → 36px。★上下の余白は当たり判定として残る） */
+input[type=range]::-webkit-slider-thumb{
+  -webkit-appearance:none;appearance:none;
+  width:36px;height:36px;border-radius:50%;
+  background:var(--black);border:2px solid var(--white);
+  box-shadow:0 1px 3px rgba(0,0,0,.35);
+  margin-top:-16px;                     /* ★(4 - 36)/2 = -16 でレールの中心に載せる */
+}
+input[type=range]::-moz-range-thumb{
+  width:32px;height:32px;border-radius:50%;
+  background:var(--black);border:2px solid var(--white);
+  box-shadow:0 1px 3px rgba(0,0,0,.35);
+}
+input[type=range]:focus-visible::-webkit-slider-thumb{outline:2px solid #019949;outline-offset:2px}
+input[type=range]:disabled{opacity:.35;cursor:default}
+
+/* ★★C案1 「動かせる」と分かるようにする ── ★つまみの右に ◀ ▶ を出し、
+     ★★★一度動かしたら消す（→ common.js の markRanges が .rgw / .moved を付けます） */
+/* 🔴🔴🔴 2026-09-09 A：★★★印の【置き場所を上に作る】── ★自己申告2回目
+   ★1度目 right:2px・上下中央 → ★つまみが右寄りだと重なった（★q13 の t13 は初期値92%）
+   ★2度目 top:1px にしただけ → ★★まだ重なる。★44px の枠に【36px のつまみ】が入っているので、
+     ★★★縦にずらす余地が 4px しかありません（★27本 全部で重なりを測って分かりました）
+   ★3度目（これ）── ★.rgw に上の余白 16px を【常に確保】して、そこに印を置く。
+     ★★★.moved になっても padding は残すので【高さが変わらず、レイアウトが動きません】 */
+.rgw{position:relative;display:block;padding-top:16px}
+.rgw::after{
+  content:'◀ 指で動かす ▶';position:absolute;right:20px;top:0;line-height:16px;
+  font-size:12px;font-weight:700;color:#019949;letter-spacing:.04em;
+  pointer-events:none;                  /* ★★印が指を邪魔しない */
+  animation:rgpulse 1.6s ease-in-out infinite;
+}
+.rgw.moved::after{content:none;animation:none}
+@keyframes rgpulse{0%,100%{opacity:.45}50%{opacity:1}}
+@media (prefers-reduced-motion:reduce){.rgw::after{animation:none;opacity:.8}}
+
+/* ★A-1・A-2 をボタンにも掛ける（★連打で拡大しない・長押しでメニューが出ない） */
+button,.btn,label.tg,.togs label{
+  touch-action:manipulation;
+  -webkit-user-select:none;user-select:none;-webkit-touch-callout:none;
+  -webkit-tap-highlight-color:transparent;
+}
+/* ★つまみのラベル（数値）も長押しで選択されないようにする（★数字は読むもので、写すものではない） */
+.ctl label{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+
 .togs{display:flex;gap:.6rem;flex-wrap:wrap;margin-top:1.1rem;align-items:center}
 .btn{background:none;border:1px solid var(--gray-200);padding:.6rem 1.15rem;font-size:14px;
  font-family:var(--sans);color:var(--black);cursor:pointer;transition:all .15s}
@@ -192,6 +288,22 @@ summary{font-size:14px;font-weight:500;cursor:pointer}
 .dtab th,.dtab td{padding:.35rem .5rem;border:1px solid var(--gray-200);text-align:right}
 .dtab th{background:var(--gray-100);font-weight:600;font-size:11.5px}
 .dtab tr.sum td{background:#f2fbf6;border-top:2px solid var(--black)}
+/* 🔴🔴 2026-09-09 A：★★章の表（drawChapTab）を問題ページに出すために足した
+   ★★★これまで .dtab の左寄せ・中央寄せは【index.html の <style> にしか無く】、
+     ★問題ページに表を出すと全部 右寄せになってしまう。★だから common.css に置く
+   ★★index.html 側の同じ4行は【残してあります】── ★トップの見た目を1pxも変えないため
+     （★同じ値なので後勝ちでも結果は同じ。★実測でトップは完全一致を確認済み）
+   ★.chtab tr.me ＝ いま読んでいる章の行（★どこを読んでいるかが表でも分かる） */
+.dtab td.l,.dtab th.l{text-align:left}
+.dtab td.c,.dtab th.c{text-align:center}
+.dtab td.l a{color:var(--black)}
+.chtab tr.me td{background:#f2fbf6}
+.chtab tr.me td.c,.chtab tr.me td.l{font-weight:700}
+/* 🔴 2026-09-09 A：★★折りたたみ（#chapdet）と 博士・学の紹介（#cast2）のあいだに間をあける
+   ★★★山田様「その折りたたみのすぐ下 全然隙間なく博士の紹介が始まるから少し間あけて」（2026-09-09）
+   ★★.ch の margin は .6rem しかなく、★.cast2 側に上の余白が無いので詰まって見えていた
+   ★全5章とも同じ（★#chapdet は q01・q06・q12・q15・q18 にだけあります） */
+#chapdet{margin-bottom:1.5rem}
 .hide{display:none}
 .foot{border-top:1px solid var(--gray-200);margin-top:3rem;padding-top:1.5rem;font-size:13px;
  color:var(--gray-500);line-height:1.8}

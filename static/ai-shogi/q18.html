@@ -57,7 +57,6 @@ svg{display:block;width:100%;height:auto}
 .ctl label{display:flex;justify-content:space-between;align-items:baseline;font-size:14px;
  margin-bottom:.35rem;gap:1rem}
 .ctl label span.n{font-weight:600;font-variant-numeric:tabular-nums;white-space:nowrap}
-input[type=range]{width:100%;accent-color:#000;height:1.4rem}
 .togs{display:flex;gap:.6rem;flex-wrap:wrap;margin-top:1.1rem;align-items:center}
 .btn{background:none;border:1px solid var(--gray-200);padding:.6rem 1.15rem;font-size:14px;
  font-family:var(--sans);color:var(--black);cursor:pointer;transition:all .15s;
@@ -222,6 +221,13 @@ summary{font-size:14px;font-weight:500;cursor:pointer}
 </div>
 <div class="chap" id="chap"></div>
 
+
+<div id="nest"></div>
+
+
+<div id="chaptab"></div>
+<div id="chapdet"></div>
+
 <!-- ══════════════════ 章の締め ══════════════════ -->
 <div class="card">
 <div class="tagline">before</div>
@@ -357,7 +363,10 @@ summary{font-size:14px;font-weight:500;cursor:pointer}
 <script>
 
 var QBASE = 17;
-drawProg(18); drawChap(18, "この章だけは道具が変わります。本物のデータ（タイタニック891人）で、ここまでの原理が何にでも効くわけではないことを見ます。");
+drawProg(18); drawChap(18, "");
+
+drawNest("nest", 5);
+drawChapTab(5); drawChapDet(5);
 drawNav(["q17.html","問17 正誤で伸ばす"], ["q19.html","問19 どこまで分ける"]);
 drawFoot()   ;
 

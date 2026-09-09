@@ -18,7 +18,6 @@
 /* ⒜ */
 .cap{font-size:16.6px;overflow-wrap:anywhere;line-height:1.831}
 .ctl label{flex-wrap:wrap}
-input[type=range]{margin:0;min-width:0}
 .sc-label{width:5.4rem}
 .sc-pct{width:3.8rem}
 /* ⒝ */
@@ -65,6 +64,10 @@ input[type=range]{margin:0;min-width:0}
 
 
 <div id="nest"></div>
+
+
+<div id="chaptab"></div>
+<div id="chapdet"></div>
 
 <!-- ══════════════════ 問15 ══════════════════ -->
 <div class="card" id="c14">
@@ -208,10 +211,11 @@ input[type=range]{margin:0;min-width:0}
 <script>
 
 var QBASE = 14;   
-drawProg(15); drawChap(15, "この章は作り方の章です。3段あって、1段下るたびに 得るものと 失うものがあります（積み上げではありません）。");
+drawProg(15); drawChap(15, "");
 drawNav(["q14.html", "問14 2つの語を同時に見る"], ["q16.html", "問16 好みで整える"]);
 drawFoot()   ;
 drawNest("nest", 4);
+drawChapTab(4); drawChapDet(4);
 
 
 
