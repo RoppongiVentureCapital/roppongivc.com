@@ -4,10 +4,10 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex,nofollow,noarchive">
-<meta name="description" content="AIの中身を1問ずつ切り出しました。全21問、ブラウザで手を動かします。">
-<meta property="og:title" content="AIの詰将棋 ── AIの中身を1問ずつ、手を動かして確かめる">
-<meta property="og:description" content="AIの中身を1問ずつ切り出しました。全21問、ブラウザで手を動かします。">
-<title>AIの詰将棋 ── AIの中身を1問ずつ、手を動かして確かめる</title>
+<meta name="description" content="AIのブラックボックスを、1問ずつ開けて手で動かす。全21問、ブラウザで手を動かします。">
+<meta property="og:title" content="Deep Black Box ── AIの中身を1問ずつ、手を動かして確かめる">
+<meta property="og:description" content="AIのブラックボックスを、1問ずつ開けて手で動かす。全21問、ブラウザで手を動かします。">
+<title>Deep Black Box ── AIの中身を1問ずつ、手を動かして確かめる</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@300;400;600;700&family=Inter:wght@300;400;500;600;700&family=Noto+Serif+JP:wght@300;400;600;700&display=swap" rel="stylesheet">
@@ -34,20 +34,12 @@
 </head>
 <body>
 
-<div class="top"><div class="in">AIの詰将棋<span class="tag">将棋の詰将棋のように、AIの中身を1問ずつ切り出しました。全21問。</span></div></div>
+<div class="top"><div class="in">Deep Black Box<span class="tag">AIのブラックボックスを、1問ずつ開けて手で動かす。全21問。</span></div></div>
 <div class="wrap">
 
-<!-- ══════════════════ ① タイトル ＋ サブタイトル1行 ＋ [ はじめる ] ══════════════════ -->
-<div class="card">
-<div class="tagline">AIの詰将棋</div>
-<h1>AIの中身を、1問ずつ 手を動かして確かめる</h1>
-<p class="lead" style="margin:0">全21問。<b>読むだけの問題はありません。</b>
- インストールも環境構築もいりません ── ブラウザで開くだけです。</p>
-<div class="startbar">
- <a class="btn go" href="q01.html">はじめる</a>
- <span class="note">問1から順に進みます。<b>途中でやめても構いません。</b></span>
-</div>
-</div>
+
+
+<div class="cta" id="cta1"></div>
 
 <!-- ══════════════════ ② 何が学べるか（図1枚 ＋ 表）══════════════════ -->
 <div class="card">
@@ -90,7 +82,7 @@
  <p>対話形式でわかりやすいAIの入門書も、触って動かせるAIの可視化ツールも、
   一問ずつ出題して採点してくれる演習サイトも、すでに世の中にあります。</p>
  
- <p><b>ただし、3つを兼ねたものは見つかりませんでした。だから作りました。</b></p>
+ <p>ただし、3つを兼ねたものは見つかりませんでした。だから作りました。</p>
  
  <table class="dtab">
  <tr><th class="l"></th><th class="c">対話形式で読める</th><th class="c">自分で動かせる</th><th class="c">出題され、判定される</th></tr>
@@ -98,7 +90,7 @@
  <tr><td class="l">対話形式の入門書（数学ガールの秘密ノート など）</td><td class="c">○</td><td class="c">×</td><td class="c">×</td></tr>
  <tr><td class="l">AIの可視化ツール（Transformer Explainer など）</td><td class="c">×</td><td class="c">○</td><td class="c">×</td></tr>
  <tr><td class="l">一問形式・自動採点の演習サイト（Deep-ML など）</td><td class="c">×</td><td class="c">○</td><td class="c">○</td></tr>
- <tr class="sum"><td class="l"><b>AIの詰将棋</b></td><td class="c"><b>○</b></td><td class="c"><b>○</b></td><td class="c"><b>○</b></td></tr>
+ <tr class="sum"><td class="l"><b>Deep Black Box</b></td><td class="c"><b>○</b></td><td class="c"><b>○</b></td><td class="c"><b>○</b></td></tr>
  </table>
 </div>
 
@@ -106,7 +98,7 @@
  <div class="n">2</div>
  
  <div class="t">全21問、自分で手を動かします</div>
- <p><b>読むだけの問題は1つもありません。</b>
+ <p>読むだけの問題は1つもありません。
   つまみを回す問題と、選んで答える問題があります。動かすと、その場で数が変わります。</p>
 </div>
 
@@ -115,7 +107,7 @@
  <div class="t">画面の数字は、すべて実測値です</div>
  
  
- <p>AIは難しいので分かりやすく書く必要がありますが、分かりやすくすると嘘になります。だから機構は原論文32本に紐づけました。<a href="https://www.amazon.co.jp/%E5%8E%9F%E8%AB%96%E6%96%87%E3%81%8B%E3%82%89%E8%A7%A3%E3%81%8D%E6%98%8E%E3%81%8B%E3%81%99%E7%94%9F%E6%88%90AI-%E8%8F%8A%E7%94%B0-%E9%81%A5%E5%B9%B3/dp/4297150786" target="_blank" rel="noopener">原論文から解き明かす生成AI</a>という本で紹介されている原論文32本を参照しています。そして、このゲームのために<b>簡単にした場所</b>は「ここは簡単にしました」と書いてあります。</p>
+ <p>AIは難しいので分かりやすく書く必要がありますが、分かりやすくすると嘘になります。だから機構は原論文32本に紐づけました。<a href="https://www.amazon.co.jp/%E5%8E%9F%E8%AB%96%E6%96%87%E3%81%8B%E3%82%89%E8%A7%A3%E3%81%8D%E6%98%8E%E3%81%8B%E3%81%99%E7%94%9F%E6%88%90AI-%E8%8F%8A%E7%94%B0-%E9%81%A5%E5%B9%B3/dp/4297150786" target="_blank" rel="noopener">原論文から解き明かす生成AI</a>という本で紹介されている原論文32本を参照しています。そして、このゲームのために簡単にした場所は「ここは簡単にしました」と書いてあります。</p>
 </div>
 
 <div class="pt">
@@ -131,30 +123,23 @@
 
 
 
-<p class="lead">AIを<b>つくる</b>人を増やすには、原理を学ぶ入口が要ります。</p>
+<p class="lead">AIをつくる人を増やすには、原理を学ぶ入口が要ります。</p>
 
-<p class="lead">そう考えたのは、国際人工知能オリンピック（IOAI）2025 銅メダリスト・開成高校3年の<b>山井勇人</b>さんです。彼がこの世界を知ったのは高校1年の冬。偶然でした。それから1年たたずにメダルを取っています。足りていなかったのは能力ではなく、<b>知る機会</b>でした。</p>
+<p class="lead">そう考えたのは、国際人工知能オリンピック（IOAI）2025 銅メダリスト・開成高校3年の山井勇人さんです。彼がこの世界を知ったのは高校1年の冬。偶然でした。それから1年たたずにメダルを取っています。足りていなかったのは能力ではなく、知る機会でした。</p>
 
-<p class="lead">「AIをどう使うか」はよく語られます。けれど、<b>中で何が起きているか</b>は、あまり教わりません。</p>
+<p class="lead">「AIをどう使うか」はよく語られます。けれど、中で何が起きているかは、あまり教わりません。</p>
 
-<p class="lead"><a href="https://www.roppongivc.com/" target="_blank" rel="noopener">六本木ベンチャーキャピタル</a>の「<a href="https://www.roppongivc.com/agora/" target="_blank" rel="noopener">Agora</a>」第1回で、5人とAIが2時間 議論しました。数学や構造の面白さに反応する高校生に、<b>入口を1つ届ける</b>ために作ったものです。</p>
+<p class="lead"><a href="https://www.roppongivc.com/" target="_blank" rel="noopener">六本木ベンチャーキャピタル</a>の「<a href="https://www.roppongivc.com/agora/" target="_blank" rel="noopener">Agora</a>」第1回で、5人とAIが2時間 議論しました。数学や構造の面白さに反応する高校生に、入口を1つ届けるために作ったものです。</p>
 
-<p class="lead">Agoraは、突出した若い才能が、AIと深く議論して、<b>まだ世にない新しいものを生み出す</b>プログラムです。</p>
+<p class="lead">Agoraは、突出した若い才能が、AIと深く議論して、まだ世にない新しいものを生み出すプログラムです。</p>
 
 
 <div class="togs" id="agora"></div>
 </div>
 
-<!-- ══════════════════ ⑤ [ はじめる ]（再掲）══════════════════ -->
-<div class="card">
-<h2>はじめる</h2>
-<p class="lead" style="margin:0">問1は<b>つまみを2個 回すだけ</b>です。数式は読まなくても進みます。</p>
-<div class="startbar">
- <a class="btn go" href="q01.html">はじめる</a>
- 
- 
-</div>
-</div>
+
+
+<div class="cta" id="cta2"></div>
 
 <div id="foot"></div>
 </div>
@@ -163,6 +148,9 @@
 <script>
 
 
+
+drawCta("cta1");
+drawCta("cta2");
 drawNest("nest", 0, { head: false, outside: false });
 
 drawFoot();

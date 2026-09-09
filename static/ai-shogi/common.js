@@ -1,22 +1,60 @@
 
 /* 🔴 2026-09-02 A（統括）：★★上のバーに【エンブレム】と大きいタイトルを入れる
-   ★山田様「1番上の AIの詰将棋… がなんでこんなにチープなんだ。
+   ★山田様「1番上の 製品名… がなんでこんなにチープなんだ。
      ここにサムネというか、ちゃんとわかりやすいゲームのアイコンかエンブレムかなんかと、
      大きくタイトルを書いてほしい」（2026-09-02）
    ★★将棋の駒（五角形）の中に【AI】。★画像ファイルを使わない SVG なので 23ページで軽い
-   ★★★製品名は「AIの詰将棋」。✗「詰めKaggle」は使えない（★Kaggle が Google のブランド） */
+   ★★★製品名は【Deep Black Box】（★2026-09-08 に「AIの詰将棋」から変更）。
+     ✗「詰めKaggle」は使えない（★Kaggle が Google のブランド）
+     ★★本文中の「詰将棋」アナロジーは当日の議論の語なので残す（★読者に見える場所には0件） */
+/* 🔴 2026-09-08 A：★★エンブレムの中身を1か所にまとめた（★drawTop と drawCta で共有）
+   ★★2つに分かれると片方だけ直して食い違うので、★必ずここだけを直すこと */
+var EMBLEM =
+      '<path d="M8 19.4 L22 13.4 L36 19.4 L36 21.4 L22 27.4 L8 21.4 Z" fill="#9b9b9b"/>'
+    + '<g transform="translate(22,19.4) matrix(0.9191,0.3939,-0.9191,0.3939,0,0)">'
+    +   '<text x="0" y="3.37" text-anchor="middle" font-size="9.5" font-weight="600"'
+    +   ' font-family="Avenir Next" fill="#151515" letter-spacing=".4">AI</text>'
+    + '</g>'
+    + '<path d="M8 22 L8 34 L22 40 L36 34 L36 22 L22 28 Z" fill="#151515"/>'
+    + '<g stroke="#019949" stroke-width="0.5" fill="#019949" stroke-linecap="round">'
+    +   '<line x1="11" y1="26.69" x2="22" y2="30.80"/><line x1="11" y1="26.69" x2="22" y2="34.00"/>'
+    +   '<line x1="11" y1="26.69" x2="22" y2="37.20"/><line x1="11" y1="31.89" x2="22" y2="30.80"/>'
+    +   '<line x1="11" y1="31.89" x2="22" y2="34.00"/><line x1="11" y1="31.89" x2="22" y2="37.20"/>'
+    +   '<line x1="22" y1="30.80" x2="33" y2="26.69"/><line x1="22" y1="30.80" x2="33" y2="31.89"/>'
+    +   '<line x1="22" y1="34.00" x2="33" y2="26.69"/><line x1="22" y1="34.00" x2="33" y2="31.89"/>'
+    +   '<line x1="22" y1="37.20" x2="33" y2="26.69"/><line x1="22" y1="37.20" x2="33" y2="31.89"/>'
+    +   '<circle cx="11" cy="26.69" r="0.85"/><circle cx="11" cy="31.89" r="0.85"/>'
+    +   '<circle cx="22" cy="30.80" r="0.85"/><circle cx="22" cy="34.00" r="0.85"/>'
+    +   '<circle cx="22" cy="37.20" r="0.85"/><circle cx="33" cy="26.69" r="0.85"/>'
+    +   '<circle cx="33" cy="31.89" r="0.85"/>'
+    + '</g>';
+
 function drawTop(){
   var box = document.querySelector('.top .in'); if (!box) return;
   var tag = box.querySelector('.tag');
   var sub = tag ? tag.innerHTML : '';
+  /* 🔴🔴🔴 2026-09-08 A：★★★製品名を「AIの詰将棋」→【Deep Black Box】に変えた
+     ★★出所：記事側セッションからの連絡（★記事側は commit c6c509a で反映済み）
+       旧  AIの詰将棋 ／ 将棋の詰将棋のように、AIの中身を1問ずつ切り出しました。全21問。
+       新  Deep Black Box ／ AIのブラックボックスを、1問ずつ開けて手で動かす。全21問。
+     ★★エンブレムも差し替えた ── ★将棋の駒（五角形＋AI）を廃止し、
+       ★★蓋の開いた黒い箱＋中のニューラルネットにした。
+       ★★★出どころ roppongivc.com/static/img/agora/r1/emblem-dbb.svg を【1バイトも変えずに写した】
+     ★幾何（★勝手に動かさないこと。★動かすなら再計算する）── ★記事側の SVG のコメントより
+       箱  M8 22 L8 34 L22 40 L36 34 L36 22 L22 28 Z（★口の傾き 6/14）
+       蓋  厚みのある菱形を1.4下げ、白い隙間を0.6pxにしてある
+       AI  蓋の上面に、面内の軸に沿って寝かせている（matrix・Avenir Next 9.5・右下へ流れる）
+       網  2:3:2 ＝ 問9と同じ構成（★重み 2×3＋3×2、辺12本）
+           ★各層の中心を「箱の口から6.0px下」に置いてあるので左右が高く中央が 4.71px 低い。
+             ★これは箱の口の傾きと同じ比率。★★左右は必ず同じ高さ
+       検算 全ノードが箱の輪郭から半径0.85ぶん内側にあることを記事側が確認済み
+     ★★★パス /ai-shogi/ とファイル名は【据え置き】（★変えると相互リンクが全部変わる）
+     ★★本文中の「詰将棋」というアナロジーと「詰めKaggle」は当日の議論の語なので残す。
+       ★ゲーム側では どちらも【コメントの中だけ】＝読者には0件（★実測） */
   var inner =
-    '<svg class="em" viewBox="0 0 44 44" aria-label="AIの詰将棋">'
-    + '<path d="M22 3 L36 10.5 L33 40 L11 40 L8 10.5 Z" fill="#fff" stroke="#1a1a1a" stroke-width="2.2" stroke-linejoin="round"/>'
-    + '<path d="M22 6.6 L32.8 12.4 L30.4 37 L13.6 37 L11.2 12.4 Z" fill="none" stroke="#1a1a1a" stroke-width="1"/>'
-    + '<text x="22" y="29" text-anchor="middle" font-size="15" font-weight="700"'
-    + ' font-family="Inter,system-ui,sans-serif" fill="#1a1a1a" letter-spacing="0.5">AI</text>'
+    '<svg class="em" viewBox="0 0 44 44" role="img" aria-label="Deep Black Box">' + EMBLEM
     + '</svg>'
-    + '<span class="ti"><b class="nm">AIの詰将棋</b>'
+    + '<span class="ti"><b class="nm">Deep Black Box</b>'
     + '<span class="tag">' + sub + '</span></span>';
   /* 🔴 2026-09-04 A：★★上のバー一帯を【はじめのページへのリンク】にする（★山田様の指定）
      ★「問題のところでもどこでも、1番上のアイコンとかタイトル名とか一帯をクリックすると
@@ -27,11 +65,30 @@ function drawTop(){
      ★見た目は包む前と同じ（★色を継ぐ・下線なし）。→ common.css の .top .in>.home */
   var here = location.pathname.split('/').pop() || 'index.html';
   if (here === 'index.html') { box.innerHTML = inner; return; }
-  box.innerHTML = '<a class="home" href="index.html" aria-label="AIの詰将棋 はじめのページへ">'
+  box.innerHTML = '<a class="home" href="index.html" aria-label="Deep Black Box はじめのページへ">'
                 + inner + '</a>';
 }
+
 /* ══════════════════════════════════════════════════════════════════════════
-   AIの詰将棋 ── common.js（23ページで共有）
+   🔴🔴🔴 2026-09-08 A【新設】★★「はじめる」の枠 ── ★記事の CTA と同じ形
+   ★★★山田様の指定（2026-09-08）「トップのここさ、記事の今1番上のほうにある
+     Deep Black Box ／ AIのブラックボックスを、1問ずつ開けて手で動かす。全21問。／
+     はじめる に変えて」「1番上と一緒のはじめるインターフェイスと同じのを使って」
+   ★★index の ① と ⑤ の2か所で呼ぶ（★同じ関数なので必ず同じ見た目になる）
+   ★エンブレムは drawTop と同じ EMBLEM を使い回す（★食い違いを作らない）
+   ══════════════════════════════════════════════════════════════════════════ */
+function drawCta(id) {
+  var h = document.getElementById(id); if (!h) return;
+  h.innerHTML =
+    '<div class="hd">'
+  +   '<svg class="em2" viewBox="0 0 44 44" role="img" aria-label="Deep Black Box">' + EMBLEM + '</svg>'
+  +   '<div class="ti2"><div class="nm3">Deep Black Box</div>'
+  +     '<p class="sb2">AIのブラックボックスを、1問ずつ開けて手で動かす。全21問。</p></div>'
+  + '</div>'
+  + '<a class="btn" href="q01.html">はじめる</a>';
+}
+/* ══════════════════════════════════════════════════════════════════════════
+   Deep Black Box ── common.js（23ページで共有）
    🔴 2026-09-02 1問1ページ担当が新設
    ──────────────────────────────────────────────────────────────────────────
    ⑴ 会話を描く drawCV（話者名・吹き出し・★"f" 行の図）／登場人物 drawCast
@@ -214,11 +271,22 @@ function drawChap(q, intro) {
 var SITE = { ver: 'v1.0', date: '2026-09-02', form: '',
              agora: 'https://www.roppongivc.com/m3v8k1qz6p/' };
 
-/* ★フッタ（★23ページ一括。★版と日付は SITE から読む） */
+/* ★フッタ（★23ページ一括。★版と日付は SITE から読む）
+   🔴🔴 2026-09-08 A：★★フッタに【六本木ベンチャーキャピタル】へのリンクを足した
+     ★★★山田様「六本木VCのロゴって今のスマホで見た上のところあまりスペースないけど
+       どう反映するべきか」への答え ＝ ★上のバーではなく【フッタ】に置く。
+     ★理由：★★上のバーは390pxで 105.9px しかなく、製品名が「AIの詰将棋」(5字)から
+       ★「Deep Black Box」(14字)に長くなったので【横の空きが減った】。
+       ★★ロゴを足すと製品名が折り返すか、エンブレムを小さくすることになる。
+     ★★フッタなら【縦のコストが実質0】で、23ページ全部に出る。★1か所で効く
+     ★★★そして共有時のブランド露出は og:image で取る（→ 次の巡で入れる）──
+       ★上のバーのロゴは【触っている本人にしか見えない】が、
+       ★og:image は【共有先の全員に見える】。★そちらのほうが効く */
 function drawFoot(note) {
   var h = document.getElementById('foot'); if (!h) return;
   h.className = 'foot';
-  h.innerHTML = 'AIの詰将棋 ' + SITE.ver + ' ／ ' + SITE.date
+  h.innerHTML = 'Deep Black Box ' + SITE.ver + ' ／ ' + SITE.date
+    + ' ／ <a href="https://www.roppongivc.com/" target="_blank" rel="noopener">六本木ベンチャーキャピタル</a>'
     + (note ? '<br>' + note : '');
 }
 
@@ -255,15 +323,23 @@ var CNM = { m: '学', d: '博士' };
    ★理由：★§5-39 で博士の命令形を【0件】にしたので、★読者は「やってみろ」を一度も聞きません。
      ★紹介に書いてあるのに本文に出てこないのは →§2-3 の型（見せ方と中身が食い違う）です
    ★★申告が漏れていました ── ★文言の変更は【数値や図に触らなくても内容の変更】です */
+/* 🔴🔴 2026-09-08 A：★★紹介文の太字を【全部 外した】（★山田様の指定 2026-09-08）
+   ★★★「ここの二人の紹介文のところにあるところは、名前以外は、全部太字の部分は元に戻せ」
+   ★外した5件 ── 元大学教授／つまみを回させたほうが早い／数学は得意／
+     中で何が起きてるのか誰も説明してくれない／納得しないと引かない。
+   ★★名前（.nm2「博士」「深井 学」）は太字のまま（★CSS の font-weight:700）
+   ★★★法則（★全ページ共通。★山田様 2026-09-08）──
+     ⑴ 上のほうに来るものは【章の説明の章名】以外 太字にしない
+     ⑵ 博士・学の紹介文は 太字にしない */
 var CAST = [
   ['d', '博士', '',
-   'AIの研究者。<b>元大学教授</b>で、機械学習を教えていた。'
-  + '「説明を読ませるより、<b>つまみを回させたほうが早い</b>」が信条で、大学のやり方と合わずに辞めた。'
+   'AIの研究者。元大学教授で、機械学習を教えていた。'
+  + '「説明を読ませるより、つまみを回させたほうが早い」が信条で、大学のやり方と合わずに辞めた。'
   + 'いまは家の一室でひとり実験している。'],
   ['m', '深井 学', 'ふかい まなぶ ／ 高校2年',
-   '<b>数学は得意</b>だが、AI は素人。'
-  + '「みんな AI って言うけど、<b>中で何が起きてるのか誰も説明してくれない</b>」が動機。'
-  + '小学生のころから博士の家に出入りしている。<b>納得しないと引かない。</b>']
+   '数学は得意だが、AI は素人。'
+  + '「みんな AI って言うけど、中で何が起きてるのか誰も説明してくれない」が動機。'
+  + '小学生のころから博士の家に出入りしている。納得しないと引かない。']
 ];
 function drawCast(id) {
   var h = document.getElementById(id || 'cast2'); if (!h) return;
@@ -478,5 +554,40 @@ function extBlank(root) {
    ★読み込み直後と、少し遅らせて もう1回 当てる（★各ページの起動行は common.js の後に走る） */
 if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', function () { extBlank(); setTimeout(extBlank, 0); });
 else { extBlank(); setTimeout(extBlank, 0); }
+
+/* ══════════════════════════════════════════════════════════════════════════
+   🔴🔴🔴 2026-09-08 A【新設】★★アクセス解析（GA4）── ★★★記事の公開（9/10）より前に入れた
+   ★★★山田様の確認「GA4でいいのか？ こっちで用意しないとダメ？」への答え ＝
+     ★同じ測定ID を1行 足すだけ。★新しいツールも新しいプロパティも要らない。
+
+   ★★なぜゲームには自動で入らないのか（★実測で確かめた）
+     記事   Hugo の layouts/_default/baseof.html を通る → ★GA4 が自動で入る
+     ゲーム static/ai-shogi/ の素のHTML → ★Hugo のレイアウトを通らないので入らない
+     ★実測（2026-09-08）本番の /ai-shogi/index.html と q01.html に gtag は【0件】だった。
+     → ★★★つまり これを入れるまで、ゲームについて GA4 は【何ひとつ記録していなかった】
+
+   ★★★何が測れるか ── ★1問1ページ（23URL）なので【ページビューだけで到達の深さが分かる】
+     /ai-shogi/ → q01 → q05 → q11 → q21 → end
+     ★「開いただけ（index で離脱）」と「触った（q01以降）」と「最後までやった（end）」が分かれる。
+     ★★★いちばん価値があるのは【どの問で人が落ちるか】。★そこを直せる
+     ★つまみを動かしたか等はイベントを足せば測れるが、★まずはページビューで足りる
+
+   ★★測定ID は【サイト共通と同じ】G-BRMZ5TV9BJ（★baseof.html と一致。★実測で確認）
+     → ★同じプロパティ・同じレポートの中で、記事とゲームが1つの流れとして見える
+   ★★noindex とは無関係（★noindex でも解析は動く）
+   ★★★23ページを触らない ── ★ここ1か所で全ページに効く
+   ══════════════════════════════════════════════════════════════════════════ */
+var GA_ID = 'G-BRMZ5TV9BJ';
+(function () {
+  if (!GA_ID) return;
+  var s = document.createElement('script');
+  s.async = true;
+  s.src = 'https://www.googletagmanager.com/gtag/js?id=' + GA_ID;
+  document.head.appendChild(s);
+  window.dataLayer = window.dataLayer || [];
+  window.gtag = function () { window.dataLayer.push(arguments); };
+  window.gtag('js', new Date());
+  window.gtag('config', GA_ID);
+})();
 
 drawTop();
