@@ -244,7 +244,7 @@
 }
 .a-fig-no{ font-size:12.5px; font-weight:700; letter-spacing:.14em; color:var(--black); }   /* ★2026-09-06 12px→12.5px、色を緑(--accent)→黒に */
 .a-fig-todo{ font-size:14px; color:var(--gray-500); line-height:1.9; }
-.a-fig-cap{ font-size:14px; line-height:1.85;   /* ★2026-09-06 13.5px → 14.5px */ color:#2a2a2a; margin-top:.8rem; }
+.a-fig-cap{ font-size:12px; line-height:1.85;   /* ★2026-09-09 14px → 12px（山田様の指示で2px下げた） */ color:#2a2a2a; margin-top:.8rem; }
 .a-fig-cap p{ margin:0; }
 /* コラムの中の図（図4〜8）も同じ幅に収める */
 .a-col .a-fig{ max-width:802px; }
