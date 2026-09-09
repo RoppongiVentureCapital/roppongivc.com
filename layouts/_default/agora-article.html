@@ -16,8 +16,10 @@
       <div class="a-hero-text">
         {{ with .Params.hero_label }}<span class="a-hero-label">{{ . }}</span>{{ end }}
         {{ with .Params.headline }}<h1 class="a-hero-title">{{ . | safeHTML }}</h1>{{ end }}
-        {{/* ★2026-09-08 夕 og:image に合わせて、日付の下に発行元を出す（山田様の指示） */}}
-        <p class="a-hero-meta">{{ .Date.Format "2006年1月2日" }}<br>六本木ベンチャーキャピタル</p>
+        {{/* ★2026-09-09 発行元の行は削除した（山田様の指示）。
+             理由 ── スマホで右の文字が写真より高くなってバランスが崩れる。
+             かつサイト共通ナビに六本木ベンチャーキャピタルが常に出ている */}}
+        <p class="a-hero-meta">{{ .Date.Format "2006年1月2日" }}</p>
       </div>
     </div>
   </header>
