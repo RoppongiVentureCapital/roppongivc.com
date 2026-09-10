@@ -1,5 +1,10 @@
 {{ define "head" }}
-<meta name="robots" content="noindex,nofollow">
+{{/* ★2026-09-10 一般公開。ここにあった noindex,nofollow の1行を削除した。
+     ★戻すときは <meta name="robots" content="noindex,nofollow"> をこの位置に入れる。 */}}
+{{ with .Params.og_image }}
+<meta property="og:image" content="{{ . | absURL }}">
+<meta property="twitter:image" content="{{ . | absURL }}">
+{{ end }}
 <link rel="stylesheet" href="{{ "css/agora-article.css" | relURL }}">
 {{ end }}
 

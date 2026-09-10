@@ -15,13 +15,16 @@ paginate = 12
       name = "Agora"
       url = "/agora/"
       weight = 1
+    # ★2026-09-10 Challenge を上のバーから外し、AI Lab を Agora の次に入れた（山田様のご承認・9/09）。
+    #   ★Challenge は消えていない ── トップの「あなたの思考と能力を試す」節と /challenges/ は生きている。
+    #   ★AI Lab の行き先は static/deep-black-box/（Hugoのページではないので言語の切替はない）。
+    [[languages.ja.menus.main]]
+      name = "AI Lab"
+      url = "/deep-black-box/"
+      weight = 2
     [[languages.ja.menus.main]]
       name = "Edge"
       url = "/edge/"
-      weight = 2
-    [[languages.ja.menus.main]]
-      name = "Challenge"
-      url = "/challenges/"
       weight = 3
     [[languages.ja.menus.main]]
       name = "Media"
@@ -41,13 +44,14 @@ paginate = 12
       name = "Agora"
       url = "/en/agora/"
       weight = 1
+    # ★2026-09-10 日本語と同じ構成に揃えた。⚠️ AI Lab の中身は日本語だけ（英語版がない）。
+    [[languages.en.menus.main]]
+      name = "AI Lab"
+      url = "/deep-black-box/"
+      weight = 2
     [[languages.en.menus.main]]
       name = "Edge"
       url = "/en/edge/"
-      weight = 2
-    [[languages.en.menus.main]]
-      name = "Challenge"
-      url = "/en/challenges/"
       weight = 3
     [[languages.en.menus.main]]
       name = "Media"

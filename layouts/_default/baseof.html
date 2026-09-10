@@ -10,7 +10,9 @@
 <meta property="og:url" content="{{ .Permalink }}">
 <meta property="og:site_name" content="{{ .Site.Title }}">
 <meta property="og:type" content="{{ if .IsHome }}website{{ else }}article{{ end }}">
-<meta name="twitter:card" content="summary">
+{{/* ★2026-09-10 summary → summary_large_image（山田様のご承認）。
+     ★og:image を持つページで横長の大きいカードになる。持たないページは今までどおり文字だけ。 */}}
+<meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="{{ if not .IsHome }}{{ .Title }} | {{ end }}{{ .Site.Title }}">
 <meta name="twitter:description" content="{{ with .Description }}{{ . }}{{ else }}{{ .Site.Params.description }}{{ end }}">
 <link rel="icon" href="{{ "favicon.svg" | relURL }}" type="image/svg+xml">

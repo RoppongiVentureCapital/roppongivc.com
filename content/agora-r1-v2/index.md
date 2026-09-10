@@ -3,12 +3,15 @@ title: "AI五輪メダリストの開成高校生が、AI人材拡大のため�
 date: 2026-09-10
 draft: false
 layout: "agora-article"
-url: "/m3v8k1qz6p/"
-# ★限定公開。どこからもリンクを貼らず、一覧・サイトマップ・RSSにも出さない。
-#   noindex は layouts/_default/agora-article.html の head で入れている。
-#   ★list: never が「一覧に出さない」／render: always が「ページ自体は作る」
+url: "/agora/ai-olympiad-record/"
+# ★2026-09-10 一般公開。旧URL（限定公開時に配ったもの）は aliases で転送する。
+#   ★aliases は http-equiv=refresh の転送HTMLを生成し、canonical も新URLを指す。
+#   ★list: always にしたので sitemap と トップのRSS（/index.xml）に載る（山田様のご承認・2026-09-10）。
+#   ★noindex は layouts/_default/agora-article.html の head から削除した。
+aliases:
+  - /m3v8k1qz6p/
 _build:
-  list: never
+  list: always
   render: always
   publishResources: true
 description: "答えの決まった問題を解く力は、AIに置き換わっていく。では、その力を極めた高校生は、答えのない問題に向かったとき何をするのか。国際人工知能オリンピック（IOAI）2025 メダリスト・開成高校3年の山井勇人さんが出したテーマは「Kaggleを民主化したい」。5人とAIの2時間の記録。"
@@ -16,6 +19,9 @@ hero_label: "Agora ｜ 第1回"
 headline: "AI五輪メダリストの開成高校生が、AI人材拡大のため、AIと議論した思考記録"
 hero_photo: "img/agora/r1/hero-yamai.jpg"
 hero_photo_alt: "山井 勇人さん"
+# ★共有カード（LINE・X・Slackに貼ったときの絵）。2026-09-10 作成。
+#   ★agora-article.html の head で拾う。1200×630。
+og_image: "img/agora/r1/og-r1-article.jpg"
 ---
 
 2026年4月、ChatGPTが東京大学の入試を解き、合格者の最高点を上回りました。前年には、国際数学オリンピックで金メダル相当の成績も出ています。**答えが決まっていて、採点のしかたも決まっている問題は、もうAIの領域です**。
@@ -30,7 +36,7 @@ hero_photo_alt: "山井 勇人さん"
 
 その後、1か月間の開発の末、それは誰でも触れるものになりました。**できたプロダクトはこちらになります**。
 
-{{< cta href="/ai-shogi/" label="はじめる" >}}
+{{< cta href="/deep-black-box/" label="はじめる" >}}
 
 この日のAgora議論参加者5人
 
@@ -808,7 +814,7 @@ AIは難しいので分かりやすく書く必要がありますが、分かり
 
 AIのブラックボックスを、1問ずつ開けて手で動かす。全21問。
 
-{{< cta href="/ai-shogi/" label="はじめる" href2="https://docs.google.com/forms/d/e/1FAIpQLScyE3bWc8rh3wcnLLlaxpXOhrwUYjPU-ccS3FfnIZgcoPqkRw/viewform" label2="感想を送る" >}}
+{{< cta href="/deep-black-box/" label="はじめる" href2="https://docs.google.com/forms/d/e/1FAIpQLScyE3bWc8rh3wcnLLlaxpXOhrwUYjPU-ccS3FfnIZgcoPqkRw/viewform" label2="感想を送る" >}}
 
 ## この記事について
 

@@ -29,6 +29,59 @@
   </div>
 </section>
 
+{{/* プログラム（Agora / Edge）── ★2026-09-10 に位置を上げ（もとは Vision の下）、
+     Agora の中身を「Agora 第1回」の説明文章とカード2枚に差し替えた。
+     ★カードは既存の .article-item（JIWA節と同じ型）を流用。style.css への追加はゼロ。
+     ★サムネに文字を入れない ── スマホでは294px幅に縮むのでつぶれ、カードの見出しと二重になる。
+     ★記事のURLは GetPage で引く。url: を変えてもここは直さなくてよい。 */}}
+{{ $rec := .Site.GetPage "/agora-r1-v2" }}
+<section class="two-col">
+  <div class="two-col-left">
+    <h2 class="col-heading">プログラム</h2>
+  </div>
+  <div class="two-col-right">
+    <div class="col-body">
+      <div class="persona-card">
+        <h3>Agora</h3>
+        <p>Agora は、突出した才能が、AIと深く議論して、まだ世にない新しいものを生み出すプログラムです。</p>
+        <a href="{{ "agora/" | relURL }}" style="display:inline-block;margin-top:0.75rem;font-family:var(--sans);font-size:15px;font-weight:500;color:var(--black);text-decoration:underline;text-underline-offset:3px">プログラムを詳しく見る →</a>
+        <div class="articles-grid" style="margin-top:1.75rem;max-width:526px">
+          <div class="article-item">
+            <a href="{{ with $rec }}{{ .RelPermalink }}{{ else }}{{ "agora/ai-olympiad-record/" | relURL }}{{ end }}">
+              <img class="article-item-img" src="{{ "img/agora/r1/thumb-r1-article.jpg" | relURL }}" alt="">
+              <div class="article-item-body">
+                <div class="article-pillar">Agora ｜ 第1回</div>
+                <h3 style="margin:0.75rem 0">AI五輪メダリストの開成高校生が、AI人材拡大のため、AIと議論した思考記録</h3>
+                <span class="blog-arrow">記録を読む →</span>
+              </div>
+            </a>
+          </div>
+        </div>
+        <p style="margin-top:1.75rem">2026年7月の第1回でテーマを出したのは、国際人工知能オリンピック（IOAI）2025 銅メダリスト・開成高校3年の山井勇人さんです。「Kaggle を民主化したい」── Kaggle は世界最大の機械学習コンペティションで、AIをつくる人を増やすには原理を学ぶ入口が要る、という問題意識でした。</p>
+        <p>5人とAIが2時間議論し、Kaggle には無かった出題の形に辿り着きました。その案を1か月で形にしたのが、AIの原理を手で動かす21問「Deep Black Box」です。</p>
+        <div class="articles-grid" style="margin-top:1.75rem;max-width:526px">
+          <div class="article-item">
+            <a href="{{ "deep-black-box/" | relURL }}">
+              <img class="article-item-img" src="{{ "img/agora/r1/thumb-r1-game.svg" | relURL }}" alt="">
+              <div class="article-item-body">
+                <div class="article-pillar">教材</div>
+                <h3 style="margin:0.75rem 0">Deep Black Box ── AIのブラックボックスを、1問ずつ開けて手で動かす。</h3>
+                <p>全21問 ／ ブラウザで開くだけ</p>
+                <span class="blog-arrow">やってみる →</span>
+              </div>
+            </a>
+          </div>
+        </div>
+      </div>
+      <div class="persona-card">
+        <h3>Edge</h3>
+        <p>自分が取り組む課題を見つけ、AIを活用して実際に動くプロダクトを作り、世に出すインキュベーションプログラム。</p>
+        <a href="{{ "edge/" | relURL }}" style="display:inline-block;margin-top:0.75rem;font-family:var(--sans);font-size:15px;font-weight:500;color:var(--black);text-decoration:underline;text-underline-offset:3px">詳しく見る →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- Mission -->
 <section class="two-col">
   <div class="two-col-left">
@@ -75,27 +128,20 @@
   </div>
 </section>
 
-<!-- プログラム（Agora / Edge） -->
+<!-- Members -->
 <section class="two-col">
   <div class="two-col-left">
-    <h2 class="col-heading">プログラム</h2>
+    <h2 class="col-heading">Members</h2>
   </div>
   <div class="two-col-right">
     <div class="col-body">
-      <div class="persona-card">
-        <h3>Agora</h3>
-        <p>AIと深く議論して、まだ世にない新しいものを生み出すプログラム。自分の問いから、思考の過程や発見を"作品"として世に出す。</p>
-        <a href="{{ "agora/" | relURL }}" style="display:inline-block;margin-top:0.75rem;font-family:var(--sans);font-size:15px;font-weight:500;color:var(--black);text-decoration:underline;text-underline-offset:3px">詳しく見る →</a>
-      </div>
-      <div class="persona-card">
-        <h3>Edge</h3>
-        <p>自分が取り組む課題を見つけ、AIを活用して実際に動くプロダクトを作り、世に出すインキュベーションプログラム。</p>
-        <a href="{{ "edge/" | relURL }}" style="display:inline-block;margin-top:0.75rem;font-family:var(--sans);font-size:15px;font-weight:500;color:var(--black);text-decoration:underline;text-underline-offset:3px">詳しく見る →</a>
-      </div>
+      <a href="{{ "members/" | relURL }}" style="display:inline-block;font-family:var(--sans);font-size:15px;font-weight:500;color:var(--black);text-decoration:underline;text-underline-offset:3px">メンバーを見る →</a>
     </div>
   </div>
 </section>
 
+{{/* Challenge ── ★2026-09-10 に Members の下へ移した（もとは プログラム と Members の間）。
+     ★消さずに下げる。消すとトップからの内部リンクが無くなって検索の評価が落ちる。 */}}
 <!-- Challenge -->
 <section class="two-col">
   <div class="two-col-left">
@@ -114,18 +160,6 @@
         <p>パターン推理で、あなたの「地頭」を試す。3×3グリッドの法則を見抜き、欠けたピースを推理する。後半になるほど、同時に追跡すべき規則の数が増えます。</p>
         <a href="{{ "challenges/" | relURL }}" style="display:inline-block;margin-top:0.75rem;font-family:var(--sans);font-size:15px;font-weight:500;color:var(--black);text-decoration:underline;text-underline-offset:3px">やってみる →</a>
       </div>
-    </div>
-  </div>
-</section>
-
-<!-- Members -->
-<section class="two-col">
-  <div class="two-col-left">
-    <h2 class="col-heading">Members</h2>
-  </div>
-  <div class="two-col-right">
-    <div class="col-body">
-      <a href="{{ "members/" | relURL }}" style="display:inline-block;font-family:var(--sans);font-size:15px;font-weight:500;color:var(--black);text-decoration:underline;text-underline-offset:3px">メンバーを見る →</a>
     </div>
   </div>
 </section>
