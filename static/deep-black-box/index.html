@@ -46,34 +46,61 @@
 <body>
 
 <!-- 🔴 2026-09-10 記事側が追加：六本木VCの上のバー（★このトップページだけ。問題ページには入れていない）
-     ★山田様のご指示 ──「ここ一回いくと六本木VCのサイトに戻りづらいから、せめてゲームの
-       トップページだけにでも六本木VCのサイトの上のいろんなリンク集載せてくれない」
+     ★山田様のご指示 ──「せめてゲームのトップページだけにでも六本木VCのサイトの上のリンク集を載せて」
      ★style.css は読み込んでいない ── 冒頭に *{margin:0;padding:0} と body{} があり、
-       common.css と衝突してゲームの見た目が崩れるため。だから寸法はここに直接書いている。
-     ★寸法はサイトの上のバーの実測値（style.css 25〜38行目）── 高さ56px・下線1px・白地・
-       sticky・リンク14px weight500・English は枠付き。ロゴだけ 52px→44px（56pxに収めるため）。
-     ★sticky は安全 ── 画面を上下に分ける仕掛け（.split-on）は問題ページだけで、ここには無い。
-     ⚠️★★A105_deploy.py で同期すると【この追加は消えます】。★原本の index.html に入れてください。 -->
-<div style="border-bottom:1px solid #000;background:#fff;position:sticky;top:0;z-index:100">
-  <div style="max-width:52.625rem;margin:0 auto;padding:0 1.5rem;height:56px;
-              display:flex;align-items:center;justify-content:space-between;gap:1rem">
-    <a href="https://www.roppongivc.com/" style="flex:0 0 auto;line-height:0">
-      <img src="https://www.roppongivc.com/img/logo-wide.png" alt="Roppongi VC"
-           style="height:44px;width:auto;display:block">
+       common.css と衝突してゲームの見た目が崩れるため。だから寸法をここに直接書いている。
+     ★寸法・挙動はサイトの上のバーの実測値（style.css 25〜38行目・182〜193行目）
+       PC     高さ56px・下線1px・白地・sticky・リンク14px weight500・English は枠付き
+       768px以下  リンクを隠して三本線に切り替え、押すと下に開く（★サイトと同じ）
+       ロゴだけ 52px→44px（56pxのバーに収めるため）
+     ★クラス名は rvcbar- で始めている ── common.css と当たらないようにするため（実測で衝突0件）
+     ★sticky は安全 ── 画面を上下に分ける仕掛け（.split-on）は問題ページだけで、ここには無い
+     ⚠️★★A105_deploy.py で同期すると【この追加は消えます】。★原本の index.html に入れてください -->
+<style>
+.rvcbar{border-bottom:1px solid #000;background:#fff;position:sticky;top:0;z-index:100}
+.rvcbar-in{max-width:52.625rem;margin:0 auto;padding:0 1.5rem;height:56px;
+  display:flex;align-items:center;justify-content:space-between;gap:1rem;position:relative}
+.rvcbar-logo{flex:0 0 auto;line-height:0}
+.rvcbar-logo img{height:44px;width:auto;display:block}
+.rvcbar-links{display:flex;align-items:center;gap:0 2rem;list-style:none;margin:0;padding:0}
+.rvcbar-links a{font-family:Inter,system-ui,sans-serif;font-size:14px;font-weight:500;
+  color:#000;text-decoration:none}
+.rvcbar-links a:hover{color:#6e6e6e}
+.rvcbar-lang a{padding:.3rem .7rem;border:1px solid #d9d9d9}
+.rvcbar-ham{display:none}
+@media (max-width:768px){
+  .rvcbar-in{padding:0 1.1rem}
+  .rvcbar-logo img{height:38px}
+  .rvcbar-links{display:none;position:absolute;top:100%;left:0;right:0;background:#fff;
+    flex-direction:column;align-items:flex-start;gap:0;padding:1rem 1.1rem;
+    border-bottom:1px solid #d9d9d9;z-index:100}
+  .rvcbar-links.rvcbar-open{display:flex}
+  .rvcbar-links li{padding:.5rem 0}
+  .rvcbar-links a{font-size:16px}
+  .rvcbar-ham{display:flex;flex-direction:column;gap:5px;background:none;border:none;
+    cursor:pointer;padding:.5rem}
+  .rvcbar-ham span{display:block;width:22px;height:2px;background:#000}
+}
+</style>
+<div class="rvcbar">
+  <div class="rvcbar-in">
+    <a href="https://www.roppongivc.com/" class="rvcbar-logo">
+      <img src="https://www.roppongivc.com/img/logo-wide.png" alt="Roppongi VC">
     </a>
-    <div style="display:flex;flex-wrap:wrap;align-items:center;gap:0 1.25rem;justify-content:flex-end;
-                font-family:Inter,system-ui,sans-serif;font-size:14px;font-weight:500">
-      <a href="https://www.roppongivc.com/agora/"          style="color:#000;text-decoration:none">Agora</a>
-      <a href="https://www.roppongivc.com/deep-black-box/" style="color:#000;text-decoration:none">AI Lab</a>
-      <a href="https://www.roppongivc.com/edge/"           style="color:#000;text-decoration:none">Edge</a>
-      <a href="https://www.roppongivc.com/jiwa/"           style="color:#000;text-decoration:none">Media</a>
-      <a href="https://www.roppongivc.com/members/"        style="color:#000;text-decoration:none">Members</a>
-      <a href="https://www.roppongivc.com/en/deep-black-box/"
-         style="color:#000;text-decoration:none;padding:.3rem .7rem;border:1px solid #d9d9d9">English</a>
-    </div>
+    <ul class="rvcbar-links">
+      <li><a href="https://www.roppongivc.com/agora/">Agora</a></li>
+      <li><a href="https://www.roppongivc.com/deep-black-box/">AI Lab</a></li>
+      <li><a href="https://www.roppongivc.com/edge/">Edge</a></li>
+      <li><a href="https://www.roppongivc.com/jiwa/">Media</a></li>
+      <li><a href="https://www.roppongivc.com/members/">Members</a></li>
+      <li class="rvcbar-lang"><a href="https://www.roppongivc.com/en/deep-black-box/">English</a></li>
+    </ul>
+    <button class="rvcbar-ham" aria-label="メニュー"
+            onclick="document.querySelector('.rvcbar-links').classList.toggle('rvcbar-open')">
+      <span></span><span></span>
+    </button>
   </div>
 </div>
-
 
 <div class="top"><div class="in">Deep Black Box<span class="tag">AIのブラックボックスを、1問ずつ開けて手で動かす。全21問。</span></div></div>
 <div class="wrap">
