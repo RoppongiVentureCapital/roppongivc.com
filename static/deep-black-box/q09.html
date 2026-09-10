@@ -1,0 +1,1933 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="index,follow">
+<meta name="description" content="層を1つ入れると、まん中だけを囲める ── 問9 層を1つ入れる">
+<meta property="og:title" content="Deep Black Box ── 問9 層を1つ入れると、まん中だけを囲める（第2章）">
+<meta property="og:description" content="層を1つ入れると、まん中だけを囲める ── 問9 層を1つ入れる">
+
+<meta property="og:image" content="https://www.roppongivc.com/img/agora/r1/og-r1-game.jpg">
+<meta name="twitter:image" content="https://www.roppongivc.com/img/agora/r1/og-r1-game.jpg">
+<title>Deep Black Box ── 問9 層を1つ入れると、まん中だけを囲める（第2章）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@300;400;600;700&family=Inter:wght@300;400;500;600;700&family=Noto+Serif+JP:wght@300;400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="common.css">
+<style>
+
+.offpage{display:none}
+:root{
+ --bg:#fff; --white:#fff; --black:#000;
+ --gray-100:#f9f9f9; --gray-200:#d9d9d9; --gray-500:#444; --gray-600:#2a2a2a;
+ --accent:#019949;
+ --sans:'Inter',system-ui,sans-serif;
+ --serif:'Source Serif 4','Noto Serif JP',Georgia,serif;
+ --content-w:52.625rem;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--black);font-family:var(--sans);
+ -webkit-font-smoothing:antialiased}
+.wrap{max-width:var(--content-w);margin:0 auto;padding:0 1.5rem 5rem}
+.top{border-bottom:1px solid var(--gray-200);margin-bottom:2.4rem}
+
+
+.eyebrow{font-size:13px;font-weight:500;letter-spacing:.16em;text-transform:uppercase;
+ color:var(--gray-500);margin-bottom:.9rem}
+h1{font-family:var(--serif);font-size:2.1rem;font-weight:300;line-height:1.35;margin:0 0 .8rem}
+.lead b{color:var(--black)}
+.meta{font-size:13px;letter-spacing:.1em;color:var(--gray-500);padding-bottom:1.2rem;
+ border-bottom:1px solid var(--gray-200);margin-bottom:1.2rem}
+.steps{display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:2.4rem}
+.steps div{flex:1 1 5rem;padding:.55rem .3rem;text-align:center;font-size:12px;
+ border:1px solid var(--gray-200);color:var(--gray-500);background:var(--white)}
+.steps div.open{border-color:var(--black);color:var(--black)}
+.steps div.done{background:var(--black);border-color:var(--black);color:var(--white)}
+.card{border:1px solid var(--gray-200);padding:2rem;margin-bottom:2rem;background:var(--white)}
+.tagline{font-size:13px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;
+ color:var(--gray-500);margin-bottom:.9rem}
+.figbox{background:var(--gray-100);border:1px solid var(--gray-200);padding:1rem;margin:1.3rem 0}
+
+.panel{background:var(--gray-100);border:1px solid var(--gray-200);padding:1rem;margin:1.3rem 0}
+.panel .ctl{margin:.9rem 0 .2rem}
+.panel .togs{margin-top:.7rem}
+.panel .gauge{margin-top:.9rem}
+.panel .verdict{margin-top:.8rem;background:var(--white)}
+.two{display:flex;gap:1rem;flex-wrap:wrap}
+.two>div{flex:1 1 15rem;min-width:0}
+svg{display:block;width:100%;height:auto}
+
+
+
+.stickwrap{position:relative}
+.stick{position:sticky;top:0;z-index:5;background:var(--gray-100);
+       padding-bottom:.35rem;box-shadow:0 6px 8px -6px rgba(0,0,0,.18)}
+
+
+#q9wrap{position:relative}
+#q9wrap > .panel{position:sticky;top:0;z-index:5;
+  box-shadow:0 8px 10px -8px rgba(0,0,0,.22)}
+
+.bdhead{display:flex;align-items:baseline;gap:.5rem;flex-wrap:wrap;margin:0 0 .35rem}
+.bdhead .lb{font-size:13px;color:var(--gray-500)}
+.bdhead .big{font-size:26px;font-weight:600;font-family:'Source Serif 4',serif;line-height:1.1}
+.bdhead .big.ok{color:#019949}
+.bdhead .tr{flex:1 1 120px;min-width:110px;height:9px;background:#e9e9e9;position:relative}
+.bdhead .fl{position:absolute;left:0;top:0;bottom:0;background:#c00}
+.bdhead .fl.ok{background:#019949}
+.bdhead .mk{position:absolute;top:-3px;width:2px;height:15px;background:#111}
+.bdhead .rt{font-size:13px;color:var(--gray-500)}
+
+
+.split-on .splittop .bdhead{gap:.35rem;margin:0 0 .15rem}
+.split-on .splittop .bdhead .lb,
+.split-on .splittop .bdhead .rt{font-size:11.5px}
+.split-on .splittop .bdhead .big{font-size:20px}
+.split-on .splittop .bdhead .tr{height:7px;flex:1 1 90px;min-width:80px}
+.split-on .splittop .bdhead .mk{top:-2px;height:11px}
+.split-on .splittop .panel .togs{margin-top:.2rem;gap:.3rem}
+.split-on .splittop .panel .togs span{font-size:11.5px}
+.split-on .splittop .panel .togs .btn{padding:.3rem .6rem;font-size:11.5px}
+.split-on .splittop .panel{padding:.45rem .5rem}
+
+.split-on .splittop #net9{max-height:112px;margin:.1rem 0 0}
+.split-on .splittop .figrow{gap:.2rem;margin:.1rem 0 0}
+#c9 .figrow{display:flex;gap:.5rem;align-items:flex-start;justify-content:center}
+#c9 .figrow > svg{margin:0}
+
+#c9 .figrow > #bd9{width:36%;height:auto}
+#c9 .figrow > #net9{width:62%;height:auto}
+
+#c9b .figrow{display:flex;gap:.5rem;align-items:flex-start;justify-content:center}
+#c9b .figrow > svg{margin:0}
+#c9b .figrow > #bd9b{width:36%;height:auto}
+#c9b .figrow > #gr10{width:62%;height:auto}
+#q10wrap{position:relative}
+#q10wrap > .panel{position:sticky;top:0;z-index:5;
+  box-shadow:0 8px 10px -8px rgba(0,0,0,.22)}
+
+#fig6 text.big6,#fig7 text.big6{font-size:26px;font-weight:600;font-family:var(--serif)}
+#fig6 text.lim6,#fig7 text.lim6{font-size:13px}
+
+#ov10 text.num6{font-size:26px}
+
+
+#stair6{max-width:440px;margin:0 auto}
+.ctl{margin:1.1rem 0 .2rem}
+.ctl label{display:flex;justify-content:space-between;align-items:baseline;font-size:14px;
+ margin-bottom:.35rem;gap:1rem}
+.ctl label span.n{font-weight:600;font-variant-numeric:tabular-nums;white-space:nowrap}
+.togs{display:flex;gap:.6rem;flex-wrap:wrap;margin-top:1.1rem;align-items:center}
+.btn{background:none;border:1px solid var(--gray-200);padding:.6rem 1.15rem;font-size:14px;
+ font-family:var(--sans);color:var(--black);cursor:pointer;transition:all .15s}
+.btn:hover{border-color:var(--black);background:var(--gray-100)}
+.btn.on{background:var(--black);color:var(--white);border-color:var(--black)}
+.btn.go{background:var(--black);color:var(--white);border-color:var(--black)}
+.btn.sm{font-size:13px;padding:.45rem .85rem;color:var(--gray-500)}
+.btn:disabled{opacity:.35;cursor:default}
+.gauge{margin:1.2rem 0 0}
+.gauge .row{display:flex;align-items:baseline;gap:.7rem;margin-bottom:.5rem}
+.gauge .u{font-size:14px;color:var(--gray-500)}
+.gtrack{height:10px;background:#e9e9e9;position:relative;overflow:hidden}
+.gfill{display:block;height:100%;background:#c00;transition:width .12s linear}
+.gfill.ok{background:var(--accent)}
+.gmark{position:absolute;top:-3px;bottom:-3px;width:2px;background:#000}
+.gcap{display:flex;justify-content:space-between;font-size:12px;color:var(--gray-500);
+ margin-top:.35rem}
+.read{font-size:15px;line-height:1.8;margin:.9rem 0 0;font-variant-numeric:tabular-nums}
+.big{font-family:var(--serif);font-size:2rem;font-weight:400;font-variant-numeric:tabular-nums;
+ line-height:1}
+.calc{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13.5px;line-height:2;
+ background:var(--white);border:1px solid var(--gray-200);padding:.9rem 1.1rem;margin:.9rem 0;
+ overflow-x:auto;white-space:pre}
+.verdict{margin-top:1.2rem;padding:.9rem 1.1rem;border:1px solid var(--gray-200);font-size:14px;
+ line-height:1.75;background:var(--gray-100)}
+.verdict.ok{border-color:var(--accent);background:#f2fbf6}
+.verdict.stuck{border-color:#c00;background:#fdf4f4}
+.next{margin-top:1rem;font-size:13px;color:var(--gray-500)}
+.src{border-left:2px solid var(--black);padding:.9rem 0 .9rem 1.1rem;margin:1.4rem 0;
+ font-size:14px;line-height:1.85;color:var(--gray-600)}
+.src .h{font-size:12px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;
+ color:var(--black);margin-bottom:.4rem}
+.src .ref{font-size:13px;color:var(--gray-500);margin-top:.4rem;display:block}
+.box{border:1px solid var(--gray-200);padding:1.1rem 1.3rem;margin:1.3rem 0;background:var(--gray-100)}
+.box .h{font-size:12px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;
+ margin-bottom:.5rem}
+.mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+td.mono{word-break:break-word;line-height:1.7}
+.sc-row{display:flex;align-items:center;gap:.75rem;margin-bottom:.6rem}
+.sc-label{width:5.4rem;font-size:14px;text-align:right;flex-shrink:0}
+.sc-track{flex:1;background:#e9e9e9;height:9px;position:relative}
+.sc-fill{display:block;height:100%;background:var(--black);transition:width .1s linear}
+.sc-fill.hit{background:var(--accent)}
+.sc-pct{width:3.4rem;font-size:14px;font-variant-numeric:tabular-nums}
+details{border-top:1px solid var(--gray-200);padding-top:1rem;margin-top:1.5rem}
+summary{font-size:14px;font-weight:500;cursor:pointer}
+.lg{font-size:14px;line-height:1.9;color:var(--gray-600);margin-top:.9rem}
+.lg table{width:100%;border-collapse:collapse;margin:.8rem 0;font-size:13px}
+.lg th,.lg td{padding:.45rem .6rem;border:1px solid var(--gray-200);text-align:left}
+.lg th{background:var(--gray-100);font-weight:600}
+.dtab th,.dtab td{padding:.35rem .5rem;border:1px solid var(--gray-200);text-align:right}
+.dtab th{background:var(--gray-100);font-weight:600;font-size:11.5px}
+.dtab tr.sum td{background:#f2fbf6;border-top:2px solid var(--black)}
+
+.dtab .l{text-align:left}
+.hide{display:none}
+.foot{border-top:1px solid var(--gray-200);margin-top:3rem;padding-top:1.5rem;font-size:13px;
+ color:var(--gray-500);line-height:1.8}
+.arrow{text-align:center;font-size:22px;color:var(--gray-500);margin:.5rem 0}
+
+@media (max-width:430px){
+  
+  .panel .ctl{margin:.55rem 0 .1rem}
+  .panel .ctl label{margin-bottom:.15rem}
+  .wrap{padding-left:.5rem;padding-right:.5rem}
+  .card{padding-left:.75rem;padding-right:.75rem}
+  .figbox,.panel{padding-left:.5rem;padding-right:.5rem}
+  .top .in{padding-left:.5rem;padding-right:.5rem}
+  
+  
+  #fig6 text,#fig7 text,#p7 text,
+  #stair6 text,#st6a text,#st6b text,#st6c text,
+  #ov10 text,#ep11 text{font-size:17px}
+  
+  #fig6 text.big6{font-size:42px}
+  #fig6 text.lim6{font-size:20px}
+  #fig7 text.big6{font-size:42px}
+  #fig7 text.lim6{font-size:20px}
+  #ov10 text.num6{font-size:30px}
+  
+  
+  
+  .cast2{padding:.7rem .75rem}
+  .cast2 .ic{width:46px;height:46px}
+  .cast2 .row{gap:.6rem}
+  
+  
+  #c9 .figrow{flex-direction:column;align-items:center}
+  
+  #c9 .figrow > #bd9{width:100%;max-width:none;height:auto}
+  #c9 .figrow > #net9{width:100%;height:auto}
+  
+  #c9b .figrow{flex-direction:column;align-items:center}
+  #c9b .figrow > #bd9b{width:100%;max-width:none;height:auto}
+  #c9b .figrow > #gr10{width:100%;height:auto}
+}
+
+
+.cast2{border:1px solid var(--gray-200);background:var(--gray-100);
+  padding:1rem 1.1rem;margin:0 0 2.4rem}
+.cast2 .row{display:flex;gap:.9rem;align-items:flex-start}
+.cast2 .row+.row{margin-top:.9rem;padding-top:.9rem;border-top:1px solid var(--gray-200)}
+.cast2 .ic{width:54px;height:54px;border-radius:50%;flex-shrink:0;display:block;
+  border:2px solid var(--white);box-shadow:0 0 0 1px var(--gray-200),0 1px 3px rgba(0,0,0,.10)}
+.cast2 .nm2{display:block;font-size:18px;line-height:1.5;font-weight:700;margin-bottom:.2rem}
+.cast2 .rb{font-size:14px;font-weight:400;color:var(--gray-500);margin-left:.45rem}
+.cast2 .tx2{font-size:16.6px;line-height:1.831;color:var(--gray-600)}
+.cast2 .tx2 b{color:var(--black)}
+.cv{margin:1.6rem 0}
+.cl{display:flex;gap:.75rem;align-items:flex-start;margin:0 0 .85rem}
+.cl .ic{width:46px;height:46px;border-radius:50%;flex-shrink:0;display:block;
+  border:2px solid var(--white);box-shadow:0 0 0 1px var(--gray-200),0 1px 3px rgba(0,0,0,.10)}
+.cl .bb b{color:var(--black)}
+.cl .bb:before{content:'';position:absolute;left:-6px;top:15px;width:10px;height:10px;
+  background:inherit;border-left:1px solid;border-bottom:1px solid;border-color:inherit;
+  transform:rotate(45deg)}
+
+.cl.m .bb{background:#fff7ea;border-color:#efd6a6}
+.cl.d .bb{background:#eef4fa;border-color:#c3d9ee}
+
+.cl .nm{display:block;font-weight:700;letter-spacing:.07em;margin-bottom:.15rem}
+.cl.m .nm{color:#b0700c}   
+.cl.d .nm{color:#2f6fb5}   
+.keyh{font-size:11.5px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--gray-500);margin:1.6rem 0 .5rem}
+</style>
+</head>
+<body data-split="A2" data-top="q09top" data-talk="q09talk"
+      data-figs="bd9"
+      data-verdict="j9,net9c" data-ratio="0.70"
+      data-figcap="境目（○が合格・✕が不合格）">
+
+<div class="top"><div class="in">Deep Black Box<span class="tag">AIのブラックボックスを、1問ずつ開けて手で動かす。全21問。</span></div></div>
+<div class="wrap">
+
+
+<div class="prog">
+ <div class="steps" id="steps"></div>
+ <div class="cnt" id="prog_cnt"></div>
+</div>
+<div class="chap" id="chap"></div>
+
+<!-- ══════════════════ c9 ══════════════════ -->
+<div class="card" id="c9">
+<div class="tagline">Question 9</div>
+<h2>層を1つ入れると、まん中だけを囲める</h2>
+
+
+<div id="e9a"></div>
+
+
+<div class="figbox">
+ <div class="cap" style="text-align:left;margin:0 0 .3rem"><b>これが「層を1つ入れた」形です</b></div>
+ <svg id="anat9" viewBox="0 0 560 235"></svg>
+ <div class="cap" id="anat9c" style="text-align:left;margin:.2rem 0 0"></div>
+ 
+ <div id="eqs9" style="font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13.5px;
+  line-height:2.3;background:var(--white);border:1px solid var(--gray-200);
+  padding:.7rem 1rem;margin:.7rem 0 .3rem;overflow-x:auto"></div>
+ <div class="cap" id="eqs9c" style="text-align:left;margin:0"></div>
+</div>
+
+<div id="e9a2"></div>
+
+<p class="lead"><b>38人以上</b>を当ててください。</p>
+
+
+<div id="q9wrap">
+
+
+<div id="q09top">
+<div class="panel">
+ 
+ 
+ 
+ <div class="bdhead" id="bdh9"></div>
+ <div class="figrow"><svg id="bd9" viewBox="0 104 300 288"></svg><svg id="net9" viewBox="0 14 560 232"></svg></div>
+ <div class="togs" style="margin-top:.2rem">
+  
+  <span style="font-size:13px;color:var(--gray-500)">●の中の 折り曲げ方</span>
+  <button class="btn on" id="f9r">ReLU</button>
+  <button class="btn" id="f9s">シグモイド</button>
+  <span style="font-size:13px;color:var(--gray-500);margin-left:.6rem">つまみ <b id="np9">13</b> 個</span>
+ </div>
+ <div class="togs">
+  <button class="btn go" id="st9">1歩ずつ</button>
+  <button class="btn" id="st9b">100歩</button>
+  <button class="btn" id="st9e">1000歩</button>
+  <button class="btn sm" id="rs9">はじめに戻す</button>
+  <span style="font-size:13px;color:var(--gray-500)"><b id="n9c">0</b> 歩</span>
+ </div>
+</div>
+
+<div class="verdict" id="j9">「1歩ずつ」を押してください。</div>
+<div class="cap" id="net9c" style="text-align:left;margin:.3rem 0 0"></div>
+</div><!-- /#q09top -->
+
+
+
+<div id="q09talk">
+<div id="e9b"></div>
+
+
+<div class="figbox">
+ <div class="cap" style="text-align:left;margin:0 0 .3rem"><b>関数は【1つ】です。40人を 1人ずつ 通します</b>
+  <span style="color:var(--gray-500)">── 40人ぶんの関数を 作るのではありません</span></div>
+ <table class="dtab" id="flow9" style="font-size:12px"></table>
+ <div class="cap" id="flow9c" style="text-align:left;margin:.3rem 0 0"></div>
+</div>
+
+<div id="e9b2"></div>
+
+
+
+<div class="figbox">
+ <div class="cap" style="text-align:left;margin:0 0 .4rem"><b>●1個の中では 何をしているか</b>
+  <span style="color:var(--gray-500)">── 数の出どころから 1行ずつ 追います</span></div>
+ <div id="inner9"></div>
+</div>
+
+<div class="figbox">
+ <svg id="dive9" viewBox="0 0 560 232"></svg>
+ <div class="cap" id="dive9c" style="text-align:left;margin:.4rem 0 0"></div>
+</div>
+
+
+
+<div id="e9c"></div>
+
+
+
+<div class="figbox">
+ <div class="cap" style="text-align:left;margin:0 0 .3rem"><b>なぜ「折り曲げ」が要るのか</b>
+  <span style="color:var(--gray-500)">── 折り紙で考えます</span></div>
+ 
+ 
+ <svg id="ori9" viewBox="0 0 560 205"></svg>
+ 
+</div>
+
+<div id="e9d"></div>
+
+
+<div class="figbox">
+ <div class="cap" style="text-align:left;margin:0 0 .3rem"><b>なぜ 折れるのか</b>
+  <span style="color:var(--gray-500)">── 上の点線が 何をしているか</span></div>
+ <svg id="why9" viewBox="0 0 560 512"></svg>
+ <div class="cap" id="why9c" style="text-align:left;margin:.3rem 0 0"></div>
+</div>
+
+
+<div class="figbox">
+ <div class="cap" style="text-align:left;margin:0 0 .3rem"><b>折れ目が増えると どうなるか</b>
+  <span style="color:var(--gray-500)">── 破線が 本当の境目（弧）です</span></div>
+ <svg id="fold9" viewBox="0 0 560 250"></svg>
+ <div class="cap" id="fold9c" style="text-align:left;margin:.2rem 0 0"></div>
+</div>
+
+<div id="e9c2"></div>
+
+<div id="e9d2"></div>
+
+
+
+<div id="e9e"></div>
+
+<div id="r9" class="hide">
+ <div id="e9z"></div>
+ <div class="keyh">この問で覚えること</div>
+ 
+ <div class="verdict ok">
+  層が無い形を<b>単純パーセプトロン</b>、層が1つ以上ある形を<b>多層パーセプトロン</b>、
+  折り曲げ方を<b>活性化関数</b>と呼びます。
+ </div>
+ <div class="src">
+  <div class="h">役に立つところ</div>
+  <b>「回し方が悪い」のか「形が足りない」のか</b>を切り分けられます。<br>
+  問8 は形が足りない側でした。<b>層を1つ足したら届きました。</b><br>
+  <span style="color:var(--gray-500)">坂を下って合わせると 30人で止まります（問8 の総当たりでは 35人でした）。
+  坂を下る方法は「当たった人数」を直接上げているのではなく「確率のずれ」を下げているので、
+  当たった人数では最良に届かないことがあります。</span>
+ </div>
+</div>
+
+<div id="r9b" class="hide"></div>
+</div><!-- /#q09talk -->
+</div>
+
+
+</div>
+
+
+<div id="nav"></div>
+
+<div id="foot"></div>
+</div>
+
+
+<div class="offpage" aria-hidden="true">
+<button class="btn on" id="L1b"></button>
+<button class="btn" id="L3b"></button>
+<div class="verdict" id="j9b"></div>
+<b id="n9cb"></b>
+<b id="np9b"></b>
+
+<button class="btn" id="sk9ib"></button>
+<button class="btn on" id="sk9ob"></button>
+</div>
+
+<script src="common.js"></script>
+<script>
+
+var QBASE = 8;
+drawProg(9); drawChap(9, "");
+drawNav(["q08.html","問8 線1本の限界"], ["q10.html","問10 深くすると"]);
+drawFoot()   ;
+
+(function(){
+
+if (typeof bd9b === 'undefined') var bd9b = function(){};
+if (typeof gr10 === 'undefined') var gr10 = function(){};
+if (typeof tabs9 === 'undefined') var tabs9 = function(){};
+
+
+const $ = id => document.getElementById(id);
+
+let BOOT = true;
+const show = id => { if (BOOT) return; const e = $(id); if (e) e.classList.remove('hide'); };
+const R2 = v => +v.toFixed(2);
+
+const DATA = (() => {
+  let S = 20260828;
+  const r = () => { S ^= S << 13; S ^= S >>> 17; S ^= S << 5; S |= 0; return (S >>> 0) / 4294967296; };
+  const nrm = () => { let u = 0, v = 0; while (!u) u = r(); while (!v) v = r();
+    return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v); };
+  const a = [];
+  for (let i = 0; i < 40; i++) {
+    const x1 = Math.round(r() * 20) / 2, x2 = 2 + Math.round(r() * 18) / 2;
+    const x3 = Math.round((0.5 + r() * 0.5) * 100) / 100;
+    const y = 6.2 * x1 + (14 - 1.1 * (x2 - 7.5) ** 2) + 22 * x3 + nrm() * 3.0;
+    a.push({ x1, x2, x3, y: Math.max(0, Math.min(100, Math.round(y * 10) / 10)) });
+  }
+  return a;
+})();
+const NN = DATA.length;
+/* 合格（問8・問9）＝ 睡眠の山を強くした点数が 55 以上 */
+const passOf = d => (6.2 * d.x1 + (30 - 2.5 * (d.x2 - 7.5) ** 2) + 20) >= 55 ? 1 : 0;
+DATA.forEach(d => d.t = passOf(d));
+/* ══════════ 共通の絵の部品 ══════════ */
+const T = (x, y, s, o) => { o = o || {};
+  return `<text x="${x}" y="${y}" font-size="${o.fs || 13}" fill="${o.c || '#3f3f3f'}"
+    text-anchor="${o.a || 'start'}" font-family="${o.f || 'Inter'}"${o.b ? ' font-weight="600"' : ''}
+    >${s}</text>`; };
+const NODE = (x, y, r, fill, stroke) =>
+  `<circle cx="${x}" cy="${y}" r="${r}" fill="${fill}" stroke="${stroke || '#fff'}" stroke-width="1.6"/>`;
+/* 重みの線。太さは |w| に比例。緑が＋・赤が− */
+function EDGE(x1, y1, x2, y2, w, scale) {
+  const t = Math.min(7, 0.6 + Math.abs(w) * (scale || 1));
+  const c = w >= 0 ? '#019949' : '#c00';
+  return `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${c}"
+    stroke-width="${t.toFixed(2)}" opacity=".75"/>`;
+}
+
+
+DATA.forEach((d, i) => d.id = i + 1);       
+
+const XR8 = [0, 10], YR8 = [2, 11];
+function sx8(v, P) { return P.x0 + (v - XR8[0]) / (XR8[1] - XR8[0]) * (P.x1 - P.x0); }
+function sy8(v, P) { return P.y0 - (v - YR8[0]) / (YR8[1] - YR8[0]) * (P.y0 - P.y1); }
+
+const need8 = x2 => (5 + 2.5 * (x2 - 7.5) ** 2) / 6.2;
+
+const GOAL9 = 38, WID9 = 3, SEED9 = 101, LR9 = 0.6;
+let L9 = 1, A9 = 'relu', SK9 = false, n9 = 0, ok9 = false;
+let Ws9 = [], bs9 = [], Wo9 = [], bo9 = 0, div9 = false;
+
+
+const f9 = v => A9 === 'none' ? v : (A9 === 'relu' ? Math.max(0, v) : 1 / (1 + Math.exp(-v)));
+const df9 = v => { if (A9 === 'none') return 1;
+  if (A9 === 'relu') return v > 0 ? 1 : 0;
+  const g = 1 / (1 + Math.exp(-v)); return g * (1 - g); };
+const skOn = l => SK9 && l >= 1;
+const x9 = d => [d.x1 / 10, d.x2 / 11];
+
+function init9() {
+  let S = SEED9;
+  const r = () => { S ^= S << 13; S ^= S >>> 17; S ^= S << 5; S |= 0; return (S >>> 0) / 4294967296 - 0.5; };
+  const K = 2, dims = [K].concat(new Array(L9).fill(WID9));
+  Ws9 = []; bs9 = [];
+  for (let l = 0; l < L9; l++) {
+    const sc = Math.sqrt(2 / dims[l]);
+    Ws9.push(Array.from({ length: dims[l + 1] }, () =>
+      Array.from({ length: dims[l] }, () => r() * 2 * sc)));
+    bs9.push(new Array(dims[l + 1]).fill(0));
+  }
+  const OD = L9 ? WID9 : K;
+  Wo9 = Array.from({ length: OD }, () => r() * 2 * Math.sqrt(2 / OD));
+  bo9 = 0; n9 = 0; div9 = false;
+}
+function fwd9(x) {
+  const as = [], hs = [x];
+  for (let l = 0; l < L9; l++) {
+    const a = Ws9[l].map((row, i) => row.reduce((s, v, j) => s + v * hs[l][j], 0) + bs9[l][i]);
+    as.push(a);
+    hs.push(a.map((v, i) => f9(v) + (skOn(l) ? hs[l][i] : 0)));
+  }
+  return { as, hs, z: hs[L9].reduce((s, v, i) => s + v * Wo9[i], 0) + bo9 };
+}
+const say9 = d => fwd9(x9(d)).z > 0 ? 1 : 0;
+function cnt9() { return DATA.reduce((s, d) => s + (say9(d) === d.t ? 1 : 0), 0); }
+function np9() {
+  const K = 2, dims = [K].concat(new Array(L9).fill(WID9));
+  let n = 0;
+  for (let l = 0; l < L9; l++) n += dims[l] * dims[l + 1] + dims[l + 1];
+  return n + (L9 ? WID9 : K) + 1;
+}
+
+const NPB9 = l => {
+  const dims = [2].concat(new Array(l).fill(WID9)).concat([1]);
+  let e = 0;
+  for (let i = 0; i < dims.length - 1; i++) e += dims[i] * dims[i + 1];
+  return [e, l * WID9 + 1];
+};
+
+function step9(k) {
+  if (div9) { up9(); return; }
+  core9(k);
+  up9();
+}
+
+function bp9() {
+  const OD = Wo9.length;
+  const gW = Ws9.map(m => m.map(r => r.map(() => 0)));
+  const gb = bs9.map(b => b.map(() => 0));
+  const gWo = new Array(OD).fill(0); let gbo = 0;
+  for (const d of DATA) {
+    const x = x9(d), o = fwd9(x);
+    const q = 1 / (1 + Math.exp(-o.z)), dz = (q - d.t) / NN;
+    o.hs[L9].forEach((v, i) => gWo[i] += dz * v); gbo += dz;
+    let dd = Wo9.map(v => dz * v);
+    for (let l = L9 - 1; l >= 0; l--) {
+      const da = dd.map((v, i) => v * df9(o.as[l][i]));
+      da.forEach((v, i) => { o.hs[l].forEach((hv, j) => gW[l][i][j] += v * hv); gb[l][i] += v; });
+      const nd = new Array(o.hs[l].length).fill(0);
+      da.forEach((v, i) => Ws9[l][i].forEach((wv, j) => nd[j] += v * wv));
+      
+      if (skOn(l)) dd.forEach((v, i) => { if (i < nd.length) nd[i] += v; });
+      dd = nd;
+    }
+  }
+  return { gW, gb, gWo, gbo };
+}
+function core9(k) {
+  for (let t = 0; t < k; t++) {
+    const g = bp9();
+    for (let l = 0; l < L9; l++) {
+      Ws9[l] = Ws9[l].map((row, i) => row.map((v, j) => v - LR9 * g.gW[l][i][j]));
+      bs9[l] = bs9[l].map((v, i) => v - LR9 * g.gb[l][i]);
+    }
+    Wo9 = Wo9.map((v, i) => v - LR9 * g.gWo[i]); bo9 -= LR9 * g.gbo;
+    n9++;
+    if (!Wo9.every(isFinite)) { div9 = true; break; }
+  }
+}
+
+function alive9() {
+  const out = [];
+  for (let l = 0; l < L9; l++) {
+    const row = [];
+    for (let i = 0; i < WID9; i++) row.push(0);
+    out.push(row);
+  }
+  DATA.forEach(d => { const o = fwd9(x9(d));
+    for (let l = 0; l < L9; l++) for (let i = 0; i < WID9; i++) if (o.as[l][i] > 0) out[l][i]++; });
+  return out;
+}
+
+function anat9() {
+  
+  const Kanat9 = Math.min(2.2, Math.max(1, Math.ceil(12 * 560 / ((($('anat9') || {}).getBoundingClientRect ? $('anat9').getBoundingClientRect().width : 330) || 330) / 12 * 100) / 100));
+  const IX = 96, MX = 268, OX = 436;
+  const iy = [88, 152], my = [66, 120, 174], oy = 120;
+  let s = '';
+  s += T(IX, 38, '入口', { a: 'middle', fs: 13 * Kanat9, b: 1, f: "'Noto Serif JP',serif" });
+  s += T(MX, 38, 'まん中の層', { a: 'middle', fs: 13 * Kanat9, b: 1, c: '#2f6fb5', f: "'Noto Serif JP',serif" });
+  s += T(OX, 38, '出口', { a: 'middle', fs: 13 * Kanat9, b: 1, f: "'Noto Serif JP',serif" });
+  
+  my.forEach(y => iy.forEach(y0 =>
+    s += `<line x1="${IX}" y1="${y0}" x2="${MX}" y2="${y}" stroke="#019949" stroke-width="1.8" opacity=".8"/>`));
+  my.forEach(y =>
+    s += `<line x1="${MX}" y1="${y}" x2="${OX}" y2="${oy}" stroke="#019949" stroke-width="1.8" opacity=".8"/>`);
+  
+  iy.forEach(y => s += NODE(IX, y, 8, '#000'));
+  my.forEach(y => s += NODE(MX, y, 8, '#2f6fb5'));
+  s += NODE(OX, oy, 10, '#019949');
+  
+  my.forEach(y => {
+    s += `<line x1="${MX}" y1="${y + 8}" x2="${MX}" y2="${y + 15}" stroke="#9aa3a9" stroke-width="1.2"/>`;
+    s += `<circle cx="${MX}" cy="${y + 19}" r="3.2" fill="#9aa3a9"/>`;
+  });
+  s += `<line x1="${OX}" y1="${oy + 10}" x2="${OX}" y2="${oy + 17}" stroke="#9aa3a9" stroke-width="1.2"/>`;
+  s += `<circle cx="${OX}" cy="${oy + 21}" r="3.2" fill="#9aa3a9"/>`;
+  
+  s += T(IX - 14, iy[0] + 4, '勉強', { a: 'end', fs: 13 * Kanat9, f: "'Noto Serif JP',serif" });
+  s += T(IX - 14, iy[1] + 4, '睡眠', { a: 'end', fs: 13 * Kanat9, f: "'Noto Serif JP',serif" });
+  
+  s += T(OX + 16, oy + 4, '持ち点', { fs: 13 * Kanat9, c: '#019949', f: "'Noto Serif JP',serif" });
+  
+  
+  $('anat9').innerHTML = s;
+  const b = NPB9(1);
+  $('anat9c').innerHTML =
+    
+    `<b>線 ${b[0]}本</b> ＋ <b>バイアス ${b[1]}個</b> ＝ <b>つまみ ${b[0] + b[1]}個</b>`
+    + `<span style="color:var(--gray-500)">　── これを 式で書くと 下のようになります。</span>`
+    
+    + `<br><span style="color:var(--gray-500)">`
+    + `<b style="color:#019949">──</b> 線 ＝ つまみ1個（重み）　`
+    + `<b style="color:#9aa3a9">●</b> 点 ＝ つまみ1個（バイアス）</span>`;
+}
+
+
+function eqs9() {
+  const W = c => `<b style="color:#019949">${c}</b>`;
+  const B = c => `<b style="color:#c26100">${c}</b>`;
+  
+  const G = [
+    `<div style="font-size:15px;padding:.15rem 0 .35rem">`
+    + `　y ＝ ${W('a')} × ${'x₁'} ＋ ${W('b')} × ${'x₂'} ＋ ${B('d')}</div>`,
+    `<div style="font-size:12px;color:var(--gray-500);padding-bottom:.5rem;`
+    + `border-bottom:1px solid var(--gray-200);margin-bottom:.5rem">`
+    + `　x₁ ＝ 勉強時間　x₂ ＝ 睡眠時間　`
+    + `<b style="color:#019949">a・b ＝ 重み</b>　<b style="color:#c26100">d ＝ バイアス</b>`
+    + `　　── ●1個が やることは これだけです</div>`
+  ];
+  const rows = [
+    `まん中① ＝ ${W('a₁')} × 勉強 ＋ ${W('b₁')} × 睡眠 ＋ ${B('d₁')}`,
+    `まん中② ＝ ${W('a₂')} × 勉強 ＋ ${W('b₂')} × 睡眠 ＋ ${B('d₂')}`,
+    `まん中③ ＝ ${W('a₃')} × 勉強 ＋ ${W('b₃')} × 睡眠 ＋ ${B('d₃')}`,
+    `出口　　 ＝ ${W('p')} × ① ＋ ${W('q')} × ② ＋ ${W('r')} × ③ ＋ ${B('d₄')}`
+  ];
+  $('eqs9').innerHTML = G.join('')
+    + `<div style="font-size:12px;color:var(--gray-500);padding-bottom:.3rem">`
+    + `　●が 3個 あるので、名前を付けて 3本 書きます（出口の●で 4本目）</div>`
+    + rows.map(r => `<div>${r}</div>`).join('');
+  const b = NPB9(1);
+  $('eqs9c').innerHTML =
+    `<b style="color:#019949">緑</b>が <b>重み</b>（掛ける数）で <b>${b[0]}個</b>。`
+    + `<b style="color:#c26100">橙</b>が <b>バイアス</b>（最後に足す数）で <b>${b[1]}個</b>。`
+    + `<b>合わせて つまみ ${b[0] + b[1]}個</b>です。<br>`
+    + `<span style="color:var(--gray-500)"><b>勉強</b>と<b>睡眠</b>は <b>x₁・x₂</b> ── `
+    + `<b>掛けられる側</b>です。40人ぶんの記録なので 動かせません。`
+    + `だから<b>入口の●には つまみが1個も付きません</b>。</span>`;
+}
+
+
+
+
+
+
+let FLOW9 = null;
+function flowNum9() {
+  if (FLOW9) return FLOW9;
+  const sv = [L9, A9, SK9, Ws9, bs9, Wo9, bo9, n9, div9];
+  L9 = 1; A9 = 'relu'; SK9 = false; init9(); core9(1000);
+  const all = DATA.map((d, k) => { const o = fwd9(x9(d));
+    return { no: k + 1, x1: d.x1, x2: d.x2, p: o.as[0].map(v => v > 0),
+      z: o.z, say: o.z > 0 ? 1 : 0, t: d.t, ok: (o.z > 0 ? 1 : 0) === d.t }; });
+  
+  const pick = [
+    all.find(r => r.p[2] && r.say === 1 && r.ok),      /* ●③が通す・合格・当たり */
+    all.find(r => !r.p[2] && r.say === 1 && r.ok),     /* ●③が0・合格・当たり */
+    all.find(r => r.p[2] && r.say === 0 && r.ok),      /* ●③が通す・不合格・当たり */
+    all.find(r => !r.ok)                               
+  ].filter(Boolean);
+  FLOW9 = { rows: pick.map(r => ({ ...r, z: +r.z.toFixed(2) })),
+    hit: all.filter(r => r.ok).length, miss: all.filter(r => !r.ok).length, n: all.length };
+  [L9, A9, SK9, Ws9, bs9, Wo9, bo9, n9, div9] = sv;
+  return FLOW9;
+}
+function flow9() {
+  const F = flowNum9();
+  
+  let t = `<tr><td class="l" colspan="9" style="background:var(--white);color:var(--gray-600)">`
+    + `<b>前提</b> ── <b>層 1つ</b>・<b>ReLU</b>・<b>［1000歩］下らせた その時点</b>の つまみで 計算した数`
+    + `</td></tr>`;
+  t += `<tr><th class="l">何人目</th><th>勉強</th><th>睡眠</th>`
+    + `<th>●①</th><th>●②</th><th>●③</th><th>持ち点</th><th>この人への答え</th><th>ほんとう</th></tr>`;
+  F.rows.forEach(r => {
+    const cell = b => b
+      ? `<td style="color:#019949">数を通す</td>`
+      : `<td style="color:#c00;background:#fbf0f0"><b>0</b></td>`;
+    t += `<tr><td class="l">${r.no}人目</td><td>${r.x1.toFixed(1)}</td><td>${r.x2.toFixed(1)}</td>`
+      + cell(r.p[0]) + cell(r.p[1]) + cell(r.p[2])
+      + `<td><b>${r.z > 0 ? '＋' : '−'}${Math.abs(r.z).toFixed(2)}</b></td>`
+      + `<td><b style="color:${r.say ? '#019949' : '#3f3f3f'}">${r.say ? '合格' : '不合格'}</b></td>`
+      + `<td>${r.t ? '合格' : '不合格'}　`
+      + `<b style="color:${r.ok ? '#019949' : '#c00'}">${r.ok ? '○' : '✕'}</b></td></tr>`;
+  });
+  t += `<tr><td class="l" colspan="9" style="color:var(--gray-500)">…… この下に ${F.n - F.rows.length}人 つづきます</td></tr>`;
+  t += `<tr class="sum"><td class="l" colspan="6"><b>${F.n}人ぶん 数えると</b></td>`
+    + `<td colspan="3"><b style="font-size:17px">当たり ${F.hit}人</b>`
+    + `<span style="color:var(--gray-500)">（外したのは ${F.miss}人）</span></td></tr>`;
+  $('flow9').innerHTML = t;
+  $('flow9c').innerHTML =
+    `<b>関数は 1つだけです。</b>つまみ13個 が決まれば 関数が 1つ 決まります。`
+    + `<b>40人は その 1つの関数に 1人ずつ 入れる材料</b>です ── 人ごとに 関数を作るのではありません。<br>`
+    + `<span style="color:var(--gray-500)"><b>人ごとに ちがうのは「どの●が 0 を返すか」だけ</b>です。`
+    + `上の表で <b style="color:#c00">0</b> のところは、その人にとって <b>その●が 何も伝えていない</b>ことを表します。`
+    + `<b>だから 通り道が 人によって変わります。</b></span>`;
+}
+
+
+function INMARK9(cx, cy, r, kind) {
+  const h = r * 0.60, o = r * 0.10;
+  let g = `<line x1="${(cx - h).toFixed(1)}" y1="${(cy + o).toFixed(1)}" x2="${(cx + h).toFixed(1)}"
+    y2="${(cy + o).toFixed(1)}" stroke="#fff" stroke-width=".9" opacity=".5"/>`;
+  if (kind === 'none') return g + `<line x1="${(cx - h).toFixed(1)}" y1="${(cy + h * 0.8 + o).toFixed(1)}"
+    x2="${(cx + h).toFixed(1)}" y2="${(cy - h * 0.8 + o).toFixed(1)}"
+    stroke="#fff" stroke-width="1.9"/>`;
+  if (kind === 'sig') return g + `<path d="M${(cx - h).toFixed(1)} ${(cy + h * 0.7 + o).toFixed(1)}
+    Q${cx.toFixed(1)} ${(cy + h * 0.7 + o).toFixed(1)} ${cx.toFixed(1)} ${(cy + o).toFixed(1)}
+    Q${cx.toFixed(1)} ${(cy - h * 0.7 + o).toFixed(1)} ${(cx + h).toFixed(1)} ${(cy - h * 0.7 + o).toFixed(1)}"
+    fill="none" stroke="#fff" stroke-width="1.9"/>`;
+  return g + `<path d="M${(cx - h).toFixed(1)} ${(cy + o).toFixed(1)} L${cx.toFixed(1)} ${(cy + o).toFixed(1)}
+    L${(cx + h).toFixed(1)} ${(cy - h + o).toFixed(1)}"
+    fill="none" stroke="#fff" stroke-width="1.9" stroke-linejoin="round"/>`;
+}
+
+let DIVE9N = null;
+function diveNum9() {
+  if (DIVE9N) return DIVE9N;
+  const sv = [L9, A9, SK9, Ws9, bs9, Wo9, bo9, n9, div9];
+  L9 = 1; A9 = 'relu'; SK9 = false;
+  init9(); core9(1000);
+  const I = 2, w = Ws9[0][I].slice(), b = bs9[0][I];
+  const R2 = v => +v.toFixed(2);
+  
+  const fit = d => {
+    const xv = x9(d);
+    const t1 = R2(R2(w[0]) * R2(xv[0])), t2 = R2(R2(w[1]) * R2(xv[1]));
+    return Math.abs(R2(t1 + t2 + R2(b)) - R2(w[0] * xv[0] + w[1] * xv[1] + b)) < 1e-9;
+  };
+  const mk = d => { const xv = x9(d);
+    return { x1: d.x1, x2: d.x2, n1: R2(xv[0]), n2: R2(xv[1]),
+      t1: R2(R2(w[0]) * R2(xv[0])), t2: R2(R2(w[1]) * R2(xv[1])),
+      v: R2(w[0] * xv[0] + w[1] * xv[1] + b) }; };
+  const cand = DATA.filter(fit);
+  const hi = cand.find(d => { const xv = x9(d); return w[0] * xv[0] + w[1] * xv[1] + b > 0; });
+  const lo = cand.find(d => { const xv = x9(d); return w[0] * xv[0] + w[1] * xv[1] + b <= 0; });
+  
+  const mx1 = Math.max(...DATA.map(d => d.x1)), mx2 = Math.max(...DATA.map(d => d.x2));
+  DIVE9N = { n: I + 1, a: R2(w[0]), b: R2(w[1]), d: R2(b),
+    div1: 10, div2: 11, max1: mx1, max2: mx2,
+    hi: hi ? mk(hi) : null, lo: lo ? mk(lo) : null, fitN: cand.length };
+  [L9, A9, SK9, Ws9, bs9, Wo9, bo9, n9, div9] = sv;
+  return DIVE9N;
+}
+
+function inner9() {
+  const N = diveNum9();
+  const SG = v => (v >= 0 ? '＋' : '−') + Math.abs(v).toFixed(2);
+  
+  const MB = ['①', '②', '③'][N.n - 1] || String(N.n);
+  const SB = ['₁', '₂', '₃'][N.n - 1] || String(N.n);
+  const one = p => {
+    if (!p) return '';
+    return `<div style="background:var(--white);border:1px solid var(--gray-200);padding:.7rem .8rem">`
+      + `<div style="font-size:13px;font-weight:600;margin-bottom:.45rem">`
+      + `勉強 ${p.x1} 時間・睡眠 ${p.x2} 時間 の人</div>`
+      + `<div class="mono" style="font-size:12.5px;line-height:2.1">`
+      + `x₁ ＝ ${p.x1} ÷ ${N.div1} ＝ <b>${p.n1.toFixed(2)}</b><br>`
+      + `x₂ ＝ ${p.x2} ÷ ${N.div2} ＝ <b>${p.n2.toFixed(2)}</b><br>`
+      + `<span style="color:#019949">${SG(N.a)}</span> × ${p.n1.toFixed(2)} ＝ `
+      + `<b>${SG(p.t1)}</b><br>`
+      + `<span style="color:#019949">${SG(N.b)}</span> × ${p.n2.toFixed(2)} ＝ `
+      + `<b>${SG(p.t2)}</b><br>`
+      + `<span style="color:#c26100">d${SB}</span>　　　　 ＝ <b>${SG(N.d)}</b></div>`
+      + `<div style="border-top:1px solid var(--gray-200);margin:.4rem 0 .3rem"></div>`
+      + `<div class="mono" style="font-size:13.5px">合計 ＝ <b>${SG(p.v)}</b></div>`
+      + `<div class="cap" style="text-align:left;margin:.35rem 0 0;color:${p.v > 0 ? '#019949' : '#c00'}">`
+      + `<b>${p.v > 0 ? 'プラス だから そのまま通す' : 'マイナス だから 0 になる'}</b></div></div>`;
+  };
+  $('inner9').innerHTML =
+    
+    `<div style="background:var(--white);border:1px solid var(--gray-200);padding:.7rem .9rem;margin-bottom:.7rem">`
+    + `<div style="font-size:13px;font-weight:600;margin-bottom:.4rem">はじめに ── 数の出どころ</div>`
+    + `<div class="mono" style="font-size:12.5px;line-height:2.1">`
+    
+    + `x₁ ＝ 勉強 ÷ ${N.div1}　　<span style="color:var(--gray-500)">`
+    + `← 勉強時間は <b>0 〜 ${N.div1} 時間</b>と決めてあるので、上限の ${N.div1} で割る</span><br>`
+    + `x₂ ＝ 睡眠 ÷ ${N.div2}　　<span style="color:var(--gray-500)">`
+    + `← 睡眠時間は <b>2 〜 ${N.div2} 時間</b>と決めてあるので、上限の ${N.div2} で割る</span></div>`
+    + `<div class="cap" style="text-align:left;margin:.4rem 0 .5rem">`
+    + `どちらも <b>0 〜 1</b> の値になります ── `
+    + `<b>問7 でやった「物差しをそろえる」と同じ割り算</b>です。`
+    + `<span style="color:var(--gray-500)">この <b>${N.div1}</b> と <b>${N.div2}</b> を決めたのは`
+    + `<b>この問題</b>です（人が決めた数です）。</span></div>`
+    + `<div class="mono" style="font-size:13px;line-height:2.1">`
+    + `●${MB} の中身 ＝ <span style="color:#019949">a${SB}</span>×x₁ ＋ `
+    + `<span style="color:#019949">b${SB}</span>×x₂ ＋ <span style="color:#c26100">d${SB}</span>`
+    + `　　<b><span style="color:#019949">a${SB} ＝ ${SG(N.a)}</span>　`
+    + `<span style="color:#019949">b${SB} ＝ ${SG(N.b)}</span>　`
+    + `<span style="color:#c26100">d${SB} ＝ ${SG(N.d)}</span></b></div>`
+    + `<div class="cap" style="text-align:left;margin:.4rem 0 0">`
+    
+    + `<b>この3つ（a₃・b₃・d₃）は、上の枠の <span style="color:#0b7d8c">右の絵</span>で`
+    + `<span style="color:#0b7d8c"> ●③ に入っている 2本の線と、その下の点</span>です。</b><br>`
+    + `<span style="color:var(--gray-500)"><b>睡眠から入る線が 太くて赤い</b>のは`
+    + `<b> b₃ が マイナスで 大きい</b>ということです（${SG(N.b)}）。`
+    + `歩かせるたびに <b>線の太さが変わるのは、この数が 動いているから</b>です。<br>`
+    + `3つとも <b>機械が 坂を下って 自分で 見つけた数</b>で、`
+    + `いまは <b>［1000歩］下った その時点</b>の値です`
+    + `（この問には <b>読者が つまみを 回すところは ありません</b>。<b>機械に 回させる問</b>です）。`
+    + `</span></div></div>`
+    
+    + `<div class="two">${one(N.hi)}${one(N.lo)}</div>`
+    + `<div class="cap" style="text-align:left;margin:.5rem 0 0">`
+    + `<b>同じ●・同じ 3つの数。ちがうのは【入れた人】だけです。</b>`
+    + `<span style="color:var(--gray-500)">この2人は`
+    + `<b>画面の数字を そのまま電卓に入れても 合う人</b>を選びました。`
+    + `── そして 40人ぜんぶに 同じことをします。</span></div>`;
+}
+function dive9() {
+  
+  const Kdive9 = Math.min(2.2, Math.max(1, Math.ceil(12 * 560 / ((($('dive9') || {}).getBoundingClientRect ? $('dive9').getBoundingClientRect().width : 330) || 330) / 12 * 100) / 100));
+  const N = diveNum9();
+  let s = '';
+  
+  
+  
+  
+  s += actSVG9(36);
+  $('dive9').innerHTML = s;
+  const b3 = NPB9(3);
+  
+  $('dive9c').innerHTML =
+    
+    `<b>●の中の「折り曲げ方」は この2つです</b>`
+    + `<span style="color:var(--gray-500)">（横＝入ってきた数 ／ たて＝出る数）</span><br>`
+    + `<b>どちらも まっすぐでは ありません。</b>`
+    + `<span style="color:var(--gray-500)">まっすぐな線を 何回 通しても、`
+    + `<b>掛け算と足し算を まとめただけ</b>になって 折れません。`
+    + `<b>どこかで 曲がっている</b>から 折れるのです。`
+    + `── この折り曲げ方を <b>活性化関数</b> と呼びます。`
+    + `<b>2つの ちがいは 問10 で出ます。</b></span>`
+}
+
+const TAN9 = y0 => ({ at: y0, x0: need8(y0), k: 5 * (y0 - 7.5) / 6.2 });
+const WEDGE9 = (x, y, ts) => ts.every(t => x >= t.x0 + t.k * (y - t.at));
+function fold9() {
+  
+  const Kfold9 = Math.min(2.2, Math.max(1, Math.ceil(12 * 560 / ((($('fold9') || {}).getBoundingClientRect ? $('fold9').getBoundingClientRect().width : 330) || 330) / 12 * 100) / 100));
+  const PN = [
+    { nm: '直線1本', sub: '問8 と同じ', f: (x, y) => (1 * x + 2 * y - 13) > 0 },
+    { nm: '折れ目 1つ', sub: '直線2本をつなぐ', ts: [TAN9(4), TAN9(11)] },
+    { nm: '折れ目 2つ', sub: '直線3本をつなぐ', ts: [TAN9(4), TAN9(7.5), TAN9(11)] }
+  ].map(p => ({ ...p, f: p.f || ((x, y) => WEDGE9(x, y, p.ts)) }));
+  let s = '';
+  const cnts = [];
+  PN.forEach((p, k) => {
+    const X = k * 188;
+    const P = { x0: X + 28, y0: 186, x1: X + 172, y1: 52 };
+    const sx = v => P.x0 + (v - XR8[0]) / (XR8[1] - XR8[0]) * (P.x1 - P.x0);
+    const sy = v => P.y0 - (v - YR8[0]) / (YR8[1] - YR8[0]) * (P.y0 - P.y1);
+    
+    s += T(X + 28, 22, p.nm, { fs: 13.5 * Kfold9, b: 1, f: "'Noto Serif JP',serif" });
+    
+    s += T(X + 8, 44, p.sub, { fs: 12.5 * Kfold9, c: '#6e6e6e', f: "'Noto Serif JP',serif" });
+    
+    const G = 30;
+    for (let i = 0; i < G; i++) for (let j = 0; j < G; j++) {
+      const x = XR8[0] + (XR8[1] - XR8[0]) * (i + 0.5) / G;
+      const y = YR8[0] + (YR8[1] - YR8[0]) * (j + 0.5) / G;
+      if (p.f(x, y)) {
+        const a = sx(XR8[0] + (XR8[1] - XR8[0]) * i / G);
+        const b = sx(XR8[0] + (XR8[1] - XR8[0]) * (i + 1) / G);
+        const c = sy(YR8[0] + (YR8[1] - YR8[0]) * (j + 1) / G);
+        const e = sy(YR8[0] + (YR8[1] - YR8[0]) * j / G);
+        s += `<rect x="${(a - 0.4).toFixed(1)}" y="${(c - 0.4).toFixed(1)}"
+          width="${(b - a + 1.4).toFixed(1)}" height="${(e - c + 1.4).toFixed(1)}"
+          fill="#019949" opacity=".15"/>`;
+      }
+    }
+    
+    let d = '';
+    for (let y = YR8[0]; y <= YR8[1] + 0.001; y += 0.1) {
+      const x = need8(y);
+      if (x < XR8[0] || x > XR8[1]) continue;
+      d += (d ? 'L' : 'M') + sx(x).toFixed(1) + ' ' + sy(y).toFixed(1);
+    }
+    if (d) s += `<path d="${d}" fill="none" stroke="#019949" stroke-width="2.2"
+      stroke-dasharray="6 3.5"/>`;
+    
+    let c = 0;
+    DATA.forEach(dd => {
+      const say = p.f(dd.x1, dd.x2) ? 1 : 0, good = say === dd.t;
+      if (good) c++;
+      const x = sx(dd.x1), y = sy(dd.x2);
+      if (dd.t) s += `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="3.4" fill="none"
+        stroke="${good ? '#019949' : '#c00'}" stroke-width="1.8"/>`;
+      else s += `<path d="M${(x - 3).toFixed(1)} ${(y - 3).toFixed(1)}l6 6M${(x + 3).toFixed(1)}
+        ${(y - 3).toFixed(1)}l-6 6" stroke="${good ? '#3f3f3f' : '#c00'}" stroke-width="1.8"/>`;
+    });
+    cnts.push(c);
+    s += `<line x1="${P.x0}" y1="${P.y0}" x2="${P.x1}" y2="${P.y0}" stroke="#000"/>`;
+    s += `<line x1="${P.x0}" y1="${P.y1}" x2="${P.x0}" y2="${P.y0}" stroke="#000"/>`;
+    s += T(X + 100, 212, '当たり', { a: 'middle', fs: 12 * Kfold9, c: '#6e6e6e', f: "'Noto Serif JP',serif" });
+    s += `<text x="${X + 100}" y="238" text-anchor="middle" font-size="22" font-weight="600"
+      font-family="'Source Serif 4',serif" fill="#111">${c} 人</text>`;
+  });
+  $('fold9').innerHTML = s;
+  const all = DATA.reduce((t, d) => t + ((d.x1 >= need8(d.x2) ? 1 : 0) === d.t ? 1 : 0), 0);
+  $('fold9c').innerHTML =
+    `横＝勉強時間／たて＝睡眠時間。○が合格・✕が不合格で、<b style="color:#c00">赤</b>が外した人です。<br>`
+    + `<b>直線1本 ${cnts[0]}人 → 折れ目1つ ${cnts[1]}人 → 折れ目2つ ${cnts[2]}人`
+    + `　（破線の弧そのものなら ${all}人）</b><br>`
+    + `<span style="color:var(--gray-500)"><b>問9 の目標が ${GOAL9}人</b>なのは、`
+    + `<b>「折れ目を1つ 手に入れろ」</b>という意味です。</span>`;
+}
+
+
+function ori9() {
+  const PN = [
+    { nm: '●なし', sub: '折り目 0本', pts: [[0, 0], [1, 0]], dots: 0 },
+    { nm: '●1個', sub: '折り目 1本', pts: [[0, 0], [0.5, 1], [1, 0]], dots: 1 },
+    { nm: '●2個', sub: '折り目 2本', pts: [[0, 0], [0.34, 0.86], [0.66, 0.86], [1, 0]], dots: 2 }
+  ];
+  
+  const K9o = Math.min(2.2, Math.max(1, Math.ceil(10 * 560 /
+    ((($('ori9') || {}).getBoundingClientRect ? $('ori9').getBoundingClientRect().width : 330) || 330)
+    / 12 * 100) / 100));
+  const F9o = v => Math.round(v * K9o * 100) / 100;
+  
+  const 縦 = K9o > 1;
+  let s = '';
+  s += T(16, 22, '●の数 ＝ 折り目の本数', { fs: F9o(13.5), b: 1, f: "'Noto Serif JP',serif" });
+  
+  s += T(縦 ? 250 : 220, 22, '破線は「当てたい形」（本当の境目）', { fs: F9o(12), c: '#6e6e6e', f: "'Noto Serif JP',serif" });
+  PN.forEach((p, k) => {
+    const X = k * 188, x0 = X + 26, x1 = X + 168, yb = 124, yt = 56;
+    const sx = t => x0 + t * (x1 - x0);
+    const sy = v => yb - v * (yb - yt);
+    
+    s += T(X + 26, 46, p.nm, { fs: F9o(13), b: 1, c: p.dots ? '#2f6fb5' : '#9aa3a9', f: "'Noto Serif JP',serif" });
+    for (let i = 0; i < p.dots; i++) {
+      const cx = X + 96 + i * 26;
+      s += NODE(cx, 41, 9, '#2f6fb5'); s += INMARK9(cx, 41, 9, 'relu');
+    }
+    
+    let d = '';
+    for (let t = 0; t <= 1.001; t += 0.02)
+      d += (d ? 'L' : 'M') + sx(t).toFixed(1) + ' ' + sy(Math.sin(Math.PI * t)).toFixed(1);
+    s += `<path d="${d}" fill="none" stroke="#9aa3a9" stroke-width="1.4" stroke-dasharray="4 3"/>`;
+    
+    const d2 = p.pts.map((q, i) => (i ? 'L' : 'M') + sx(q[0]).toFixed(1) + ' ' + sy(q[1]).toFixed(1)).join('');
+    s += `<path d="${d2}" fill="none" stroke="#019949" stroke-width="3"/>`;
+    
+    p.pts.slice(1, -1).forEach(q => {
+      s += `<circle cx="${sx(q[0]).toFixed(1)}" cy="${sy(q[1]).toFixed(1)}" r="4" fill="#019949"/>`;
+      s += `<line x1="${sx(q[0]).toFixed(1)}" y1="${sy(q[1]).toFixed(1)}" x2="${sx(q[0]).toFixed(1)}"
+        y2="${yb}" stroke="#019949" stroke-width="1" stroke-dasharray="3 2" opacity=".6"/>`;
+    });
+    s += `<line x1="${x0}" y1="${yb}" x2="${x1}" y2="${yb}" stroke="#d9d9d9"/>`;
+    s += T(X + 26, 146, p.sub, { fs: F9o(12.5), b: 1, c: '#019949', f: "'Noto Serif JP',serif" });
+  });
+  if (縦) {
+    
+    s += T(16, 172, '折り目の【本数】は ●を何個 置くかで決まります',
+      { fs: F9o(12.5), f: "'Noto Serif JP',serif" });
+    s += T(16, 194, '── これは 人が決めます',
+      { fs: F9o(12.5), f: "'Noto Serif JP',serif" });
+    s += T(16, 220, '折り目の【位置】は ●の中身が 0 になるところ',
+      { fs: F9o(12.5), f: "'Noto Serif JP',serif" });
+    s += T(16, 242, '── これは 機械が決めます（重みが動くから）',
+      { fs: F9o(12.5), f: "'Noto Serif JP',serif" });
+    
+    $('ori9').setAttribute('viewBox', '0 0 560 250');
+  } else {
+    s += T(16, 172, '折り目の【本数】は ●を何個 置くかで決まります ── これは 人が決めます',
+      { fs: 12.5, f: "'Noto Serif JP',serif" });
+    s += T(16, 192, '折り目の【位置】は ●の中身が 0 になるところ ── これは 機械が決めます（重みが動くから）',
+      { fs: 12.5, f: "'Noto Serif JP',serif" });
+  }
+  
+  $('ori9').innerHTML = s;
+  
+}
+
+
+let WHY9N = null;
+function whyNum9() {
+  if (WHY9N) return WHY9N;
+  const sv = [L9, A9, SK9, Ws9, bs9, Wo9, bo9, n9, div9];
+  L9 = 1; A9 = 'relu'; SK9 = false; init9(); core9(1000);
+  const A = Ws9[0], B = bs9[0], Wo = Wo9.slice(), bo = bo9;
+  const alv = alive9()[0].slice();
+  
+  const fold = y => -((A[2][1] * (y / 11)) + B[2]) * 10 / A[2][0];
+  
+  const lineOf = S => {
+    let av = 0, bv = 0, cc = bo;
+    S.forEach(i => { av += Wo[i] * A[i][0]; bv += Wo[i] * A[i][1]; cc += Wo[i] * B[i]; });
+    return { f: y => -((bv * (y / 11)) + cc) * 10 / av,
+      k: -(bv / 11) * 10 / av, c: -cc * 10 / av };
+  };
+  
+  const up = lineOf([1]), dn = lineOf([1, 2]);
+  
+  let lo = YR8[0], hi = YR8[1];
+  for (let t = 0; t < 80; t++) { const m = (lo + hi) / 2; if (up.f(m) - fold(m) > 0) lo = m; else hi = m; }
+  const ym = (lo + hi) / 2;
+  WHY9N = { fold, up, dn, ym, xm: up.f(ym), alv,
+    a3: A[2][0], b3: A[2][1], d3: B[2],
+    fk: (fold(YR8[1]) - fold(YR8[0])) / (YR8[1] - YR8[0]), fc: fold(0) };
+  [L9, A9, SK9, Ws9, bs9, Wo9, bo9, n9, div9] = sv;
+  return WHY9N;
+}
+function why9() {
+  const N = whyNum9();
+  const SF = "'Noto Serif JP',serif";
+  const CU = '#7b4fb5', CD = '#c26100', C3 = '#0b7d8c';
+  const num = v => (v < 0 ? '−' : '') + Math.abs(v).toFixed(2);
+  const PL = (x0, y0, x1, y1) => ({ x0, y0, x1, y1,
+    sx: v => x0 + (v - XR8[0]) / (XR8[1] - XR8[0]) * (x1 - x0),
+    sy: v => y0 - (v - YR8[0]) / (YR8[1] - YR8[0]) * (y0 - y1) });
+  const frame = P => `<rect x="${P.x0}" y="${P.y1}" width="${P.x1 - P.x0}"
+    height="${P.y0 - P.y1}" fill="none" stroke="#d9d9d9"/>`;
+  
+  const draw = (P, f, ya, yb, col, w, dash) => {
+    const pts = [];
+    for (let y = ya; y <= yb + 1e-9; y += 0.05) { const x = f(y);
+      if (x >= XR8[0] && x <= XR8[1]) pts.push([P.sx(x), P.sy(y)]); }
+    if (pts.length < 2) return '';
+    return `<path d="${pts.map((q, i) => (i ? 'L' : 'M') + q[0].toFixed(1) + ' ' + q[1].toFixed(1)).join('')}"
+      fill="none" stroke="${col}" stroke-width="${w}"${dash ? ` stroke-dasharray="${dash}"` : ''}/>`;
+  };
+  const arrow = (x, y0, y1) =>
+    `<line x1="${x}" y1="${y0}" x2="${x}" y2="${y1 - 7}" stroke="#9aa3a9" stroke-width="1.4"/>`
+    + `<path d="M${x - 4} ${y1 - 7}L${x + 4} ${y1 - 7}L${x} ${y1}Z" fill="#9aa3a9"/>`;
+  let s = '';
+  
+  const K9w = Math.min(2.2, Math.max(1, Math.ceil(10 * 560 /
+    ((($('why9') || {}).getBoundingClientRect ? $('why9').getBoundingClientRect().width : 330) || 330)
+    / 12 * 100) / 100));
+  const F9w = v => Math.round(v * K9w * 100) / 100;
+  if (K9w > 1) {
+    /* ══ ①（スマホ）折り目で 面が 2つに分かれる ══════════════ */
+    s += T(14, 20, '① 折り目（点線）で 面が 2つに分かれます', { fs: F9w(13.5), b: 1, f: SF });
+    const Q1 = PL(40, 150, 230, 46);
+    s += frame(Q1);
+    s += draw(Q1, N.fold, YR8[0], YR8[1], C3, 2, '7 4');
+    s += T(48, 66, '●③は 0 を返す', { fs: F9w(12.5), b: 1, c: '#c00', f: SF });
+    s += T(226, 142, '●③は 数を通す', { a: 'end', fs: F9w(12.5), b: 1, c: '#019949', f: SF });
+    s += T(40, 172, '横＝勉強時間 ／ たて＝睡眠時間', { fs: F9w(12), c: '#6e6e6e', f: SF });
+    s += T(240, 60, '【左上】睡眠が 多い・勉強が 少ない', { fs: F9w(12.5), f: SF });
+    s += T(240, 80, '　→ ●③の中身が マイナス → 0', { fs: F9w(12.5), c: '#c00', f: SF });
+    s += T(240, 104, '【右下】●③は 数を そのまま通す', { fs: F9w(12.5), c: '#019949', f: SF });
+    s += T(240, 128, '点線の式（●③の中身 ＝ 0）', { fs: F9w(12), c: '#6e6e6e', f: SF });
+    s += T(240, 150, '　勉強 ＝ ' + num(N.fk) + '×睡眠 ' + (N.fc < 0 ? '−' : '＋') + ' '
+      + Math.abs(N.fc).toFixed(2), { fs: F9w(12.5), b: 1, c: C3, f: SF });
+    /* ══ ②（スマホ）2つの枠を【縦に積む】 ══════════════════ */
+    s += arrow(280, 184, 206);
+    s += T(14, 216, '② どちら側かで、出口の式が ちがいます', { fs: F9w(13.5), b: 1, f: SF });
+    s += `<rect x="14" y="226" width="532" height="72" fill="var(--white)" stroke="#d9d9d9"/>`;
+    s += T(24, 246, '左上（●③は 0）', { fs: F9w(12.5), b: 1, c: CU, f: SF });
+    s += T(24, 270, '持ち点 ＝ p×① ＋ q×② ＋ d₄', { fs: F9w(12.5), f: SF });
+    s += T(24, 292, 'r×③ が 消える', { fs: F9w(12), b: 1, c: '#c00', f: SF });
+    s += `<rect x="14" y="306" width="532" height="72" fill="var(--white)" stroke="#d9d9d9"/>`;
+    s += T(24, 326, '右下（●③は 数を通す）', { fs: F9w(12.5), b: 1, c: CD, f: SF });
+    s += T(24, 350, '持ち点 ＝ p×① ＋ q×② ＋ r×③ ＋ d₄', { fs: F9w(12), f: SF });
+    s += T(24, 372, 'r×③ が 残る', { fs: F9w(12), b: 1, c: '#019949', f: SF });
+    /* ══ ③（スマホ）説明の列を 絵の【下】へ ══════════════════ */
+    s += arrow(280, 386, 408);
+    s += T(14, 428, '③ それぞれの式で「持ち点 ＝ 0」の線を引くと', { fs: F9w(13.5), b: 1, f: SF });
+    const Q2 = PL(46, 588, 250, 444);
+    s += frame(Q2);
+    s += draw(Q2, N.fold, YR8[0], YR8[1], C3, 1.4, '5 4');
+    s += draw(Q2, N.up.f, N.ym, YR8[1], CU, 3);
+    s += draw(Q2, N.dn.f, YR8[0], N.ym, CD, 3);
+    {
+      const cx = Q2.sx(N.xm), cy = Q2.sy(N.ym);
+      s += `<circle cx="${cx.toFixed(1)}" cy="${cy.toFixed(1)}" r="4.6" fill="#111"/>`;
+      s += T(cx + 9, cy - 6, 'ここで つながる', { fs: F9w(12), b: 1, f: SF });
+    }
+    s += T(Q2.sx(N.up.f(YR8[1])) + 8, 458, '左上の式の 境目', { fs: F9w(12), b: 1, c: CU, f: SF });
+    
+    s += T(258, 572, '右下の式の 境目', { fs: F9w(12), b: 1, c: CD, f: SF });
+    s += T(46, 608, '横＝勉強時間 ／ たて＝睡眠時間', { fs: F9w(12), c: '#6e6e6e', f: SF });
+    s += T(14, 634, '「持ち点 ＝ 0」の線 ＝ 境目', { fs: F9w(12.5), b: 1, f: SF });
+    s += T(14, 654, '　合格と 不合格の さかいです', { fs: F9w(12), c: '#6e6e6e', f: SF });
+    s += T(14, 678, '左上の式  勉強 ＝ ' + num(N.up.k) + '×睡眠 ＋ ' + N.up.c.toFixed(2),
+      { fs: F9w(12.5), b: 1, c: CU, f: SF });
+    s += T(14, 698, '　ほぼ たて（睡眠が ＋1 でも ' + num(N.up.k) + '）', { fs: F9w(12), c: '#6e6e6e', f: SF });
+    s += T(14, 722, '右下の式  勉強 ＝ ' + num(N.dn.k) + '×睡眠 ＋ ' + N.dn.c.toFixed(2),
+      { fs: F9w(12.5), b: 1, c: CD, f: SF });
+    s += T(14, 742, '　右下がり（睡眠が ＋1 で ' + num(N.dn.k) + '）', { fs: F9w(12), c: '#6e6e6e', f: SF });
+    s += T(14, 766, '向きが ちがう2本が 折り目で つながる', { fs: F9w(12.5), b: 1, f: SF });
+    s += T(14, 788, 'だから そこで 境目が 折れます', { fs: F9w(12.5), b: 1, c: '#019949', f: SF });
+    $('why9').setAttribute('viewBox', '0 0 560 795');
+  } else {
+  /* ══ ① 折り目で 面が 2つに分かれる ══════════════════════════ */
+  s += T(14, 20, '① 折り目（点線）で 面が 2つに分かれます', { fs: 13.5, b: 1, f: SF });
+  const P1 = PL(46, 150, 250, 46);
+  s += frame(P1);
+  s += draw(P1, N.fold, YR8[0], YR8[1], C3, 2, '7 4');
+  s += T(54, 66, '●③は 0 を返す', { fs: 12.5, b: 1, c: '#c00', f: SF });
+  s += T(246, 142, '●③は 数を通す', { a: 'end', fs: 12.5, b: 1, c: '#019949', f: SF });
+  s += T(46, 170, '横＝勉強時間 ／ たて＝睡眠時間', { fs: 12, c: '#6e6e6e', f: SF });
+  s += T(272, 60, '【左上】睡眠が 多い・勉強が 少ない', { fs: 12.5, f: SF });
+  s += T(272, 80, '　→ ●③の中身が マイナス → 0', { fs: 12.5, c: '#c00', f: SF });
+  s += T(272, 106, '【右下】●③は 数を そのまま通す', { fs: 12.5, c: '#019949', f: SF });
+  s += T(272, 132, '点線の式（●③の中身 ＝ 0）', { fs: 12, c: '#6e6e6e', f: SF });
+  s += T(272, 152, '　勉強 ＝ ' + num(N.fk) + '×睡眠 ' + (N.fc < 0 ? '−' : '＋') + ' '
+    + Math.abs(N.fc).toFixed(2), { fs: 12.5, b: 1, c: C3, f: SF });
+  /* ══ ② どちら側かで 出口の式が ちがう ══════════════════════ */
+  s += arrow(148, 178, 200); s += arrow(412, 178, 200);
+  s += T(14, 196, '② どちら側かで、出口の式が ちがいます', { fs: 13.5, b: 1, f: SF });
+  s += `<rect x="14" y="206" width="258" height="72" fill="var(--white)" stroke="#d9d9d9"/>`;
+  s += `<rect x="288" y="206" width="258" height="72" fill="var(--white)" stroke="#d9d9d9"/>`;
+  s += T(24, 226, '左上（●③は 0）', { fs: 12.5, b: 1, c: CU, f: SF });
+  s += T(24, 250, '持ち点 ＝ p×① ＋ q×② ＋ d₄', { fs: 12.5, f: SF });
+  s += T(24, 270, 'r×③ が 消える', { fs: 12, b: 1, c: '#c00', f: SF });
+  s += T(298, 226, '右下（●③は 数を通す）', { fs: 12.5, b: 1, c: CD, f: SF });
+  s += T(298, 250, '持ち点 ＝ p×① ＋ q×② ＋ r×③ ＋ d₄', { fs: 12, f: SF });
+  s += T(298, 270, 'r×③ が 残る', { fs: 12, b: 1, c: '#019949', f: SF });
+  /* ══ ③ それぞれの「持ち点 ＝ 0」の線 ══════════════════════ */
+  s += arrow(148, 284, 306); s += arrow(412, 284, 306);
+  s += T(14, 324, '③ それぞれの式で「持ち点 ＝ 0」の線を引くと', { fs: 13.5, b: 1, f: SF });
+  const P2 = PL(46, 480, 250, 336);
+  s += frame(P2);
+  s += draw(P2, N.fold, YR8[0], YR8[1], C3, 1.4, '5 4');
+  s += draw(P2, N.up.f, N.ym, YR8[1], CU, 3);
+  s += draw(P2, N.dn.f, YR8[0], N.ym, CD, 3);
+  {
+    const cx = P2.sx(N.xm), cy = P2.sy(N.ym);
+    s += `<circle cx="${cx.toFixed(1)}" cy="${cy.toFixed(1)}" r="4.6" fill="#111"/>`;
+    s += T(cx + 9, cy - 6, 'ここで つながる', { fs: 12, b: 1, f: SF });
+  }
+  s += T(P2.sx(N.up.f(YR8[1])) + 8, 350, '左上の式の 境目', { fs: 12, b: 1, c: CU, f: SF });
+  s += T(246, 470, '右下の式の 境目', { a: 'end', fs: 12, b: 1, c: CD, f: SF });
+  s += T(46, 500, '横＝勉強時間 ／ たて＝睡眠時間', { fs: 12, c: '#6e6e6e', f: SF });
+  s += T(272, 348, '「持ち点 ＝ 0」の線 ＝ 境目', { fs: 12.5, b: 1, f: SF });
+  s += T(272, 368, '　合格と 不合格の さかいです', { fs: 12, c: '#6e6e6e', f: SF });
+  s += T(272, 394, '左上の式  勉強 ＝ ' + num(N.up.k) + '×睡眠 ＋ ' + N.up.c.toFixed(2),
+    { fs: 12.5, b: 1, c: CU, f: SF });
+  s += T(272, 412, '　ほぼ たて（睡眠が ＋1 でも ' + num(N.up.k) + '）', { fs: 12, c: '#6e6e6e', f: SF });
+  s += T(272, 436, '右下の式  勉強 ＝ ' + num(N.dn.k) + '×睡眠 ＋ ' + N.dn.c.toFixed(2),
+    { fs: 12.5, b: 1, c: CD, f: SF });
+  s += T(272, 454, '　右下がり（睡眠が ＋1 で ' + num(N.dn.k) + '）', { fs: 12, c: '#6e6e6e', f: SF });
+  s += T(272, 478, '向きが ちがう2本が 折り目で つながる', { fs: 12.5, b: 1, f: SF });
+  s += T(272, 498, 'だから そこで 境目が 折れます', { fs: 12.5, b: 1, c: '#019949', f: SF });
+  }
+  $('why9').innerHTML = s;
+  $('why9c').innerHTML =
+    `<b>0 になった項が 消える → 出口の式が 変わる → 境目の 傾きが 変わる → 折れる。</b>`
+    + `<span style="color:var(--gray-500)">この4段が つながっています。`
+    + `<b>折り目の上では どちらの式でも 同じ持ち点</b>になるので、2本は そこで きれいに つながります`
+    + `（勉強 ${N.xm.toFixed(2)} 時間・睡眠 ${N.ym.toFixed(2)} 時間）。`
+    + `── 上の3つの式は <b>［1層］［ReLU］で 1,000歩 下らせた時点</b>の つまみから 引いたものです。`
+    + `<b>歩数を増やせば 線も 動きます。</b></span>`;
+}
+
+
+function actSVG9(oy) {
+  
+  const Kact9 = Math.min(2.2, Math.max(1, Math.ceil(12 * 560 /
+    ((($('dive9') || {}).getBoundingClientRect ? $('dive9').getBoundingClientRect().width : 330) || 330)
+    / 12 * 100) / 100));
+  
+  const FS = [
+    { nm: 'ReLU', sub: 'マイナスを 0 にする', f: v => Math.max(0, v), c: '#019949' },
+    { nm: 'シグモイド', sub: '0 〜 1 に押しこむ', f: v => 1 / (1 + Math.exp(-v)), c: '#2f6fb5' }
+  ];
+  const XL = -3, XH = 3, YL = -1.5, YH = 3;
+  let s = '';
+  FS.forEach((g, k) => {
+    const X = k * 250 + 20;                     /* 🆕 2枚になったので 間を広げた */
+    const x0 = X + 30, x1 = X + 198, y0 = 152 + oy, y1 = 44 + oy;
+    const sx = v => x0 + (v - XL) / (XH - XL) * (x1 - x0);
+    const sy = v => y0 - (v - YL) / (YH - YL) * (y0 - y1);
+    s += T(X + 30, 22 + oy, g.nm, { fs: 14 * Kact9, b: 1, c: g.c, f: "'Noto Serif JP',serif" });
+    
+    s += `<rect x="${x0}" y="${y1}" width="${x1 - x0}" height="${y0 - y1}" fill="none" stroke="#ececec"/>`;
+    s += `<line x1="${x0}" y1="${sy(0).toFixed(1)}" x2="${x1}" y2="${sy(0).toFixed(1)}" stroke="#c8c8c8"/>`;
+    s += `<line x1="${sx(0).toFixed(1)}" y1="${y1}" x2="${sx(0).toFixed(1)}" y2="${y0}" stroke="#c8c8c8"/>`;
+    
+    s += T(sx(0) - 4, sy(0) + 14, '0', { a: 'end', fs: 12.5 * Kact9, c: '#9aa3a9' });
+    
+    let d = '';
+    for (let v = XL; v <= XH + 0.001; v += 0.06) {
+      const y = g.f(v);
+      if (y < YL || y > YH) continue;
+      d += (d ? 'L' : 'M') + sx(v).toFixed(1) + ' ' + sy(y).toFixed(1);
+    }
+    s += `<path d="${d}" fill="none" stroke="${g.c}" stroke-width="3"/>`;
+    s += T(X + 30, 176 + oy, g.sub, { fs: 12.5 * Kact9, c: '#3f3f3f', f: "'Noto Serif JP',serif" });
+  });
+  return s;
+}
+function net9() {
+  
+  const RW9 = ($('net9').getBoundingClientRect().width) || 330;
+  const FS9 = Math.max(12, Math.min(28, Math.ceil(14 * 560 / RW9 * 10) / 10));
+  const K = 2, dims = [K].concat(new Array(L9).fill(WID9)).concat([1]);
+  const cols = dims.length;
+  const xs = dims.map((_, i) => 70 + i * (420 / Math.max(1, cols - 1)));
+  const ysOf = n => { const gap = 46, top = 130 - (n - 1) * gap / 2;
+    return Array.from({ length: n }, (_, i) => top + i * gap); };
+  let s = '';
+  /* エッジ */
+  for (let l = 0; l < cols - 1; l++) {
+    const ya = ysOf(dims[l]), yb = ysOf(dims[l + 1]);
+    const M = (l < L9) ? Ws9[l] : [Wo9];
+    for (let i = 0; i < dims[l + 1]; i++) for (let j = 0; j < dims[l]; j++) {
+      const w = (M[i] && M[i][j] !== undefined) ? M[i][j] : 0;
+      s += EDGE(xs[l], ya[j], xs[l + 1], yb[i], w, 1.1);
+    }
+    
+    if (skOn(l)) {
+      const y0 = ysOf(dims[l])[0], y1 = ysOf(dims[l + 1])[0];
+      s += `<path d="M${xs[l]} ${y0 - 30}Q${(xs[l] + xs[l + 1]) / 2} ${y0 - 62} ${xs[l + 1]} ${y1 - 30}"
+        fill="none" stroke="#2f6fb5" stroke-width="2.4" stroke-dasharray="5 3"/>`;
+    }
+  }
+  /* ノード */
+  const names = ['入力', ...Array(L9).fill('層'), '出口'];
+  for (let l = 0; l < cols; l++) {
+    const ys = ysOf(dims[l]);
+    ys.forEach(y => s += NODE(xs[l], y, l === 0 ? 8 : (l === cols - 1 ? 10 : 7),
+      l === 0 ? '#000' : (l === cols - 1 ? '#019949' : '#2f6fb5')));
+    s += T(xs[l], 232, names[l] + (l > 0 && l < cols - 1 ? String(l) : ''),
+      { a: 'middle', fs: FS9, c: '#3f3f3f', f: "'Noto Serif JP',serif" });
+  }
+  
+  for (let l = 1; l < cols; l++) {
+    const ys = ysOf(dims[l]), r = (l === cols - 1 ? 10 : 7);
+    ys.forEach(y => {
+      s += `<line x1="${xs[l]}" y1="${y + r}" x2="${xs[l]}" y2="${y + r + 7}"
+        stroke="#9aa3a9" stroke-width="1.2"/>`;
+      s += `<circle cx="${xs[l]}" cy="${y + r + 11}" r="3" fill="#9aa3a9"/>`;
+    });
+  }
+  s += T(xs[0] - 16, ysOf(2)[0] + 4, '勉強', { a: 'end', fs: FS9, f: "'Noto Serif JP',serif" });
+  s += T(xs[0] - 16, ysOf(2)[1] + 4, '睡眠', { a: 'end', fs: FS9, f: "'Noto Serif JP',serif" });
+  
+  if (L9 === 1 && dims[1] === WID9) {
+    const COL9 = ['#7b4fb5', '#c26100', '#0b7d8c'];
+    const NUM9 = ['●①', '●②', '●③'];
+    const ym = ysOf(dims[1]), yi = ysOf(2);
+    
+    
+    const tag = (x, y, tx, col, fs) =>
+      `<rect x="${(x - tx.length * (fs * 1.0) - 5).toFixed(1)}" y="${(y - fs * 0.72).toFixed(1)}"
+        width="${(tx.length * (fs * 1.0) + 10).toFixed(1)}" height="${(fs * 1.34).toFixed(1)}"
+        fill="#f9f9f9" opacity=".92"/>`
+      + T(x, y + fs * 0.34, tx, { a: 'end', fs, b: 1, c: col, f: "'Noto Serif JP',serif" });
+    ym.forEach((y, i) => { s += tag(xs[1] - 12, y, NUM9[i], COL9[i], FS9); });
+    
+    const at = (j, t) => [xs[0] + t * (xs[1] - xs[0]), yi[j] + t * (ym[2] - yi[j])];
+    
+    const pa = at(0, 0.34), pb = at(1, 0.54);
+    s += tag(pa[0] + 13, pa[1], 'a₃', COL9[2], FS9);
+    s += tag(pb[0] + 13, pb[1], 'b₃', COL9[2], FS9);
+    
+    s += tag(xs[1] + 30, ym[2] + 7 + 13, 'd₃', COL9[2], FS9);
+  }
+  
+  if (SK9 && L9 >= 2) s += T(xs[1] + 40, 44, '飛び越す道',
+    { fs: FS9, c: '#2f6fb5', f: "'Noto Serif JP',serif" });
+  $('net9').innerHTML = s;
+  
+  const nb = $('net9c');
+  if (nb) { const b = NPB9(L9);
+    
+    const A = alive9();
+    const lv = A[0] ? A[0].filter(v => v > 0).length : 0;
+    nb.innerHTML = `いまは <b>線 ${b[0]}本</b> ＋ <b>バイアス ${b[1]}個</b> ＝ <b>つまみ ${b[0] + b[1]}個</b>。`
+      + `<b style="color:#019949">緑は プラス</b>（その印が強い人の持ち点を <b>上げる</b>）、`
+      + `<b style="color:#c00">赤は マイナス</b>（<b>下げる</b>）。<b>太いほど 強く効きます。</b><br>`
+      
+      + (L9 === 1
+        ? `<span style="color:var(--gray-500)">まん中の●には <b style="color:#7b4fb5">●①</b>`
+          + `<b style="color:#c26100">●②</b><b style="color:#0b7d8c">●③</b> と 番号を付けました`
+          + `（<b>番号の色は 上のグラフの点線と 同じ●</b>です）。`
+          + `<b style="color:#0b7d8c">●③ に入る2本が a₃・b₃、その下の点が d₃</b> ── `
+          + `<b>下の枠の計算で使う 3つの数は この線と 点の値</b>です。</span><br>`
+        : '')
+      + `<span style="color:var(--gray-500)">バイアスは <b>問6 の d</b>・<b>問8 の「全員に足す数」</b>と同じもので、`
+      + `<b>●ごとに1個ずつ</b>付きます（入口の●には付きません）。`
+      + (L9 === 1 && lv < WID9
+        ? `　── <b>いま働いている●は ${lv}個 / ${WID9}個</b>です。`
+          + `残りは 40人 全員に 0 を返していて、<b>使われていません</b>（足りないと困りますが、余っても構いません）。`
+        : '')
+      + `</span>`; }
+}
+
+function bdDraw(opt) {
+  const P = { x0: 42, y0: 320, x1: 288, y1: 126 };
+  
+  const RWb = (document.getElementById(opt.tid) || {}).getBoundingClientRect
+    ? document.getElementById(opt.tid).getBoundingClientRect().width : 330;
+  
+  const FSb = Math.max(12, Math.min(22, Math.ceil(14 * 300 / (RWb || 330) * 10) / 10));
+  let s = '';
+  const G = 44;
+  for (let i = 0; i < G; i++) for (let j = 0; j < G; j++) {
+    const x = XR8[0] + (XR8[1] - XR8[0]) * (i + 0.5) / G;
+    const y = YR8[0] + (YR8[1] - YR8[0]) * (j + 0.5) / G;
+    if (fwd9([x / 10, y / 11]).z > 0) {
+      const a = sx8(XR8[0] + (XR8[1] - XR8[0]) * i / G, P);
+      const b = sx8(XR8[0] + (XR8[1] - XR8[0]) * (i + 1) / G, P);
+      const c = sy8(YR8[0] + (YR8[1] - YR8[0]) * (j + 1) / G, P);
+      const e = sy8(YR8[0] + (YR8[1] - YR8[0]) * j / G, P);
+      s += `<rect x="${(a - 0.4).toFixed(1)}" y="${(c - 0.4).toFixed(1)}" width="${(b - a + 1.5).toFixed(1)}"
+        height="${(e - c + 1.5).toFixed(1)}" fill="#019949" opacity=".13"/>`;
+    }
+  }
+  for (let v = 0; v <= 10; v += 2) s += T(sx8(v, P), P.y0 + 18, String(v), { a: 'middle', fs: FSb, c: '#6e6e6e' });
+  for (let v = 2; v <= 11; v += 3) s += T(P.x0 - 8, sy8(v, P) + 4, String(v), { a: 'end', fs: FSb, c: '#6e6e6e' });
+  DATA.forEach(d => {
+    const x = sx8(d.x1, P), y = sy8(d.x2, P), good = say9(d) === d.t;
+    if (d.t) s += `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="5.5" fill="none"
+      stroke="${good ? '#019949' : '#c00'}" stroke-width="2.2"/>`;
+    else s += `<path d="M${(x - 4.6).toFixed(1)} ${(y - 4.6).toFixed(1)}l9.2 9.2M${(x + 4.6).toFixed(1)}
+      ${(y - 4.6).toFixed(1)}l-9.2 9.2" stroke="${good ? '#3f3f3f' : '#c00'}" stroke-width="2.2"/>`;
+  });
+  
+  if (opt.fold && A9 !== 'none' && L9 >= 1 && Ws9[0]) {
+    const COL = ['#7b4fb5', '#c26100', '#0b7d8c'];
+    for (let i = 0; i < WID9; i++) {
+      const a = Ws9[0][i][0], b = Ws9[0][i][1], d = bs9[0][i];
+      if (Math.abs(a) < 1e-9) continue;
+      
+      let seg = [], on = false, pts = [];
+      for (let y = YR8[0]; y <= YR8[1] + 1e-9; y += 0.05) {
+        const x = -(b * (y / 11) + d) * 10 / a;
+        if (x >= XR8[0] && x <= XR8[1]) { pts.push([x, y]); on = true; }
+        else if (on) { if (pts.length > 1) seg.push(pts); pts = []; on = false; }
+      }
+      if (pts.length > 1) seg.push(pts);
+      seg.forEach(g => {
+        const dd = g.map((q, k) => (k ? 'L' : 'M') + sx8(q[0], P).toFixed(1) + ' ' + sy8(q[1], P).toFixed(1)).join('');
+        s += `<path d="${dd}" fill="none" stroke="${COL[i]}" stroke-width="1.6"
+          stroke-dasharray="7 4" opacity=".85"/>`;
+        
+        const NM9 = ['●①', '●②', '●③'];
+        const e = g[g.length - 1], x2 = sx8(e[0], P), y2 = sy8(e[1], P);
+        if (y2 > P.y1 + 14 && y2 < P.y0 - 4)
+          s += T(Math.min(x2 + 5, P.x1 - 26), y2 + 4, NM9[i],
+            { fs: FSb, b: 1, c: COL[i], f: "'Noto Serif JP',serif" });
+        else {
+          const b0 = g[0], x1v = sx8(b0[0], P), y1v = sy8(b0[1], P);
+          s += T(Math.min(x1v + 5, P.x1 - 26), Math.max(y1v - 4, P.y1 + 12), NM9[i],
+            { fs: FSb, b: 1, c: COL[i], f: "'Noto Serif JP',serif" });
+        }
+      });
+    }
+  }
+  s += `<line x1="${P.x0}" y1="${P.y0}" x2="${P.x1}" y2="${P.y0}" stroke="#000"/>`;
+  s += `<line x1="${P.x0}" y1="${P.y1}" x2="${P.x0}" y2="${P.y0}" stroke="#000"/>`;
+  s += T(P.x1, P.y0 + 52, '勉強時間', { a: 'end', fs: FSb, f: "'Noto Serif JP',serif" });
+  s += T(P.x0 - 6, 116, '睡眠時間', { fs: FSb, f: "'Noto Serif JP',serif" });
+  
+  if (opt.headId) {
+    const h = document.getElementById(opt.headId);
+    if (h) {
+      const c = cnt9(), top = c >= GOAL9 && A9 !== 'none';
+      const pc = v => Math.max(0, Math.min(1, v / 40)) * 100;
+      h.innerHTML =
+        '<span class="lb">40人のうち 当たり</span>'
+      + '<span class="big' + (top ? ' ok' : '') + '" id="' + opt.okId + '">' + c + '</span>'
+      + '<span class="tr"><span class="fl' + (top ? ' ok' : '') + '" style="width:'
+      +   pc(c).toFixed(1) + '%"></span>'
+      + (opt.goal ? '<span class="mk" style="left:' + pc(GOAL9).toFixed(1) + '%"></span>' : '')
+      + '</span>'
+      + '<span class="rt">' + (opt.goal ? '目標 ' + GOAL9 + '人　' : '') + n9 + ' 歩</span>';
+    }
+  }
+  
+  if (opt.note) {
+    const ans = DATA.map(d => say9(d)), one = new Set(ans).size === 1;
+    if (one) {
+      s += T(42, 394, '境目の線が ありません', { fs: 12.5, b: 1, c: '#c00', f: "'Noto Serif JP',serif" });
+      
+      s += T(42, 414, '40人 全員に「' + (ans[0] ? '合格' : '不合格') + '」と答えています',
+        { fs: 12.5, c: '#c00', f: "'Noto Serif JP',serif" });
+    }
+  }
+  $(opt.tid).innerHTML = s;
+}
+
+function bd9() { bdDraw({ tid: 'bd9', okId: 'ok9t', headId: 'bdh9', goal: true, fold: true }); }
+
+const COMBO9 = [[1, 'relu', false], [3, 'relu', false], [3, 'relu', true]];
+const REC9 = {};
+const key9 = (l, a, s) => l + '|' + a + '|' + (s ? 1 : 0);
+let ok9b = false;
+
+function up9() {
+  
+  ['f9r', 'f9s'].forEach((id, i) => $(id).classList.toggle('on', ['relu', 'sig'][i] === A9));
+  
+  ['L1b', 'L3b'].forEach((id, i) => $(id).classList.toggle('on', [1, 3][i] === L9));
+  ['sk9ob', 'sk9ib'].forEach((id, i) => $(id).classList.toggle('on', (i === 1) === SK9));
+  
+  const skNG = L9 <= 1;
+  $('sk9ob').disabled = skNG; $('sk9ib').disabled = skNG;
+  $('np9').textContent = np9(); $('np9b').textContent = np9();
+  $('n9c').textContent = n9; $('n9cb').textContent = n9;
+  
+  net9(); bd9(); bd9b(); gr10();
+  const c = cnt9();
+  
+  if (n9 >= 3000 && L9 >= 1) {
+    const A = alive9();
+    REC9[key9(L9, A9, SK9)] = { c: c,
+      live: A.map(r => r.filter(v => v > 0).length).reduce((a, b) => a + b, 0), tot: L9 * WID9 };
+  }
+  tabs9();
+  
+  const ok = (c >= GOAL9 && L9 >= 1 && A9 !== 'none');
+  $('j9').className = 'verdict' + (ok ? ' ok' : '');
+  
+  
+  
+  $('j9').innerHTML = ok
+    ? `<b>境目が折れました。</b>`
+    : (L9 >= 2 ? `いまは <b>${L9}層</b>です（問10 で層を増やしました）。歩数を増やしてください。`
+               : `<b>歩数を増やしてください。</b>`);
+  if (ok && !ok9) { ok9 = true; mark(3, 'done'); show('r9'); mark(4, 'open'); }
+  
+  const left = COMBO9.filter(x => REC9[key9.apply(null, x)] === undefined).length;
+  $('j9b').className = 'verdict' + (left === 0 ? ' ok' : '');
+  
+  
+  {
+    const r3o = REC9[key9(3, 'relu', false)], r3i = REC9[key9(3, 'relu', true)];
+    $('j9b').innerHTML = left === 0
+      ? `<b>飛び越す道を作ると ${r3o.c}人 → ${r3i.c}人 に戻ります。</b>`
+        + `<span style="font-weight:400"> 数を通す●が 増えました（上の図と 記録表を見てください）。</span>`
+      : `<b>${L9}層${L9 >= 2 ? '／飛び越す道 ' + (SK9 ? 'あり' : 'なし') : ''}</b>`
+        + `　当たりは ${c}人（${n9} 歩）`;
+  }
+  if (left === 0 && !ok9b) { ok9b = true; mark(4, 'done'); show('r9b'); mark(5, 'open'); }
+}
+
+
+
+$('f9r').onclick = () => { A9 = 'relu'; init9(); up9(); };
+$('f9s').onclick = () => { A9 = 'sig'; init9(); up9(); };
+$('st9').onclick = () => step9(1);
+$('st9b').onclick = () => step9(100);
+$('st9e').onclick = () => step9(1000);
+$('rs9').onclick = () => { init9(); up9(); };
+DATA.forEach((d, i) => d.id = i + 1);
+
+let FS = 1;
+
+
+init9();
+up9();
+anat9(); eqs9(); flow9(); dive9(); inner9(); why9(); fold9(); ori9();
+BOOT = false;
+
+
+var CV = {
+ "e9a": [
+  [
+   "m",
+   "まん中に<b>層</b>を入れるって、どういうこと。"
+  ],
+  [
+   "d",
+   "入口と出口のあいだに、<b>●をもう一列</b>置くんだよ。……<b>すぐ下だ。絵と、その下の式を見てごらん。</b>"
+  ]
+ ],
+ "e9a2": [
+  [
+   "m",
+   "線が9本、灰色の点が4つ。……で、<b>下の式</b>は何？"
+  ],
+  [
+   "d",
+   "<b>上の絵と まったく同じもの</b>だよ。……<b>●1個につき 式が1本</b>だ。"
+  ],
+  [
+   "m",
+   "まん中の●が3個だから 式が3本。出口の●で 4本目か。"
+  ],
+  [
+   "d",
+   "そう。……<b>緑の文字が 重み。</b>掛ける数だよ。<b>橙の文字が バイアス。</b>最後に足す数だ。"
+  ],
+  [
+   "m",
+   "重みが9個、バイアスが <b>d₁ d₂ d₃ d₄</b> の4個。……<b>合わせて13個</b>だ。"
+  ],
+  [
+   "d",
+   "それが「つまみ13個」の中身だよ。"
+  ],
+  [
+   "m",
+   "<b>勉強</b>と<b>睡眠</b>は？ あれも つまみ？"
+  ],
+  [
+   "d",
+   "ちがう。あれは <b>x₁ と x₂</b> ── <b>掛けられる側</b>だ。40人ぶんの記録だからね。<b>動かせない。</b>"
+  ],
+  [
+   "m",
+   "あ、だから<b>入口の●には 点が付いてない</b>のか。"
+  ],
+  [
+   "d",
+   "そこだよ！ <b>入口は 数字が入ってくる穴</b>で、計算をしない。……<b>計算する●だけが バイアスを1個 持つ</b>んだ。まん中3個と出口1個で 4個だね。"
+  ],
+  [
+   "d",
+   "では<b>38人以上</b>を当ててみてくれ。……<b>［1000歩］を押してごらん。</b>"
+  ]
+ ],
+ "e9b": [
+  [
+   "m",
+   "増えた！……<b>境目が 折れてる。</b>"
+  ],
+  [
+   "d",
+   "折れたな。……<b>なぜ 折れたか 分かるか。</b>"
+  ],
+  [
+   "m",
+   "層を 増やしたから？"
+  ],
+  [
+   "d",
+   "層は たしかに 増えた ── <b>問8 は 層が 0 で、いまは 1つ</b>だ。……だが <b>層を 入れただけでは 折れない</b>よ。"
+  ],
+  [
+   "m",
+   "え。じゃあ 何で 折れたの。"
+  ],
+  [
+   "d",
+   "<b>●の中で 折り曲げているから</b>だ。……変わったのは <b>●の中でやっていること</b>だよ。"
+  ],
+  [
+   "m",
+   "●の中？"
+  ],
+  [
+   "d",
+   "グラフの中の <b>色の点線</b>を見てごらん。……あれが <b>●の中身が ちょうど 0 になる線</b>だ。"
+  ],
+  [
+   "m",
+   "3本 ある。"
+  ],
+  [
+   "d",
+   "●が 3個 あるからな。……<b>その線を越えると、その●が「数を通す」から「0 を返す」に 切り替わる。</b>"
+  ],
+  [
+   "m",
+   "切り替わると 何が 変わるの？"
+  ],
+  [
+   "d",
+   "<b>出口の式が 変わる。</b>……だから <b>その線の上で 境目が 折れる</b>んだ。"
+  ],
+  [
+   "m",
+   "……あ。点線と 境目の折れ目が、同じところに ある。"
+  ],
+  [
+   "d",
+   "そこだよ！ ……では <b>その「0 を返す」を 誰が 決めているのか</b>。まず 下を見てくれ。"
+  ]
+ ],
+ "e9b2": [
+  [
+   "m",
+   "あれ。<b>40人ぜんぶ、別々に 計算してる</b>の？"
+  ],
+  [
+   "d",
+   "そうだ。……<b>1人ずつ 通していく</b>。40人なら 40回だ。"
+  ],
+  [
+   "m",
+   "じゃあ <b>関数も 40個</b> あるの？"
+  ],
+  [
+   "d",
+   "ちがう！ ……<b>関数は 1つだけ</b>だ。つまみ13個 が決まれば、関数は 1つに決まる。"
+  ],
+  [
+   "m",
+   "でも 人によって 中身がちがうよ。"
+  ],
+  [
+   "d",
+   "ちがうのは <b>通り道</b>だ。……<b>同じ関数でも、入れる人によって【0 を返す●】が変わる</b>。"
+  ],
+  [
+   "m",
+   "……上の表、<b style=\"color:#c00\">0</b> のところが 人によって ちがう。"
+  ],
+  [
+   "d",
+   "そこだよ！ <b>0 の●は、その人には 何も伝えていない。</b>……<b>通り道が 人ごとに 変わる</b>んだ。"
+  ],
+  [
+   "m",
+   "だから <b>1つの関数なのに 折れ線になる</b>のか。"
+  ],
+  [
+   "d",
+   "そこだ！ ……<b>切り替わる場所</b>が 折り目だよ。上のグラフの<b>色の点線</b>を見てごらん。"
+  ]
+ ],
+ "e9c": [
+  [
+   "m",
+   "……<b>勉強と睡眠を 割ってから</b> 掛けてるんだね。"
+  ],
+  [
+   "d",
+   "そうだ。<b>問7 でやった 物差しそろえ</b>だよ。……そのまま入れると 大きい数が 暴れるからな。"
+  ],
+  [
+   "m",
+   "a₃ とか b₃ は どこから 来たの？"
+  ],
+  [
+   "d",
+   "<b>機械が 1000歩 下って 見つけた数</b>だ。……はじめは でたらめな数から 始めている。"
+  ],
+  [
+   "m",
+   "同じ●なのに、1人目は プラスで 2人目は マイナスだ。"
+  ],
+  [
+   "d",
+   "そこだよ！ <b>同じ●・同じ3つの数。ちがうのは 入れた人だけ</b>だ。"
+  ],
+  [
+   "m",
+   "マイナスの人は <b>0 になる</b>から……<b>その人は 不合格</b>？"
+  ],
+  [
+   "d",
+   "そこが 落とし穴だよ。……0 になるのは <b>その●の項（r×③）だけ</b>だ。<b>消えるのは 式の中の 1つ</b>だよ。"
+  ],
+  [
+   "m",
+   "じゃあ 持ち点は どうなるの。"
+  ],
+  [
+   "d",
+   "<b>他の●が 数を通していれば 持ち点は 出る。</b>……<b>上の表</b>を見てごらん。<b>●③が 0 なのに 合格</b>になっている人が いるだろう。"
+  ],
+  [
+   "m",
+   "……ほんとだ。●③が 0 でも 持ち点は プラスだ。"
+  ],
+  [
+   "d",
+   "そうだ。……<b>これを 40人ぜんぶに やる</b>。人によって 0 になる●が ちがうだろう。"
+  ],
+  [
+   "m",
+   "だから <b>通り道が 人ごとに 変わる</b>のか。"
+  ],
+  [
+   "d",
+   "そうだ。……この<b>「マイナスなら 0」の仕掛け</b>を <b>ReLU</b> という。"
+  ],
+  [
+   "m",
+   "下に もう1つ 形が あるけど。"
+  ],
+  [
+   "d",
+   "<b>シグモイド</b>だ。……どんな数が来ても <b>0 と 1 のあいだに 押しこむ</b>。"
+  ],
+  [
+   "m",
+   "どっちも まっすぐじゃない。"
+  ],
+  [
+   "d",
+   "そこだ！ <b>まっすぐでないこと</b>が 大事なんだ。……この2つをまとめて <b>活性化関数</b> という。覚えておいてくれ。"
+  ],
+  [
+   "m",
+   "押し替えても 38人 当たる？"
+  ],
+  [
+   "d",
+   "自分で試してごらん。……<b>どちらでも 境目は 折れる</b>よ。"
+  ],
+  [
+   "m",
+   "じゃあ どうして 2つ あるの？"
+  ],
+  [
+   "d",
+   "いい問いだ。……<b>それは 問10 で ちがいが出る</b>。今は「どちらも 折れる」だけ 覚えておいてくれ。"
+  ]
+ ],
+ "e9c2": [
+  [
+   "m",
+   "直線1本で 35人。折れ目1つで 38人。折れ目2つで 39人。……<b>破線そのものなら 40人</b>だ。"
+  ],
+  [
+   "d",
+   "<b>折れ目が1つ 増えるだけで 3人 増える</b>んだよ。"
+  ],
+  [
+   "m",
+   "あ。<b>問9 の目標が 38人</b>って……"
+  ],
+  [
+   "d",
+   "そういうことだ。……<b>「折れ目を1つ 手に入れろ」</b>という問題だよ。"
+  ],
+  [
+   "m",
+   "じゃあ ●を うんと 増やせば 40人 いける？"
+  ],
+  [
+   "d",
+   "……<b>それは 問11 でやる</b>。覚えておいてくれ ── <b>破線に 近づけすぎると 別の困りごとが出る</b>よ。"
+  ]
+ ],
+ "e9d": [
+  [
+   "m",
+   "……<b>●1個で 折り目1本</b>。●2個なら 2本。"
+  ],
+  [
+   "d",
+   "そこだ！ <b>●の数が そのまま 折り目の本数</b>になる。"
+  ],
+  [
+   "m",
+   "じゃあ 折り目を 何本にするかは、誰が 決めるの？"
+  ],
+  [
+   "d",
+   "<b>人だ。</b>……●を 何個 置くかを 決めるのは 私たちだよ。"
+  ],
+  [
+   "m",
+   "位置は？"
+  ],
+  [
+   "d",
+   "<b>機械が 決める。</b>……●の中身が 0 になるところが 折り目で、<b>重みが動けば その場所も動く</b>。"
+  ],
+  [
+   "m",
+   "ずれが 減る方へ 勝手に 動くんだ。"
+  ],
+  [
+   "d",
+   "そうだ。<b>本数は 人、位置は 機械</b>。……覚えておいてくれ。"
+  ],
+  [
+   "m",
+   "本数が 足りないと どうなるの？"
+  ],
+  [
+   "d",
+   "破線に 届かん。……<b>逆に 余った●は、40人 全員に 0 を返すようになって 使われなくなる</b>。"
+  ],
+  [
+   "m",
+   "余っても 困らないんだ。"
+  ],
+  [
+   "d",
+   "困らん。……足りないほうが 困る。"
+  ],
+  [
+   "m",
+   "もし ●の中で <b>折り曲げなかったら</b> どうなるの？"
+  ],
+  [
+   "d",
+   "<b>掛け算と足し算だけ</b>になる。……<b>何個 並べても 紙は 平ら</b>だ。"
+  ],
+  [
+   "m",
+   "平らって……<b>直線1本</b>？"
+  ],
+  [
+   "d",
+   "そうだ。<b>問8 と まったく同じ形に 戻る</b>。……<b>層と折り曲げは セット</b>だよ。片方だけでは 何も起きん。"
+  ]
+ ],
+ "e9d2": [
+  [
+   "d",
+   "最後に <b>いま機械が 合わせている中身</b>を見ておこう。……<b>上の枠の 右の絵</b>だ。"
+  ],
+  [
+   "m",
+   "うん。"
+  ]
+ ],
+ "e9e": [
+  [
+   "m",
+   "線の <b>太さが ちがう</b>。"
+  ],
+  [
+   "d",
+   "<b>太いほど 強く効く</b>。……<b>いま合わせている 13個の中身</b>だよ。"
+  ],
+  [
+   "m",
+   "色も ちがう。緑と 赤。"
+  ],
+  [
+   "d",
+   "<b style=\"color:#019949\">緑は プラス</b> ── その印が強い人の<b>持ち点を 上げる</b>。<b style=\"color:#c00\">赤は マイナス</b> ── <b>下げる</b>。"
+  ],
+  [
+   "m",
+   "……<b>睡眠から出てる線が 1本だけ すごく太くて 赤い</b>んだけど。"
+  ],
+  [
+   "d",
+   "よく見たな！ その線が向かう●は、<b>睡眠が多いほど 中身が 小さくなる</b>。……<b>マイナスになれば 0</b> だ。"
+  ],
+  [
+   "m",
+   "0 になったら、その●からは 何も 出ない。"
+  ],
+  [
+   "d",
+   "出ない。……つまり <b>その●の項が 式から 消える</b>。この●は 数を通すと 持ち点を <b>下げる</b>ほうだからな。"
+  ],
+  [
+   "m",
+   "え。じゃあ この●は 何のために あるの。"
+  ],
+  [
+   "d",
+   "<b>睡眠が 少ない人の 持ち点を 下げる</b>ためだ。……<b>寝ていない人を 落とす係</b>だよ。"
+  ],
+  [
+   "m",
+   "問8 で 睡眠が U字だったのと つながってる。"
+  ],
+  [
+   "d",
+   "つながっている。……ではもう1つ。<b>いちばん上の●は どうだ</b>。"
+  ],
+  [
+   "m",
+   "線が ぜんぶ 細い。"
+  ],
+  [
+   "d",
+   "<b>40人 全員に 0 を返している</b> ── <b>使われなかった</b>んだ。"
+  ],
+  [
+   "m",
+   "3個 用意したのに 2個しか 使ってないの？"
+  ],
+  [
+   "d",
+   "そうだ。……<b>足りないと困るが、余っても構わん。</b>機械が 必要な数だけ 使う。"
+  ],
+  [
+   "m",
+   "歩かせるたびに 太さが 変わるのは？"
+  ],
+  [
+   "d",
+   "<b>13個ぜんぶを、坂を下るやり方で いっぺんに動かしている</b>からな。……問7 でやったとおりだよ。"
+  ]
+ ],
+ "e9z": [
+  [
+   "m",
+   "戻して［1000歩］。……<b>届いた。</b>"
+  ],
+  [
+   "d",
+   "うむ。……<b>層を1つ入れると 境目が折れて、まん中だけを囲める。これが「深い」の中身だよ。</b>"
+  ],
+  [
+   "m",
+   "意外と単純だね。"
+  ],
+  [
+   "d",
+   "単純だ。……だが<b>折り曲げが無いと、深さは1つも効かない。</b>それをいま、自分の手で確かめたね。……そこが今日の収穫だよ、学くん。"
+  ]
+ ]
+};
+drawCV(CV);
+})();
+</script>
+</body>
+</html>

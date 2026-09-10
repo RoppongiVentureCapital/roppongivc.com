@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="index,follow">
+<meta name="description" content="つまみを2個、手で回してみる ── 問1 つまみを回す">
+<meta property="og:title" content="Deep Black Box ── 問1 つまみを2個、手で回してみる（第1章）">
+<meta property="og:description" content="つまみを2個、手で回してみる ── 問1 つまみを回す">
+
+<meta property="og:image" content="https://www.roppongivc.com/img/agora/r1/og-r1-game.jpg">
+<meta name="twitter:image" content="https://www.roppongivc.com/img/agora/r1/og-r1-game.jpg">
+<title>Deep Black Box ── 問1 つまみを2個、手で回してみる（第1章）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@300;400;600;700&family=Inter:wght@300;400;500;600;700&family=Noto+Serif+JP:wght@300;400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="common.css">
+<style>
+
+.offpage{display:none}
+:root{
+ --bg:#fff; --white:#fff; --black:#000;
+ --gray-100:#f9f9f9; --gray-200:#d9d9d9; --gray-500:#444; --gray-600:#2a2a2a;
+ --accent:#019949;
+ --sans:'Inter',system-ui,sans-serif;
+ --serif:'Source Serif 4','Noto Serif JP',Georgia,serif;
+ --content-w:52.625rem;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--black);font-family:var(--sans);
+ -webkit-font-smoothing:antialiased}
+.wrap{max-width:var(--content-w);margin:0 auto;padding:0 1.5rem 5rem}
+.top{border-bottom:1px solid var(--gray-200);margin-bottom:2.4rem}
+
+
+.eyebrow{font-size:13px;font-weight:500;letter-spacing:.16em;text-transform:uppercase;
+ color:var(--gray-500);margin-bottom:.9rem}
+h1{font-family:var(--serif);font-size:2.1rem;font-weight:300;line-height:1.35;margin:0 0 .8rem}
+.lead b{color:var(--black)}
+.meta{font-size:13px;letter-spacing:.1em;color:var(--gray-500);padding-bottom:1.2rem;
+ border-bottom:1px solid var(--gray-200);margin-bottom:1.2rem}
+.steps{display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:2.4rem}
+.steps div{flex:1 1 5rem;padding:.55rem .3rem;text-align:center;font-size:12px;
+ border:1px solid var(--gray-200);color:var(--gray-500);background:var(--white)}
+.steps div.open{border-color:var(--black);color:var(--black)}
+.steps div.done{background:var(--black);border-color:var(--black);color:var(--white)}
+.card{border:1px solid var(--gray-200);padding:2rem;margin-bottom:2rem;background:var(--white)}
+.tagline{font-size:13px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;
+ color:var(--gray-500);margin-bottom:.9rem}
+.figbox{background:var(--gray-100);border:1px solid var(--gray-200);padding:1rem;margin:1.3rem 0}
+
+#p2,#p2m{max-width:420px;display:block;margin:0 auto}
+
+.panel{background:var(--gray-100);border:1px solid var(--gray-200);padding:1rem;margin:1.3rem 0}
+.panel .ctl{margin:.9rem 0 .2rem}
+.panel .togs{margin-top:.7rem}
+.panel .gauge{margin-top:.9rem}
+.panel .verdict{margin-top:.8rem;background:var(--white)}
+.two{display:flex;gap:1rem;flex-wrap:wrap}
+.two>div{flex:1 1 15rem;min-width:0}
+svg{display:block;width:100%;height:auto}
+
+
+.stick{position:sticky;top:0;z-index:5;background:var(--gray-100);
+       padding-bottom:.35rem;box-shadow:0 6px 8px -6px rgba(0,0,0,.18)}
+.stick svg{max-height:42vh;width:auto;max-width:100%;margin:0 auto}
+
+.stickbot{position:sticky;bottom:0;z-index:5;background:var(--gray-100);
+          padding-top:.4rem;box-shadow:0 -6px 8px -6px rgba(0,0,0,.18)}
+.ctl{margin:1.1rem 0 .2rem}
+.ctl label{display:flex;justify-content:space-between;align-items:baseline;font-size:14px;
+ margin-bottom:.35rem;gap:1rem}
+.ctl label span.n{font-weight:600;font-variant-numeric:tabular-nums;white-space:nowrap}
+.togs{display:flex;gap:.6rem;flex-wrap:wrap;margin-top:1.1rem;align-items:center}
+.btn{background:none;border:1px solid var(--gray-200);padding:.6rem 1.15rem;font-size:14px;
+ font-family:var(--sans);color:var(--black);cursor:pointer;transition:all .15s}
+.btn:hover{border-color:var(--black);background:var(--gray-100)}
+.btn.on{background:var(--black);color:var(--white);border-color:var(--black)}
+.btn.go{background:var(--black);color:var(--white);border-color:var(--black)}
+.btn.sm{font-size:13px;padding:.45rem .85rem;color:var(--gray-500)}
+.btn:disabled{opacity:.35;cursor:default}
+.gauge{margin:1.2rem 0 0}
+.gauge .row{display:flex;align-items:baseline;gap:.7rem;margin-bottom:.5rem}
+.gauge .u{font-size:14px;color:var(--gray-500)}
+.gtrack{height:10px;background:#e9e9e9;position:relative;overflow:hidden}
+.gfill{display:block;height:100%;background:#c00;transition:width .12s linear}
+.gfill.ok{background:var(--accent)}
+.gmark{position:absolute;top:-3px;bottom:-3px;width:2px;background:#000}
+.gcap{display:flex;justify-content:space-between;font-size:12px;color:var(--gray-500);
+ margin-top:.35rem}
+.read{font-size:15px;line-height:1.8;margin:.9rem 0 0;font-variant-numeric:tabular-nums}
+.big{font-family:var(--serif);font-size:2rem;font-weight:400;font-variant-numeric:tabular-nums;
+ line-height:1}
+.calc{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13.5px;line-height:2;
+ background:var(--white);border:1px solid var(--gray-200);padding:.9rem 1.1rem;margin:.9rem 0;
+ overflow-x:auto;white-space:pre}
+.verdict{margin-top:1.2rem;padding:.9rem 1.1rem;border:1px solid var(--gray-200);font-size:14px;
+ line-height:1.75;background:var(--gray-100)}
+.verdict.ok{border-color:var(--accent);background:#f2fbf6}
+.verdict.stuck{border-color:#c00;background:#fdf4f4}
+.next{margin-top:1rem;font-size:13px;color:var(--gray-500)}
+.src{border-left:2px solid var(--black);padding:.9rem 0 .9rem 1.1rem;margin:1.4rem 0;
+ font-size:14px;line-height:1.85;color:var(--gray-600)}
+.src .h{font-size:12px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;
+ color:var(--black);margin-bottom:.4rem}
+.src q{font-style:normal;color:var(--black)}
+.src .ref{font-size:13px;color:var(--gray-500);margin-top:.4rem;display:block}
+.box{border:1px solid var(--gray-200);padding:1.1rem 1.3rem;margin:1.3rem 0;background:var(--gray-100)}
+.box .h{font-size:12px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;
+ margin-bottom:.5rem}
+.mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+.sc-row{display:flex;align-items:center;gap:.75rem;margin-bottom:.6rem}
+.sc-label{width:3.2rem;font-size:14px;text-align:right;flex-shrink:0}
+.sc-track{flex:1;background:#e9e9e9;height:9px;position:relative}
+.sc-fill{display:block;height:100%;background:var(--black);transition:width .1s linear}
+.sc-fill.hit{background:var(--accent)}
+.sc-pct{width:3.4rem;font-size:14px;font-variant-numeric:tabular-nums}
+.sc-track .goal{position:absolute;top:-3px;bottom:-3px;width:1px;background:#c00}
+details{border-top:1px solid var(--gray-200);padding-top:1rem;margin-top:1.5rem}
+summary{font-size:14px;font-weight:500;cursor:pointer}
+.lg{font-size:14px;line-height:1.9;color:var(--gray-600);margin-top:.9rem}
+.lg table{width:100%;border-collapse:collapse;margin:.8rem 0;font-size:13px}
+.lg th,.lg td{padding:.45rem .6rem;border:1px solid var(--gray-200);text-align:left}
+.lg th{background:var(--gray-100);font-weight:600}
+.dtab th,.dtab td{padding:.35rem .5rem;border:1px solid var(--gray-200);text-align:right}
+.dtab th{background:var(--gray-100);font-weight:600;font-size:11.5px}
+.dtab tr.sum td{background:#f2fbf6;border-top:2px solid var(--black)}
+.mnum{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13px;line-height:1.9;
+ background:var(--white);border:1px solid var(--gray-200);padding:.6rem .8rem;margin-top:.5rem;
+ white-space:pre}
+.hide{display:none}
+.foot{border-top:1px solid var(--gray-200);margin-top:3rem;padding-top:1.5rem;font-size:13px;
+ color:var(--gray-500);line-height:1.8}
+.arrow{text-align:center;font-size:22px;color:var(--gray-500);margin:.5rem 0}
+
+@media (max-width:430px){
+  .wrap{padding-left:.5rem;padding-right:.5rem}
+  .card{padding-left:.75rem;padding-right:.75rem}
+  .figbox,.panel{padding-left:.5rem;padding-right:.5rem}
+  .top .in{padding-left:.5rem;padding-right:.5rem}
+  
+  
+  #p1 text,#p3 text,#p4 text,#p5 text,#p2d text,#mvFig text,#p2b text{font-size:21px}
+  
+  
+  
+  
+  .cast2{padding:.7rem .75rem}
+  .cast2 .ic{width:46px;height:46px}
+  .cast2 .row{gap:.6rem}
+  
+  
+}
+
+
+
+.cast2{border:1px solid var(--gray-200);background:var(--gray-100);
+  padding:1rem 1.1rem;margin:0 0 2.4rem}
+.cast2 .row{display:flex;gap:.9rem;align-items:flex-start}
+.cast2 .row+.row{margin-top:.9rem;padding-top:.9rem;border-top:1px solid var(--gray-200)}
+.cast2 .ic{width:54px;height:54px;border-radius:50%;flex-shrink:0;display:block;
+  border:2px solid var(--white);box-shadow:0 0 0 1px var(--gray-200),0 1px 3px rgba(0,0,0,.10)}
+.cast2 .nm2{display:block;font-size:18px;line-height:1.5;font-weight:700;margin-bottom:.2rem}
+.cast2 .rb{font-size:14px;font-weight:400;color:var(--gray-500);margin-left:.45rem}
+.cast2 .tx2{font-size:16.6px;line-height:1.831;color:var(--gray-600)}
+.cast2 .tx2 b{color:var(--black)}
+.cv{margin:1.6rem 0}
+.cl{display:flex;gap:.75rem;align-items:flex-start;margin:0 0 .85rem}
+.cl .ic{width:46px;height:46px;border-radius:50%;flex-shrink:0;display:block;
+  border:2px solid var(--white);box-shadow:0 0 0 1px var(--gray-200),0 1px 3px rgba(0,0,0,.10)}
+.cl .bb b{color:var(--black)}
+.cl .bb:before{content:'';position:absolute;left:-6px;top:15px;width:10px;height:10px;
+  background:inherit;border-left:1px solid;border-bottom:1px solid;border-color:inherit;
+  transform:rotate(45deg)}
+
+.cl.m .bb{background:#fff7ea;border-color:#efd6a6}
+.cl.d .bb{background:#eef4fa;border-color:#c3d9ee}
+
+.cl .nm{display:block;font-weight:700;letter-spacing:.07em;margin-bottom:.15rem}
+.cl.m .nm{color:#b0700c}   
+.cl.d .nm{color:#2f6fb5}   
+
+.keyh{font-size:11.5px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--gray-500);margin:1.6rem 0 .5rem}
+</style>
+</head>
+
+<body>
+
+<div class="top"><div class="in">Deep Black Box<span class="tag">AIのブラックボックスを、1問ずつ開けて手で動かす。全21問。</span></div></div>
+<div class="wrap">
+
+
+<div class="prog">
+ <div class="steps" id="steps"></div>
+ <div class="cnt" id="prog_cnt"></div>
+</div>
+<div class="chap" id="chap"></div>
+<div id="nest"></div>
+
+
+<div id="chaptab"></div>
+<div id="chapdet"></div>
+<div id="cast2"></div>
+
+<!-- ══════════════════ c1 ══════════════════ -->
+<div class="card" id="c1">
+<div class="tagline">Question 1</div>
+<h2>つまみを2個、手で回してみる</h2>
+<div id="d1a"></div>
+
+
+<div class="box">
+ <div class="h">いまから作るもの</div>
+ <div class="fg"><svg viewBox="0 0 400 280" role="img"
+   aria-label="入力の勉強した時間から、y = a × 時間 + b を通って、出力のテストの点数が出る図">
+  <rect x="40" y="4" width="320" height="70" rx="6" fill="#f6fafd" stroke="#7ea9d4" stroke-width="1.6"/>
+  <text x="52" y="26" font-size="17" font-weight="700" font-family="Inter,system-ui,sans-serif" fill="#666">入力</text>
+  <text x="200" y="58" font-size="24" text-anchor="middle" font-family="Inter,system-ui,sans-serif" fill="#1a1a1a">勉強した時間</text>
+  <line x1="200" y1="80" x2="200" y2="96" stroke="#9a9a9a" stroke-width="2.2"/>
+  <polygon points="200,106 193,94 207,94" fill="#9a9a9a"/>
+  <rect x="8" y="110" width="384" height="56" rx="6" fill="#fff" stroke="#1a1a1a" stroke-width="2.2"/>
+  <text x="200" y="146" font-size="24" text-anchor="middle" font-family="ui-monospace,SFMono-Regular,Menlo,monospace" fill="#1a1a1a">y = a × 時間 + b</text>
+  <line x1="200" y1="172" x2="200" y2="188" stroke="#9a9a9a" stroke-width="2.2"/>
+  <polygon points="200,198 193,186 207,186" fill="#9a9a9a"/>
+  <rect x="40" y="202" width="320" height="70" rx="6" fill="#fffaf0" stroke="#dcae5c" stroke-width="1.6"/>
+  <text x="52" y="224" font-size="17" font-weight="700" font-family="Inter,system-ui,sans-serif" fill="#666">出力</text>
+  <text x="200" y="256" font-size="24" text-anchor="middle" font-family="Inter,system-ui,sans-serif" fill="#1a1a1a">テストの点数</text>
+ </svg></div>
+</div>
+<div id="d1b"></div>
+
+
+
+<div id="q01top">
+<div class="panel">
+ 
+ <div class="stick"><svg id="p1" viewBox="0 0 560 330"></svg></div>
+ <div class="cap" style="margin:.2rem 0 .5rem"><b style="color:#c00">赤い線</b>
+  ＝ 点と線の<b>縦のずれ</b>。その長さが、下の式の各項になります</div>
+<div class="ctl">
+ <label for="b1"><span>つまみ <b>b</b>　線の高さ（0時間のときの点数）</span><span class="n" id="b1v">0</span></label>
+ <input type="range" id="b1" min="0" max="60" step="1" value="0">
+</div>
+<div class="ctl">
+ <label for="a1"><span>つまみ <b>a</b>　線の傾き（1時間ごとに何点増えるか）</span><span class="n" id="a1v">0.0</span></label>
+ <input type="range" id="a1" min="0" max="150" step="1" value="0">
+</div>
+ 
+
+ 
+
+ 
+ <div class="gauge">
+  <div class="row"><span class="big" id="e1">–</span><span class="u">点　＝ ずれ
+   （<b style="color:#c00">赤い線</b>が長い人を重く数えます）</span></div>
+  <div class="gtrack"><span class="gfill" id="g1" style="width:100%"></span>
+   <span class="gmark" id="m1"></span></div>
+  <div class="gcap"><span>0（ぴったり）</span><span>目標 3.0 ↑</span><span>30</span></div>
+ </div>
+
+ 
+ <div class="calc" id="resEq" style="margin:.6rem 0 0"></div>
+</div>
+
+</div><!-- /#q01top -->
+
+<div class="verdict" id="j1">赤い線が短くなるように、2つのつまみを回してください。
+ <b>長い線から先に短くすると早いです。</b></div>
+
+
+<div id="q01talk">
+<div id="d2"></div>
+</div><!-- /#q01talk -->
+
+<div id="r1" class="hide">
+ <div id="d3"></div>
+ <div class="keyh">この問で覚えること</div>
+ <div class="verdict ok">
+  <b>いまやったことが「学習」です。</b>AIも同じで、
+  違うのは<b>つまみが 1,750億個</b>あることだけです。
+ </div>
+</div>
+<div class="src">
+ <div class="h">役に立つところ</div>
+ <b>AI は 入力を1つ受けて 出力を1つ返すもの。</b>中身は掛け算と足し算で、つまみの数字を変えています。
+ 
+</div>
+</div>
+
+
+
+<div class="offpage" aria-hidden="true">
+ <button id="k2" type="button">2</button><button id="k3" type="button">3</button>
+ <button id="k4" type="button">4</button><button id="k5" type="button">5</button>
+</div>
+
+<div id="nav"></div>
+
+<div id="foot"></div>
+</div>
+
+
+<script src="common.js"></script>
+<script>
+
+var QBASE = 0;
+drawProg(1); drawChap(1, "");
+
+drawNav(["index.html","はじめのページ"], ["q02.html","問2 坂を下る"]);
+drawNest("nest", 1);
+drawChapTab(1); drawChapDet(1);
+drawCast("cast2");
+drawFoot()   ;
+
+(function(){
+
+if (typeof s4clear === 'undefined') var s4clear = function(){};
+if (typeof slid4 === 'undefined') var slid4 = function(){};
+if (typeof up2 === 'undefined') var up2 = function(){};
+if (typeof up4 === 'undefined') var up4 = function(){};
+
+
+const $=id=>document.getElementById(id);
+const show=id=>$(id).classList.remove('hide');
+const rmseOf=(X,Y,f)=>Math.sqrt(X.reduce((s,x,i)=>s+(f(x)-Y[i])**2,0)/X.length);
+
+const R2=v=>+v.toFixed(2);
+function gauge(fillId,markId,val,goal,max){
+  const g=$(fillId); g.style.width=Math.min(100,val/max*100)+'%';
+  g.classList.toggle('ok',val<=goal); $(markId).style.left=(goal/max*100)+'%';
+}
+
+function plot(el,X,Y,xr,yr,f,opt){
+  opt=opt||{}; const W=el.viewBox.baseVal.width||560, H=el.viewBox.baseVal.height||330;
+  const P={x0:opt.narrow?42:52, y0:H-64, x1:W-20, y1:48};
+  const sx=v=>P.x0+(v-xr[0])/(xr[1]-xr[0])*(P.x1-P.x0);
+  const sy=v=>P.y0+(v-yr[0])/(yr[1]-yr[0])*(P.y1-P.y0);
+  let s='';
+  for(let v=yr[0];v<=yr[1];v+=opt.ystep||20){
+    s+=`<line x1="${P.x0}" y1="${sy(v)}" x2="${P.x1}" y2="${sy(v)}" stroke="#ececec"/>`;
+    
+    s+=`<text x="${P.x0-12}" y="${sy(v)+4}" text-anchor="end" font-size="13" fill="#6e6e6e"
+         font-family="Inter">${v}</text>`;}
+  for(let v=xr[0];v<=xr[1];v+=opt.xstep||1){
+    s+=`<text x="${sx(v)}" y="${P.y0+17}" text-anchor="middle" font-size="13" fill="#6e6e6e"
+         font-family="Inter">${v}</text>`;}
+  s+=`<line x1="${P.x0}" y1="${P.y0}" x2="${P.x1}" y2="${P.y0}" stroke="#000"/>`;
+  s+=`<line x1="${P.x0}" y1="${P.y0}" x2="${P.x0}" y2="${P.y1}" stroke="#000"/>`;
+  
+  s+=`<text x="${P.x1}" y="${P.y0+52}" text-anchor="end" font-size="13" fill="#3f3f3f"
+       font-family="'Noto Serif JP',serif">${opt.xlab||''}</text>`;
+  
+  s+=`<text x="${P.x0-6}" y="20" font-size="13" fill="#3f3f3f"
+       font-family="'Noto Serif JP',serif">${opt.ylab||''}</text>`;
+  if(f){
+    let d='';
+    for(let i=0;i<=140;i++){const v=xr[0]+(xr[1]-xr[0])*i/140;
+      const yy=Math.max(yr[0]-200,Math.min(yr[1]+200,f(v)));
+      d+=(i?'L':'M')+sx(v).toFixed(1)+' '+sy(yy).toFixed(1);}
+    s+=`<clipPath id="cp${el.id}"><rect x="${P.x0}" y="${P.y1}" width="${P.x1-P.x0}"
+         height="${P.y0-P.y1}"/></clipPath>`;
+    s+=`<path d="${d}" fill="none" stroke="#019949" stroke-width="2.2"
+         clip-path="url(#cp${el.id})"/>`;
+    X.forEach((x,i)=>{ s+=`<line x1="${sx(x)}" y1="${sy(Y[i])}" x2="${sx(x)}"
+      y2="${sy(Math.max(yr[0]-20,Math.min(yr[1]+20,f(x))))}" stroke="#c00" stroke-width="1.8"
+      opacity=".85" clip-path="url(#cp${el.id})"/>`;});
+    
+    let USED=[];                                
+    
+    const PAD=5;
+    if(opt.pivot!=null && xr[0]<=0){
+      const F=17;
+      s+=`<circle cx="${sx(0)}" cy="${sy(opt.pivot)}" r="5.5" fill="#fff" stroke="#019949"
+           stroke-width="2"/>`;
+      const bx=sx(0)+9, by=sy(opt.pivot)-8;
+      s+=`<text x="${bx}" y="${by}" font-size="13" fill="#019949"
+           font-family="Inter">b</text>`;
+      
+      USED.push({x0:bx-PAD, x1:bx+0.28*F*2+PAD, y0:by-F*0.8-PAD, y1:by+F*0.2+PAD});
+    }
+    
+    if(opt.resid) X.forEach((x,i)=>{
+      
+      const F=17, ASC=F*0.8, DESC=F*0.2, M=11;  
+      const yp=sy(Y[i]);
+      const hx=(xr[1]-xr[0])*0.045;             /* 文字の横幅ぶんの x（データ単位）*/
+      let lo=1e9, hi=-1e9;
+      for(let k=-1;k<=1;k++){ const yy=sy(f(x+hx*k)); if(yy<lo)lo=yy; if(yy>hi)hi=yy; }
+      const d=Math.abs(Y[i]-f(x));
+      let up = yp<=lo;                          /* 点が線より上（画面では y が小さい）*/
+      let ty = up ? Math.min(yp,lo)-M-DESC : Math.max(yp,hi)+M+ASC;
+      if(up && ty-ASC < P.y1+2){ up=false; ty=Math.max(yp,hi)+M+ASC; }
+      if(!up && ty+DESC > P.y0-2){ up=true;  ty=Math.min(yp,lo)-M-DESC; }
+      if(ty-ASC < P.y1+2 || ty+DESC > P.y0-2) return;
+      const txt=d.toFixed(1), half=0.28*F*txt.length;
+      let tx=sx(x), an='middle';
+      if(tx-half < P.x0+3){ tx=P.x0+3; an='start'; }
+      else if(tx+half > P.x1-3){ tx=P.x1-3; an='end'; }
+      const bx0 = an==='start'? tx : an==='end'? tx-half*2 : tx-half;
+      const box={x0:bx0-PAD, x1:bx0+half*2+PAD, y0:ty-ASC-PAD, y1:ty+DESC+PAD};
+      if(USED.some(u=>u.x0<box.x1 && box.x0<u.x1 && u.y0<box.y1 && box.y0<u.y1)) return;
+      USED.push(box);
+      s+=`<text x="${tx.toFixed(1)}" y="${ty.toFixed(1)}" text-anchor="${an}"
+           font-size="13" fill="#c00" font-family="Inter" paint-order="stroke"
+           stroke="#fff" stroke-width="3.5"
+           stroke-linejoin="round">${txt}</text>`;});
+  }
+  X.forEach((x,i)=>{ s+=`<circle cx="${sx(x)}" cy="${sy(Y[i])}" r="4.2" fill="#000"/>`;});
+  
+  if(opt.anchors) opt.anchors.forEach((p,i)=>{
+    s+=`<circle cx="${sx(p[0]).toFixed(1)}" cy="${sy(p[1]).toFixed(1)}" r="6.5" fill="#ff8a2b"
+         stroke="#fff" stroke-width="2"/>`;
+    s+=`<text x="${sx(p[0]).toFixed(1)}" y="${(sy(p[1])-12).toFixed(1)}" text-anchor="middle"
+         font-size="13" fill="#c26100" font-family="Inter">${i+1}</text>`;});
+  el.innerHTML=s;
+}
+
+
+const X1=[0,1,2,3,4,5,6,7], Y1=[32,40,45,55,58,68,72,80];
+const XR1=[0,8], YR1=[0,100], GOAL1=3.0,
+      
+      OPT1={xlab:'勉強した時間',ylab:'点数',resid:true};
+let ok1=false;
+
+function resFig(a, b) {
+  
+  const d = X1.map((x, i) => a * x + b - Y1[i]);
+  const sq = d.reduce((s, v) => s + v * v, 0) / X1.length;
+  
+  const sq1 = d.slice(0, 4).map(v => Math.abs(v).toFixed(1) + '²').join(' ＋ ');
+  const sq2 = d.slice(4).map(v => Math.abs(v).toFixed(1) + '²').join(' ＋ ');
+  $('resEq').textContent =
+     `ずれ ＝ √（ (線−実際)² の合計 ÷ 8 ）\n\n`
+   + `(線−実際)² の合計\n`
+   + `  ＝ ` + sq1 + `\n`
+   + `  ＋ ` + sq2 + `\n`
+   + `  ＝ ` + (sq * 8).toFixed(2) + `\n\n`
+   + `ずれ ＝ √（ ` + (sq * 8).toFixed(2) + ` ÷ 8 ）\n`
+   + `     ＝ √ ` + sq.toFixed(2) + ` ＝ ` + Math.sqrt(sq).toFixed(2) + ` 点`;
+}
+function up1(){
+  const a=(+$('a1').value)/10, b=+$('b1').value;
+  $('a1v').textContent=a.toFixed(1); $('b1v').textContent=b;
+  const f=x=>a*x+b, e=rmseOf(X1,Y1,f);
+  resFig(a, b);
+  plot($('p1'),X1,Y1,XR1,YR1,f,Object.assign({pivot:b},OPT1));
+  $('e1').textContent=e.toFixed(2); gauge('g1','m1',R2(e),GOAL1,30);
+  const ok=R2(e)<=GOAL1;
+  $('j1').className='verdict'+(ok?' ok':'');
+  $('j1').innerHTML = ok ? `ずれ <b>${e.toFixed(2)}</b>。届きました。`
+    : (e<=6 ? `ずれ <b>${e.toFixed(2)}</b>。<b>近いです。</b>あと少し。`
+      : `ずれはいま <b>${e.toFixed(2)}</b>。目標は 3.0 以下です。`
+        );
+  gate1Label();
+  if(ok&&!ok1) pass1();
+}
+function pass1(){ ok1=true; mark(0,'done'); show('r1'); show('c2'); buildMap(); up2(); }
+
+let mv1=0;
+
+function gate1Label(){}
+function gate1(){ mv1++; gate1Label(); up1(); }
+['a1','b1'].forEach(i=>{ $(i).oninput=up1; $(i).onchange=gate1; });
+
+
+const AR=[0,15], BR=[0,60], GOAL2=1.5, LRMAX=0.0549;
+const mseOf=(a,b)=>X1.reduce((s,x,i)=>s+(a*x+b-Y1[i])**2,0)/X1.length;
+const rm2=(a,b)=>Math.sqrt(mseOf(a,b));
+
+let A2=3, B2=20, st2=0, ok2=false, div2=false, path=[[3,20]];
+let MAPBG='';   
+const MP={x0:44,y0:206,x1:288,y1:22};
+const mx_=a=>MP.x0+(a-AR[0])/(AR[1]-AR[0])*(MP.x1-MP.x0);
+const my_=b=>MP.y0-(b-BR[0])/(BR[1]-BR[0])*(MP.y0-MP.y1);
+function buildMap(){
+  if(MAPBG)return;
+  const NA=45, NB=30, w=(MP.x1-MP.x0)/NA, h=(MP.y0-MP.y1)/NB;
+  let lo=1e9, hi=0, V=[];
+  for(let i=0;i<NA;i++){V[i]=[];for(let j=0;j<NB;j++){
+    const e=rm2(AR[0]+(AR[1]-AR[0])*(i+0.5)/NA, BR[0]+(BR[1]-BR[0])*(j+0.5)/NB);
+    V[i][j]=e; if(e<lo)lo=e; if(e>hi)hi=e;}}
+  let s='';
+  for(let i=0;i<NA;i++)for(let j=0;j<NB;j++){
+    
+    const t=(Math.log(V[i][j])-Math.log(lo))/(Math.log(hi)-Math.log(lo));
+    const R=Math.round(27+t*(245-27)), G=Math.round(42+t*(246-42)), B=Math.round(68+t*(250-68));
+    s+=`<rect x="${(MP.x0+i*w).toFixed(1)}" y="${(MP.y1+(NB-1-j)*h).toFixed(1)}"
+         width="${(w+0.7).toFixed(1)}" height="${(h+0.7).toFixed(1)}"
+         fill="rgb(${R},${G},${B})"/>`;}
+  /* 枠と目盛り */
+  s+=`<rect x="${MP.x0}" y="${MP.y1}" width="${MP.x1-MP.x0}" height="${MP.y0-MP.y1}"
+       fill="none" stroke="#000"/>`;
+  [0,5,10,15].forEach(a=>s+=`<text x="${mx_(a)}" y="${MP.y0+16}" text-anchor="middle"
+    font-size="10.5" fill="#6e6e6e" font-family="Inter">${a}</text>`);
+  
+  [0,20,40,60].forEach(b=>s+=`<text x="${MP.x0-11}" y="${my_(b)+4}" text-anchor="end"
+    font-size="10.5" fill="#6e6e6e" font-family="Inter">${b}</text>`);
+  
+  s+=`<text x="${MP.x1}" y="${MP.y0+40}" text-anchor="end" font-size="11.5" fill="#3f3f3f"
+       font-family="'Noto Serif JP',serif">つまみ a</text>`;
+  
+  s+=`<text x="${MP.x0+2}" y="${MP.y1-8}" font-size="11.5" fill="#3f3f3f"
+       font-family="'Noto Serif JP',serif">つまみ b</text>`;
+  /* 谷底 */
+  const bx=mx_(6.762), by=my_(32.58);
+  s+=`<path d="M${bx-6} ${by-6}L${bx+6} ${by+6}M${bx+6} ${by-6}L${bx-6} ${by+6}"
+       stroke="#fff" stroke-width="2.4"/>`;
+  MAPBG=s;
+}
+const ANC={2:{K:[2,11],H:[41,74]}, 3:{K:[2,6.5,11],H:[22,81,55]},
+           4:{K:[2,5,8,11],H:[24,59,84,49]},
+           5:{K:[2,4.25,6.5,8.75,11],H:[25,47,78,79,48]}};
+let K4=2, H4=[50,50], ok4=false;
+function setK(n){
+  const old=ANC[K4].K.slice(), oldH=H4.slice();
+  K4=n;
+  
+  const f=x=>{ if(x<=old[0])return oldH[0];
+    if(x>=old[old.length-1])return oldH[oldH.length-1];
+    for(let i=0;i<old.length-1;i++) if(x<=old[i+1]){
+      const t=(x-old[i])/(old[i+1]-old[i]); return oldH[i]+(oldH[i+1]-oldH[i])*t; }
+    return oldH[oldH.length-1]; };
+  H4=ANC[n].K.map(k=>Math.round(f(k)));
+  [2,3,4,5].forEach(m=>$('k'+m).classList.toggle('on',m===n));
+  slid4(); up4();
+  
+  
+  s4clear(`つまみを ${n} 個にしました。<b>形はそのまま引き継ぎます</b>から、`
+   +`高さを合わせるまで ずれは変わりません。「1歩ずつ」を押してください。`);
+}
+[2,3,4,5].forEach(n=>$('k'+n).onclick=()=>setK(n));
+
+
+up1();
+gate1Label();
+
+
+var CV = {
+ "d1a": [
+  [
+   "m",
+   "博士！ 来たよ。今日から AI の中身を見せてくれるって話だったよね。"
+  ],
+  [
+   "d",
+   "やぁ学くん、よく来た！ ……<b>深井 学</b>。深く、学ぶ。いい名前だ。何度でも言うよ。"
+  ],
+  [
+   "m",
+   "もう聞いた。"
+  ],
+  [
+   "d",
+   "よし、本題だ。まずこれを見てくれ。左に<b>入力</b>、右に<b>出力</b>がある。"
+  ],
+  [
+   "f",
+   "<svg viewBox=\"0 0 560 150\" role=\"img\" aria-label=\"左の入力から中へ、中から右の出力へ矢印が伸びている図\"><rect x=\"14\" y=\"46\" width=\"120\" height=\"58\" rx=\"6\" fill=\"#f6fafd\" stroke=\"#7ea9d4\" stroke-width=\"1.8\"/><text x=\"74\" y=\"38\" font-size=\"27\" font-weight=\"700\" text-anchor=\"middle\" font-family=\"Inter,system-ui,sans-serif\" fill=\"#1a1a1a\">入力</text><text x=\"74\" y=\"82\" font-size=\"27\" text-anchor=\"middle\" font-family=\"Inter,system-ui,sans-serif\" fill=\"#444\">数を1つ</text><line x1=\"140\" y1=\"75\" x2=\"206\" y2=\"75\" stroke=\"#9a9a9a\" stroke-width=\"2.4\"/><polygon points=\"218,75 204,67 204,83\" fill=\"#9a9a9a\"/><rect x=\"224\" y=\"36\" width=\"112\" height=\"78\" rx=\"6\" fill=\"#fff\" stroke=\"#1a1a1a\" stroke-width=\"2.4\"/><text x=\"280\" y=\"84\" font-size=\"40\" font-weight=\"700\" text-anchor=\"middle\" font-family=\"Inter,system-ui,sans-serif\" fill=\"#c0392b\">？</text><line x1=\"342\" y1=\"75\" x2=\"408\" y2=\"75\" stroke=\"#9a9a9a\" stroke-width=\"2.4\"/><polygon points=\"420,75 406,67 406,83\" fill=\"#9a9a9a\"/><rect x=\"426\" y=\"46\" width=\"120\" height=\"58\" rx=\"6\" fill=\"#fffaf0\" stroke=\"#dcae5c\" stroke-width=\"1.8\"/><text x=\"486\" y=\"38\" font-size=\"27\" font-weight=\"700\" text-anchor=\"middle\" font-family=\"Inter,system-ui,sans-serif\" fill=\"#1a1a1a\">出力</text><text x=\"486\" y=\"82\" font-size=\"27\" text-anchor=\"middle\" font-family=\"Inter,system-ui,sans-serif\" fill=\"#444\">数を1つ</text><text x=\"280\" y=\"138\" font-size=\"24\" text-anchor=\"middle\" font-family=\"Inter,system-ui,sans-serif\" fill=\"#666\">中で何をしているかは、これから見ます</text></svg>"
+  ],
+  [
+   "m",
+   "入力と出力？"
+  ],
+  [
+   "d",
+   "入力に数を1つ入れると、出力に数が1つ出てくる。<b>それだけだ</b>。数学ではこれを<b>関数</b>と呼ぶ。"
+  ],
+  [
+   "m",
+   "それだけ？ ちょっと拍子抜けだよ。"
+  ],
+  [
+   "d",
+   "それだけだ。……だがな学くん、<b>ChatGPT も 入力と出力が1つずつだ。</b>"
+  ],
+  [
+   "m",
+   "えっ。"
+  ],
+  [
+   "d",
+   "入力は文章。出力は<b>次に来る単語</b>。入口と出口の形はまったく同じだ。だからここから始める。"
+  ],
+  [
+   "f",
+   "<svg viewBox=\"0 0 560 118\" role=\"img\" aria-label=\"ChatGPT は 文章を入力して 次に来る単語を出力する図\"><rect x=\"8\" y=\"34\" width=\"152\" height=\"56\" rx=\"6\" fill=\"#f6fafd\" stroke=\"#7ea9d4\" stroke-width=\"1.8\"/><text x=\"84\" y=\"26\" font-size=\"27\" font-weight=\"700\" text-anchor=\"middle\" font-family=\"Inter,system-ui,sans-serif\" fill=\"#1a1a1a\">入力</text><text x=\"84\" y=\"70\" font-size=\"27\" text-anchor=\"middle\" font-family=\"Inter,system-ui,sans-serif\" fill=\"#444\">文章</text><line x1=\"166\" y1=\"62\" x2=\"190\" y2=\"62\" stroke=\"#9a9a9a\" stroke-width=\"2.4\"/><polygon points=\"202,62 188,54 188,70\" fill=\"#9a9a9a\"/><rect x=\"208\" y=\"28\" width=\"84\" height=\"68\" rx=\"6\" fill=\"#fff\" stroke=\"#1a1a1a\" stroke-width=\"2.4\"/><text x=\"250\" y=\"70\" font-size=\"34\" font-weight=\"700\" text-anchor=\"middle\" font-family=\"Inter,system-ui,sans-serif\" fill=\"#c0392b\">？</text><line x1=\"298\" y1=\"62\" x2=\"322\" y2=\"62\" stroke=\"#9a9a9a\" stroke-width=\"2.4\"/><polygon points=\"334,62 320,54 320,70\" fill=\"#9a9a9a\"/><rect x=\"340\" y=\"34\" width=\"212\" height=\"56\" rx=\"6\" fill=\"#fffaf0\" stroke=\"#dcae5c\" stroke-width=\"1.8\"/><text x=\"446\" y=\"26\" font-size=\"27\" font-weight=\"700\" text-anchor=\"middle\" font-family=\"Inter,system-ui,sans-serif\" fill=\"#1a1a1a\">出力</text><text x=\"446\" y=\"70\" font-size=\"27\" text-anchor=\"middle\" font-family=\"Inter,system-ui,sans-serif\" fill=\"#444\">次に来る単語</text></svg>"
+  ],
+  [
+   "m",
+   "じゃあ、今日の入力と出力は何？"
+  ],
+  [
+   "d",
+   "入力は<b>勉強した時間</b>。出力は<b>テストの点数</b>。下の図がそれだ。"
+  ]
+ ],
+ "d1b": [
+  [
+   "d",
+   "8人ぶんの記録がある。そして<b>つまみは2個</b>しかない。<b>a</b> と <b>b</b> だ。"
+  ],
+  [
+   "m",
+   "たった2個？ それで点数が当たるの？"
+  ],
+  [
+   "d",
+   "回してごらん。……そして学くん、覚えておいてくれ。<b>その2個を回すことが「学習」だ。</b>"
+  ],
+  [
+   "m",
+   "学習？ AI が勉強するってこと？"
+  ],
+  [
+   "d",
+   "あとで分かる。まず回してごらん！"
+  ]
+ ],
+ "d2": [
+  [
+   "m",
+   "回したけど……この<b>赤い線</b>って何？"
+  ],
+  [
+   "d",
+   "点と線の<b>たての距離</b>だ。8人ぶん、8本ある。予想が外れた分だな。これを<b>ズレ</b>と呼ぶ。"
+  ],
+  [
+   "m",
+   "8本あるのに、下の数字は1個だけだよ。"
+  ],
+  [
+   "d",
+   "まとめるんだ。<b>2乗して、足して、8で割って、ルートを取る。</b>下の式が、それを毎回やっている。"
+  ],
+  [
+   "m",
+   "うわ、めんどくさ。なんで2乗するの？"
+  ],
+  [
+   "d",
+   "いい質問だ、学くん！ 線より<b>上</b>に外れた人と、<b>下</b>に外れた人がいるだろう。そのまま足すと、どうなる？"
+  ],
+  [
+   "m",
+   "……あっ。打ち消し合って <b>0</b> になっちゃう。外れてるのに！"
+  ],
+  [
+   "d",
+   "その通り！ 2乗すれば全部プラスだ。だから足せる。"
+  ],
+  [
+   "m",
+   "絶対値でもよくない？"
+  ],
+  [
+   "d",
+   "鋭いね！ <b>それも本物の測り方だ。</b>ただし2乗のほうが、大きく外した1人を重く見る。"
+  ],
+  [
+   "m",
+   "どっちが正しいの？"
+  ],
+  [
+   "d",
+   "どちらも正しい。<b>この問題は2乗を選んだ</b> ── それだけだ。ズレの測り方は<b>人が決める</b>。覚えておいてくれ。"
+  ],
+  [
+   "m",
+   "で、つまみは2個あるけど、どっちから回せばいいの？"
+  ],
+  [
+   "d",
+   "形が分かれている。<b>b は線ごと上下に動く。a は白い丸を軸に回る。</b>"
+  ],
+  [
+   "m",
+   "あ、だから順番にやれるんだ。まず b で高さを合わせて、次に a で傾き。"
+  ],
+  [
+   "d",
+   "そうだ！ <b>長い赤い線から先に短くする</b>と早いよ。"
+  ]
+ ],
+ "d3": [
+  [
+   "m",
+   "合った！ ズレが 3.0 を切ったよ！"
+  ],
+  [
+   "d",
+   "<b>おめでとう、学くん。いま君がやったこと ── それが「学習」だ。</b>"
+  ],
+  [
+   "m",
+   "え、これが？ つまみを2個回しただけだよ。"
+  ],
+  [
+   "d",
+   "AI も同じことをしている。<b>違うのは、つまみが 1,750億個あることだけだ。</b>"
+  ],
+  [
+   "m",
+   "1,750億……手で回したら何年かかるんだよ。"
+  ],
+  [
+   "d",
+   "そこが次の問だ。<b>手では回せない。だから機械に回させる。</b>"
+  ]
+ ]
+};
+drawCV(CV);
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="index,follow">
+<meta name="description" content="細かく分けるほど、練習の点は必ず上がる ── 問19 どこまで分ける">
+<meta property="og:title" content="Deep Black Box ── 問19 細かく分けるほど、練習の点は必ず上がる（第5章）">
+<meta property="og:description" content="細かく分けるほど、練習の点は必ず上がる ── 問19 どこまで分ける">
+
+<meta property="og:image" content="https://www.roppongivc.com/img/agora/r1/og-r1-game.jpg">
+<meta name="twitter:image" content="https://www.roppongivc.com/img/agora/r1/og-r1-game.jpg">
+<title>Deep Black Box ── 問19 細かく分けるほど、練習の点は必ず上がる（第5章）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@300;400;600;700&family=Inter:wght@300;400;500;600;700&family=Noto+Serif+JP:wght@300;400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="common.css">
+<style>
+
+.offpage{display:none}
+
+:root{
+ --bg:#fff; --white:#fff; --black:#000;
+ --gray-100:#f9f9f9; --gray-200:#d9d9d9; --gray-500:#444; --gray-600:#2a2a2a;
+ --accent:#019949;
+ --sans:'Inter',system-ui,sans-serif;
+ --serif:'Source Serif 4','Noto Serif JP',Georgia,serif;
+ --content-w:52.625rem;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--black);font-family:var(--sans);
+ -webkit-font-smoothing:antialiased}
+.wrap{max-width:var(--content-w);margin:0 auto;padding:0 1.5rem 5rem}
+.top{border-bottom:1px solid var(--gray-200);margin-bottom:2.4rem}
+
+
+.eyebrow{font-size:13px;font-weight:500;letter-spacing:.16em;text-transform:uppercase;
+ color:var(--gray-500);margin-bottom:.9rem}
+h1{font-family:var(--serif);font-size:2.1rem;font-weight:300;line-height:1.35;margin:0 0 .8rem}
+.lead b{color:var(--black)}
+.meta{font-size:13px;letter-spacing:.1em;color:var(--gray-500);padding-bottom:1.2rem;
+ border-bottom:1px solid var(--gray-200);margin-bottom:1.2rem}
+.steps{display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:2.4rem}
+.steps div{flex:1 1 5rem;padding:.55rem .3rem;text-align:center;font-size:12px;
+ border:1px solid var(--gray-200);color:var(--gray-500);background:var(--white)}
+.steps div.open{border-color:var(--black);color:var(--black)}
+.steps div.done{background:var(--black);border-color:var(--black);color:var(--white)}
+.card{border:1px solid var(--gray-200);padding:2rem;margin-bottom:2rem;background:var(--white)}
+.tagline{font-size:13px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;
+ color:var(--gray-500);margin-bottom:.9rem}
+.figbox{background:var(--gray-100);border:1px solid var(--gray-200);padding:1rem;margin:1.3rem 0}
+
+.panel{background:var(--gray-100);border:1px solid var(--gray-200);padding:1rem;margin:1.3rem 0}
+.panel .ctl{margin:.9rem 0 .2rem}
+.panel .togs{margin-top:.7rem}
+.panel .gauge{margin-top:.9rem}
+.panel .verdict{margin-top:.8rem;background:var(--white)}
+svg{display:block;width:100%;height:auto}
+.ctl{margin:1.1rem 0 .2rem}
+.ctl label{display:flex;justify-content:space-between;align-items:baseline;font-size:14px;
+ margin-bottom:.35rem;gap:1rem}
+.ctl label span.n{font-weight:600;font-variant-numeric:tabular-nums;white-space:nowrap}
+.togs{display:flex;gap:.6rem;flex-wrap:wrap;margin-top:1.1rem;align-items:center}
+.btn{background:none;border:1px solid var(--gray-200);padding:.6rem 1.15rem;font-size:14px;
+ font-family:var(--sans);color:var(--black);cursor:pointer;transition:all .15s;
+ text-decoration:none;display:inline-block}
+.btn:hover{border-color:var(--black);background:var(--gray-100)}
+.btn.on{background:var(--black);color:var(--white);border-color:var(--black)}
+.btn.go{background:var(--black);color:var(--white);border-color:var(--black)}
+.btn.sm{font-size:13px;padding:.45rem .85rem;color:var(--gray-500)}
+.gauge{margin:1.2rem 0 0}
+.gauge .row{display:flex;align-items:baseline;gap:.7rem;margin-bottom:.5rem}
+.gauge .u{font-size:14px;color:var(--gray-500)}
+.gtrack{height:10px;background:#e9e9e9;position:relative;overflow:hidden}
+.gfill{display:block;height:100%;background:#c00;transition:width .12s linear}
+.gfill.ok{background:var(--accent)}
+.gmark{position:absolute;top:-3px;bottom:-3px;width:2px;background:#000}
+.gcap{display:flex;justify-content:space-between;font-size:12px;color:var(--gray-500);
+ margin-top:.35rem}
+.big{font-family:var(--serif);font-size:2rem;font-weight:400;font-variant-numeric:tabular-nums;
+ line-height:1}
+.calc{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13.5px;line-height:2;
+ background:var(--white);border:1px solid var(--gray-200);padding:.9rem 1.1rem;margin:.9rem 0;
+ overflow-x:auto;white-space:pre}
+.verdict{margin-top:1.2rem;padding:.9rem 1.1rem;border:1px solid var(--gray-200);font-size:14px;
+ line-height:1.75;background:var(--gray-100)}
+.verdict.ok{border-color:var(--accent);background:#f2fbf6}
+.verdict.stuck{border-color:#c00;background:#fdf4f4}
+.src{border-left:2px solid var(--black);padding:.9rem 0 .9rem 1.1rem;margin:1.4rem 0;
+ font-size:14px;line-height:1.85;color:var(--gray-600)}
+.src .h{font-size:12px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;
+ color:var(--black);margin-bottom:.4rem}
+.box{border:1px solid var(--gray-200);padding:1.1rem 1.3rem;margin:1.3rem 0;background:var(--gray-100)}
+.box .h{font-size:12px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;
+ margin-bottom:.5rem}
+.mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+
+.grow{display:flex;align-items:center;gap:.5rem;margin-bottom:.5rem;flex-wrap:wrap}
+.grow .gn{width:9.4rem;font-size:14px;flex-shrink:0;font-variant-numeric:tabular-nums}
+.grow .gb{font-size:13px;padding:.35rem .8rem}
+.grow .gv{font-size:13px;color:var(--gray-500);font-variant-numeric:tabular-nums}
+
+.sc-row{display:flex;align-items:center;gap:.5rem;margin-bottom:.55rem}
+.sc-label{width:8.6rem;font-size:13.5px;text-align:right;flex-shrink:0}
+.sc-track{flex:1;background:#e9e9e9;height:11px;position:relative;min-width:2rem}
+.sc-fill{display:block;height:100%;background:var(--black);transition:width .18s linear}
+.sc-fill.hit{background:var(--accent)}
+.sc-pct{width:4.2rem;font-size:13.5px;font-variant-numeric:tabular-nums;flex-shrink:0}
+details{border-top:1px solid var(--gray-200);padding-top:1rem;margin-top:1.5rem}
+summary{font-size:14px;font-weight:500;cursor:pointer}
+.lg{font-size:14px;line-height:1.9;color:var(--gray-600);margin-top:.9rem}
+.dtab th,.dtab td{padding:.4rem .55rem;border:1px solid var(--gray-200);text-align:right}
+.dtab th{background:var(--gray-100);font-weight:600;font-size:11.5px}
+.dtab td.l,.dtab th.l{text-align:left}
+.dtab tr.bad td{background:#fdf4f4}
+.foot{border-top:1px solid var(--gray-200);margin-top:3rem;padding-top:1.5rem;font-size:13px;
+ color:var(--gray-500);line-height:1.8}
+
+
+@media (max-width:430px){
+  .wrap{padding-left:.5rem;padding-right:.5rem}
+  
+  .calc{font-size:12px;padding-left:.7rem;padding-right:.7rem}
+  .card{padding-left:.75rem;padding-right:.75rem}
+  .box,.figbox,.panel{padding-left:.5rem;padding-right:.5rem}
+  .top .in{padding-left:.5rem;padding-right:.5rem}
+  #bd0 text,#fig17 text,#p19a text,#p19b text{font-size:17px}
+  .grow .gn{width:100%}
+  .sc-label{width:7.4rem}
+  
+  .stick{position:sticky;top:0;z-index:5;background:var(--gray-100);
+         padding-bottom:.35rem;box-shadow:0 6px 8px -6px rgba(0,0,0,.18)}
+  .stickbot{position:sticky;bottom:0;z-index:5;background:var(--gray-100);
+            padding-top:.4rem;box-shadow:0 -6px 8px -6px rgba(0,0,0,.18)}
+  
+  
+  
+  .cast2{padding:.7rem .75rem}
+  .cast2 .ic{width:46px;height:46px}
+  .cast2 .row{gap:.6rem}
+  
+}
+
+
+.cast2{border:1px solid var(--gray-200);background:var(--gray-100);
+  padding:1rem 1.1rem;margin:0 0 2.4rem}
+.cast2 .row{display:flex;gap:.9rem;align-items:flex-start}
+.cast2 .row+.row{margin-top:.9rem;padding-top:.9rem;border-top:1px solid var(--gray-200)}
+.cast2 .ic{width:54px;height:54px;border-radius:50%;flex-shrink:0;display:block;
+  border:2px solid var(--white);box-shadow:0 0 0 1px var(--gray-200),0 1px 3px rgba(0,0,0,.10)}
+.cast2 .nm2{display:block;font-size:18px;line-height:1.5;font-weight:700;margin-bottom:.2rem}
+.cast2 .rb{font-size:14px;font-weight:400;color:var(--gray-500);margin-left:.45rem}
+.cast2 .tx2{font-size:16.6px;line-height:1.831;color:var(--gray-600)}
+.cast2 .tx2 b{color:var(--black)}
+.cv{margin:1.6rem 0}
+.cl{display:flex;gap:.75rem;align-items:flex-start;margin:0 0 .85rem}
+.cl .ic{width:46px;height:46px;border-radius:50%;flex-shrink:0;display:block;
+  border:2px solid var(--white);box-shadow:0 0 0 1px var(--gray-200),0 1px 3px rgba(0,0,0,.10)}
+.cl .bb b{color:var(--black)}
+.cl .bb:before{content:'';position:absolute;left:-6px;top:15px;width:10px;height:10px;
+  background:inherit;border-left:1px solid;border-bottom:1px solid;border-color:inherit;
+  transform:rotate(45deg)}
+
+.cl.m .bb{background:#fff7ea;border-color:#efd6a6}
+.cl.d .bb{background:#eef4fa;border-color:#c3d9ee}
+
+.cl .nm{display:block;font-weight:700;letter-spacing:.07em;margin-bottom:.15rem}
+.cl.m .nm{color:#b0700c}   
+.cl.d .nm{color:#2f6fb5}   
+.keyh{font-size:11.5px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--gray-500);margin:1.6rem 0 .5rem}
+
+
+/* ⒜ 2本のゲージ ── 練習の点と初見の点を縦に並べる */
+.g2{margin:1rem 0 0}
+.g2 .r{display:flex;align-items:baseline;gap:.6rem;margin-bottom:.3rem}
+.g2 .lb{font-size:12.5px;color:var(--gray-500);width:9.6rem;flex-shrink:0}
+.g2 .nv{font-family:var(--serif);font-size:1.5rem;font-weight:400;
+  font-variant-numeric:tabular-nums;line-height:1}
+.g2 .u{font-size:12.5px;color:var(--gray-500)}
+.g2 .tr{height:9px;background:#e9e9e9;position:relative;overflow:hidden;margin-bottom:.7rem}
+.g2 .fl{display:block;height:100%;transition:width .12s linear}
+.g2 .fl.a{background:#2f6fb5}          /* 練習の点＝青 */
+.g2 .fl.b{background:#c00}             /* 初見の点＝赤 */
+.g2 .fl.b.ok{background:var(--accent)} 
+/* ⒝ 891人の帯（当たり／外れ） */
+.band{height:26px;display:flex;border:1px solid var(--gray-200);overflow:hidden}
+.band .hit{background:var(--accent)}
+.band .mis{background:var(--white)}
+.band .sp{border-left:1px solid var(--gray-200)}
+.bandcap{display:flex;justify-content:space-between;font-size:12px;
+  color:var(--gray-500);margin-top:.3rem}
+/* ⒟ 表の実物（横に広いので横スクロールの枠に入れる） */
+.rawwrap{overflow-x:auto;margin:.9rem 0;border:1px solid var(--gray-200)}
+.rawtab{border-collapse:collapse;font-size:11.5px;white-space:nowrap;
+  font-variant-numeric:tabular-nums}
+.rawtab th,.rawtab td{padding:.35rem .5rem;border-bottom:1px solid var(--gray-200);
+  border-right:1px solid var(--gray-200);text-align:left}
+.rawtab th{background:var(--gray-100);font-weight:600;font-size:10.5px}
+.rawtab td.y{background:#f2fbf6;font-weight:600}
+.rawtab th.y{background:#d9f0e4}
+
+.pick{display:flex;gap:.5rem;flex-wrap:wrap;margin:.8rem 0}
+.pick .btn{flex:1 1 6rem}
+.pick .btn.sel{background:var(--black);color:var(--white);border-color:var(--black)}
+.locked{opacity:.35;pointer-events:none}
+@media (max-width:430px){
+  .g2 .lb{width:7.2rem;font-size:11.5px}
+  .g2 .nv{font-size:1.3rem}
+  #ln20 text,#tree20 text,#dt20 text,#cv20 text,#bar21 text{font-size:17px}
+  .rawtab{font-size:10.5px}
+}
+</style>
+</head>
+<body>
+
+<div class="top"><div class="in">Deep Black Box<span class="tag">AIのブラックボックスを、1問ずつ開けて手で動かす。全21問。</span></div></div>
+<div class="wrap">
+
+
+<div class="prog">
+ <div class="steps" id="steps"></div>
+ <div class="cnt" id="prog_cnt"></div>
+</div>
+<div class="chap" id="chap"></div>
+
+<!-- ══════════════════ c19 ══════════════════ -->
+<div class="card" id="c19">
+<div class="tagline">Question 19</div>
+<h2>細かく分けるほど、練習の点は<b>必ず</b>上がる</h2>
+<div id="e19a"></div>
+
+
+<div class="figbox">
+ <svg id="col19" viewBox="0 0 560 232"></svg>
+ <div class="cap">問18 では <b>性別 × 等級 ＝ 6組</b>でした。<b>そこに列を足していきます。</b><br>
+  年齢は <b>88通り</b>もあるので、そのままでは組が細かすぎます。だから <b>10歳ごと</b>に区切ります
+  （0〜9歳・10〜19歳・…・空欄）。運賃は <b>安いほうから4等分</b>にしました。<br>
+  <b>この区切り方を決めるのは 人です。</b>正解はありません。</div>
+</div>
+
+<div id="e19a2"></div>
+
+
+<div class="figbox">
+ <svg id="age19" viewBox="0 0 560 300"></svg>
+ <div class="cap"><b>組を割ると、それぞれの中で もう一度 同じことをします</b>
+  ── 帯の中の生存と死亡を数えて、<b>多いほうを その帯の答えにする</b>。<br>
+  だから<b>割るほど 外れが減ります</b>。同点だった144人も、年齢で割れば片方に寄る帯が出てきます。</div>
+</div>
+
+<div class="panel">
+ <div class="ctl">
+  <label><span>どこまで列を使うか</span><span class="n" id="v19">分けない</span></label>
+  <input type="range" id="s19" min="0" max="7" step="1" value="0">
+ </div>
+ <div class="cap"><b>891人が <span id="n19">1</span>組に分かれます</b>
+  ── 下の帯1本が891人。<b>縦線が組の切れ目</b>です</div>
+ <div class="band" id="bar19g"></div>
+ <div class="cap" style="margin:.45rem 0 .5rem" id="bc19g">–</div>
+ <div class="cap" style="margin-bottom:.3rem"><b style="color:var(--accent)">緑＝当たった人</b>
+  ／ 白＝外した人（組ごとに<b>多いほう</b>を答えます）</div>
+ <div class="band" id="bar19"></div>
+ <div class="bandcap"><span id="bc19a">当たり –</span><span id="bc19b">外し –</span></div>
+ <div class="gauge">
+  <div class="row"><span class="big" id="h19">–</span>
+   <span class="u">人 当たり ＝ <b>練習の点</b>（答えを知っている891人で採点）</span></div>
+  <div class="gtrack"><span class="gfill" id="g19"></span><span class="gmark" id="m19"></span></div>
+  <div class="gcap"><span>500</span><span>目標 891</span><span>891</span></div>
+ </div>
+ <div class="verdict" id="j19">つまみを動かしてください。</div>
+</div>
+
+<div id="e19b"></div>
+
+
+<div id="r19" class="hide">
+<div class="keyh">この問で覚えること</div>
+<div class="verdict ok">
+ <b>細かく分けるほど、練習の点は必ず上がります。極限では 100% になります。</b><br>
+ だから <b>練習の点がいちばん高いものを選ぶと、必ず「丸暗記」を選ぶことになります。</b>
+ <b>練習の点は、良し悪しの物差しになりません。</b>
+</div>
+<div class="src">
+ <div class="h">問11 と同じかたち</div>
+ 出席番号を入力に入れると、練習用は満点なのに 試験用で落ちました。<b>あれと同じことです。</b>
+ 名前は <b>過学習</b>。<br>
+ <span style="color:var(--gray-500)">では、どこで止めればいいのか
+  ── それを測る物差しが次の問で出てきます。</span>
+</div>
+</div>
+
+</div>
+
+
+<div id="nav"></div>
+
+<div id="foot"></div>
+</div>
+
+
+<script src="common.js"></script>
+<script>
+
+var QBASE = 18;
+drawProg(19); drawChap(19, "");
+drawNav(["q18.html","問18 組で決める"], ["q20.html","問20 列を作る"]);
+drawFoot()   ;
+
+(function(){
+
+if (typeof drawBar === 'undefined') var drawBar = function(){};
+if (typeof drawBd0 === 'undefined') var drawBd0 = function(){};
+if (typeof drawCmp === 'undefined') var drawCmp = function(){};
+if (typeof drawCv === 'undefined') var drawCv = function(){};
+if (typeof drawDt === 'undefined') var drawDt = function(){};
+if (typeof drawGrid18 === 'undefined') var drawGrid18 = function(){};
+if (typeof drawMs21 === 'undefined') var drawMs21 = function(){};
+if (typeof drawMz2 === 'undefined') var drawMz2 = function(){};
+if (typeof drawMz21 === 'undefined') var drawMz21 = function(){};
+if (typeof drawNa0 === 'undefined') var drawNa0 = function(){};
+if (typeof drawNm === 'undefined') var drawNm = function(){};
+if (typeof drawRank21 === 'undefined') var drawRank21 = function(){};
+if (typeof drawRaw === 'undefined') var drawRaw = function(){};
+if (typeof drawSex18 === 'undefined') var drawSex18 = function(){};
+if (typeof drawTab21p === 'undefined') var drawTab21p = function(){};
+if (typeof drawTit === 'undefined') var drawTit = function(){};
+if (typeof rows18 === 'undefined') var rows18 = function(){};
+if (typeof rows18s === 'undefined') var rows18s = function(){};
+if (typeof up18 === 'undefined') var up18 = function(){};
+if (typeof up18s === 'undefined') var up18s = function(){};
+if (typeof up20 === 'undefined') var up20 = function(){};
+
+
+
+'use strict';
+const $ = id => document.getElementById(id);
+const SVGNS = 'http://www.w3.org/2000/svg';
+function el(tag, at, txt){
+  const n = document.createElementNS(SVGNS, tag);
+  for (const k in at) n.setAttribute(k, at[k]);
+  if (txt !== undefined) n.textContent = txt;
+  return n;
+}
+function ce(tag, cls, txt){
+  const n = document.createElement(tag);
+  if (cls) n.className = cls;
+  if (txt !== undefined) n.textContent = txt;
+  return n;
+}
+const N891 = 891, ALL_DEAD = 549, SEX_ONLY = 701;
+
+
+const ST8 = [
+  ['分けない',          1, 549], ['＋性別',            2, 701],
+  ['＋客室の等級',      6, 701], ['＋年齢帯',         50, 727],
+  ['＋乗った港',      102, 745], ['＋運賃',          202, 775],
+  ['＋家族の人数',    339, 801], ['番号で1人ずつ',   891, 891]
+];
+
+const GLO = 500, GHI = 760;
+/* ══════ 帯（891人。当たり＝緑／外れ＝白。cuts があれば葉の切れ目を入れる） ══════ */
+function band(id, hit, cuts){
+  const b = $(id); b.innerHTML = '';
+  if (cuts){
+    let acc = 0;
+    cuts.forEach((c, i) => {
+      const d = ce('span', 'sp' + (i ? '' : ''));
+      d.style.width = (c / N891 * 100).toFixed(3) + '%';
+      d.style.background = '#f4f4f4';
+      if (i) d.style.borderLeft = '1px solid #999';
+      b.appendChild(d);
+      acc += c;
+    });
+    return;
+  }
+  const h = ce('span', 'hit'); h.style.width = (hit / N891 * 100).toFixed(3) + '%';
+  const m = ce('span', 'mis'); m.style.width = (100 - hit / N891 * 100).toFixed(3) + '%';
+  b.appendChild(h); b.appendChild(m);
+}
+
+/* ══════════════════ 問19 ══════════════════ */
+
+
+
+function K19(id, base){
+  if (!window.matchMedia || !matchMedia('(max-width:430px)').matches) return 1;
+  const e = $(id); if (!e || !e.getBoundingClientRect) return 1;
+  const w = e.getBoundingClientRect().width || 330;
+  const vw = (e.viewBox && e.viewBox.baseVal && e.viewBox.baseVal.width) || 560;
+  return Math.min(2.2, Math.max(1, Math.ceil(10 * vw / w / base * 100) / 100));
+}
+function drawCol19(){
+  const s2 = $('col19'); s2.innerHTML = '';
+  const Kc = K19('col19', 13), F = v => Math.round(v * Kc * 100) / 100, 縦 = Kc > 1;
+  s2.appendChild(el('text', {x:0, y:20, 'font-size':F(13.5), fill:'#6e6e6e'},
+    '列を足すと、組がいくつになるか'));
+  ST8.forEach((st, i) => {
+    const y = 30 + i * 22;
+    s2.appendChild(el('text', {x:0, y:(y+13).toFixed(1), 'font-size':F(13.5), fill:'#000'}, st[0]));
+    
+    const W2 = 300, w2 = Math.max(3, Math.log(st[1]) / Math.log(N891) * W2);
+    s2.appendChild(el('rect', {x:196, y:y, width:w2.toFixed(1), height:14, fill:'#3f3f3f'}));
+    s2.appendChild(el('text', {x:556, y:(y+12).toFixed(1), 'text-anchor':'end',
+      'font-size':F(13.5), fill:'#000'}, st[1] + '組'));
+  });
+  if (縦) {
+    
+    s2.appendChild(el('text', {x:0, y:226, 'font-size':F(13), fill:'#6e6e6e'},
+      '棒の長さ＝組の数（1組から891組まで幅がありすぎるので、'));
+    s2.appendChild(el('text', {x:0, y:248, 'font-size':F(13), fill:'#6e6e6e'},
+      '圧縮して描いています）'));
+    s2.setAttribute('viewBox', '0 0 560 256');
+  } else {
+  s2.appendChild(el('text', {x:0, y:226, 'font-size':13, fill:'#6e6e6e'},
+    '棒の長さ＝組の数（1組から891組まで幅がありすぎるので、圧縮して描いています）'));
+  }
+}
+
+const AGE19 = [['0代',21,11],['10代',24,13],['20代',31,15],['30代',16,7],
+               ['40代',9,0],['60代',1,1],['空欄',42,25]];
+function drawAge19(){
+  const s2 = $('age19'); s2.innerHTML = '';
+  
+  const Ka = K19('age19', 13), F = v => Math.round(v * Ka * 100) / 100, 縦 = Ka > 1;
+  
+  const xl = 縦 ? 176 : 150, xw = 縦 ? 214 : 250, x50 = xl + xw * 0.5;
+  const gap = 縦 ? 20 : 10;
+  s2.appendChild(el('text', {x:0, y:18, 'font-size':F(13.5), fill:'#000'},
+    '女 3等 144人  生存72 対 死亡72  生存率 0.5000'));
+  s2.appendChild(el('text', {x:0, y:38, 'font-size':F(13), fill:'#6e6e6e'},
+    'どちらに決めても 当たり 72人（＝ 問18 で行き止まりになった組）'));
+  s2.appendChild(el('text', {x:0, y:62, 'font-size':F(13), fill:'#c00'}, '↓ 年齢帯（10歳ごと）で割る'));
+  s2.appendChild(el('line', {x1:x50, y1:72, x2:x50, y2:72+AGE19.length*24+4,
+    stroke:'#000', 'stroke-width':1.2}));
+  s2.appendChild(el('text', {x:x50, y:70, 'text-anchor':'middle', 'font-size':F(13), fill:'#000'}, '0.5'));
+  let hit = 0, tot = 0;
+  AGE19.forEach((g, i) => {
+    const y = 88 + i * 24, nn = g[1], a = g[2], d = nn - a, r = a / nn;
+    const c = Math.max(a, d); hit += c; tot += nn;
+    s2.appendChild(el('text', {x:0, y:(y+4).toFixed(1), 'font-size':F(13.5), fill:'#000'},
+      g[0] + '  ' + nn + '人  生' + a + ' 死' + d));
+    s2.appendChild(el('line', {x1:xl, y1:y, x2:xl+xw, y2:y, stroke:'#ececec'}));
+    const cx = xl + xw * r, on = a > d;
+    s2.appendChild(el('circle', {cx:cx.toFixed(1), cy:y, r:5, fill:on ? '#019949' : '#3f3f3f'}));
+    s2.appendChild(el('text', {x:(xl+xw+gap).toFixed(1), y:(y+4).toFixed(1), 'font-size':F(13.5),
+      fill:on ? '#019949' : '#3f3f3f'}, (on ? '生存' : '死亡') + ' → 当たり ' + c));
+  });
+  const yb = 88 + AGE19.length * 24 + 12;
+  s2.appendChild(el('text', {x:0, y:yb, 'font-size':F(13.5), fill:'#000'},
+    '合計 ' + tot + '人 ── 当たり 72人 → ' + hit + '人（＋' + (hit - 72) + '人）'));
+  if (縦) {
+    s2.appendChild(el('text', {x:0, y:yb+20, 'font-size':F(13), fill:'#6e6e6e'},
+      '点が 0.5 より右の帯は「生存」、左の帯は「死亡」。'));
+    s2.appendChild(el('text', {x:0, y:yb+42, 'font-size':F(13), fill:'#6e6e6e'},
+      '帯ごとに多いほうを答えるだけです'));
+    s2.setAttribute('viewBox', '0 0 560 318');
+  } else {
+  s2.appendChild(el('text', {x:0, y:yb+20, 'font-size':F(13), fill:'#6e6e6e'},
+    '点が 0.5 より右の帯は「生存」、左の帯は「死亡」。帯ごとに多いほうを答えるだけです'));
+  }
+}
+function up19(){
+  const k = +$('s19').value, st = ST8[k], hit = st[2];
+  $('v19').textContent = st[0];
+  $('n19').textContent = st[1];
+  
+  const bg = $('bar19g'); bg.innerHTML = '';
+  const shown = Math.min(st[1], 60);
+  for (let i = 0; i < shown; i++){
+    const sp = ce('span'); sp.style.width = (100 / shown).toFixed(3) + '%';
+    sp.style.background = '#f4f4f4';
+    if (i) sp.style.borderLeft = '1px solid #999';
+    bg.appendChild(sp);
+  }
+  $('bc19g').textContent = (st[1] <= 60)
+    ? '組の数 ' + st[1] + '（切れ目の位置は実際とは違います。数だけを見せています）'
+    : '組の数 ' + st[1] + '（細かすぎるので 60個ぶんだけ描いています）';
+  band('bar19', hit);
+  $('bc19a').textContent = '当たった ' + hit + '人';
+  $('bc19b').textContent = '外した ' + (N891 - hit) + '人';
+  $('h19').textContent = hit;
+  const p2 = Math.max(0, Math.min(100, (hit - GLO) / (N891 - GLO) * 100));
+  const f = $('g19'); f.style.width = p2.toFixed(2) + '%';
+  f.classList.toggle('ok', hit >= N891);
+  $('m19').style.left = '100%';
+  const j = $('j19');
+  if (k === 0){
+    j.className = 'verdict';
+    j.innerHTML = '<b>549人。</b>まだ1列も使っていません（891人が1組＝全員に「死亡」）。つまみを右へ。';
+  } else if (k === 2){
+    j.className = 'verdict stuck';
+    j.innerHTML = '<b>701人。客室の等級を足したのに、1人も増えていません。</b>'
+      + '問18 で確かめたとおりです。<b>それでも つまみを右へ。</b>';
+  } else if (k === 7){
+    j.className = 'verdict ok';
+    j.innerHTML = '<b>891人。全員 当たりました（練習の点 100.00%）。</b>'
+      + '891組 ＝ 1組に1人。<b>「その組で多いほう」は、その1人の答えそのもの</b>です。<br>'
+      + 'あなたは法則を見つけたのではなく、<b>891人の名簿を写しました。</b>'
+      + '本番の番号 892〜1309 は、この名簿に1つもありません。';
+  } else {
+    j.className = 'verdict';
+    j.innerHTML = '<b>' + hit + '人</b>（練習の点 ' + (hit / N891 * 100).toFixed(2) + '%）。'
+      + st[1] + '組。<b>1度も減っていません。</b>';
+  }
+  if (k === 7) $('r19').classList.remove('hide');
+  $('steps').children[1].className = (k === 7) ? 'done' : 'open';
+}
+/* ══════════════════ 立ち上げ ══════════════════ */
+drawRaw(); drawBd0(); drawNa0();
+drawSex18(); rows18s(); up18s();
+drawGrid18();
+rows18(); up18();
+drawCol19(); drawAge19(); $('s19').oninput = up19; up19();
+drawDt(); drawMz21(); drawMz2(); drawRank21(); drawCv();
+up20();
+drawNm(); drawTit(); drawMs21(); drawTab21p();
+drawBar(); drawCmp();
+
+
+
+
+
+var CV = {
+ "e19a": [
+  [
+   "d",
+   "まだ使っていない列がある。<b>年齢・乗った港・運賃・家族の人数</b>だ。"
+  ],
+  [
+   "m",
+   "それも足していくの？"
+  ],
+  [
+   "d",
+   "足す。……ただし<b>年齢はそのままでは使えん。</b>891人の年齢は <b>88通り</b>あるよ。"
+  ],
+  [
+   "m",
+   "88通り？ それだと組が すごく細かくなる。"
+  ],
+  [
+   "d",
+   "そうだ。だから<b>10歳ごとに区切る</b>。0〜9歳、10〜19歳……という具合にな。"
+  ],
+  [
+   "m",
+   "誰が10歳ごとって決めたの？"
+  ],
+  [
+   "d",
+   "<b>私が決めた。</b>正解があるわけではない。運賃も<b>安いほうから4等分</b>にした。……<b>区切り方を決めるのは人だ。</b>"
+  ],
+  [
+   "m",
+   "列を足すと、組はどれくらい増えるの？"
+  ],
+  [
+   "d",
+   "<b>すぐ下の図</b>を見てごらん。<b>1組から891組まで</b>いくよ。"
+  ]
+ ],
+ "e19a2": [
+  [
+   "m",
+   "組が増えるのは分かった。……でも、<b>割った先では何をするの？</b>"
+  ],
+  [
+   "d",
+   "<b>問18 と同じことを もう一度やるだけだ。</b>帯の中の生存と死亡を数えて、<b>多いほうをその帯の答えにする。</b>"
+  ],
+  [
+   "m",
+   "それだけ？"
+  ],
+  [
+   "d",
+   "それだけだ。……<b>女3等の144人</b>を覚えているか。<b>72対72</b>で行き止まりになった組だ。"
+  ],
+  [
+   "m",
+   "どっちに決めても 72人だった組。"
+  ],
+  [
+   "d",
+   "あれを<b>年齢で割る</b>とどうなる。<b>すぐ下の図</b>を見てごらん。"
+  ],
+  [
+   "m",
+   "……<b>0代と10代は生存のほうが多い</b>。20代・30代・40代は死亡のほうが多い。"
+  ],
+  [
+   "d",
+   "<b>帯ごとに多いほうを答えると 84人 当たる。72人から ＋12人だよ。</b>"
+  ],
+  [
+   "m",
+   "同点だった組が、割ったら<b>片方に寄る帯</b>が出てくるんだ。"
+  ],
+  [
+   "d",
+   "<b>そこだ！</b>だから<b>割るほど 外れが減る。</b>……<b>目標は 891人 ぜんぶだ。</b>つまみを右へ回してごらん。"
+  ]
+ ],
+ "e19b": [
+  [
+   "m",
+   "<b>891人。全部 当たった。</b>100%だ。……これでいいんじゃないの？"
+  ],
+  [
+   "d",
+   "<b>いちばん右は 何で分けた。</b>"
+  ],
+  [
+   "m",
+   "<b>乗客の番号</b>。……あ。891人が891組。<b>1組に1人</b>だ。"
+  ],
+  [
+   "d",
+   "そうだ。<b>その組で多いほう</b>は、<b>その1人の答えそのもの</b>になる。"
+  ],
+  [
+   "m",
+   "法則を見つけたんじゃなくて、<b>名簿を写しただけ</b>だ。"
+  ],
+  [
+   "d",
+   "そこだ！ ……そして<b>本番の番号は 892番から</b>だよ。この名簿に1つもない。"
+  ],
+  [
+   "m",
+   "覚えたものが 1つも使えない。"
+  ],
+  [
+   "d",
+   "……学くん、いま君が見ていた数字には<b>名前がある。練習の点</b>だ。<b>答えを知っている891人</b>で採点した点だからな。"
+  ],
+  [
+   "m",
+   "答えを知ってる人で採点……。それって、当たり前に当たるよね。"
+  ],
+  [
+   "d",
+   "<b>そこに気づいたか。</b>……よく聞いてくれ。<b>細かく分けるほど 練習の点は必ず上がる。極限では100%になる。</b>"
+  ],
+  [
+   "m",
+   "じゃあ<b>練習の点がいちばん高いものを選ぶと、必ず丸暗記を選ぶ</b>ことになる。"
+  ],
+  [
+   "d",
+   "<b>そういうことだ。練習の点は 良し悪しの物差しにならん。</b>"
+  ],
+  [
+   "m",
+   "……<b>問11</b>と同じだ。出席番号を入れたら練習は満点で、試験用で落ちた。"
+  ],
+  [
+   "d",
+   "<b>よく覚えていたな。名前は 過学習だ。</b>これがその入口だよ。"
+  ],
+  [
+   "m",
+   "じゃあ どこで止めればいいの。何を見て決めるの。"
+  ],
+  [
+   "d",
+   "<b>それが次の問だ。</b>……<b>この教材でいちばん大事な問</b>だよ。"
+  ]
+ ]
+};
+drawCV(CV);
+})();
+</script>
+</body>
+</html>

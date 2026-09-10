@@ -1,0 +1,1396 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="index,follow">
+<meta name="description" content="上げるほど、下がる場所がある ── 問21 どこで止める">
+<meta property="og:title" content="Deep Black Box ── 問21 上げるほど、下がる場所がある（第5章）">
+<meta property="og:description" content="上げるほど、下がる場所がある ── 問21 どこで止める">
+
+<meta property="og:image" content="https://www.roppongivc.com/img/agora/r1/og-r1-game.jpg">
+<meta name="twitter:image" content="https://www.roppongivc.com/img/agora/r1/og-r1-game.jpg">
+<title>Deep Black Box ── 問21 上げるほど、下がる場所がある（第5章）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@300;400;600;700&family=Inter:wght@300;400;500;600;700&family=Noto+Serif+JP:wght@300;400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="common.css">
+<style>
+
+.offpage{display:none}
+
+:root{
+ --bg:#fff; --white:#fff; --black:#000;
+ --gray-100:#f9f9f9; --gray-200:#d9d9d9; --gray-500:#444; --gray-600:#2a2a2a;
+ --accent:#019949;
+ --sans:'Inter',system-ui,sans-serif;
+ --serif:'Source Serif 4','Noto Serif JP',Georgia,serif;
+ --content-w:52.625rem;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--black);font-family:var(--sans);
+ -webkit-font-smoothing:antialiased}
+.wrap{max-width:var(--content-w);margin:0 auto;padding:0 1.5rem 5rem}
+.top{border-bottom:1px solid var(--gray-200);margin-bottom:2.4rem}
+
+
+.eyebrow{font-size:13px;font-weight:500;letter-spacing:.16em;text-transform:uppercase;
+ color:var(--gray-500);margin-bottom:.9rem}
+h1{font-family:var(--serif);font-size:2.1rem;font-weight:300;line-height:1.35;margin:0 0 .8rem}
+.lead b{color:var(--black)}
+.meta{font-size:13px;letter-spacing:.1em;color:var(--gray-500);padding-bottom:1.2rem;
+ border-bottom:1px solid var(--gray-200);margin-bottom:1.2rem}
+.steps{display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:2.4rem}
+.steps div{flex:1 1 5rem;padding:.55rem .3rem;text-align:center;font-size:12px;
+ border:1px solid var(--gray-200);color:var(--gray-500);background:var(--white)}
+.steps div.open{border-color:var(--black);color:var(--black)}
+.steps div.done{background:var(--black);border-color:var(--black);color:var(--white)}
+.card{border:1px solid var(--gray-200);padding:2rem;margin-bottom:2rem;background:var(--white)}
+.tagline{font-size:13px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;
+ color:var(--gray-500);margin-bottom:.9rem}
+.figbox{background:var(--gray-100);border:1px solid var(--gray-200);padding:1rem;margin:1.3rem 0}
+
+.panel{background:var(--gray-100);border:1px solid var(--gray-200);padding:1rem;margin:1.3rem 0}
+.panel .ctl{margin:.9rem 0 .2rem}
+.panel .togs{margin-top:.7rem}
+.panel .gauge{margin-top:.9rem}
+.panel .verdict{margin-top:.8rem;background:var(--white)}
+svg{display:block;width:100%;height:auto}
+.ctl{margin:1.1rem 0 .2rem}
+.ctl label{display:flex;justify-content:space-between;align-items:baseline;font-size:14px;
+ margin-bottom:.35rem;gap:1rem}
+.ctl label span.n{font-weight:600;font-variant-numeric:tabular-nums;white-space:nowrap}
+.togs{display:flex;gap:.6rem;flex-wrap:wrap;margin-top:1.1rem;align-items:center}
+.btn{background:none;border:1px solid var(--gray-200);padding:.6rem 1.15rem;font-size:14px;
+ font-family:var(--sans);color:var(--black);cursor:pointer;transition:all .15s;
+ text-decoration:none;display:inline-block}
+.btn:hover{border-color:var(--black);background:var(--gray-100)}
+.btn.on{background:var(--black);color:var(--white);border-color:var(--black)}
+.btn.go{background:var(--black);color:var(--white);border-color:var(--black)}
+.btn.sm{font-size:13px;padding:.45rem .85rem;color:var(--gray-500)}
+.gauge{margin:1.2rem 0 0}
+.gauge .row{display:flex;align-items:baseline;gap:.7rem;margin-bottom:.5rem}
+.gauge .u{font-size:14px;color:var(--gray-500)}
+.gtrack{height:10px;background:#e9e9e9;position:relative;overflow:hidden}
+.gfill{display:block;height:100%;background:#c00;transition:width .12s linear}
+.gfill.ok{background:var(--accent)}
+.gmark{position:absolute;top:-3px;bottom:-3px;width:2px;background:#000}
+.gcap{display:flex;justify-content:space-between;font-size:12px;color:var(--gray-500);
+ margin-top:.35rem}
+.big{font-family:var(--serif);font-size:2rem;font-weight:400;font-variant-numeric:tabular-nums;
+ line-height:1}
+.calc{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13.5px;line-height:2;
+ background:var(--white);border:1px solid var(--gray-200);padding:.9rem 1.1rem;margin:.9rem 0;
+ overflow-x:auto;white-space:pre}
+.verdict{margin-top:1.2rem;padding:.9rem 1.1rem;border:1px solid var(--gray-200);font-size:14px;
+ line-height:1.75;background:var(--gray-100)}
+.verdict.ok{border-color:var(--accent);background:#f2fbf6}
+.verdict.stuck{border-color:#c00;background:#fdf4f4}
+.src{border-left:2px solid var(--black);padding:.9rem 0 .9rem 1.1rem;margin:1.4rem 0;
+ font-size:14px;line-height:1.85;color:var(--gray-600)}
+.src .h{font-size:12px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;
+ color:var(--black);margin-bottom:.4rem}
+.box{border:1px solid var(--gray-200);padding:1.1rem 1.3rem;margin:1.3rem 0;background:var(--gray-100)}
+.box .h{font-size:12px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;
+ margin-bottom:.5rem}
+.mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+
+.grow{display:flex;align-items:center;gap:.5rem;margin-bottom:.5rem;flex-wrap:wrap}
+.grow .gn{width:9.4rem;font-size:14px;flex-shrink:0;font-variant-numeric:tabular-nums}
+.grow .gb{font-size:13px;padding:.35rem .8rem}
+.grow .gv{font-size:13px;color:var(--gray-500);font-variant-numeric:tabular-nums}
+
+.sc-row{display:flex;align-items:center;gap:.5rem;margin-bottom:.55rem}
+.sc-label{width:8.6rem;font-size:13.5px;text-align:right;flex-shrink:0}
+.sc-track{flex:1;background:#e9e9e9;height:11px;position:relative;min-width:2rem}
+.sc-fill{display:block;height:100%;background:var(--black);transition:width .18s linear}
+.sc-fill.hit{background:var(--accent)}
+.sc-pct{width:4.2rem;font-size:13.5px;font-variant-numeric:tabular-nums;flex-shrink:0}
+details{border-top:1px solid var(--gray-200);padding-top:1rem;margin-top:1.5rem}
+summary{font-size:14px;font-weight:500;cursor:pointer}
+.lg{font-size:14px;line-height:1.9;color:var(--gray-600);margin-top:.9rem}
+.dtab th,.dtab td{padding:.4rem .55rem;border:1px solid var(--gray-200);text-align:right}
+.dtab th{background:var(--gray-100);font-weight:600;font-size:11.5px}
+.dtab td.l,.dtab th.l{text-align:left}
+.dtab tr.bad td{background:#fdf4f4}
+.foot{border-top:1px solid var(--gray-200);margin-top:3rem;padding-top:1.5rem;font-size:13px;
+ color:var(--gray-500);line-height:1.8}
+
+
+@media (max-width:430px){
+  .wrap{padding-left:.5rem;padding-right:.5rem}
+  
+  .calc{font-size:12px;padding-left:.7rem;padding-right:.7rem}
+  .card{padding-left:.75rem;padding-right:.75rem}
+  .box,.figbox,.panel{padding-left:.5rem;padding-right:.5rem}
+  .top .in{padding-left:.5rem;padding-right:.5rem}
+  #bd0 text,#fig17 text,#p19a text,#p19b text{font-size:17px}
+  .grow .gn{width:100%}
+  .sc-label{width:7.4rem}
+  
+  .stick{position:sticky;top:0;z-index:5;background:var(--gray-100);
+         padding-bottom:.35rem;box-shadow:0 6px 8px -6px rgba(0,0,0,.18)}
+  .stickbot{position:sticky;bottom:0;z-index:5;background:var(--gray-100);
+            padding-top:.4rem;box-shadow:0 -6px 8px -6px rgba(0,0,0,.18)}
+  
+  
+  
+  .cast2{padding:.7rem .75rem}
+  .cast2 .ic{width:46px;height:46px}
+  .cast2 .row{gap:.6rem}
+  
+}
+
+
+.cast2{border:1px solid var(--gray-200);background:var(--gray-100);
+  padding:1rem 1.1rem;margin:0 0 2.4rem}
+.cast2 .row{display:flex;gap:.9rem;align-items:flex-start}
+.cast2 .row+.row{margin-top:.9rem;padding-top:.9rem;border-top:1px solid var(--gray-200)}
+.cast2 .ic{width:54px;height:54px;border-radius:50%;flex-shrink:0;display:block;
+  border:2px solid var(--white);box-shadow:0 0 0 1px var(--gray-200),0 1px 3px rgba(0,0,0,.10)}
+.cast2 .nm2{display:block;font-size:18px;line-height:1.5;font-weight:700;margin-bottom:.2rem}
+.cast2 .rb{font-size:14px;font-weight:400;color:var(--gray-500);margin-left:.45rem}
+.cast2 .tx2{font-size:16.6px;line-height:1.831;color:var(--gray-600)}
+.cast2 .tx2 b{color:var(--black)}
+.cv{margin:1.6rem 0}
+.cl{display:flex;gap:.75rem;align-items:flex-start;margin:0 0 .85rem}
+.cl .ic{width:46px;height:46px;border-radius:50%;flex-shrink:0;display:block;
+  border:2px solid var(--white);box-shadow:0 0 0 1px var(--gray-200),0 1px 3px rgba(0,0,0,.10)}
+.cl .bb b{color:var(--black)}
+.cl .bb:before{content:'';position:absolute;left:-6px;top:15px;width:10px;height:10px;
+  background:inherit;border-left:1px solid;border-bottom:1px solid;border-color:inherit;
+  transform:rotate(45deg)}
+
+.cl.m .bb{background:#fff7ea;border-color:#efd6a6}
+.cl.d .bb{background:#eef4fa;border-color:#c3d9ee}
+
+.cl .nm{display:block;font-weight:700;letter-spacing:.07em;margin-bottom:.15rem}
+.cl.m .nm{color:#b0700c}   
+.cl.d .nm{color:#2f6fb5}   
+.keyh{font-size:11.5px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--gray-500);margin:1.6rem 0 .5rem}
+
+
+/* ⒜ 2本のゲージ ── 練習の点と初見の点を縦に並べる */
+.g2{margin:1rem 0 0}
+.g2 .r{display:flex;align-items:baseline;gap:.6rem;margin-bottom:.3rem}
+.g2 .lb{font-size:12.5px;color:var(--gray-500);width:9.6rem;flex-shrink:0}
+.g2 .nv{font-family:var(--serif);font-size:1.5rem;font-weight:400;
+  font-variant-numeric:tabular-nums;line-height:1}
+.g2 .u{font-size:12.5px;color:var(--gray-500)}
+.g2 .tr{height:9px;background:#e9e9e9;position:relative;overflow:hidden;margin-bottom:.7rem}
+.g2 .fl{display:block;height:100%;transition:width .12s linear}
+.g2 .fl.a{background:#2f6fb5}          /* 練習の点＝青 */
+.g2 .fl.b{background:#c00}             /* 初見の点＝赤 */
+.g2 .fl.b.ok{background:var(--accent)} 
+/* ⒝ 891人の帯（当たり／外れ） */
+.band{height:26px;display:flex;border:1px solid var(--gray-200);overflow:hidden}
+.band .hit{background:var(--accent)}
+.band .mis{background:var(--white)}
+.band .sp{border-left:1px solid var(--gray-200)}
+.bandcap{display:flex;justify-content:space-between;font-size:12px;
+  color:var(--gray-500);margin-top:.3rem}
+/* ⒟ 表の実物（横に広いので横スクロールの枠に入れる） */
+.rawwrap{overflow-x:auto;margin:.9rem 0;border:1px solid var(--gray-200)}
+.rawtab{border-collapse:collapse;font-size:11.5px;white-space:nowrap;
+  font-variant-numeric:tabular-nums}
+.rawtab th,.rawtab td{padding:.35rem .5rem;border-bottom:1px solid var(--gray-200);
+  border-right:1px solid var(--gray-200);text-align:left}
+.rawtab th{background:var(--gray-100);font-weight:600;font-size:10.5px}
+.rawtab td.y{background:#f2fbf6;font-weight:600}
+.rawtab th.y{background:#d9f0e4}
+
+.pick{display:flex;gap:.5rem;flex-wrap:wrap;margin:.8rem 0}
+.pick .btn{flex:1 1 6rem}
+.pick .btn.sel{background:var(--black);color:var(--white);border-color:var(--black)}
+.locked{opacity:.35;pointer-events:none}
+@media (max-width:430px){
+  .g2 .lb{width:7.2rem;font-size:11.5px}
+  .g2 .nv{font-size:1.3rem}
+  
+  #ln20 text,#dt20 text,#cv20 text,#bar21 text{font-size:17px}
+  #tree20 text{font-size:21px}
+  .rawtab{font-size:10.5px}
+}
+</style>
+</head>
+<body data-split="A2" data-top="q21top" data-talk="q21talk"
+      data-verdict="j20" data-ratio="0.68"
+      data-figs="tree20"
+      data-movedown="">
+
+<div class="top"><div class="in">Deep Black Box<span class="tag">AIのブラックボックスを、1問ずつ開けて手で動かす。全21問。</span></div></div>
+<div class="wrap">
+
+
+<div class="prog">
+ <div class="steps" id="steps"></div>
+ <div class="cnt" id="prog_cnt"></div>
+</div>
+<div class="chap" id="chap"></div>
+
+<!-- ══════════════════ c20 ══════════════════ -->
+<div class="card" id="c20">
+<div class="tagline">Question 21</div>
+<h2>上げるほど、下がる場所がある</h2>
+
+
+<div class="box">
+ <div class="h">ここから使うのは 決定木 という別のやり方です</div>
+ <p class="lead" style="margin:0 0 .6rem"><b>決定木</b>（けっていぎ）＝
+ <b>「はい／いいえ」で答える質問を並べた木</b>です。ここまで あなたが手でやっていたこと
+ （列で分ける → 帯ごとに多いほうを答える）を、<b>機械が自分で繰り返します。</b></p>
+ <p class="lead" style="margin:0"><b>第1章〜第4章の勾配降下とは 別の仕組みです。</b>
+ あちらは<b>つまみを少しずつ動かして、ずれが下がる向きへ進む</b>ものでした。
+ 決定木は<b>切れ目の候補を全部 並べて、いちばん良いものを選ぶ</b>だけ。<b>少しずつ動きません。</b><br>
+ <span style="color:var(--gray-500)">表のかたちのデータでは、この決定木が定番です。
+  深層学習が何にでも効くわけではありません。</span></p>
+</div>
+
+<div id="e20a"></div>
+
+<div class="figbox">
+ <div class="cap" style="text-align:left"><b>問19 でやったこと</b> ── どの組にも <b>同じ質問</b>を、順番に足していく</div>
+ <svg id="dt20a" viewBox="0 0 560 152"></svg>
+ <div class="cap" style="text-align:left;margin-top:.9rem"><b>決定木がやること</b> ──
+  分かれた先で、<b>その場でいちばん効く質問を選び直す</b></div>
+ <svg id="dt20b" viewBox="0 0 560 176"></svg>
+ <div class="cap" style="text-align:left"><b>いま「効く」と書いたのは、この意味です。</b>
+  機械が測っているのは<b>当たった人数ではありません</b>。<b>迷いがどれだけ減るか</b>です。</div>
+</div>
+
+
+<div id="e20a2"></div>
+
+<h3>「迷い」を数で表す</h3>
+<div class="figbox">
+ <svg id="mz21" viewBox="0 0 560 232"></svg>
+ <div class="cap"><b>組の中が半々に近いほど、迷いは大きい</b>。全員が同じなら迷いは 0。</div>
+</div>
+<div class="calc" id="mzeq">–</div>
+<p class="cap"><b>p</b>＝その組で生存だった割合、<b>q</b>＝死亡だった割合（p ＋ q ＝ 1）。
+ <b>log₂</b> は「2を何乗したらその数になるか」です。<b>式の中身は覚えなくてかまいません。</b>
+ <b>半々なら 1.00、片寄るほど 0 に近づく</b>── それだけ分かれば足ります。</p>
+
+<h3>質問を1つすると、迷いはどれだけ減るか</h3>
+<div class="figbox">
+ <svg id="mz2" viewBox="0 0 560 244"></svg>
+ <div class="cap">割った先の迷いを<b>人数で重みを付けて平均</b>し、割る前から引きます。
+  <b>これが「効き」の物差し</b>です。</div>
+</div>
+
+<div class="calc" id="mzeq2">–</div>
+<p class="cap"><b>人数の多い組の迷いを、重く数えます。</b>891人のうち男は 577人（64.8%）なので、
+ 男の迷いを 0.648 倍して数える、という意味です。</p>
+
+<h3>持っている15列を全部 測った結果（891人ぜんぶで）</h3>
+<table class="dtab" id="rank21"></table>
+<p class="cap">「はい」の側／「いいえ」の側は、その質問で割ったときの人数です。
+ 数の列（等級・運賃・年齢・家族の人数）は<b>切れ目の候補を全部 試して、いちばん減る切れ目</b>を選んでいます。</p>
+
+<div id="e20a3"></div>
+
+<div class="box">
+ <div class="h">ここが引っかかるところです</div>
+ <p class="lead" style="margin:0 0 .5rem"><b>1位の列で分けても、当たった人数は いちばんにはなりません。</b></p>
+ <table class="dtab" id="cmp21b"></table>
+ <p class="lead" style="margin:.5rem 0 0"><b>機械は当たった人数を見ていません。迷いの減りだけを見ています。</b><br>
+ それでよい理由は、<b>質問を1回でやめないから</b>です。迷いが小さい組にしておくと、
+ 次の質問で効率よく削れます。<b>1回目の4人は、2回目以降のために手放しています。</b></p>
+</div>
+
+
+<div id="e20b"></div>
+
+
+
+<div id="q21top">
+<div class="figbox stick">
+ <svg id="tree20" viewBox="0 0 560 232"></svg>
+ <div class="cap" id="tree20c">–</div>
+</div>
+
+<div class="panel">
+ <div class="ctl">
+  <label><span>質問を何回まで許すか</span><span class="n" id="v20">1 回</span></label>
+  <input type="range" id="s20" min="0" max="10" step="1" value="0">
+ </div>
+ <div class="g2">
+  <div class="r"><span class="lb">練習の点（891人）</span>
+   <span class="nv" id="htr20">–</span><span class="u">%</span></div>
+  <div class="tr"><span class="fl a" id="gtr20"></span></div>
+  <div class="r"><span class="lb">初見の点（見せていない人）</span>
+   <span class="nv" id="hte20">–</span><span class="u">%</span></div>
+  <div class="tr"><span class="fl b" id="gte20"></span></div>
+ </div>
+ <div class="verdict" id="j20">つまみを右に動かしてください。</div>
+ <div class="togs">
+  <button class="btn sm" id="rst20">1回に戻す</button>
+  <button class="btn sm" id="lk20">乗客の番号も渡してみる</button>
+ </div>
+</div>
+</div><!-- /#q21top -->
+
+
+<div id="q21talk">
+
+<div class="figbox">
+ <svg id="ln20" viewBox="0 0 560 258"></svg>
+ <div class="cap"><b style="color:#2f6fb5">青＝練習の点</b>（答えを知っている891人）／
+  <b style="color:#c00">赤＝初見の点</b>（作るときに1度も見ていない人）</div>
+</div>
+
+<div class="figbox">
+ <div class="cap" style="text-align:left"><b>いま 答えを出す先（葉）は <span id="nl20">2</span>個</b>
+  ── 帯1本が891人。<b>縦線が葉の切れ目</b>です</div>
+ <div class="band" id="leaf20"></div>
+ <div class="cap" id="leaf20c">–</div>
+</div>
+
+
+<div id="e20c"></div>
+
+<div id="r20" class="hide"><div id="e20d"></div></div>
+
+<div class="figbox">
+ <div class="cap" style="text-align:left"><b>「初見の点」の測り方</b>
+  ── 891人を5つに分け、<b>1つを隠して</b>残りで作り、隠したほうで採点します。
+  隠す塊を変えて<b>5回</b>まわし、<b>その平均</b>を出します</div>
+ <svg id="cv20" viewBox="0 0 560 164"></svg>
+ <div class="cap">□＝隠して採点する側（この5回で891人 全員が1度ずつ採点されます）。<br>5つの塊は<b>生存率をそろえて</b>あります（891人ぜんぶ 0.3838 に対し
+  0.3855 / 0.3820 / 0.3820 / 0.3820 / 0.3876）。<br>
+  1回だけ測ると、隠す178人を変えるだけで <b>5.6ポイント</b> 動きます。だから5回の平均で見ます。</div>
+</div>
+</div>
+
+
+</div>
+
+<!-- ══════════════════ 章の締め ══════════════════ -->
+
+<div class="card" id="fin21">
+<div class="tagline">last</div>
+<h2>モデルを変えても届かない。<b>列</b>を変えるしかない</h2>
+<div id="eこの章a"></div>
+
+<div class="figbox">
+ <svg id="bar21" viewBox="0 0 560 366"></svg>
+ <div class="cap">棒が初見の点。横線が<b>5回の散らばり</b>（標準偏差）。
+  作りがまったく違う4つが、同じ高さに並んでいます</div>
+</div>
+
+<div class="panel">
+ <div class="cap"><b>いちばん上の2つ</b>（ランダムフォレスト300本 と 決定木 深さ4）に、<b>差があると言えますか</b>。<br>
+  条件は2つ ── ⑴ 差の範囲（差の平均±ばらつき）が 0 をまたがない ⑵ 5回とも同じ向き</div>
+ <div class="pick" id="p22">
+  <button class="btn" id="p22a">差があると言える</button>
+  <button class="btn" id="p22b">言えない</button>
+ </div>
+ <div class="verdict" id="j22">どちらかを押してください。</div>
+</div>
+
+<div id="eこの章b"></div>
+
+
+<div class="figbox">
+ <svg id="cmp21" viewBox="0 0 560 232"></svg>
+ <div class="cap">左＝この問題（<b>作ったのは人</b>。名前が付いていて、何を見ているか分かる）／
+  右＝LLM（<b>1つの語を 12,288個の数字に置きかえる</b>。その数字も<b>学習で決まる</b>。<b>どの数字が何を表すのか 名前が無い</b>）</div>
+</div>
+
+<div id="eこの章c"></div>
+
+<div class="src">
+ <div class="h">役に立つところ</div>
+ <b>練習の点だけ見ていても分かりません。</b>必ず、一度も見ていないデータで測ります。<br>
+ <span style="color:var(--gray-500)">そして、点を上げたくなったら
+  <b>モデルを替えるより、渡す列を作る</b>ほうが効きます。</span>
+</div>
+
+<div class="togs">
+ <a class="btn go" href="https://www.kaggle.com/competitions/titanic" target="_blank" rel="noopener">
+  Kaggle のタイタニックへ →</a>
+ <a class="btn" href="https://www.kaggle.com/code/alexisbcook/titanic-tutorial" target="_blank" rel="noopener">
+  Kaggle 公式の入門ページへ →</a>
+</div>
+<p class="cap">数字はすべて公開データ（Kaggle の Titanic）の実測値です。問18〜21 は練習891人で数えました。
+ 初見の点は 891人を5つに分けて5回まわした平均です。</p>
+</div>
+
+
+<div id="form"></div>
+
+
+<div id="nav"></div>
+
+<div id="foot"></div>
+</div>
+
+
+<script src="common.js"></script>
+<script>
+
+var QBASE = 20;
+drawProg(21); drawChap(21, "");
+
+drawNav(["q20.html","問20 列を作る"], ["end.html","おわりに"]);
+drawFoot()   ;
+
+drawForm("form");
+
+(function(){
+
+if (typeof drawBd0 === 'undefined') var drawBd0 = function(){};
+if (typeof drawGrid18 === 'undefined') var drawGrid18 = function(){};
+if (typeof drawMs21 === 'undefined') var drawMs21 = function(){};
+if (typeof drawNa0 === 'undefined') var drawNa0 = function(){};
+if (typeof drawNm === 'undefined') var drawNm = function(){};
+if (typeof drawRaw === 'undefined') var drawRaw = function(){};
+if (typeof drawSex18 === 'undefined') var drawSex18 = function(){};
+if (typeof drawTab21p === 'undefined') var drawTab21p = function(){};
+if (typeof drawTit === 'undefined') var drawTit = function(){};
+if (typeof rows18 === 'undefined') var rows18 = function(){};
+if (typeof rows18s === 'undefined') var rows18s = function(){};
+if (typeof up18 === 'undefined') var up18 = function(){};
+if (typeof up18s === 'undefined') var up18s = function(){};
+
+
+
+'use strict';
+const $ = id => document.getElementById(id);
+const SVGNS = 'http://www.w3.org/2000/svg';
+function el(tag, at, txt){
+  const n = document.createElementNS(SVGNS, tag);
+  for (const k in at) n.setAttribute(k, at[k]);
+  if (txt !== undefined) n.textContent = txt;
+  return n;
+}
+function ce(tag, cls, txt){
+  const n = document.createElement(tag);
+  if (cls) n.className = cls;
+  if (txt !== undefined) n.textContent = txt;
+  return n;
+}
+const N891 = 891, ALL_DEAD = 549, SEX_ONLY = 701;
+
+
+const D11 = [
+  ['1',78.23,78.23,2],  ['2',78.90,78.90,4],   ['3',83.84,82.71,8],
+  ['4',84.74,82.94,16], ['5',85.75,80.92,27],  ['6',86.20,81.25,39],
+  ['8',89.67,80.81,73], ['10',93.15,79.01,110],['15',97.19,77.44,173],
+  ['20',98.32,78.34,191],['上限なし',98.43,78.23,193]
+];
+
+const TOP = [2, 3];
+const TOP20 = TOP[0];               
+const LEAK = [100.00, 53.31];         
+
+
+
+const LEAF = {"1":[517,374],"2":[390,127,202,172],"3":[291,99,16,111,23,179,127,45]};
+
+
+const M7 = [
+  ['ランダムフォレスト 300本（葉に最低4人）',82.27,2.11],
+  ['ロジスティック回帰（列に重みを付けて足す）',82.49,2.72],
+  ['決定木 深さ4（質問4回）',82.94,2.04],
+  ['決定木 深さ3（質問3回）',82.71,2.51],
+  ['ランダムフォレスト 300本（上限なし）',81.48,1.16],
+  ['決定木 上限なし（丸暗記）',78.23,2.98],
+  ['全員に「死亡」（比べる基準）',61.62,0.23]
+];
+
+const DIFF = [-2.80,2.25,1.12,-1.13,-2.81];   
+
+/* ══════ 帯（891人。当たり＝緑／外れ＝白。cuts があれば葉の切れ目を入れる） ══════ */
+function band(id, hit, cuts){
+  const b = $(id); b.innerHTML = '';
+  if (cuts){
+    let acc = 0;
+    cuts.forEach((c, i) => {
+      const d = ce('span', 'sp' + (i ? '' : ''));
+      d.style.width = (c / N891 * 100).toFixed(3) + '%';
+      d.style.background = '#f4f4f4';
+      if (i) d.style.borderLeft = '1px solid #999';
+      b.appendChild(d);
+      acc += c;
+    });
+    return;
+  }
+  const h = ce('span', 'hit'); h.style.width = (hit / N891 * 100).toFixed(3) + '%';
+  const m = ce('span', 'mis'); m.style.width = (100 - hit / N891 * 100).toFixed(3) + '%';
+  b.appendChild(h); b.appendChild(m);
+}
+
+/* ══════════════════ 問20 ══════════════════ */
+
+
+const LV = [
+  {q:['敬称が Mr か'],                                    sz:[517,374]},
+  {q:['運賃 26.27円以下か','1等か2等か'],                 sz:[390,127,202,172]},
+  {q:['年齢32.5歳以下','運賃26.77円以下','珍しい敬称','家族3人以下'],
+   sz:[291,99,16,111,23,179,127,45]}
+];
+let leaked20 = 0;
+
+
+function K21(id, base){
+  if (!window.matchMedia || !matchMedia('(max-width:430px)').matches) return 1;
+  const e = $(id); if (!e || !e.getBoundingClientRect) return 1;
+  
+  const w = (e.getBoundingClientRect().width || 330) * 0.97;
+  const vw = (e.viewBox && e.viewBox.baseVal && e.viewBox.baseVal.width) || 560;
+  return Math.min(2.2, Math.max(1, Math.ceil(10 * vw / w / base * 100) / 100));
+}
+/* ── 決定木の図解（上：問19 のやり方 ／ 下：決定木） ── */
+function drawDt(){
+  const a = $('dt20a'); a.innerHTML = '';
+  const Kd = K21('dt20a', 13), F = v => Math.round(v * Kd * 100) / 100;
+  const bx = (s,x,y,w,h,t,c) => {
+    s.appendChild(el('rect', {x:x, y:y, width:w, height:h, fill:'#fff', stroke:c||'#000'}));
+    s.appendChild(el('text', {x:(x+w/2).toFixed(1), y:(y+h/2+5).toFixed(1),
+      'text-anchor':'middle', 'font-size':F(13.5), fill:c||'#000'}, t));
+  };
+  bx(a, 216, 8, 128, 28, '891人');
+  a.appendChild(el('text', {x:352, y:27, 'font-size':F(13), fill:'#6e6e6e'}, '性別で割る'));
+  bx(a, 128, 56, 100, 28, '女 314');
+  bx(a, 332, 56, 100, 28, '男 577');
+  a.appendChild(el('line', {x1:280, y1:36, x2:178, y2:56, stroke:'#000'}));
+  a.appendChild(el('line', {x1:280, y1:36, x2:382, y2:56, stroke:'#000'}));
+  a.appendChild(el('text', {x:0, y:112, 'font-size':F(13), fill:'#6e6e6e'}, '等級で割る'));
+  ['女1等','女2等','女3等','男1等','男2等','男3等'].forEach((t,i) => {
+    bx(a, 96 + i*76, 100, 68, 26, t);
+  });
+  a.appendChild(el('text', {x:0, y:146, 'font-size':F(13), fill:'#000'},
+    'どの組にも 同じ質問（等級）をしている'));
+
+  const b = $('dt20b'); b.innerHTML = '';
+  bx(b, 216, 8, 128, 28, '891人');
+  b.appendChild(el('text', {x:352, y:27, 'font-size':F(13), fill:'#6e6e6e'}, '列を全部 測る'));
+  bx(b, 96, 56, 160, 28, '敬称がMr 517人');
+  bx(b, 304, 56, 160, 28, 'Mrでない 374人');
+  b.appendChild(el('line', {x1:280, y1:36, x2:176, y2:56, stroke:'#000'}));
+  b.appendChild(el('line', {x1:280, y1:36, x2:384, y2:56, stroke:'#000'}));
+  
+  
+  b.appendChild(el('text', {x:Kd > 1 ? 116 : 196, y:50, 'font-size':F(13), fill:'#c00'}, 'はい'));
+  b.appendChild(el('text', {x:Kd > 1 ? 372 : 330, y:50, 'font-size':F(13), fill:'#6e6e6e'}, 'いいえ'));
+  b.appendChild(el('text', {x:96, y:104, 'font-size':F(13), fill:'#c00'}, 'もう一度 全部 測る'));
+  b.appendChild(el('text', {x:304, y:104, 'font-size':F(13), fill:'#c00'}, 'もう一度 全部 測る'));
+  bx(b, 96, 116, 160, 28, '運賃 26.27以下か', '#c00');
+  bx(b, 304, 116, 160, 28, '1等か2等か', '#c00');
+  b.appendChild(el('text', {x:0, y:170, 'font-size':F(13), fill:'#000'},
+    '分かれた先で【別の質問】になる'));
+}
+
+/* ── 木の絵（つまみの回数に応じて段を出す） ── */
+function drawTree(k){
+  const s = $('tree20'); s.innerHTML = '';
+  const d = Math.min(k + 1, 3);          
+  const W = 556, top = 30, gh = 62;
+  const box = (x, y, w, t, c) => {
+    s.appendChild(el('rect', {x:x.toFixed(1), y:y, width:w.toFixed(1), height:26,
+      fill:'#fff', stroke:c || '#000'}));
+    if (w > 34) s.appendChild(el('text', {x:(x+w/2).toFixed(1), y:(y+18).toFixed(1),
+      'text-anchor':'middle', 'font-size':13.5, fill:c || '#000'}, t));
+  };
+  
+  s.appendChild(el('text', {x:0, y:21, 'font-size':13.5, fill:'#6e6e6e'},
+    '891人が どう分かれるか'));
+  box(214, top, 128, '891人');
+  let prev = [[214, 128]];
+  for (let g = 0; g < d; g++){
+    const sz = LV[g].sz, y = top + (g+1)*gh;
+    s.appendChild(el('text', {x:0, y:(y-8).toFixed(1), 'font-size':13, fill:'#c00'},
+      LV[g].q.join(' ／ ')));
+    let x = 2; const cur = [];
+    sz.forEach(n => {
+      const w = Math.max(18, W * n / N891 - 3);
+      box(x, y, w, n + '', '#000');
+      cur.push([x, w]); x += w + 3;
+    });
+    /* 上の段とつなぐ */
+    
+    s.appendChild(el('text', {x:556, y:(y-8).toFixed(1), 'text-anchor':'end', 'font-size':13,
+      fill:'#6e6e6e'}, '左が「はい」・右が「いいえ」'));
+    prev.forEach((p, i) => {
+      const c1 = cur[i*2], c2 = cur[i*2+1];
+      if (c1) s.appendChild(el('line', {x1:(p[0]+p[1]/2).toFixed(1), y1:y-gh+26,
+        x2:(c1[0]+c1[1]/2).toFixed(1), y2:y, stroke:'#d9d9d9'}));
+      if (c2) s.appendChild(el('line', {x1:(p[0]+p[1]/2).toFixed(1), y1:y-gh+26,
+        x2:(c2[0]+c2[1]/2).toFixed(1), y2:y, stroke:'#d9d9d9'}));
+    });
+    prev = cur;
+  }
+  const lab = D11[k][0], nl = D11[k][3];
+  $('tree20c').innerHTML = (k <= 2)
+    ? '<b>質問 ' + lab + '回</b>で、891人は <b>' + nl + 'つの組</b>に分かれます。'
+      + '<b>この順番は、機械が毎回いちばん効く列を選んだ結果</b>です。'
+      + '同じ組に入った人は<b>全員 同じ答え</b>を受け取ります。'
+    : '<b>質問 ' + lab + '回</b>では <b>' + nl + '個</b>に分かれます。'
+      + '細かすぎて木では描けません。<b>下の帯</b>で見てください（3段目までを描いています）。';
+}
+
+/* ── 2本の線 ── */
+function drawLn(k){
+  const s = $('ln20'); s.innerHTML = '';
+  const xl = 52, xw = 480, yt = 26, yb = 190, lo = 74, hi = 100;
+  const X = i => xl + i / (D11.length - 1) * xw;
+  const Y = v => yb - (v - lo) / (hi - lo) * (yb - yt);
+  [80, 90, 100].forEach(v => {
+    s.appendChild(el('line', {x1:xl, y1:Y(v).toFixed(1), x2:xl+xw, y2:Y(v).toFixed(1),
+      stroke:'#ececec'}));
+    s.appendChild(el('text', {x:xl-6, y:(Y(v)+5).toFixed(1), 'text-anchor':'end',
+      'font-size':13.5, fill:'#6e6e6e'}, v + '%'));
+  });
+  ['a','b'].forEach((w, wi) => {
+    const col = wi ? '#c00' : '#2f6fb5';
+    let p = '';
+    D11.forEach((d, i) => { p += (i ? ' ' : '') + X(i).toFixed(1) + ',' + Y(d[wi+1]).toFixed(1); });
+    s.appendChild(el('polyline', {points:p, fill:'none', stroke:col, 'stroke-width':1.8}));
+    D11.forEach((d, i) => {
+      s.appendChild(el('circle', {cx:X(i).toFixed(1), cy:Y(d[wi+1]).toFixed(1),
+        r:(i === k ? 5.5 : 2.6), fill:col}));
+    });
+  });
+  
+  s.appendChild(el('rect', {x:X(TOP[0]).toFixed(1), y:yt-4,
+    width:(X(TOP[TOP.length-1])-X(TOP[0])).toFixed(1), height:(yb-yt+4).toFixed(1),
+    fill:'#f2fbf6'}));
+  [TOP[0], TOP[TOP.length-1]].forEach(function(t){
+    s.appendChild(el('line', {x1:X(t).toFixed(1), y1:yt-4, x2:X(t).toFixed(1), y2:yb,
+      stroke:'#019949', 'stroke-dasharray':'3 3'}));
+  });
+  s.appendChild(el('text', {x:((X(TOP[0])+X(TOP[TOP.length-1]))/2).toFixed(1), y:yt-8,
+    'text-anchor':'middle', 'font-size':13.5, fill:'#019949'}, '初見の頂点はこのあたり'));
+  
+  s.appendChild(el('line', {x1:X(k).toFixed(1), y1:yt-4, x2:X(k).toFixed(1), y2:yb,
+    stroke:'#000', 'stroke-width':1.2}));
+  D11.forEach((d, i) => {
+    
+    
+    const last = (i === D11.length-1);
+    s.appendChild(el('text', {x:X(i).toFixed(1), y:(last ? 230 : 212),
+      'text-anchor':(last ? 'end' : (i === 0 ? 'start' : 'middle')),
+      'font-size':13.5, fill:i === k ? '#000' : '#6e6e6e'}, d[0]));
+  });
+  s.appendChild(el('text', {x:xl, y:250, 'font-size':13.5, fill:'#000'}, '質問の回数'));
+}
+
+/* ── 5分割の図 ── */
+function drawCv(){
+  const s = $('cv20'); s.innerHTML = '';
+  const x0 = 92, W = 440, h = 20;
+  s.appendChild(el('text', {x:0, y:18, 'font-size':13.5, fill:'#6e6e6e'}, '891人を5つに分ける'));
+  const sz = [179,178,178,178,178];
+  let x = x0;
+  sz.forEach((n, i) => {
+    const w = W * n / N891;
+    s.appendChild(el('rect', {x:x.toFixed(1), y:26, width:(w-2).toFixed(1), height:h,
+      fill:'#f4f4f4', stroke:'#999'}));
+    s.appendChild(el('text', {x:(x+w/2-1).toFixed(1), y:41, 'text-anchor':'middle',
+      'font-size':13.5, fill:'#000'}, n + ''));
+    x += w;
+  });
+  for (let r = 0; r < 5; r++){
+    const y = 60 + r * 20;
+    s.appendChild(el('text', {x:0, y:(y+14).toFixed(1), 'font-size':13, fill:'#6e6e6e'},
+      (r+1) + '回目'));
+    let xx = x0;
+    sz.forEach((n, i) => {
+      const w = W * n / N891;
+      const hid = (i === r);
+      s.appendChild(el('rect', {x:xx.toFixed(1), y:y, width:(w-2).toFixed(1), height:14,
+        fill:hid ? '#fdf4f4' : '#3f3f3f', stroke:hid ? '#c00' : '#3f3f3f'}));
+      xx += w;
+    });
+  }
+  
+  s.appendChild(el('text', {x:x0, y:160, 'font-size':13, fill:'#c00'}, '□＝隠して採点する側'));
+}
+
+const H15 = [
+  ['敬称が Mr か',            0.2263, 517, 374],
+  ['女性かどうか',            0.2177, 314, 577],
+  ['敬称が Mrs か',           0.0838, 126, 765],
+  ['敬称が Miss か',          0.0798, 185, 706],
+  ['客室の等級が 1・2等か',    0.0758, 400, 491],
+  ['船室番号の記録があるか',    0.0711, 204, 687],
+  ['運賃が 10.48円以下か',     0.0683, 339, 552],
+  ['同乗した家族が 0人か',      0.0297, 537, 354],
+  ['一人で乗ったか',           0.0297, 537, 354],
+  ['仏国から乗ったか',         0.0199, 168, 723],
+  ['年齢が 6.5歳以下か',       0.0167,  47, 844],
+  ['英国から乗ったか',         0.0159, 644, 247],
+  ['敬称が Master か',        0.0051,  40, 851],
+  ['珍しい敬称か',            0.0001,  23, 868],
+  ['愛蘭から乗ったか',         0.0000,  77, 814]
+];
+
+
+const MZ = [['半々',            50, 1.0000],
+            ['891人ぜんぶ',      38, 0.9607],
+            ['女 314人',        74, 0.8237],
+            ['男 577人',        19, 0.6992],
+            ['Mr 517人',        16, 0.6263],
+            ['全員 死亡',        0, 0.0000]];
+function drawMz21(){
+  const s2 = $('mz21'); s2.innerHTML = '';
+  const Km = K21('mz21', 13), F = v => Math.round(v * Km * 100) / 100, 縦 = Km > 1;
+  
+  const xl = 縦 ? 204 : 138, xw = 縦 ? 124 : 170, x2 = 縦 ? 336 : 344, xw2 = 縦 ? 98 : 118;
+  s2.appendChild(el('text', {x:xl, y:16, 'font-size':F(13), fill:'#6e6e6e'}, '生存の割合'));
+  s2.appendChild(el('text', {x:x2, y:16, 'font-size':F(13), fill:'#6e6e6e'}, '迷い（0〜1）'));
+  MZ.forEach(function(m, i){
+    const y = 26 + i * 28, wa = xw * m[1] / 100;
+    s2.appendChild(el('text', {x:0, y:(y+15).toFixed(1), 'font-size':F(13.5), fill:'#000'},
+      m[0] + '  生存 ' + m[1] + '%'));
+    s2.appendChild(el('rect', {x:xl, y:y, width:wa.toFixed(1), height:20,
+      fill:'#f2fbf6', stroke:'#019949'}));
+    s2.appendChild(el('rect', {x:(xl+wa).toFixed(1), y:y, width:(xw-wa).toFixed(1), height:20,
+      fill:'#3f3f3f'}));
+    
+    s2.appendChild(el('rect', {x:x2, y:y+4, width:xw2, height:12, fill:'#f4f4f4', stroke:'#d9d9d9'}));
+    s2.appendChild(el('rect', {x:x2, y:y+4, width:(xw2*m[2]).toFixed(1), height:12, fill:'#c00'}));
+    s2.appendChild(el('text', {x:556, y:(y+15).toFixed(1), 'text-anchor':'end', 'font-size':F(13.5),
+      fill:'#000'}, m[2].toFixed(4)));
+  });
+  
+  s2.appendChild(el('text', {x:0, y:縦 ? 210 : 204, 'font-size':F(13), fill:'#6e6e6e'},
+    '緑＝生き残った人 ／ 黒＝亡くなった人 ／ 赤＝迷いの大きさ'));
+  s2.appendChild(el('text', {x:0, y:縦 ? 230 : 224, 'font-size':F(13), fill:'#000'},
+    '生存 50% のとき 迷いは最大。0% でも 100% でも 迷いは 0'));
+  if (縦) s2.setAttribute('viewBox', '0 0 560 238');
+  $('mzeq').textContent =
+    '迷い ＝ −( p × log₂p ＋ q × log₂q )      p ＝ 生存の割合 ／ q ＝ 1 − p\n\n'
+  + '生存 50%   p = 0.50  →  −( 0.50 ×(−1.00) ＋ 0.50 ×(−1.00) ) ＝ 1.0000\n'
+  + '生存 38%   p = 0.38  →  −( 0.38 ×(−1.40) ＋ 0.62 ×(−0.69) ) ＝ 0.9607\n'
+  + '生存 16%   p = 0.16  →  −( 0.16 ×(−2.68) ＋ 0.84 ×(−0.25) ) ＝ 0.6263\n'
+  + '生存  0%   p = 0.00  →                                    ＝ 0.0000';
+}
+
+function drawMz2(){
+  const s2 = $('mz2'); s2.innerHTML = '';
+  
+  const Kz = K21('mz2', 13), F = v => Math.round(v * Kz * 100) / 100, 縦 = Kz > 1;
+  const bx = function(x, y, w, t, c){
+    s2.appendChild(el('rect', {x:x, y:y, width:w, height:24, fill:'#fff', stroke:c}));
+    s2.appendChild(el('text', {x:(x+w/2).toFixed(1), y:(y+17).toFixed(1), 'text-anchor':'middle',
+      'font-size':F(13.5), fill:c}, t));
+  };
+  if (縦) {
+    s2.appendChild(el('text', {x:0, y:16, 'font-size':F(13.5), fill:'#000'},
+      '割る前  891人  迷い 0.9607'));
+    s2.appendChild(el('text', {x:0, y:44, 'font-size':F(13.5), fill:'#2f6fb5'},
+      '質問A「女性ですか」'));
+    bx(0, 56, 152, '女 314人  0.8237', '#2f6fb5');
+    bx(164, 56, 154, '男 577人  0.6992', '#2f6fb5');
+    s2.appendChild(el('text', {x:0, y:98, 'font-size':F(13), fill:'#6e6e6e'},
+      '　　→ 減り 0.2177'));
+    s2.appendChild(el('text', {x:0, y:130, 'font-size':F(13.5), fill:'#c00'},
+      '質問B「敬称が Mr ですか」'));
+    bx(0, 142, 156, 'Mr 517人  0.6263', '#c00');
+    bx(168, 142, 212, 'Mrでない 374人  0.8839', '#c00');
+    s2.appendChild(el('text', {x:0, y:184, 'font-size':F(13), fill:'#6e6e6e'},
+      '　　→ 減り 0.2263　← こちらが大きい（計算は下の式）'));
+    s2.appendChild(el('line', {x1:0, y1:200, x2:556, y2:200, stroke:'#d9d9d9'}));
+    s2.appendChild(el('text', {x:0, y:222, 'font-size':F(13.5), fill:'#000'},
+      'なぜ B のほうが減るのか'));
+    s2.appendChild(el('text', {x:0, y:244, 'font-size':F(13), fill:'#6e6e6e'},
+      '男577人には Master（少年40人・生存 58%）が混ざっています。'));
+    s2.appendChild(el('text', {x:0, y:264, 'font-size':F(13), fill:'#6e6e6e'},
+      'Mr で切ると その40人が向こう側へ出るので、'));
+    s2.appendChild(el('text', {x:0, y:284, 'font-size':F(13), fill:'#6e6e6e'},
+      '残った517人は もっと片寄ります（生存 19% → 16%）'));
+    s2.setAttribute('viewBox', '0 0 560 292');
+  } else {
+  s2.appendChild(el('text', {x:0, y:16, 'font-size':13.5, fill:'#000'},
+    '割る前  891人  迷い 0.9607'));
+  s2.appendChild(el('text', {x:0, y:48, 'font-size':13.5, fill:'#2f6fb5'},
+    '質問A「女性ですか」'));
+  bx(196, 32, 150, '女 314人  0.8237', '#2f6fb5');
+  bx(356, 32, 190, '男 577人  0.6992', '#2f6fb5');
+  s2.appendChild(el('text', {x:0, y:74, 'font-size':13, fill:'#6e6e6e'},
+    '　　→ 減り 0.2177'));
+  s2.appendChild(el('text', {x:0, y:112, 'font-size':13.5, fill:'#c00'},
+    '質問B「敬称が Mr ですか」'));
+  bx(196, 96, 180, 'Mr 517人  0.6263', '#c00');
+  bx(386, 96, 160, 'Mrでない 374人  0.8839', '#c00');
+  s2.appendChild(el('text', {x:0, y:138, 'font-size':13, fill:'#6e6e6e'},
+    '　　→ 減り 0.2263　← こちらが大きい（計算は下の式）'));
+  s2.appendChild(el('line', {x1:0, y1:154, x2:556, y2:154, stroke:'#d9d9d9'}));
+  s2.appendChild(el('text', {x:0, y:176, 'font-size':13.5, fill:'#000'},
+    'なぜ B のほうが減るのか'));
+  s2.appendChild(el('text', {x:0, y:198, 'font-size':13, fill:'#6e6e6e'},
+    '男577人には Master（少年40人・生存 58%）が混ざっています。Mr で切ると その40人が'));
+  s2.appendChild(el('text', {x:0, y:218, 'font-size':13, fill:'#6e6e6e'},
+    '向こう側へ出るので、残った517人は もっと片寄ります（生存 19% → 16%）'));
+  }
+  $('mzeq2').textContent =
+    '割った後の迷い ＝ （その組の人数 ÷ 891）× その組の迷い  を 全部 足す\n\n'
+  + '質問A「女性ですか」\n'
+  + '  女 314人 → 314 ÷ 891 ＝ 0.352      0.352 × 0.8237 ＝ 0.2901\n'
+  + '  男 577人 → 577 ÷ 891 ＝ 0.648      0.648 × 0.6992 ＝ 0.4529\n'
+  + '  足すと                              0.2901 ＋ 0.4529 ＝ 0.7430\n'
+  + '  減り ＝ 0.9607 − 0.7430 ＝ 0.2177\n\n'
+  + '質問B「敬称が Mr ですか」\n'
+  + '  Mr    517人 → 517 ÷ 891 ＝ 0.580   0.580 × 0.6263 ＝ 0.3634\n'
+  + '  Mrでない 374人 → 374 ÷ 891 ＝ 0.420  0.420 × 0.8839 ＝ 0.3710\n'
+  + '  足すと                              0.3634 ＋ 0.3710 ＝ 0.7344\n'
+  + '  減り ＝ 0.9607 − 0.7344 ＝ 0.2263   ← こちらが大きい';
+}
+function drawRank21(){
+  const t = $('rank21'); t.innerHTML = '';
+  const hd = ce('tr');
+  ['', '質問（列）', '迷いの減り', 'はい', 'いいえ'].forEach(function(h, i){
+    hd.appendChild(ce('th', i === 1 ? 'l' : '', h));
+  });
+  t.appendChild(hd);
+  H15.forEach(function(r, i){
+    const tr = ce('tr');
+    [[(i+1)+'位',''],[r[0],'l'],[r[1].toFixed(4),''],[r[2],''],[r[3],'']]
+      .forEach(function(c){ tr.appendChild(ce('td', c[1], String(c[0]))); });
+    if (i === 0) tr.className = 'bad';
+    t.appendChild(tr);
+  });
+  const t2 = $('cmp21b'); t2.innerHTML = '';
+  const h2 = ce('tr');
+  ['1回だけ質問するとして、使う列','迷いの減り','当たった人数'].forEach(function(h, i){
+    h2.appendChild(ce('th', i === 0 ? 'l' : '', h));
+  });
+  t2.appendChild(h2);
+  [['敬称が Mr か（機械が選ぶ1位）','0.2263','697人'],
+   ['女性かどうか（2位）','0.2177','701人']].forEach(function(r, i){
+    const tr = ce('tr');
+    r.forEach(function(c, k){ tr.appendChild(ce('td', k === 0 ? 'l' : '', c)); });
+    if (i === 1) tr.className = 'bad';
+    t2.appendChild(tr);
+  });
+}
+function up20(){
+  const k = +$('s20').value, d = D11[k];
+  leaked20 = 0;
+  $('v20').textContent = d[0] + (d[0] === '上限なし' ? '' : '回');
+  $('htr20').textContent = d[1].toFixed(2);
+  $('hte20').textContent = d[2].toFixed(2);
+  $('gtr20').style.width = ((d[1] - 60) / 40 * 100).toFixed(2) + '%';
+  const b = $('gte20');
+  b.style.width = ((d[2] - 60) / 40 * 100).toFixed(2) + '%';
+  b.classList.toggle('ok', TOP.indexOf(k) >= 0);
+  $('nl20').textContent = d[3];
+  band('leaf20', 0, LEAF[d[0]] || null);
+  if (!LEAF[d[0]]){
+    
+    const bb = $('leaf20'); bb.innerHTML = '';
+    for (let i = 0; i < d[3]; i++){
+      const sp = ce('span'); sp.style.width = (100 / d[3]).toFixed(3) + '%';
+      sp.style.background = '#f4f4f4';
+      if (i) sp.style.borderLeft = '1px solid #999';
+      bb.appendChild(sp);
+    }
+  }
+  const one = {'5':2,'6':5,'8':22,'10':37,'15':70,'20':83,'上限なし':85}[d[0]] || 0;
+  $('leaf20c').innerHTML = one
+    ? 'このうち <b>' + one + '個</b>は<b>1人しか入っていません</b>。'
+      + 'その1人を見て答えを決めています ── 法則ではなく、891人のうちの1人の記録です。'
+    : 'どの葉にも何人か入っています。';
+  drawTree(k); drawLn(k);
+  const j = $('j20');
+  if (TOP.indexOf(k) >= 0){
+    j.className = 'verdict ok';
+    j.innerHTML = '<b>初見の点が いちばん高いあたりです（' + d[2].toFixed(2) + '%）。</b>'
+      + '<b>3〜4回のあたりが頂点です。</b><br>'
+      + '<b>どちらになるかは 隠す178人の選び方で変わります。</b>'
+      + 'この教材の選び方では 4回が わずかに上ですが、<b>別の選び方では 3回や5回が上になります</b>。<br>'
+      + '<b>これより右へ回すと、練習の点は上がるのに 初見の点は下がります。'
+      + '止める場所を決めるのは あなたです。</b>';
+  } else if (k > TOP[TOP.length-1]){
+    j.className = 'verdict stuck';
+    j.innerHTML = '<b>練習 ' + d[1].toFixed(2) + '% ／ 初見 ' + d[2].toFixed(2) + '%。</b>'
+      + '練習の点は上がったのに、<b>初見の点は下がりました</b>。<br>'
+      + '<b>覚えたのは「生き残る条件」ではなく、この891人の細部です。</b>';
+  } else {
+    j.className = 'verdict';
+    j.innerHTML = '<b>練習 ' + d[1].toFixed(2) + '% ／ 初見 ' + d[2].toFixed(2) + '%。</b>'
+      + '2本はまだ近い（覚えていないので差が出ません）。<b>右へ回してください。</b>';
+  }
+  $('steps').children[3].className = (k >= TOP20) ? 'done' : 'open';
+}
+
+
+function leak20(){
+  leaked20 = 1;
+  $('htr20').textContent = LEAK[0].toFixed(2);
+  $('hte20').textContent = LEAK[1].toFixed(2);
+  $('gtr20').style.width = '100.00%';
+  const b = $('gte20');
+  b.style.width = ((LEAK[1] - 60) / 40 * 100).toFixed(2) + '%';
+  b.classList.remove('ok');
+  const j = $('j20');
+  j.className = 'verdict stuck';
+  j.innerHTML = '<b>練習 100.00% ／ 初見 ' + LEAK[1].toFixed(2) + '%。</b>'
+    + '891人の番号は全員ちがうので<b>丸ごと覚えられます</b>。'
+    + '本番の番号 892〜1309 は<b>練習に1つもありません</b>。<br>'
+    + '<b>全員に「死亡」と答える 61.62% より低い</b>です。'
+    + '<b>機械は止めてくれません。</b>エラーも出ません。（問11 でやったことです）';
+  
+  show('r20');
+}
+
+/* ══════════════════ 締め ══════════════════ */
+function drawBar(){
+  const s = $('bar21'); s.innerHTML = '';
+  const xl = 250, xw = 186, lo = 55, hi = 90;
+  const X = v => xl + (v - lo) / (hi - lo) * xw;
+  s.appendChild(el('text', {x:0, y:18, 'font-size':13.5, fill:'#6e6e6e'},
+    '初見の点（891人を5つに分けて5回まわした平均）'));
+  [60,70,80,90].forEach(v => {
+    s.appendChild(el('line', {x1:X(v).toFixed(1), y1:28, x2:X(v).toFixed(1), y2:290,
+      stroke:'#ececec'}));
+    s.appendChild(el('text', {x:X(v).toFixed(1), y:308, 'text-anchor':'middle',
+      'font-size':13.5, fill:'#6e6e6e'}, v + '%'));
+  });
+  M7.forEach((m, i) => {
+    const y = 34 + i * 36, top4 = i < 4;
+    s.appendChild(el('text', {x:0, y:(y+16).toFixed(1), 'font-size':11,
+      fill:top4 ? '#000' : '#6e6e6e'}, m[0]));
+    s.appendChild(el('rect', {x:xl, y:y+3, width:(X(m[1])-xl).toFixed(1), height:18,
+      fill:top4 ? '#000' : '#b9b9b9'}));
+    
+    
+    const y2 = y + 22;
+    s.appendChild(el('line', {x1:X(m[1]-m[2]).toFixed(1), y1:y2, x2:X(m[1]+m[2]).toFixed(1), y2:y2,
+      stroke:'#c00', 'stroke-width':1.6}));
+    [m[1]-m[2], m[1]+m[2]].forEach(function(v){
+      s.appendChild(el('line', {x1:X(v).toFixed(1), y1:y2-3, x2:X(v).toFixed(1), y2:y2+3,
+        stroke:'#c00', 'stroke-width':1.6}));
+    });
+    
+    s.appendChild(el('text', {x:556, y:(y+17).toFixed(1), 'text-anchor':'end',
+      'font-size':13, fill:'#000'}, m[1].toFixed(2) + ' ±' + m[2].toFixed(2)));
+  });
+  
+  s.appendChild(el('rect', {x:xl-2, y:32, width:(X(85.5)-xl).toFixed(1), height:142,
+    fill:'none', stroke:'#019949', 'stroke-dasharray':'4 3'}));
+  
+  s.appendChild(el('text', {x:0, y:338, 'font-size':13, fill:'#019949'},
+    '緑の枠の4つ ── 作りは違うのに 長さがほぼ同じ'));
+  s.appendChild(el('text', {x:0, y:358, 'font-size':13, fill:'#6e6e6e'},
+    '赤い横線＝5回の散らばり'));
+}
+function guess22(k){
+  ['p22a','p22b'].forEach((id, i) => $(id).classList.toggle('sel', i === k));
+  const m = DIFF.reduce((a,b)=>a+b,0)/5;
+  const sd = Math.sqrt(DIFF.reduce((a,b)=>a+(b-m)*(b-m),0)/5);
+  const j = $('j22');
+  j.className = 'verdict ' + (k === 1 ? 'ok' : 'stuck');
+  j.innerHTML = (k === 1 ? '<b>そのとおり、言えません。</b>' : '<b>ちがいます。言えません。</b>')
+    + '5回ぶんの差は ' + DIFF.map(x=>x.toFixed(2)).join(' / ') + '。<br>'
+    + '平均 <b>' + m.toFixed(2) + '</b> ／ ばらつき <b>±' + sd.toFixed(2) + '</b> → 範囲 '
+    + (m-sd).toFixed(2) + '〜' + (m+sd).toFixed(2) + 'で <b>0 をまたぎます</b>。'
+    + '<b>向きも揃っていません</b>（プラスの回とマイナスの回がある）。<br>'
+    + '上の4つから2つ取る組み合わせは6組。<b>差があると言える組は 1つもありません。</b>';
+}
+function drawCmp(){
+  const s = $('cmp21'); s.innerHTML = '';
+  const Kc = K21('cmp21', 13), F = v => Math.round(v * Kc * 100) / 100, 縦 = Kc > 1;
+  const mid = 278;
+  s.appendChild(el('line', {x1:mid, y1:8, x2:mid, y2:224, stroke:'#d9d9d9'}));
+  s.appendChild(el('text', {x:0, y:20, 'font-size':F(13.5), fill:'#000'}, 'この問題（人が作った）'));
+  s.appendChild(el('text', {x:mid+14, y:20, 'font-size':F(13.5), fill:'#000'}, 'LLM（学習で決まる）'));
+  /* 左 */
+  s.appendChild(el('rect', {x:0, y:34, width:190, height:26, fill:'#fff', stroke:'#d9d9d9'}));
+  s.appendChild(el('text', {x:8, y:52, 'font-size':F(13.5), fill:'#6e6e6e'}, 'Braund, Mr. Owen…'));
+  s.appendChild(el('text', {x:14, y:80, 'font-size':F(13), fill:'#019949'}, '↓ 人が切り出す'));
+  s.appendChild(el('rect', {x:0, y:88, width:150, height:26, fill:'#f2fbf6', stroke:'#019949'}));
+  s.appendChild(el('text', {x:75, y:106, 'text-anchor':'middle', 'font-size':F(13.5),
+    fill:'#019949'}, '敬称が Mr'));
+  s.appendChild(el('text', {x:0, y:138, 'font-size':F(13), fill:'#000'}, '名前が付いている'));
+  s.appendChild(el('text', {x:0, y:160, 'font-size':F(13), fill:'#000'}, '何を見ているか分かる'));
+  s.appendChild(el('text', {x:0, y:182, 'font-size':F(13), fill:'#000'}, '＋148人 効いた'));
+  s.appendChild(el('text', {x:0, y:212, 'font-size':F(13), fill:'#019949'}, '作ったのは 人'));
+  /* 右 */
+  s.appendChild(el('rect', {x:mid+14, y:34, width:110, height:26, fill:'#fff', stroke:'#d9d9d9'}));
+  s.appendChild(el('text', {x:mid+24, y:52, 'font-size':F(13.5), fill:'#6e6e6e'}, '語「東京」'));
+  s.appendChild(el('text', {x:mid+28, y:80, 'font-size':F(13), fill:'#c00'}, '↓ 学習で決まる'));
+  for (let i = 0; i < 6; i++){
+    s.appendChild(el('rect', {x:mid+14+i*40, y:88, width:36, height:26,
+      fill:'#fdf4f4', stroke:'#c00'}));
+    s.appendChild(el('text', {x:mid+32+i*40, y:106, 'text-anchor':'middle', 'font-size':F(13.5),
+      fill:'#c00'}, i === 5 ? '…' : '？'));
+  }
+  s.appendChild(el('text', {x:mid+14, y:138, 'font-size':F(13), fill:'#000'}, '1語に 12,288個'));
+  s.appendChild(el('text', {x:mid+14, y:160, 'font-size':F(13), fill:'#000'}, '列に名前が無い'));
+  s.appendChild(el('text', {x:mid+14, y:182, 'font-size':F(13), fill:'#000'}, '人が書いた数は 0個'));
+  s.appendChild(el('text', {x:mid+14, y:212, 'font-size':F(13), fill:'#c00'}, '手では設計できない'));
+}
+
+/* ══════════════════ 立ち上げ ══════════════════ */
+drawRaw(); drawBd0(); drawNa0();
+drawSex18(); rows18s(); up18s();
+drawGrid18();
+rows18(); up18();
+drawDt(); drawMz21(); drawMz2(); drawRank21(); drawCv();
+$('s20').oninput = up20;
+$('rst20').onclick = () => { $('s20').value = 0; up20(); };
+$('lk20').onclick = leak20;
+up20();
+drawNm(); drawTit(); drawMs21(); drawTab21p();
+drawBar(); drawCmp();
+$('p22a').onclick = () => guess22(0);
+$('p22b').onclick = () => guess22(1);
+
+
+drawDt(); drawMz21(); drawMz2(); drawRank21(); drawCv();
+up20();
+drawBar(); drawCmp();
+
+
+var CV = {
+ "e20a": [
+  [
+   "d",
+   "ここからは<b>機械に質問を選ばせる</b>。上に書いた<b>決定木</b>だ。"
+  ],
+  [
+   "m",
+   "僕がやってたのと どう違うの？"
+  ],
+  [
+   "d",
+   "君がやったのは<b>どの組にも同じ質問</b>だった。性別、等級、年齢……と順番に足したな。"
+  ],
+  [
+   "m",
+   "うん。全部の組に同じことをした。"
+  ],
+  [
+   "d",
+   "機械は違う。<b>持っている列を全部 測って、いちばん効く1本だけ</b>を選ぶ。<b>分かれた先では、また全部 測り直す。</b>……<b>すぐ下の図</b>を見てごらん。"
+  ]
+ ],
+ "e20a2": [
+  [
+   "m",
+   "なんで測り直すの？ 1回 順位を出したら、その順に使えばいいじゃん。"
+  ],
+  [
+   "d",
+   "<b>順位が変わってしまうのだ。</b>……1位で割ったな。<b>Mr の517人</b>を見てごらん。"
+  ],
+  [
+   "m",
+   "Mr って<b>成人男性</b>の敬称だよね。……あ、<b>この517人は全員 男</b>だ。"
+  ],
+  [
+   "d",
+   "そうだ。ではその517人に<b>2位の質問「女性ですか」</b>を聞いてごらん。"
+  ],
+  [
+   "m",
+   "……<b>全員「いいえ」</b>。<b>1人も分かれない。</b>"
+  ],
+  [
+   "d",
+   "<b>そこだ！</b>敬称で割ったあとでは、<b>性別を聞いても もう分けられない</b>。同じことを2回 聞いているからな。"
+  ],
+  [
+   "m",
+   "だから2回目は<b>別の列（運賃）</b>が選ばれるんだ。"
+  ],
+  [
+   "d",
+   "<b>効く列は、いま見ている組によって変わる。</b>それが測り直す理由だよ。"
+  ],
+  [
+   "m",
+   "……ところで、その「効く」って何を測ってるの？"
+  ],
+  [
+   "d",
+   "当たりの数ではない。<b>迷いの大きさ</b>だ。<b>下で説明する。</b>"
+  ]
+ ],
+ "e20a3": [
+  [
+   "m",
+   "<b>迷い</b>か……。半々のときがいちばん大きくて、片寄ると小さくなるんだ。"
+  ],
+  [
+   "d",
+   "そうだ。<b>機械は「迷いがいちばん減る質問」を選ぶ。当たった人数は見ていない。</b>"
+  ],
+  [
+   "m",
+   "え、当たりを見ないの？ 当てるゲームなのに。"
+  ],
+  [
+   "d",
+   "<b>見ない。</b>……表を見てごらん。1位の<b>敬称が Mr</b> で割ると当たりは <b>697人</b>。2位の<b>女性かどうか</b>なら <b>701人</b>だ。"
+  ],
+  [
+   "m",
+   "<b>1位のほうが 4人 少ない</b>！ それでも1位を選ぶの？"
+  ],
+  [
+   "d",
+   "<b>選ぶ。質問を1回でやめないからだ。</b>迷いの小さい組にしておけば、次の質問でよく削れる。"
+  ],
+  [
+   "m",
+   "……<b>1回目の4人は、2回目のために手放してる</b>んだ。"
+  ],
+  [
+   "d",
+   "<b>そこを掴んだか！</b>……では<b>その順番で木を作らせるよ。</b>"
+  ],
+  [
+   "m",
+   "でも博士、これも結局<b>坂を下ってる</b>んでしょ。第1章でやったのと同じで。"
+  ],
+  [
+   "d",
+   "<b>ちがう。</b>坂を下るのは<b>つまみを少しずつ動かす</b>ことだ。決定木は<b>切れ目の候補を全部 並べて、いちばん良いものを選ぶ</b>だけ。<b>少しずつ</b>ではない。"
+  ],
+  [
+   "m",
+   "じゃあ AI って 全部 坂を下ってるわけじゃないんだ。"
+  ],
+  [
+   "d",
+   "<b>そこを言いたかった！</b>……道具は選ぶものだ。表のかたちのデータでは、この決定木が定番だよ。"
+  ]
+ ],
+ "e20b": [
+  [
+   "d",
+   "さて学くん。<b>質問を何回まで許すか</b>── これを決めるのは<b>機械ではない。君だ。</b>"
+  ],
+  [
+   "m",
+   "多いほうがいいんじゃない？ さっき細かくしたら 100% になったし。"
+  ],
+  [
+   "d",
+   "<b>回してごらん。</b>……ただし今度は<b>ゲージが2本</b>あるよ。"
+  ],
+  [
+   "m",
+   "2本？"
+  ],
+  [
+   "d",
+   "上が<b>練習の点</b>。891人 ── <b>答えを知っている人</b>で採点した点だ。<br>下が<b>初見の点</b>。<b>作るときに1度も見ていない人</b>で採点した点だ。"
+  ],
+  [
+   "m",
+   "……どっちが本番に近いの。"
+  ],
+  [
+   "d",
+   "<b>下だ。</b>本番の418人は、君が1度も見ていない人たちだからな。"
+  ]
+ ],
+ "e20c": [
+  [
+   "m",
+   "……<b>上は上がり続けてる</b>のに、<b>下は途中から落ちてる</b>。"
+  ],
+  [
+   "d",
+   "気づいたか。<b>どこが頂点だった。</b>"
+  ],
+  [
+   "m",
+   "<b>3〜4回のあたり</b>。それより回すと、練習は上がるのに 初見は下がる。"
+  ],
+  [
+   "d",
+   "<b>そこだ！</b>……ただし<b>3回と4回のどちらが上かは、隠す178人の選び方で変わる</b>よ。だから<b>「このあたり」</b>と言うしかない。……なぜ下がる。<b>葉の帯</b>を見てごらん。"
+  ],
+  [
+   "m",
+   "……<b>細かくなってる</b>。1人しか入ってない葉がいっぱいある。"
+  ],
+  [
+   "d",
+   "<b>1人だけの葉</b>は、その1人を見て答えを決めている。<b>法則ではない。891人のうちの1人の記録だ。</b>"
+  ],
+  [
+   "m",
+   "初めて見る人が そこに来たら、<b>その1人と同じ答え</b>をもらうんだ。"
+  ],
+  [
+   "d",
+   "そこを掴んだか。……これに名前がある。<b>過学習</b>だ。<b>問11 でやったやつだよ。</b>"
+  ],
+  [
+   "m",
+   "出席番号を入れたら 練習は満点なのに 試験用で落ちた、あれか。"
+  ],
+  [
+   "d",
+   "<b>同じことが 本物のデータでも起きる。</b>……ボタンを1つ 置いてある。<b>乗客の番号も渡してごらん。</b>"
+  ]
+ ],
+ "e20d": [
+  [
+   "m",
+   "……<b>練習 100.00%</b>。……<b>初見 53.31%</b>。え、<b>半分ちょっと</b>？"
+  ],
+  [
+   "d",
+   "<b>全員に「死亡」と答える 61.62% より低い。</b>"
+  ],
+  [
+   "m",
+   "何も考えないほうがマシだったの？"
+  ],
+  [
+   "d",
+   "そういうことだ。……<b>そして機械は止めてくれん。</b>エラーも出ん。「練習は100点です」と言って、そのまま出してくる。"
+  ],
+  [
+   "m",
+   "……こわい。"
+  ],
+  [
+   "d",
+   "だから<b>測り方</b>が要る。891人を5つに分け、<b>1つを隠して</b>残りで作り、<b>隠したほうで採点する。</b>それを5回。"
+  ],
+  [
+   "m",
+   "なんで5回もやるの。1回でいいじゃん。"
+  ],
+  [
+   "d",
+   "<b>隠す178人を変えるだけで、初見の点が 79.78% から 85.39% まで動く。</b>幅で <b>5.6ポイント</b>だ。……<b>1回の点で良し悪しを言うと外すよ。</b>"
+  ],
+  [
+   "m",
+   "……<b>点が出ていることと、分かっていることは別</b>なんだ。"
+  ],
+  [
+   "d",
+   "<b>それが今日いちばん持ち帰るものだ。</b>"
+  ]
+ ],
+ "eこの章a": [
+  [
+   "d",
+   "仕上げだ。<b>やり方を7つ</b>並べてみたよ。<b>決定木</b>を1本、それを<b>300本 束ねたもの（ランダムフォレスト）</b>、木を使わない<b>ロジスティック回帰</b>── 作りがまったく違う。"
+  ],
+  [
+   "m",
+   "いちばん上が いちばん強いんだよね。"
+  ],
+  [
+   "d",
+   "<b>そう見えるな。</b>……上の2つに<b>差があると言えるか。</b>先に答えてくれ。"
+  ]
+ ],
+ "eこの章b": [
+  [
+   "m",
+   "……<b>言えない</b>のか。5回のうち<b>勝ったり負けたり</b>してる。"
+  ],
+  [
+   "d",
+   "そうだ。<b>上の4つから2つ取る組み合わせは6組。差があると言える組は1つもない。</b>"
+  ],
+  [
+   "m",
+   "じゃあ、どのモデルを選んでも同じってこと？"
+  ],
+  [
+   "d",
+   "<b>この材料では同じだ。</b>891人・15列を変えないかぎり、<b>そこが壁になる。</b>"
+  ],
+  [
+   "m",
+   "えっ。じゃあ何を変えれば上がるの。"
+  ],
+  [
+   "d",
+   "<b>渡す列だ。</b>……さっき君が作った<b>「敬称が Mr」</b>を思い出してごらん。あれは<b>＋148人</b>だったよ。"
+  ],
+  [
+   "m",
+   "<b>モデルを替えるより、列を作るほうが効く</b>んだ。"
+  ],
+  [
+   "d",
+   "<b>そこが今日の答えだ。</b>"
+  ]
+ ],
+ "eこの章c": [
+  [
+   "m",
+   "博士。……LLM も 自分で列を作ってるの？"
+  ],
+  [
+   "d",
+   "上の図を見てごらん。<b>LLM は 言葉を数字の列に置きかえるところ</b>も <b>学習で決まる。</b>人が手で書いた数は <b>0個</b>だよ。"
+  ],
+  [
+   "m",
+   "じゃあ 自分で列を作ってるんだ。"
+  ],
+  [
+   "d",
+   "作る。……<b>ただし どの数が何を表すのかは、誰にも分からん。手では設計できん。</b>"
+  ],
+  [
+   "m",
+   "<b>第3章でやった 12,288個</b>だ。名前が付いていなかった。"
+  ],
+  [
+   "d",
+   "そうだ。……<b>君が今日 手でやったことを、機械が自分でやる。</b>それが 第1章から 第4章で見てきたものだよ。"
+  ],
+  [
+   "m",
+   "……こっちは名前が分かる。あっちは分からない。"
+  ],
+  [
+   "d",
+   "<b>そこが違いだ。</b>……よくここまで来たな、学くん。"
+  ],
+  [
+   "m",
+   "博士。<b>Kaggle、出してみる。</b>"
+  ],
+  [
+   "d",
+   "<b>行っておいで。</b>あそこは<b>答えがまだ決まっていない問題</b>に、世界中の人間が同時に当たっている場所だ。"
+  ]
+ ]
+};
+drawCV(CV);
+
+
+(function () {
+  var talk = document.getElementById('q21talk');
+  if (!talk) return;
+  var ids = ['fin21', 'form'], home = [], moved = false;
+  ids.forEach(function (i) {
+    var e = document.getElementById(i);
+    if (e) home.push({ el: e, parent: e.parentNode, next: e.nextSibling });
+  });
+  if (!home.length) return;
+  function sync() {
+    var on = document.body.classList.contains('split-on');
+    if (on && !moved) { home.forEach(function (h) { talk.appendChild(h.el); }); moved = true; }
+    else if (!on && moved) {
+      for (var z = home.length - 1; z >= 0; z--) home[z].parent.insertBefore(home[z].el, home[z].next);
+      moved = false;
+    }
+  }
+  if (window.MutationObserver)
+    new MutationObserver(sync).observe(document.body, { attributes: true, attributeFilter: ['class'] });
+  sync();
+})();
+})();
+</script>
+</body>
+</html>

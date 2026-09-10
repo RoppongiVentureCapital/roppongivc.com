@@ -1,0 +1,868 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="index,follow">
+<meta name="description" content="どの語を見るか ── 問13 どの語を見るか">
+<meta property="og:title" content="Deep Black Box ── 問13 どの語を見るか（第3章）">
+<meta property="og:description" content="どの語を見るか ── 問13 どの語を見るか">
+
+<meta property="og:image" content="https://www.roppongivc.com/img/agora/r1/og-r1-game.jpg">
+<meta name="twitter:image" content="https://www.roppongivc.com/img/agora/r1/og-r1-game.jpg">
+<title>Deep Black Box ── 問13 どの語を見るか（第3章）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@300;400;600;700&family=Inter:wght@300;400;500;600;700&family=Noto+Serif+JP:wght@300;400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="common.css">
+<style>
+
+.offpage{display:none}
+:root{
+ --bg:#fff; --white:#fff; --black:#000;
+ --gray-100:#f9f9f9; --gray-200:#d9d9d9; --gray-500:#444; --gray-600:#2a2a2a;
+ --accent:#019949;
+ --sans:'Inter',system-ui,sans-serif;
+ --serif:'Source Serif 4','Noto Serif JP',Georgia,serif;
+ --content-w:52.625rem;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--black);font-family:var(--sans);
+ -webkit-font-smoothing:antialiased}
+.wrap{max-width:var(--content-w);margin:0 auto;padding:0 1.5rem 5rem}
+.top{border-bottom:1px solid var(--gray-200);margin-bottom:2.4rem}
+
+
+.eyebrow{font-size:13px;font-weight:500;letter-spacing:.16em;text-transform:uppercase;
+ color:var(--gray-500);margin-bottom:.9rem}
+h1{font-family:var(--serif);font-size:2.1rem;font-weight:300;line-height:1.35;margin:0 0 .8rem}
+.lead b{color:var(--black)}
+.meta{font-size:13px;letter-spacing:.1em;color:var(--gray-500);padding-bottom:1.2rem;
+ border-bottom:1px solid var(--gray-200);margin-bottom:1.2rem}
+.steps{display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:2.4rem}
+.steps div{flex:1 1 5rem;padding:.55rem .3rem;text-align:center;font-size:12px;
+ border:1px solid var(--gray-200);color:var(--gray-500);background:var(--white)}
+.steps div.open{border-color:var(--black);color:var(--black)}
+.steps div.done{background:var(--black);border-color:var(--black);color:var(--white)}
+.card{border:1px solid var(--gray-200);padding:2rem;margin-bottom:2rem;background:var(--white)}
+.tagline{font-size:13px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;
+ color:var(--gray-500);margin-bottom:.9rem}
+
+.panel{background:var(--gray-100);border:1px solid var(--gray-200);padding:1rem;margin:1.3rem 0}
+.panel .verdict{background:var(--white)}
+.two{display:flex;gap:1rem;flex-wrap:wrap;align-items:flex-start}
+.two>div{flex:1 1 15rem;min-width:0}
+svg{display:block;width:100%;height:auto}
+.ctl{margin:1.1rem 0 .2rem}
+.ctl label{display:flex;justify-content:space-between;align-items:baseline;font-size:14px;
+ margin-bottom:.35rem;gap:1rem}
+.ctl label span.n{font-weight:600;font-variant-numeric:tabular-nums;white-space:nowrap}
+.togs{display:flex;gap:.6rem;flex-wrap:wrap;margin-top:1.1rem;align-items:center}
+.btn{background:none;border:1px solid var(--gray-200);padding:.6rem 1.15rem;font-size:14px;
+ font-family:var(--sans);color:var(--black);cursor:pointer;transition:all .15s}
+.btn:hover{border-color:var(--black);background:var(--gray-100)}
+.btn.on{background:var(--black);color:var(--white);border-color:var(--black)}
+.btn.go{background:var(--black);color:var(--white);border-color:var(--black)}
+.btn.sm{font-size:13px;padding:.45rem .85rem;color:var(--gray-500)}
+.btn:disabled{opacity:.35;cursor:default}
+
+.gauge{margin:1.2rem 0 0}
+.gauge .row{display:flex;align-items:baseline;gap:.7rem;margin-bottom:.5rem}
+.gauge .u{font-size:14px;color:var(--gray-500)}
+.gtrack{height:10px;background:#e9e9e9;position:relative;overflow:hidden}
+.gfill{display:block;height:100%;background:#c00;transition:width .12s linear}
+.gfill.ok{background:var(--accent)}
+.gmark{position:absolute;top:-3px;bottom:-3px;width:2px;background:#000}
+.gcap{display:flex;justify-content:space-between;font-size:12px;color:var(--gray-500);
+ margin-top:.35rem}
+.big{font-family:var(--serif);font-size:2rem;font-weight:400;font-variant-numeric:tabular-nums;
+ line-height:1}
+.panel .gauge{margin-top:.9rem}
+.verdict{margin-top:1.2rem;padding:.9rem 1.1rem;border:1px solid var(--gray-200);font-size:14px;
+ line-height:1.75;background:var(--gray-100)}
+.verdict.ok{border-color:var(--accent);background:#f2fbf6}
+.verdict.stuck{border-color:#c00;background:#fdf4f4}
+.next{margin-top:1rem;font-size:13px;color:var(--gray-500)}
+.src{border-left:2px solid var(--black);padding:.9rem 0 .9rem 1.1rem;margin:1.4rem 0;
+ font-size:14px;line-height:1.85;color:var(--gray-600)}
+.src .h{font-size:12px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;
+ color:var(--black);margin-bottom:.4rem}
+.src q{font-style:normal;color:var(--black)}
+.src .ref{font-size:13px;color:var(--gray-500);margin-top:.4rem;display:block}
+.box{border:1px solid var(--gray-200);padding:1.1rem 1.3rem;margin:1.3rem 0;background:var(--gray-100)}
+.box .h{font-size:12px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;
+ margin-bottom:.5rem}
+.mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+.calc{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13.5px;line-height:2;
+ background:var(--white);border:1px solid var(--gray-200);padding:.9rem 1.1rem;margin:.9rem 0;
+ overflow-x:auto;white-space:pre}
+.sc-row{display:flex;align-items:center;gap:.75rem;margin-bottom:.5rem}
+.sc-label{width:3.4rem;font-size:14px;text-align:right;flex-shrink:0;font-family:var(--serif)}
+.sc-label.wide{width:6.4rem;font-size:13px}
+.sc-track{flex:1;background:#e9e9e9;height:14px;position:relative}
+.sc-fill{display:block;height:100%;background:var(--black);transition:width .1s linear}
+.sc-fill.hit{background:var(--accent)}
+.sc-track .goal{position:absolute;top:-3px;bottom:-3px;width:1px;background:#c00}
+.sc-pct{width:3.6rem;font-size:14px;font-variant-numeric:tabular-nums;text-align:right}
+details{border-top:1px solid var(--gray-200);padding-top:1rem;margin-top:1.5rem}
+summary{font-size:14px;font-weight:500;cursor:pointer}
+.lg{font-size:14px;line-height:1.9;color:var(--gray-600);margin-top:.9rem}
+.lg table{width:100%;border-collapse:collapse;margin:.8rem 0;font-size:13px}
+.lg th,.lg td{padding:.45rem .6rem;border:1px solid var(--gray-200);text-align:left}
+.lg th{background:var(--gray-100);font-weight:600}
+.dtab th,.dtab td{padding:.35rem .5rem;border:1px solid var(--gray-200);text-align:right}
+.dtab th{background:var(--gray-100);font-weight:600;font-size:11.5px}
+.dtab td.l,.dtab th.l{text-align:left}
+
+.dtab tr.sum td{background:#f2fbf6;border-top:2px solid var(--black)}
+.hide{display:none}
+.foot{border-top:1px solid var(--gray-200);margin-top:3rem;padding-top:1.5rem;font-size:13px;
+ color:var(--gray-500);line-height:1.8}
+/* ── 語の列 ─────────────────────────────── */
+.sent{display:flex;flex-wrap:wrap;gap:.35rem;align-items:center;margin:.6rem 0}
+.sent span{border:1px solid var(--gray-200);background:var(--white);padding:.3rem .55rem;
+ font-size:15px;font-family:var(--serif)}
+.sent span.now{border-color:#c00;color:#c00;font-weight:600}
+.sent span.tgt{border-color:var(--accent);color:var(--accent);font-weight:600}
+.sent span.prompt{background:var(--gray-100);color:var(--gray-500)}
+.sent span.new{border-color:var(--black);font-weight:600}
+.caret{display:inline-block;width:2px;height:1.2rem;background:#c00;animation:bl 1s step-end infinite}
+@keyframes bl{50%{opacity:0}}
+.out{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12.5px;line-height:1.75;
+ background:var(--white);border:1px solid var(--gray-200);padding:.7rem .9rem;margin:.7rem 0;
+ white-space:pre;overflow-x:auto}
+
+.wf{display:flex;gap:.8rem;align-items:center;flex-wrap:wrap;margin:.6rem 0 .2rem}
+.wbox{border:1px solid var(--black);background:var(--white);padding:.6rem .9rem;text-align:center;
+ font-size:16px;font-family:var(--serif);line-height:1.5}
+.wbox span{font-size:12px;color:var(--gray-500);font-family:var(--sans)}
+.warr div{font-size:13.5px;line-height:2.1;font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+
+.st{font-size:13.5px;line-height:1.7;margin:.9rem 0 .35rem}
+.br{display:flex;align-items:center;gap:.5rem;margin:.3rem 0}
+.br .n{width:2.8rem;font-family:var(--serif);font-size:14px;flex-shrink:0}
+.br .v{width:3.4rem;text-align:right;font-size:13px;flex-shrink:0;
+ font-variant-numeric:tabular-nums;color:var(--gray-500)}
+.br .ax{flex:1;position:relative;height:14px;background:#e9e9e9;min-width:0}
+.br .ax:after{content:'';position:absolute;left:50%;top:-3px;bottom:-3px;width:1px;background:#6e6e6e}
+.br .ax i{position:absolute;top:0;height:100%;background:#000}
+.br.g .ax i{background:var(--accent)}
+.bd{display:flex;height:30px;margin:.5rem 0 0}
+.bd span{display:flex;align-items:center;justify-content:center;font-size:13px;color:#fff;
+ font-family:var(--serif);overflow:hidden;white-space:nowrap}
+
+.blk{border:1px solid var(--black);padding:.8rem .6rem;margin:1rem 0;background:var(--white)}
+.blk .r{display:flex;gap:.3rem}
+.blk .r>span{flex:1 1 0;min-width:0;text-align:center;font-size:13px;padding:.4rem .1rem;
+ border:1px solid var(--gray-200);font-family:var(--serif)}
+.blk .u{border:1px solid var(--black);padding:.5rem .4rem;margin:.35rem 0;text-align:center;
+ font-size:13.5px;line-height:1.6}
+.blk .u.n{border-style:dashed}
+.blk .op{text-align:center;font-size:13px;color:var(--gray-500);margin:.15rem 0}
+.blk .rep{text-align:center;font-size:13px;margin-top:.5rem}
+.blk .hl{border-color:#c00;color:#c00}
+@media (max-width:430px){
+  .wrap{padding-left:.5rem;padding-right:.5rem}
+  .card{padding-left:.75rem;padding-right:.75rem}
+  .box,.panel{padding-left:.5rem;padding-right:.5rem}
+  .top .in{padding-left:.5rem;padding-right:.5rem}
+  
+  #hd text{font-size:21px}
+  
+  .fg svg.dg text{font-size:13.5px}
+  
+  
+  #v13 text{font-size:17px}
+  
+  #v13,#v14a,#v14b{max-width:15rem;margin:0 auto}
+  .panel .ctl{margin:.55rem 0 .1rem}
+  .panel .ctl label{margin-bottom:.15rem}
+  
+  
+  .lg th,.lg td{padding:.35rem .3rem}
+  
+  .sc-row{flex-wrap:nowrap;row-gap:0;margin-bottom:.3rem}
+  .sc-label{width:4.6rem;font-size:13px;text-align:left;flex:0 0 auto}
+  .sc-label.wide{width:6.2rem;font-size:12px;text-align:left;flex:0 0 auto}
+  .sc-pct{width:3.2rem;font-size:13px;flex:0 0 auto}
+  .sc-track{flex:1 1 auto;order:0;min-width:0}
+  
+  .br .n{width:4.4rem;font-size:13px}
+  .br .v{width:3.4rem;font-size:12.5px}
+  .br{margin:.2rem 0}
+  
+  .panel .two{gap:.6rem}
+  .panel .verdict{margin-top:.7rem}
+  #v13{max-width:14rem}
+  
+  
+  
+  .cast2{padding:.7rem .75rem}
+  .cast2 .ic{width:46px;height:46px}
+  .cast2 .row{gap:.6rem}
+  
+  
+  .fg{padding:.7rem .75rem}
+  .rw .nmx{flex:0 0 4.6rem;font-size:12px}
+  .rw .pc2{flex:0 0 3rem;font-size:12px}
+}
+
+
+.cast2{border:1px solid var(--gray-200);background:var(--gray-100);
+  padding:1rem 1.1rem;margin:0 0 2.4rem}
+.cast2 .row{display:flex;gap:.9rem;align-items:flex-start}
+.cast2 .row+.row{margin-top:.9rem;padding-top:.9rem;border-top:1px solid var(--gray-200)}
+.cast2 .ic{width:54px;height:54px;border-radius:50%;flex-shrink:0;display:block;
+  border:2px solid var(--white);box-shadow:0 0 0 1px var(--gray-200),0 1px 3px rgba(0,0,0,.10)}
+.cast2 .nm2{display:block;font-size:18px;line-height:1.5;font-weight:700;margin-bottom:.2rem}
+.cast2 .rb{font-size:14px;font-weight:400;color:var(--gray-500);margin-left:.45rem}
+.cast2 .tx2{font-size:16.6px;line-height:1.831;color:var(--gray-600)}
+.cast2 .tx2 b{color:var(--black)}
+.cv{margin:1.6rem 0}
+.cl{display:flex;gap:.75rem;align-items:flex-start;margin:0 0 .85rem}
+.cl .ic{width:46px;height:46px;border-radius:50%;flex-shrink:0;display:block;
+  border:2px solid var(--white);box-shadow:0 0 0 1px var(--gray-200),0 1px 3px rgba(0,0,0,.10)}
+.cl .bb b{color:var(--black)}
+.cl .bb:before{content:'';position:absolute;left:-6px;top:15px;width:10px;height:10px;
+  background:inherit;border-left:1px solid;border-bottom:1px solid;border-color:inherit;
+  transform:rotate(45deg)}
+
+.cl.m .bb{background:#fff7ea;border-color:#efd6a6}
+.cl.d .bb{background:#eef4fa;border-color:#c3d9ee}
+
+.cl .nm{display:block;font-weight:700;letter-spacing:.07em;margin-bottom:.15rem}
+.cl.m .nm{color:#b0700c}   
+.cl.d .nm{color:#2f6fb5}   
+.keyh{font-size:11.5px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--gray-500);margin:1.6rem 0 .5rem}
+
+
+
+
+.fg{border:1px solid var(--gray-200);border-radius:.6rem;background:var(--white);
+  padding:.9rem 1rem;margin:0 0 .85rem}
+.fg .fn b{color:var(--black)}
+.fg .fn+.fn{margin-top:.4rem}
+/* 入れ子の箱 */
+.nst{border:2px solid var(--gray-200);border-radius:.5rem;padding:.55rem .6rem}
+.nst.a{border-color:#c3d9ee;background:#f6fafd}
+.nst.b{border-color:#bcdfc9;background:#f5fbf7}
+.nst.c{border-color:#efd6a6;background:#fffaf0}
+/* 段を並べる（390px では縦に積む） */
+.flw{display:flex;flex-wrap:wrap;align-items:stretch;gap:.45rem}
+.flw>.st{flex:1 1 9rem;min-width:0;border:1px solid var(--gray-200);border-radius:.45rem;
+  background:var(--gray-100);padding:.55rem .6rem}
+.flw>.st.on{background:#fffaf0;border-color:#efd6a6}
+.flw .hd2{font-size:11.5px;font-weight:700;color:var(--gray-500);margin:0 0 .3rem}
+.flw .bg2{font-size:15px;font-weight:700;color:var(--black)}
+.flw .sm2{font-size:12.5px;color:var(--gray-600);line-height:1.75}
+/* 割合の帯 */
+.rw{display:flex;align-items:center;gap:.5rem;margin:.32rem 0}
+.rw .nmx{flex:0 0 5.6rem;font-size:12.5px;color:var(--gray-600)}
+.rw .tk{position:relative;flex:1 1 auto;height:15px;background:var(--gray-100);
+  border-radius:8px;overflow:hidden;min-width:0}
+.rw .fl2{position:absolute;left:0;top:0;bottom:0;background:#9aa2a8;border-radius:8px}
+.rw .fl2.k{background:#000}
+.rw .fl2.g{background:#019949}
+.rw .pc2{flex:0 0 3.4rem;text-align:right;font-size:12.5px;color:var(--black)}
+/* 図の中の表 */
+.fg table{width:100%;border-collapse:collapse;margin:.5rem 0 0;font-size:12.5px}
+.fg th,.fg td{padding:.4rem .5rem;border:1px solid var(--gray-200);text-align:left}
+.fg th{background:var(--gray-100);font-weight:600}
+/* 数字の個数を四角で見せる */
+.dots{display:flex;flex-wrap:wrap;gap:2px;margin:.3rem 0 0}
+.dots i{display:block;width:9px;height:9px;background:#c3d9ee;border-radius:2px}
+.dots.many i{background:#efd6a6}
+
+
+.fg svg.dg{display:block;width:100%;max-width:520px;height:auto;margin:.5rem auto .2rem}
+
+
+.tf{display:flex;gap:.5rem;align-items:flex-end;margin:.6rem 0 .2rem}
+.tf>.col{flex:1 1 0;min-width:0}
+.tf .cap2{font-size:11.5px;color:var(--gray-500);text-align:center;margin:.15rem 0}
+.tf .arw{text-align:center;font-size:15px;color:var(--gray-500);line-height:1.1}
+.tf .stk2{border:1.6px solid;border-radius:.55rem;padding:.4rem .35rem}
+.tf .ttl{font-size:12.5px;font-weight:700;text-align:center;margin:0 0 .3rem}
+.tf .pc{border:1.2px solid;border-radius:.4rem;background:var(--white);
+  font-size:12.5px;line-height:1.5;text-align:center;padding:.35rem .25rem;margin:0}
+.tf .pc.gy{border-style:dashed;border-color:var(--gray-200);background:#f2f2f2;color:var(--gray-500)}
+.tf .pl{font-size:11.5px;color:var(--gray-500);text-align:center;margin:.16rem 0}
+.tf .io{border:1.2px solid #2f6fb5;border-radius:.4rem;background:#eef4fa;color:#2f6fb5;
+  font-size:12px;line-height:1.5;text-align:center;padding:.35rem .25rem}
+.tf .gpt{border:2px dashed #c00;border-radius:.6rem;padding:.35rem;background:#fffdf7}
+.tf .gptl{font-size:11.5px;font-weight:700;color:#c00;text-align:center;margin:0 0 .25rem}
+@media (max-width:430px){.tf{gap:.35rem}.tf .pc{font-size:11.5px;padding:.3rem .15rem}
+  .tf .io{font-size:11px;padding:.3rem .15rem}.tf .ttl{font-size:11.5px}}
+
+.stkw{margin:.35rem 0 .1rem}
+.stkl{font-size:12px;color:var(--gray-600);margin:0 0 .15rem}
+.stk{position:relative;display:flex;height:26px;border-radius:4px;overflow:hidden;
+  border:1px solid var(--gray-200)}
+.stk span{display:block;height:100%}
+.stk i{position:absolute;top:-3px;bottom:-3px;width:2px;background:#c00;left:50%}
+.stkn{display:flex;font-size:11.5px;color:var(--gray-600);margin:.15rem 0 0}
+.stkn span{display:block;text-align:center;overflow:hidden;white-space:nowrap}
+
+table.wtb{width:100%;border-collapse:collapse;font-size:13px;margin:0}
+table.wtb td{padding:.35rem .3rem;border:1px solid var(--gray-200);text-align:center;background:var(--white);font-feature-settings:'tnum'}
+</style>
+</head>
+<body data-split="A2" data-top="q13top" data-talk="q13talk"
+      data-verdict="j13" data-ratio="0.70"
+      data-figs="v13">
+
+<div class="top"><div class="in">Deep Black Box<span class="tag">AIのブラックボックスを、1問ずつ開けて手で動かす。全21問。</span></div></div>
+<div class="wrap">
+
+
+<div class="prog">
+ <div class="steps" id="steps"></div>
+ <div class="cnt" id="prog_cnt"></div>
+</div>
+<div class="chap" id="chap"></div>
+
+<!-- ══════════════════ c13 ══════════════════ -->
+<div class="card" id="c13">
+<div class="tagline">Question 13</div>
+<h2>どの語を見るか</h2>
+
+<!-- 🆕 F：この lead は会話 e13a に移した -->
+<div id="e13a"></div>
+<div class="sent" id="s13"></div>
+<div class="cap">緑の4語に<b>札</b>があります（本物は全部の語に）。
+<b>「それ」が探しものを出し、札と向きを比べます。</b></div>
+
+
+<div class="box">
+ <div class="h">目標</div>
+ <p style="margin:0;font-size:16px;line-height:1.8">
+ <b>コーヒーを見る割合を 半分より上 にする</b></p>
+ <div class="cap" style="margin:.4rem 0 0">この問題で そう置いた値です。
+ 取り分の合計は 1 なので、半分を超えたら
+ <b>他の語ぜんぶを足したより、この語を見ている</b>状態になります。</div>
+</div>
+
+<div id="e13b"></div>
+
+<div class="box">
+ <div class="h">札と探しものは どこから来るのか</div>
+ <div class="wf">
+  <div class="wbox"><b>x</b><br><span>語のベクトル</span></div>
+  <div class="warr">
+   <div>─ ×<b>W_q</b> → <b>q</b>　探しもの</div>
+   <div>─ ×<b>W_k</b> → <b>k</b>　札</div>
+   <div>─ ×<b>W_v</b> → <b>v</b>　中身</div>
+  </div>
+ </div>
+ 
+ <div class="calc">q ＝ W_q · x
+k ＝ W_k · x
+v ＝ W_v · x</div>
+ <div class="cap" style="margin:0;color:var(--black)">
+ 本物は <b>W_q・W_k・W_v をデータから学習</b>し、向きはその結果です。
+ <b style="color:#c00">このゲームに W はありません。</b>向きは手で置いた数字です。<br>
+ 
+ 
+ 
+ <b>この問題を解くのに坂は下りません（向きはあなたが手で回します）。
+ ただし すぐ下の枠で、機械が W を決めるところだけ 見せます。</b></div>
+</div>
+
+
+<div id="wdemo"></div>
+
+
+<div id="q13top">
+<div class="panel">
+ 
+ <div class="ctl" style="margin-top:0">
+  <label for="t13"><span><b>探しものの向き</b></span><span class="n" id="t13v">150°</span></label>
+  <input type="range" id="t13" min="-180" max="180" step="1" value="150">
+ </div>
+ <div class="ctl">
+  <label for="m13"><span><b>探しものの強さ</b></span><span class="n" id="m13v">1.0</span></label>
+  <input type="range" id="m13" min="0" max="40" step="1" value="10">
+ </div>
+ <div class="two">
+  <div><div class="cap">札（黒）と探しもの（赤）</div><svg id="v13" viewBox="0 0 300 250"></svg></div>
+  
+  <div><div class="cap">向きの揃い具合（掛けて足す＝内積。まん中の線が 0）</div>
+   <div id="a13"></div>
+   <div class="cap" style="margin:.7rem 0 .3rem">↓　<b>向きが揃っている語ほど、取り分が多くなります</b></div>
+   <div class="cap" style="margin:0 0 .5rem">注目の重み（4つを足すと 1。赤い線が 0.50）</div>
+   <div id="b13"></div>
+   <div class="cap" style="margin:.7rem 0 .3rem">↓　<b>その重みで中身を混ぜた結果 ＝ 次の1語</b></div>
+   <div id="n13"></div></div>
+ </div>
+ <div class="verdict" id="j13"></div>
+</div>
+</div><!-- /#q13top -->
+
+
+<div id="q13talk">
+<div id="e13b2"></div>
+
+
+<div id="e13d"></div>
+
+<div id="r13" class="hide">
+ 
+ <div id="e13z"></div>
+ <div class="keyh">この問で覚えること</div>
+ 
+ 
+ <div class="verdict ok">
+  ここでやったのは <b>自己注意（Self-Attention）</b>です。
+  <span style="color:var(--gray-500)">語ごとに 探しもの・札・中身 を作り、向きを比べて、
+  合計1の重みで中身を混ぜる ── これだけの仕組みです。</span><br>
+  <b>「それ」が見る先で、次の1語が変わります。</b>4つの取り分を足すと <b>1</b> です。
+ </div>
+
+ 
+
+
+<div id="e13c"></div>
+
+ 
+
+ 
+
+<div class="src">
+ <div class="h">役に立つところ</div>
+ <b>「それ」が何を指すかは、AIの中では決まっていません。</b>
+ 前のどの語を見るかで、出てくる語が変わります。だから「それ」「これ」で済ませずに
+ <b>名前で書いたほうが、答えが安定します。</b>
+</div>
+</div>
+
+</div>
+
+
+<div id="nav"></div>
+
+<div id="foot"></div>
+</div>
+</div><!-- /#q13talk -->
+
+
+
+
+<script src="common.js"></script>
+<script>
+
+var QBASE = 12;
+drawProg(13); drawChap(13, "");
+drawNav(["q12.html","問12 温度"], ["q14.html","問14 2つの語を同時に見る"]);
+drawFoot()   ;
+
+(function(){
+
+const $=id=>document.getElementById(id);
+const show=id=>$(id).classList.remove('hide');
+const hide=id=>$(id).classList.add('hide');
+
+const R3=v=>+v.toFixed(3);
+function softmax(a){ const m=Math.max.apply(null,a);
+  const e=a.map(x=>Math.exp(x-m)), s=e.reduce((p,c)=>p+c,0); return e.map(x=>x/s); }
+
+function disp3(vals){
+  const d=vals.map(v=>R3(v));
+  const gap=+(1-d.reduce((a,b)=>a+b,0)).toFixed(3);
+  if(gap!==0){ let mi=0; d.forEach((v,i)=>{ if(v>d[mi])mi=i; }); d[mi]=R3(d[mi]+gap); }
+  return d;
+}
+function bars(el,names,vals,goal,idx,cols,sum1,gt){
+  const v=sum1?disp3(vals):vals;
+  $(el).innerHTML=names.map((n,i)=>{
+    const on=(!idx||idx.indexOf(i)>=0);
+    const hit=(goal&&on&&(gt?R3(v[i])>goal:R3(v[i])>=goal));
+    const g=(goal&&on)?`<span class="goal" style="left:${goal*100}%"></span>`:'';
+    const c=cols?cols[i]:(hit?'':'#000');
+    return `<div class="sc-row"><span class="sc-label">${n}</span>`
+     +`<span class="sc-track"><span class="sc-fill${hit?' hit':''}"`
+     +` style="width:${(v[i]*100).toFixed(1)}%${c?';background:'+c:''}"></span>${g}</span>`
+     +`<span class="sc-pct">${v[i].toFixed(3)}</span></div>`;}).join('');
+}
+
+
+const D_K=2, SQ=Math.sqrt(D_K), RAD=Math.PI/180;
+
+const K=[{n:'コーヒー',a:0},{n:'机',a:90},{n:'新聞',a:180},{n:'手',a:270}];
+const NM=K.map(k=>k.n);
+const I_COF=0, I_NEWS=2;
+const weights=(deg,mag)=>softmax(K.map(k=>mag*Math.cos((deg-k.a)*RAD)/SQ));
+
+const V=[[3,0],[0,0],[0,3],[0,0]];
+function nextWord(a){ const z=[0,1].map(c=>a.reduce((s,ai,i)=>s+ai*V[i][c],0)); return softmax(z); }
+/* 円の図（札を黒、探しものを赤で描く） */
+function draw(el,deg,mag,hi){
+  const cx=150, cy=125, r=82;
+  
+  const QR=58;
+  const Pt=(ang,rad)=>[cx+rad*Math.cos(ang*RAD), cy-rad*Math.sin(ang*RAD)];
+  let s=`<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="#d9d9d9"/>`;
+  s+=`<line x1="${cx-r-14}" y1="${cy}" x2="${cx+r+14}" y2="${cy}" stroke="#ececec"/>`;
+  s+=`<line x1="${cx}" y1="${cy-r-14}" x2="${cx}" y2="${cy+r+14}" stroke="#ececec"/>`;
+  K.forEach((k,i)=>{
+    const p=Pt(k.a,r), l=Pt(k.a,r+20), on=(hi&&hi.indexOf(i)>=0);
+    s+=`<line x1="${cx}" y1="${cy}" x2="${p[0].toFixed(1)}" y2="${p[1].toFixed(1)}"
+         stroke="${on?'#019949':'#000'}" stroke-width="${on?2.4:1.6}"/>`;
+    s+=`<circle cx="${p[0].toFixed(1)}" cy="${p[1].toFixed(1)}" r="3.2"
+         fill="${on?'#019949':'#000'}"/>`;
+    
+    s+=`<text x="${l[0].toFixed(1)}" y="${(l[1]+4).toFixed(1)}" text-anchor="middle"
+         font-size="13" font-family="'Noto Serif JP',serif"
+         stroke="#fff" stroke-width="3" paint-order="stroke"
+         fill="${on?'#019949':'#000'}">${k.n}</text>`;
+  });
+  const qr=14+Math.min(mag,4)/4*(QR-14), q=Pt(deg,qr);
+  s+=`<line x1="${cx}" y1="${cy}" x2="${q[0].toFixed(1)}" y2="${q[1].toFixed(1)}"
+       stroke="#c00" stroke-width="2.6"/>`;
+  s+=`<circle cx="${q[0].toFixed(1)}" cy="${q[1].toFixed(1)}" r="4" fill="#c00"/>`;
+  s+=`<text x="${q[0].toFixed(1)}" y="${(q[1]-10).toFixed(1)}" text-anchor="middle"
+       font-size="13" font-family="Inter,sans-serif"
+       stroke="#fff" stroke-width="3" paint-order="stroke" fill="#c00">探しもの</text>`;
+  s+=`<circle cx="${cx}" cy="${cy}" r="2" fill="#6e6e6e"/>`;
+  $(el).innerHTML=s;
+}
+
+const SENT=['机','の上に','コーヒー','と','新聞','が','ある。',
+            'ねぼけて','手','が','あたって、','それが'];
+const TGT={'コーヒー':1,'机':1,'新聞':1,'手':1};
+$('s13').innerHTML=SENT.map(w=>{
+  const c = (w==='それが')?' class="now"' : (TGT[w]?' class="tgt"':'');
+  return `<span${c}>${w}</span>`;}).join('')+`<span class="caret"></span>`;
+
+const GOAL13=0.50; let ok13=false, mv13=0;
+
+function sign3(v){ const r=+v.toFixed(3);
+  if(Math.abs(r)<0.0005)return '0.000';
+  return (r>0?'＋':'−')+Math.abs(r).toFixed(3); }
+function align13(deg){
+  $('a13').innerHTML=K.map(k=>{
+    const c=Math.cos((deg-k.a)*RAD), r=+c.toFixed(3);
+    const w=(Math.abs(r)*50).toFixed(1);
+    const bar=(Math.abs(r)<0.0005)?''
+      :`<i style="${r>0?'left':'right'}:50%;width:${w}%"></i>`;
+    return `<div class="br"><span class="n">${k.n}</span>`
+      +`<span class="v">${sign3(c)}</span>`
+      +`<span class="ax">${bar}</span></div>`;}).join('');
+}
+function up13(){
+  const deg=+$('t13').value, mag=(+$('m13').value)/10;
+  $('t13v').textContent=deg+'°'; $('m13v').textContent=mag.toFixed(1);
+  const a=weights(deg,mag);
+  align13(deg);
+  draw('v13',deg,mag,[I_COF]);
+  
+  const d=disp3(a);
+  bars('b13',NM,d,GOAL13,[I_COF],null,false,true);
+  const nw=nextWord(a);
+  bars('n13',['こぼれた','やぶれた'],nw,null,null,['#000','#9aa2a8'],true);
+  
+  const ok=d[I_COF]>0.500;
+  $('j13').className='verdict'+(ok?' ok':'');
+  $('j13').innerHTML = ok
+   ? `「コーヒー」の取り分が <b>${d[I_COF].toFixed(3)}</b>。半分より上になりました。`
+   : `「コーヒー」の取り分はいま <b>${d[I_COF].toFixed(3)}</b>。半分より上にしてください。`
+     +(mv13>=6?`<br><span style="color:var(--gray-500)">赤い矢印を狙う札に重ね、
+       そのうえで<b>強さ</b>を上げてください。向きだけでは足りません。</span>`:'');
+  if(ok&&!ok13){ ok13=true; mark(1,'done'); show('r13'); }
+}
+
+function cnt13(){ mv13++; up13(); }
+['t13','m13'].forEach(i=>{ $(i).oninput=up13; $(i).onchange=cnt13; });
+
+
+
+up13();
+
+
+  
+
+  
+  (function(){
+    var host = document.getElementById('wdemo');
+    if (!host) return;
+    var WNM = ['コーヒー','机','新聞','手'];
+    var WX  = [[1.0,0.2],[0.3,1.0],[-0.9,0.4],[0.1,-1.0]];   /* 語ベクトル（作者が置いた） */
+    var WQ  = [1.2,0.5];                                     /* 探しもの（作者が置いた） */
+    var WSQ = Math.SQRT2, WLR = 0.08;
+    var W = [0.2,0,0,0.2], step = 0;
+    function wSm(a){ var m=Math.max.apply(null,a);
+      var e=a.map(function(x){return Math.exp(x-m);});
+      var t=e.reduce(function(p,c){return p+c;},0);
+      return e.map(function(x){return x/t;}); }
+    
+    function wD3(v){ var d=v.map(function(x){return +x.toFixed(3);});
+      var g=+(1-d.reduce(function(a,b){return a+b;},0)).toFixed(3);
+      if(g!==0){ var mi=0; d.forEach(function(x,i){ if(x>d[mi])mi=i; });
+        d[mi]=+(d[mi]+g).toFixed(3); }
+      return d; }
+    function wFwd(){ return wSm(WX.map(function(x){
+      var k0=W[0]*x[0]+W[1]*x[1], k1=W[2]*x[0]+W[3]*x[1];
+      return (WQ[0]*k0+WQ[1]*k1)/WSQ; })); }
+    function wStep(){ var a=wFwd(), g=[0,0,0,0];
+      for(var j=0;j<4;j++){ var c=(a[j]-(j===0?1:0))/WSQ;
+        g[0]+=c*WQ[0]*WX[j][0]; g[1]+=c*WQ[0]*WX[j][1];
+        g[2]+=c*WQ[1]*WX[j][0]; g[3]+=c*WQ[1]*WX[j][1]; }
+      for(var i=0;i<4;i++) W[i]-=WLR*g[i];
+      step++; }
+    function wDraw(){
+      var d = wD3(wFwd()), ok = d[0] > 0.500;
+      var bars = WNM.map(function(n,i){
+        return '<div class="rw"><span class="nmx">'+n+'</span>'
+             + '<span class="tk"><span class="fl2'+(i===0&&ok?' g':(i===0?' k':''))
+             + '" style="width:'+(d[i]*100).toFixed(1)+'%"></span></span>'
+             + '<span class="pc2">'+d[i].toFixed(3)+'</span></div>'; }).join('');
+      document.getElementById('wbars').innerHTML = bars;
+      document.getElementById('wstep').textContent = step;
+      document.getElementById('wsum').textContent  =
+        d.reduce(function(a,b){return a+b;},0).toFixed(3);
+      document.getElementById('wtab').innerHTML =
+        W.map(function(v){return '<td>'+v.toFixed(2)+'</td>';}).join('');
+      var j = document.getElementById('wj');
+      j.className = 'verdict' + (ok ? ' ok' : '');
+      j.innerHTML = (step===0)
+        ? 'いまは 4つの数を <b>0.20 / 0.00 / 0.00 / 0.20</b> に置いただけの状態です。'
+        + 'コーヒーの取り分は <b>'+d[0].toFixed(3)+'</b> ── どの語もあまり選べていません。'
+        : ok
+        ? '<b>'+step+'歩</b>で、コーヒーの取り分が <b>'+d[0].toFixed(3)+'</b>。'
+        + '<b>半分より上になりました。</b>'
+        + '<span style="color:var(--gray-500)">向きを決めたのは あなたではなく、機械です。</span>'
+        : '<b>'+step+'歩</b>。コーヒーの取り分は <b>'+d[0].toFixed(3)+'</b>。'
+        + 'まだ半分に届きません。もう少し下らせてください。'; }
+    host.innerHTML =
+      '<div class="box">'
+    + '<div class="h">機械に W を決めさせてみる（見るだけ・答えは入りません）</div>'
+    + '<div class="cap" style="margin:0 0 .2rem;color:var(--black)">'
+    + '語ベクトル4本と探しものを固定し、<b>W_k の4つの数だけ</b>を 第1章・第2章と同じやり方で'
+    + '<b>坂を下らせます</b>。ずれは <b>−log（コーヒーの取り分）</b>── 第2章でやった分類のずれです。</div>'
+    + '<div class="panel" style="margin:.7rem 0">'
+    +   '<div class="togs" style="margin-top:0">'
+    +     '<button class="btn go" id="wb10">10歩 下る</button>'
+    +     '<button class="btn sm" id="wb100">100歩 まとめて</button>'
+    +     '<button class="btn sm" id="wbr">はじめから</button></div>'
+    +   '<div class="cap" style="margin:.7rem 0 .2rem">下った歩数 '
+    +     '<b class="mono" id="wstep">0</b>　／　取り分の合計 <b class="mono" id="wsum">1.000</b></div>'
+    +   '<div id="wbars"></div>'
+    +   '<div class="cap" style="margin:.6rem 0 .2rem">機械が動かしている <b>W_k の4つの数</b>'
+    +     '（2行2列の表）</div>'
+    +   '<table class="wtb"><tr id="wtab"></tr></table>'
+    +   '<div class="verdict" id="wj"></div>'
+    + '</div>'
+    + '<div class="cap" style="margin:0;color:var(--black)">'
+    + '<b>人は1つも向きを決めていません。</b>4つの数が坂を下るだけで、'
+    + '「コーヒーを見る」札の向きが出てきます。<b>これが「学習で決まる」ということです。</b><br>'
+    + '<span style="color:var(--gray-500)">本物はこの表が 512行×64列で、それが何万枚もあります。'
+    + '中身は同じ「掛けて足す数」です。</span></div>'
+    + '</div>';
+    document.getElementById('wb10').onclick  = function(){ for(var i=0;i<10;i++)  wStep(); wDraw(); };
+    document.getElementById('wb100').onclick = function(){ for(var i=0;i<100;i++) wStep(); wDraw(); };
+    document.getElementById('wbr').onclick   = function(){ W=[0.2,0,0,0.2]; step=0; wDraw(); };
+    wDraw();
+  })();
+
+
+var CV = {
+ "e13a": [
+  [
+   "d",
+   "文を1つ出すよ。<b>「机の上に コーヒー と 新聞 が ある。ねぼけて 手 が あたって、それが ◯◯」</b>"
+  ],
+  [
+   "m",
+   "◯◯ は……「こぼれた」？"
+  ],
+  [
+   "d",
+   "なぜだ？"
+  ],
+  [
+   "m",
+   "「それ」がコーヒーだから。"
+  ],
+  [
+   "d",
+   "<b>そこだ！</b>では「それ」が<b>新聞</b>を指していたら？"
+  ],
+  [
+   "m",
+   "「やぶれた」……あっ。<b>「それ」が何を指すかで、次の語が変わる</b>んだ。"
+  ],
+  [
+   "d",
+   "そのとおり。<b>これが「注目」だ。</b>第2章までの関数には無かった仕組みで、<b>LLM が足したのは これ1つだけ</b>だよ。"
+  ],
+  [
+   "m",
+   "1つだけ？"
+  ],
+  [
+   "d",
+   "1つだけだ。……<b>下の文を見てごらん。</b>緑の4語に<b>札</b>が付いている。「それ」が<b>探しもの</b>を出して、札と向きを比べるんだ。"
+  ]
+ ],
+ "e13b": [
+  [
+   "m",
+   "博士、この<b>札</b>と<b>探しもの</b>って、どこから来るの？"
+  ],
+  [
+   "d",
+   "いい問いだ！ ……図書館を思い出してごらん。本を探すとき、何を見る？"
+  ],
+  [
+   "m",
+   "背表紙。"
+  ],
+  [
+   "d",
+   "それが<b>札</b>だ。そして君の頭の中の「こういう本が読みたい」が<b>探しもの</b>。棚から取った<b>本の中身</b>が3つめ ── <b>中身</b>だ。"
+  ],
+  [
+   "m",
+   "3つある。"
+  ],
+  [
+   "d",
+   "本物では、語を表す数字から<b>3つとも 掛け算で作る</b>。その掛ける数が <span class='mono'>W_q</span>・<span class='mono'>W_k</span>・<span class='mono'>W_v</span> だ。"
+  ],
+  [
+   "m",
+   "その <b>W</b> って何。急に出てきたけど。"
+  ],
+  [
+   "d",
+   "<b>君が 第1章と 第2章で手で回していた「つまみ」そのものだ。</b>数が増えて、表の形に並んだだけだよ。……その前に <b>ベクトル</b>を押さえておいてくれ。見てごらん。"
+  ],
+  [
+   "f",
+   "<div class='ft'>まず「ベクトル」── 数を並べた組。矢印で描ける</div><div class='fn'>語も、注目の中で使う値も、ぜんぶ<b>数を並べた組</b>で表します。これを<b>ベクトル</b>といい、<b>並べた数の個数</b>を<b>次元</b>といいます。2個なら、紙の上の矢印として描けます。</div><svg class='dg' viewBox='0 0 340 170' role='img' aria-label='4つの札を2次元のベクトルとして座標に描いた図'><defs><marker id='ah1' viewBox='0 0 10 10' refX='9' refY='5' markerWidth='5' markerHeight='5' orient='auto-start-reverse'><path d='M0 0 L10 5 L0 10 z' fill='#000'></path></marker></defs><rect x='0' y='0' width='340' height='170' fill='#f9f9f9'></rect><line x1='48' y1='80' x2='172' y2='80' stroke='#d9d9d9' stroke-width='1'></line><line x1='110' y1='18' x2='110' y2='142' stroke='#d9d9d9' stroke-width='1'></line><circle cx='110' cy='80' r='48' fill='none' stroke='#d9d9d9' stroke-width='1' stroke-dasharray='3 3'></circle><line x1='110' y1='80' x2='158' y2='80' stroke='#000' stroke-width='2.5' marker-end='url(#ah1)'></line><line x1='110' y1='80' x2='110' y2='32' stroke='#000' stroke-width='2.5' marker-end='url(#ah1)'></line><line x1='110' y1='80' x2='62' y2='80' stroke='#000' stroke-width='2.5' marker-end='url(#ah1)'></line><line x1='110' y1='80' x2='110' y2='128' stroke='#000' stroke-width='2.5' marker-end='url(#ah1)'></line><text x='164' y='84' font-size='12.5' fill='#000'>コーヒー</text><text x='116' y='26' font-size='12.5' fill='#000'>机</text><text x='24' y='84' font-size='12.5' fill='#000'>新聞</text><text x='116' y='146' font-size='12.5' fill='#000'>手</text><text x='236' y='40' font-size='12.5' fill='#6e6e6e'>横 ＝ 1つめの数</text><text x='236' y='58' font-size='12.5' fill='#6e6e6e'>縦 ＝ 2つめの数</text><text x='236' y='84' font-size='12.5' fill='#6e6e6e'>長さは 4本とも 1</text></svg><div class='fn'>この4本が、上の円の図に出ている<b>札</b>です。2個の数で書くとこうなります。</div><table><tr><th>札</th><th>ベクトル</th></tr><tr><td>コーヒー</td><td>( <b>1</b> , <b>0</b> )</td></tr><tr><td>机</td><td>( <b>0</b> , <b>1</b> )</td></tr><tr><td>新聞</td><td>( <b>−1</b> , <b>0</b> )</td></tr><tr><td>手</td><td>( <b>0</b> , <b>−1</b> )</td></tr></table><div class='fn'>次元が <b>512個</b>や <b>12,288個</b>になると<b>絵には描けません</b>。でも<b>計算のやり方は2個のときと同じ</b>です。だからこのゲームは2個に縮めています。</div>"
+  ],
+  [
+   "d",
+   "ついでに、<b>本物がどれだけ大きいか</b>も見せておこう。この章 が どれだけ縮めてあるかだ。"
+  ],
+  [
+   "f",
+   "<div class='ft'>大きさの比べ ── このゲームは どれだけ縮めてあるか</div><table><tr><th></th><th>1語のベクトル<br>の次元</th><th>探しもの<br>1本ぶん</th><th>段の数</th><th>探しもの<br>の本数</th></tr><tr><td><b>このゲーム</b></td><td><b>2</b></td><td><b>2</b></td><td><b>1</b></td><td><b>1〜2</b></td></tr><tr><td>注目が生まれた論文<br><span style='color:var(--gray-500)'>2017年</span></td><td>512</td><td>64</td><td>6</td><td>8</td></tr><tr><td>GPT-3<br><span style='color:var(--gray-500)'>2020年・つまみ1,750億個</span></td><td>12,288</td><td>128</td><td>96</td><td>96</td></tr></table><div class='fn'>割り算が合います。<b>512 ÷ 8 ＝ 64</b> ／ <b>12,288 ÷ 96 ＝ 128</b>。「探しもの1本ぶんの次元」が、あとで出てくる <span class='mono'>d_k</span> です。</div><div class='fn'>この <b>2017年の論文</b>が、注目という仕組みが最初に出たものです。<b>このあと「原論文」と書いてあるのは、すべてこの論文</b>のことです<span style='color:var(--gray-500)'>（Attention Is All You Need／arXiv:1706.03762）</span>。</div><div class='fn'><span style='color:var(--gray-500)'>いまの ChatGPT の中身の数字は公開されていません。中身が論文で公開されているものの中で、いちばん大きいのが GPT-3 です。</span></div>"
+  ],
+  [
+   "d",
+   "さあ <b>W</b> だ。……W は<b>ベクトルを回して伸ばす装置</b>だよ。"
+  ],
+  [
+   "f",
+   "<div class='ft'>W とは ── ベクトルを「回して伸ばす」装置</div><div class='fn'>語のベクトルに W を掛けると、<b>向きが回り、長さが変わった別のベクトル</b>が出てきます。W_q を掛けたものが<b>探しもの</b>、W_k を掛けたものが<b>札</b>、W_v を掛けたものが<b>中身</b>です。</div><svg class='dg' viewBox='0 0 340 150' role='img' aria-label='語のベクトルに W_q を掛けると向きが回り長さが変わることを示す図'><defs><marker id='ah2' viewBox='0 0 10 10' refX='9' refY='5' markerWidth='5' markerHeight='5' orient='auto-start-reverse'><path d='M0 0 L10 5 L0 10 z' fill='#000'></path></marker></defs><rect x='0' y='0' width='340' height='150' fill='#f9f9f9'></rect><line x1='36' y1='108' x2='114' y2='108' stroke='#d9d9d9'></line><line x1='52' y1='122' x2='52' y2='46' stroke='#d9d9d9'></line><line x1='52' y1='108' x2='73' y2='69' stroke='#2f6fb5' stroke-width='2.5' marker-end='url(#ah2)'></line><text x='77' y='67' font-size='12.5' fill='#2f6fb5'>x</text><text x='18' y='134' font-size='12.5' fill='#6e6e6e'>語のベクトル</text><rect x='120' y='58' width='62' height='30' rx='5' fill='#fffaf0' stroke='#efd6a6' stroke-width='1.5'></rect><text x='134' y='78' font-size='12' fill='#000'>×W_q</text><line x1='108' y1='73' x2='118' y2='73' stroke='#6e6e6e' stroke-width='2' marker-end='url(#ah2)'></line><line x1='184' y1='73' x2='196' y2='73' stroke='#6e6e6e' stroke-width='2' marker-end='url(#ah2)'></line><line x1='190' y1='108' x2='324' y2='108' stroke='#d9d9d9'></line><line x1='206' y1='122' x2='206' y2='46' stroke='#d9d9d9'></line><line x1='206' y1='108' x2='227' y2='69' stroke='#9aa2a8' stroke-width='1.5' stroke-dasharray='4 3'></line><line x1='206' y1='108' x2='299' y2='85' stroke='#c00' stroke-width='2.5' marker-end='url(#ah2)'></line><text x='302' y='82' font-size='12.5' fill='#c00'>q</text><text x='230' y='67' font-size='12.5' fill='#9aa2a8'>x</text><text x='176' y='134' font-size='12.5' fill='#6e6e6e'>回って伸びた ＝ 探しもの</text></svg><div class='fn'>1つの語から、<b>3枚の W で 3本のベクトルが出ます。</b></div><table><tr><th>掛けるもの</th><th>出てくるもの</th><th>役目</th></tr><tr><td>×W_q</td><td><b>探しもの</b>（赤い矢印）</td><td>何を探しているか</td></tr><tr><td>×W_k</td><td><b>札</b>（黒い矢印）</td><td>何を持っているか</td></tr><tr><td>×W_v</td><td><b>中身</b></td><td>渡す情報</td></tr></table><div class='fn'>W の正式な名前は <b>重み行列</b>です。中身は<b>掛けて足すための数</b>で、<b>問1 の a・b と同じ種類のもの</b>。<b>人が書くのではなく、機械が坂を下って決めます。</b></div>"
+  ],
+  [
+   "m",
+   "じゃあ、このゲームの W はどこにあるの？"
+  ],
+  [
+   "d",
+   "<b>無い。</b>この章 では W を飛ばしている。……見てごらん。"
+  ],
+  [
+   "f",
+   "<div class='ft'>このゲームに W はありません ── つまみが W の代わりです</div><div class='fn'>「W はありません」の意味は、<b>W を掛けて向きを作る段を、この章 では飛ばしている</b>ということです。<b>問13 と問14 の両方</b>、つまりこのページ全体がそうです。</div><svg class='dg' viewBox='0 0 340 180' role='img' aria-label='札の向きは作者が置き、探しものの向きはつまみで決まることを示す図'><defs><marker id='ah3' viewBox='0 0 10 10' refX='9' refY='5' markerWidth='5' markerHeight='5' orient='auto-start-reverse'><path d='M0 0 L10 5 L0 10 z' fill='#000'></path></marker></defs><rect x='0' y='0' width='340' height='180' fill='#f9f9f9'></rect><circle cx='86' cy='92' r='46' fill='none' stroke='#d9d9d9' stroke-dasharray='3 3'></circle><line x1='86' y1='92' x2='132' y2='92' stroke='#000' stroke-width='2.5' marker-end='url(#ah3)'></line><line x1='86' y1='92' x2='86' y2='46' stroke='#000' stroke-width='2.5' marker-end='url(#ah3)'></line><line x1='86' y1='92' x2='40' y2='92' stroke='#000' stroke-width='2.5' marker-end='url(#ah3)'></line><line x1='86' y1='92' x2='86' y2='138' stroke='#000' stroke-width='2.5' marker-end='url(#ah3)'></line><line x1='86' y1='92' x2='149' y2='74' stroke='#c00' stroke-width='2.5' marker-end='url(#ah3)'></line><text x='152' y='44' font-size='12.5' fill='#000'>黒い札 4本</text><text x='152' y='62' font-size='12.5' fill='#6e6e6e'>本物 ＝ W_k が作る</text><text x='152' y='78' font-size='12.5' fill='#6e6e6e'>ここ ＝ 作者が手で置いた</text><text x='152' y='108' font-size='12.5' fill='#c00'>赤い探しもの 1本</text><text x='152' y='126' font-size='12.5' fill='#6e6e6e'>本物 ＝ W_q が作る</text><text x='152' y='142' font-size='12.5' fill='#6e6e6e'>ここ ＝ あなたのつまみ</text><text x='24' y='168' font-size='12.5' fill='#6e6e6e'>0° / 90° / 180° / 270° に固定</text></svg><div class='fn'><b>本物は W が向きを決めます。このゲームは、その向きをあなたが手で回します。</b>だから<b>つまみが W の代わり</b>です。<b>向きを変えると取り分がどう変わるか</b>を見せるために、わざと直接いじれるようにしてあります。</div>"
+  ],
+  [
+   "m",
+   "じゃあ本物は、この向きも機械が決めてるってこと？"
+  ],
+  [
+   "m",
+   "機械が決めるって言われても、見てないから ぴんと来ないんだけど。"
+  ],
+  [
+   "d",
+   "はっはっは！ ではやってみせよう。<b>下の枠で、機械に W を決めさせる。</b>第1章と 第2章でやった<b>坂を下る</b>やつだよ。押すだけでいい。"
+  ],
+  [
+   "d",
+   "……見たな？ <b>人は1つも向きを決めていない。</b>さあ、そのうえで<b>つまみを回してごらん！</b> 今度は君が向きを決めるんだ。"
+  ]
+ ],
+ "e13d": [
+  [
+   "m",
+   "博士。<b>取り分</b>が出たあと、どうして<b>「こぼれた」</b>が決まるの？ そもそも なんで <b>こぼれた と やぶれた の2語だけ</b>なの。"
+  ],
+  [
+   "d",
+   "いい所を突いた！ そこは画面が黙っているところだ。……<b>出口を2語に縮めてある</b>んだ。まず そこからだよ。"
+  ],
+  [
+   "f",
+   "<div class='ft'>なぜ「こぼれた」と「やぶれた」の2語だけなのか</div><div class='fn'><b>本物の出口は 5万個</b>です（問12 で見たもの）。5万個ぜんぶに点数が付き、その中から1個 引きます。<b>このゲームは その出口を 2語だけに縮めています。</b>2語なら<b>2本の軸</b>にして絵に描けるからです。</div><div class='fn' style='margin-top:.6rem'><b>なぜ その2語を選んだのか</b> ── 「それ」が指す先で<b>入れ替わる語</b>だからです。</div><div class='flw' style='margin-top:.4rem'><div class='st on'><div class='hd2'>「それ」＝ コーヒー のとき</div><div class='sm2'>ねぼけて手があたって、それが<br>→ <b>こぼれた</b></div></div><div class='st on'><div class='hd2'>「それ」＝ 新聞 のとき</div><div class='sm2'>ねぼけて手があたって、それが<br>→ <b>やぶれた</b></div></div></div><div class='fn'>入れ替わるのは<b>この2語だけ</b>です。だから この2語を軸にしました。<b>「コーヒーが こぼれた を 3 推す」の 3 も、この問題が置いた数字</b>です（本物では W_v が学習で決めます）。</div><div class='ft'>「中身を混ぜる」とは ── ベクトルの足し算です</div><div class='fn'><b>中身もベクトル</b>です。この問題では、こぼれた側とやぶれた側の<b>2本の軸</b>に置いてあります。</div><table><tr><th>語</th><th>中身のベクトル</th><th>向き</th></tr><tr><td>コーヒー</td><td>( <b>3</b> , <b>0</b> )</td><td>こぼれた側へ 長さ3</td></tr><tr><td>新聞</td><td>( <b>0</b> , <b>3</b> )</td><td>やぶれた側へ 長さ3</td></tr><tr><td>机・手</td><td>( <b>0</b> , <b>0</b> )</td><td>どこも向かない</td></tr></table><div class='fn' style='margin-top:.6rem'><b>混ぜる ＝ 取り分の分だけ縮めて、足す。</b>向き 0°・強さ 1.3 のときの取り分は コーヒー <b>0.511</b>、新聞 <b>0.081</b> でした。</div><svg class='dg' viewBox='0 0 340 190' role='img' aria-label='コーヒーの中身と新聞の中身を取り分の分だけ縮めて足したベクトルの図'><defs><marker id='ah6' viewBox='0 0 10 10' refX='9' refY='5' markerWidth='5' markerHeight='5' orient='auto-start-reverse'><path d='M0 0 L10 5 L0 10 z' fill='context-stroke'></path></marker></defs><rect x='0' y='0' width='340' height='190' fill='#f9f9f9'></rect><line x1='48' y1='158' x2='192' y2='158' stroke='#d9d9d9'></line><line x1='62' y1='170' x2='62' y2='26' stroke='#d9d9d9'></line><line x1='62' y1='47.6' x2='79.5' y2='47.6' stroke='#9aa2a8' stroke-width='1' stroke-dasharray='3 3'></line><line x1='79.5' y1='158' x2='79.5' y2='47.6' stroke='#9aa2a8' stroke-width='1' stroke-dasharray='3 3'></line><line x1='62' y1='158' x2='62' y2='47.6' stroke='#019949' stroke-width='3' marker-end='url(#ah6)'></line><line x1='62' y1='158' x2='79.5' y2='158' stroke='#9aa2a8' stroke-width='3' marker-end='url(#ah6)'></line><line x1='62' y1='158' x2='79.5' y2='47.6' stroke='#000' stroke-width='3' marker-end='url(#ah6)'></line><text x='16' y='38' font-size='12.5' fill='#019949'>こぼれた側</text><text x='96' y='184' font-size='12.5' fill='#9aa2a8'>やぶれた側</text><text x='10' y='62' font-size='12.5' fill='#019949'>1.533</text><text x='83' y='170' font-size='12.5' fill='#9aa2a8'>0.243</text><text x='89' y='46' font-size='12.5' fill='#000'>足したもの</text><text x='190' y='62' font-size='12.5' fill='#6e6e6e'>0.511 × コーヒーの中身</text><text x='190' y='80' font-size='12.5' fill='#6e6e6e'>＋ 0.081 × 新聞の中身</text><text x='190' y='104' font-size='12.5' fill='#000'>＝ ( 0.243 , 1.533 )</text><text x='190' y='128' font-size='12.5' fill='#6e6e6e'>こぼれた側へ倒れた</text></svg><div class='fn'><b>足した矢印が どちら寄りに倒れているかで、次の1語が決まります。</b>こぼれた側 <b>1.533</b>／やぶれた側 <b>0.243</b> ── 割合に直すと <b>0.784</b> と <b>0.216</b>（足すと 1.000）。<b>割合に直す処理は 問5 でやったものと同じ</b>です。</div><div class='fn'>つまり <b>コーヒーをよく見た → コーヒーの中身が長く足される → 矢印がこぼれた側へ倒れる</b>。これが「それ」の指す先で語が変わる理由の全部です。</div><div class='fn'><span style='color:var(--gray-500)'>本物では、この2本の軸は「語」ではありません。足した結果はいったん次の段へ渡され、最後に 5万個ぶんの掛けて足すを通してから語の点数になります。このゲームは<b>軸をそのまま2語にする近道</b>をしています。</span></div>"
+  ],
+  [
+   "m",
+   "本物の LLM も、これと同じことをしてるの？"
+  ],
+  [
+   "d",
+   "<b>している。</b>取り分を出して、中身を混ぜる ── そこは本物と同じ式だ。……ただし<b>このゲームは その先を省いている</b>。正直に書いておくよ。"
+  ],
+  [
+   "f",
+   "<div class='ft'>本物と同じところ／このゲームが省いたところ</div><div class='fn'><b>本物と同じ</b>（<span data-ref='vaswani2017' data-loc='§3.2 Eq.1'></span> の式そのもの）</div><table><tr><th>段</th><th>やっていること</th><th>本当の名前</th></tr><tr><td>①</td><td>探しもの と 札 の向きをくらべる（掛けて足す）</td><td><span class='mono'>q · k</span>（内積）</td></tr><tr><td>②</td><td>次元の平方根で割って ならす</td><td><span class='mono'>q · k ÷ √d_k</span></td></tr><tr><td>③</td><td>差を広げる（e の何乗）</td><td>指数</td></tr><tr><td>④</td><td>合計 1 の割合に直す ＝ <b>取り分</b></td><td><span class='mono'>α</span>（softmax）</td></tr><tr><td>⑤</td><td>取り分ぶんだけ 中身を混ぜる</td><td><span class='mono'>z ＝ Σ α × v</span></td></tr></table><div class='fn'>式で書くとこの2本です。<span class='mono'>α ＝ softmax( q · k ÷ √d_k )</span> と <span class='mono'>z ＝ Σ α × v</span>。<b>読まなくても、上の表と同じことを言っているだけ</b>です。</div><div class='fn' style='margin-top:.6rem'><b>このゲームが省いたところ（3つ）</b></div><table><tr><th>本物</th><th>このゲーム</th></tr><tr><td>混ぜた結果は、まず<b>次の段に渡される</b>。次の1語になるのは最後の段で 5万語ぶんの掛けて足すを通したあと（問12 の出口）</td><td>途中を全部とばして、中身をそのまま<b>「次の1語の点数」</b>にしている</td></tr><tr><td>1語を <b>512個</b>の数字で表し、段を <b>6段</b>以上 重ねる</td><td>数字は <b>2個</b>、段は <b>1段</b></td></tr><tr><td>注目のあとに、各語の中だけで掛けて足す段が入る</td><td>入れていない</td></tr></table><div class='fn'>つまり <b>仕組みは本物、大きさと段数だけ小さくしたもの</b>です。</div>"
+  ]
+ ],
+ "e13z": [
+  [
+   "m",
+   "<b>0.50</b> を超えた！ コーヒーの取り分がいちばん大きい。"
+  ],
+  [
+   "d",
+   "うむ。<b>次の1語は「こぼれた」に決まった。</b>4つの取り分を足すと <b>1</b> だ。"
+  ],
+  [
+   "m",
+   "「やぶれた」もちょっと残ってるけど。"
+  ],
+  [
+   "d",
+   "<b>それが正しい姿だ。</b>ねぼけて手があたったなら、新聞がやぶれることも<b>ありえる</b>。0 にはならん。"
+  ],
+  [
+   "m",
+   "起こりやすさの差ってことか。"
+  ],
+  [
+   "d",
+   "そういうことだ。……ところで学くん、<b>「それ」が何を指すかは、AI の中では決まっていない</b>よ。"
+  ],
+  [
+   "m",
+   "え。"
+  ],
+  [
+   "d",
+   "見る先が変われば、出てくる語も変わる。<b>だから「それ」「これ」で済ませず、名前で書いたほうが答えが安定する。</b>"
+  ]
+ ]
+};
+drawCV(CV);
+
+(function () {
+  var a = document.getElementById('e13b'), b = document.getElementById('e13b2');
+  if (!a || !b) return;
+  
+  var cl = a.querySelectorAll('.cl'), K = 0, n0 = cl.length;
+  if (K < 1) return;
+  if (n0 <= K) return;
+  b.className = 'cv';
+  for (var i = n0 - K; i < n0; i++) b.appendChild(cl[i]);
+  var n1 = a.querySelectorAll('.cl').length, n2 = b.querySelectorAll('.cl').length;
+  if (n1 + n2 !== n0 || n2 !== K) console.error('bubble count mismatch', n0, n1, n2);
+})();
+
+})();
+</script>
+</body>
+</html>

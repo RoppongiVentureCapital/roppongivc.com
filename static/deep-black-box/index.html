@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="index,follow">
+
+<meta name="description" content="AI開発人材を増やしたい ── 国際人工知能オリンピック（IOAI）2025 銅メダリスト・開成高校3年の問題意識から生まれた無料教材です。機械学習・深層学習・LLM・Kaggle のしくみを、つまみを動かして21問で確かめます。AIと深く議論して、まだ世にないものを生み出すプログラム「Agora」第1回で生まれました。">
+<meta property="og:title" content="Deep Black Box ── AI人材拡大を目指すAI五輪メダリストの問題意識から生まれた、AIの原理を手で動かす21問">
+<meta property="og:description" content="AI開発人材を増やしたい ── 国際人工知能オリンピック（IOAI）2025 銅メダリスト・開成高校3年の問題意識から生まれた無料教材です。機械学習・深層学習・LLM・Kaggle のしくみを、つまみを動かして21問で確かめます。AIと深く議論して、まだ世にないものを生み出すプログラム「Agora」第1回で生まれました。">
+
+<meta property="og:image" content="https://www.roppongivc.com/img/agora/r1/og-r1-game.jpg">
+<meta name="twitter:image" content="https://www.roppongivc.com/img/agora/r1/og-r1-game.jpg">
+<title>Deep Black Box ── AI人材拡大を目指すAI五輪メダリストの問題意識から生まれた、AIの原理を手で動かす21問</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@300;400;600;700&family=Inter:wght@300;400;500;600;700&family=Noto+Serif+JP:wght@300;400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="common.css">
+<style>
+
+
+.startbar{display:flex;gap:.9rem;align-items:center;flex-wrap:wrap;margin:1.4rem 0 0}
+.startbar .btn{padding:.85rem 1.9rem;font-size:15px}
+.startbar .note{font-size:16.6px;color:var(--gray-500);line-height:1.831}
+
+.dtab td.l,.dtab th.l{text-align:left}
+.dtab td.c,.dtab th.c{text-align:center}
+.dtab td.l a{color:var(--black)}
+
+.pt{margin:1.6rem 0 0}
+.pt:first-child{margin-top:0}
+.pt .n{font-size:13px;font-weight:700;letter-spacing:.14em;color:var(--gray-500)}
+.pt .t{font-size:16.6px;font-weight:700;line-height:1.7;margin:.15rem 0 .35rem}
+.pt p{font-size:16.6px;line-height:1.831;color:var(--gray-600);margin:0 0 .4rem}
+.pt p b{color:var(--black)}
+
+
+.cta .btn.ghost{background:#fff;color:var(--black);border:1px solid #cdb377}
+.cta .btn.ghost:hover{background:#fffdf6;opacity:1}
+.cta .btn + .btn{margin-left:.6rem}
+@media (max-width:700px){
+  .cta .btn + .btn{margin-left:0;margin-top:.7rem}
+}
+</style>
+</head>
+<body>
+
+<div class="top"><div class="in">Deep Black Box<span class="tag">AIのブラックボックスを、1問ずつ開けて手で動かす。全21問。</span></div></div>
+<div class="wrap">
+
+
+
+<div class="cta" id="cta1"></div>
+
+
+<div class="figbox">
+ <img class="shot" src="assets/fig-chapters.png" width="2162" height="2020" loading="lazy" decoding="async"
+      alt="全21問を章ごとに並べた画面">
+ <div class="fcap" style="text-align:left"><b>図 1</b>　21問のうち16問の画面。どの問題も、つまみ（パラメータ）や選択肢を動かすと数字とグラフがその場で変わり、目標に届いたかどうかが判定されます。直線1本から始まり、層を重ねたネットワーク、言葉を選ぶ確率、本物のデータへと進みます。</div>
+</div>
+
+<!-- ══════════════════ ② 何が学べるか（図1枚 ＋ 章の表 ＋ 章ごとの折りたたみ）══════════════════ -->
+
+<div class="card">
+<h2>何が学べるか</h2>
+
+<div id="nest"></div>
+
+<table class="dtab">
+<tr><th class="c">章</th><th class="l">章題</th><th class="l">中身</th><th class="c">問</th></tr>
+<tr><td class="c">1</td><td class="l"><a href="q01.html">機械学習</a></td>
+    <td class="l">AIが学習するとは、具体的に何をしているのか。数を調整して正解に近づける、その一番小さい形を自分の手で動かします</td>
+    <td class="c">1〜5</td></tr>
+<tr><td class="c">2</td><td class="l"><a href="q06.html">深層学習</a></td>
+    <td class="l">深層学習の「深い」とは、何が深いのか。層を重ねる意味と、重ねただけではうまくいかない理由を、自分で層を足しながら確かめます</td>
+    <td class="c">6〜11</td></tr>
+<tr><td class="c">3</td><td class="l"><a href="q12.html">LLM</a></td>
+    <td class="l">ChatGPTは中で何をしているのか。動いているLLMが次に来る語を確率で選ぶしくみと、同じ質問でも答えが変わる理由を、動かして見ます</td>
+    <td class="c">12〜14</td></tr>
+<tr><td class="c">4</td><td class="l"><a href="q15.html">LLMはどうやって作られるのか</a></td>
+    <td class="l">なぜAIは丁寧に答え、数学は得意で、それでいて自信を持って間違えるのか。次の語を当てる練習、人が選んだ記録で整える、正誤が付く問題で鍛える、という3段に分けて動かします</td>
+    <td class="c">15〜17</td></tr>
+<tr><td class="c">5</td><td class="l"><a href="q18.html">本物のデータでは、何が精度を決めるのか</a></td>
+    <td class="l">タイタニック号の乗客891人の記録から、年齢・性別・客室の等級をもとに生死を当てます。Kaggleで最もよく使われる入門課題です。使う道具は決定木です</td>
+    <td class="c">18〜21</td></tr>
+</table>
+
+<p class="lead">数式は出てきますが、自分で計算する必要はありません。つまみを動かすと、画面がその場で計算します。</p>
+<p class="lead">中学生でも進められます。微分や対数を習っていれば、なぜそうなるかまで踏み込めます。</p>
+
+
+<details class="ch"><summary>第1章　機械学習</summary>
+<ul>
+ <li><b>関数</b>（入力から出力を計算する式）── y = ax + b から始めます。a と b がパラメータ（つまみ）です</li>
+ <li><b>誤差</b>（正解とのずれ）── 予測と正解の差を1つの数にまとめたもの。これを小さくするのが目標です</li>
+ <li><b>勾配降下法</b>（坂を下る）── 坂の高さは誤差です。傾きを調べて、誤差が減る方向へパラメータを少しずつ動かします。機械が自分でパラメータを決めるのは、この繰り返しです</li>
+ <li><b>学習率</b>（歩幅）── 大きすぎると坂を通り過ぎ、誤差が増え続けて戻れなくなります</li>
+ <li><b>式の形の限界</b> ── 直線の式では、どうパラメータを動かしても届かない問題があります。パラメータを増やして折れ線にすると届きます</li>
+ <li><b>softmax</b>（点数を確率に直す）── 点数のまま足し引きすると差が縮んでしまうので、指数を使って合計が1になる確率に直します。大小の順は変わりません</li>
+</ul>
+</details>
+
+<details class="ch"><summary>第2章　深層学習</summary>
+<ul>
+ <li><b>特徴量</b>（入力に使う列）── 1個から複数に増やします。関係のない列を足しても誤差は下がりません</li>
+ <li><b>正規化</b>（単位をそろえる）── 身長cmと体重kgのように桁が違う列を混ぜると、片方だけが効きすぎます。歩幅は全パラメータで共通なので、揃えないと学習が壊れます</li>
+ <li><b>直線の限界</b> ── 1本の直線では分けられない配置があります</li>
+ <li><b>中間層</b>（あいだの段）── 段を挟んでパラメータを増やします</li>
+ <li><b>活性化関数</b>（折り曲げる）── 折らないと、何段重ねても全体は直線1本と同じになります。だから段のあいだで曲げます</li>
+ <li><b>勾配消失</b>（深くすると壊れる）── 段を増やすと、誤差の手がかりが手前の段まで届かなくなり、手前の段が学習しなくなります。飛び越す道（残差接続）で直します</li>
+ <li><b>過学習</b> ── 訓練データだけに合わせすぎた状態です（第5章で実際に体験します）</li>
+</ul>
+</details>
+
+<details class="ch"><summary>第3章　LLM</summary>
+<ul>
+ <li><b>語彙</b>（出口）── 出力側の選択肢のことです。「次に来る語」の候補が5万個あり、それぞれに確率が付きます</li>
+ <li><b>確率分布</b> ── 5万個の確率の並び。いちばん高いものを選び続けると、無難な言い回しになります</li>
+ <li><b>温度</b> ── その並びの中から、どれだけ確率の高いものに寄せるかの設定です。上げると低い確率の語も出てきます。ただし並び自体は変わらないので、並びを変えたいときは質問に条件を足します</li>
+ <li><b>自己注意</b>（注目）── 文中のどの語を手がかりにするかの重みです。重みの合計が1になるので、複数の語を同時に強く見ることには上限があります</li>
+ <li><b>マルチヘッド</b> ── だから重みを複数本に分けて、別々の語を見られるようにします</li>
+</ul>
+</details>
+
+<details class="ch"><summary>第4章　LLMはどうやって作られるのか</summary>
+<ul>
+ <li><b>事前学習</b> ── 大量の文章で「次の語を当てる」練習だけをします。文法や事実は、この練習の副産物として付いてきます</li>
+ <li><b>RLHF</b>（人の好みで整える）── 「良い回答」は式に書けません。だから人に2つ見せて良いほうを選んでもらい、その記録を使って調整します。誰に選んでもらったかで結果が変わります</li>
+ <li><b>RLVR</b>（正誤で鍛える）── 答え合わせが機械でできる問題（数学・プログラム）だけを使って鍛えます。だから数学は伸び、面白さのような正解のないものはこの段では扱えません</li>
+ <li><b>自信を持って間違える理由</b> ── 訓練で選んでいるのは正しいことではなく、次に来そうなことだからです</li>
+</ul>
+</details>
+
+<details class="ch"><summary>第5章　本物のデータでは、何が精度を決めるのか</summary>
+<ul>
+ <li><b>データ</b> ── タイタニック号（1912年に沈んだ客船）の乗客891人の記録。年齢・性別・客室の等級などから、生き残ったかを当てます。Kaggleで最もよく使われる入門課題です</li>
+ <li><b>特徴量エンジニアリング</b>（入力の列を作る）── 人が新しい列を作ると、当たる数が増えます。たとえば名前から敬称を取り出します</li>
+ <li><b>訓練の点は物差しにならない</b> ── 列を増やすと訓練データの点は上がりますが、それは実力ではなく、極端には丸暗記です</li>
+ <li><b>決定木</b> ── 勾配降下とは別の仕組みです。切れ目を全部試して、いちばん良いものを選びます</li>
+ <li><b>交差検証</b> ── 1回だけ測ると数字がぶれます。分けて何回か測り、平均を取ります</li>
+ <li>作りの違うモデルを並べると、同じ水準に並びます。モデルより入力が効く場面がある、ということです</li>
+</ul>
+</details>
+</div>
+
+<!-- ══════════════════ ③ プロダクトの特徴（4つ ＋ 比較表）══════════════════ -->
+<div class="card">
+
+<h2>プロダクトの特徴</h2>
+
+<div class="pt">
+ <div class="n">1</div>
+ <div class="t">対話で読みながら、そのまま自分で動かせます</div>
+ <p>博士と高校2年生のやり取りで進みます。
+  説明を読むのではなく、会話を追っていくと分かる形にしました。</p>
+ <p>対話形式でわかりやすいAIの入門書も、触って動かせるAIの可視化ツールも、
+  一問ずつ出題して採点してくれる演習サイトも、すでに世の中にあります。</p>
+ 
+ <p>ただし、3つを兼ねたものは見つかりませんでした。だから作りました。</p>
+ 
+ <table class="dtab">
+ <tr><th class="l"></th><th class="c">対話形式で読める</th><th class="c">自分で動かせる</th><th class="c">出題され、判定される</th></tr>
+ 
+ <tr><td class="l">対話形式の入門書（数学ガールの秘密ノート など）</td><td class="c">○</td><td class="c">×</td><td class="c">×</td></tr>
+ <tr><td class="l">AIの可視化ツール（Transformer Explainer など）</td><td class="c">×</td><td class="c">○</td><td class="c">×</td></tr>
+ <tr><td class="l">一問形式・自動採点の演習サイト（Deep-ML など）</td><td class="c">×</td><td class="c">○</td><td class="c">○</td></tr>
+ <tr class="sum"><td class="l"><b>Deep Black Box</b></td><td class="c"><b>○</b></td><td class="c"><b>○</b></td><td class="c"><b>○</b></td></tr>
+ </table>
+
+ 
+ <div class="figbox">
+  <img class="shot" src="assets/fig-q1q2.png" width="2400" height="1913" loading="lazy" decoding="async"
+       alt="対話とつまみとグラフが同じ画面にある例">
+  <div class="fcap" style="text-align:left"><b>図 2</b>　各問は博士と高校生のやりとりで始まり、そのあと自分で動かします。問1では、つまみを2つ動かすと線が点に近づき、ずれの点数がその場で返ります。問2では、そのずれを地形にして、いちばん低い場所へ向かって下ります。</div>
+ </div>
+</div>
+
+<div class="pt">
+ <div class="n">2</div>
+ 
+ <div class="t">全21問、自分で手を動かします</div>
+ 
+ <p>読むだけの問題は1つもありません。多くの問題にはつまみ（左右に動かすスライダー）が並んでいて、動かしているのはAIの中身の数値そのもの、つまりパラメータです。つまみのない問題は、ボタンで切り替えたり、3択で先に予想したりする形になります。</p>
+</div>
+
+<div class="pt">
+ <div class="n">3</div>
+ <div class="t">画面の数字は、すべて実測値です</div>
+ 
+ 
+ <p>AIは難しいので分かりやすく書く必要がありますが、分かりやすくしすぎると正確ではない表現になることがあります。だから機構は原論文32本に紐づけました。<a href="https://www.amazon.co.jp/%E5%8E%9F%E8%AB%96%E6%96%87%E3%81%8B%E3%82%89%E8%A7%A3%E3%81%8D%E6%98%8E%E3%81%8B%E3%81%99%E7%94%9F%E6%88%90AI-%E8%8F%8A%E7%94%B0-%E9%81%A5%E5%B9%B3/dp/4297150786" target="_blank" rel="noopener">原論文から解き明かす生成AI</a>という本で紹介されている原論文32本を参照しています。そして、このゲームのために簡単にした場所は「ここは簡単にしました」と書いてあります。</p>
+</div>
+
+<div class="pt">
+ <div class="n">4</div>
+ <div class="t">準備がいりません</div>
+ <p>インストールも環境構築も不要。ブラウザで開くだけ。スマートフォンでもできます。</p>
+</div>
+</div>
+
+<!-- ══════════════════ ④ なぜ作ったか（図1枚 ＋ 本文）══════════════════ -->
+<div class="card">
+<h2>なぜ作ったか</h2>
+
+
+
+<p class="lead">AIをつくる人を増やすには、原理を学ぶ入口が要ります。</p>
+
+<p class="lead">そう考えたのは、国際人工知能オリンピック（IOAI）2025 銅メダリスト・開成高校3年の山井勇人さんです。彼がこの世界を知ったのは高校1年の冬。偶然でした。それから1年たたずにメダルを取っています。足りていなかったのは能力ではなく、知る機会でした。</p>
+
+<p class="lead">「AIをどう使うか」はよく語られます。けれど、中で何が起きているかは、あまり教わりません。</p>
+
+<p class="lead"><a href="https://www.roppongivc.com/" target="_blank" rel="noopener">六本木ベンチャーキャピタル</a>の「<a href="https://www.roppongivc.com/agora/" target="_blank" rel="noopener">Agora</a>」第1回で、5人とAIが2時間 議論しました。数学や構造の面白さに反応する高校生に、入口を1つ届けるために作ったものです。</p>
+
+<p class="lead">Agoraは、突出した若い才能が、AIと深く議論して、まだ世にない新しいものを生み出すプログラムです。</p>
+
+
+<div class="togs" id="agora"></div>
+</div>
+
+
+
+<div class="cta" id="cta2"></div>
+
+<div id="foot"></div>
+</div>
+
+<script src="common.js"></script>
+<script>
+
+
+
+drawCta("cta1");
+drawCta("cta2");
+
+(function () {
+  if (typeof SITE === 'undefined' || !SITE.form) return;
+  ['cta1', 'cta2'].forEach(function (id) {
+    var h = document.getElementById(id); if (!h) return;
+    var a = h.querySelector('a.btn'); if (!a) return;
+    var f = document.createElement('a');
+    f.className = 'btn ghost';
+    f.href = SITE.form;
+    f.target = '_blank';
+    f.rel = 'noopener';
+    f.textContent = '感想を送る';
+    a.parentNode.insertBefore(f, a.nextSibling);
+  });
+})();
+
+drawNest("nest", 0, { head: false, outside: false, table: false });
+
+drawFoot();
+
+
+(function(){
+  var h = document.getElementById('agora'); if (!h) return;
+  h.innerHTML = SITE.agora
+    ? '<a class="btn" href="' + SITE.agora + '" target="_blank" rel="noopener">'
+      + 'Agora議論を読む →</a>'
+    : '<span style="font-size:16.6px;color:var(--gray-500);line-height:1.831">'
+      + 'Agora議論の記事は準備中です</span>';
+})();
+</script>
+</body>
+</html>

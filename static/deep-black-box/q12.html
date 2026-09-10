@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="index,follow">
+<meta name="description" content="次の1語は、確率で選んでいる ── 問12 温度">
+<meta property="og:title" content="Deep Black Box ── 問12 次の1語は、確率で選んでいる（第3章）">
+<meta property="og:description" content="次の1語は、確率で選んでいる ── 問12 温度">
+
+<meta property="og:image" content="https://www.roppongivc.com/img/agora/r1/og-r1-game.jpg">
+<meta name="twitter:image" content="https://www.roppongivc.com/img/agora/r1/og-r1-game.jpg">
+<title>Deep Black Box ── 問12 次の1語は、確率で選んでいる（第3章）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@300;400;600;700&family=Inter:wght@300;400;500;600;700&family=Noto+Serif+JP:wght@300;400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="common.css">
+<style>
+
+.offpage{display:none}
+:root{
+ --bg:#fff; --white:#fff; --black:#000;
+ --gray-100:#f9f9f9; --gray-200:#d9d9d9; --gray-500:#444; --gray-600:#2a2a2a;
+ --accent:#019949;
+ --sans:'Inter',system-ui,sans-serif;
+ --serif:'Source Serif 4','Noto Serif JP',Georgia,serif;
+ --content-w:52.625rem;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--black);font-family:var(--sans);
+ -webkit-font-smoothing:antialiased}
+.wrap{max-width:var(--content-w);margin:0 auto;padding:0 1.5rem 5rem}
+.top{border-bottom:1px solid var(--gray-200);margin-bottom:2.4rem}
+
+
+.eyebrow{font-size:13px;font-weight:500;letter-spacing:.16em;text-transform:uppercase;
+ color:var(--gray-500);margin-bottom:.9rem}
+h1{font-family:var(--serif);font-size:2.1rem;font-weight:300;line-height:1.35;margin:0 0 .8rem}
+.lead b{color:var(--black)}
+.meta{font-size:13px;letter-spacing:.1em;color:var(--gray-500);padding-bottom:1.2rem;
+ border-bottom:1px solid var(--gray-200);margin-bottom:1.2rem}
+.steps{display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:2.4rem}
+.steps div{flex:1 1 5rem;padding:.55rem .3rem;text-align:center;font-size:12px;
+ border:1px solid var(--gray-200);color:var(--gray-500);background:var(--white)}
+.steps div.open{border-color:var(--black);color:var(--black)}
+.steps div.done{background:var(--black);border-color:var(--black);color:var(--white)}
+.card{border:1px solid var(--gray-200);padding:2rem;margin-bottom:2rem;background:var(--white)}
+.tagline{font-size:13px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;
+ color:var(--gray-500);margin-bottom:.9rem}
+
+.panel{background:var(--gray-100);border:1px solid var(--gray-200);padding:1rem;margin:1.3rem 0}
+.panel .verdict{background:var(--white)}
+.two{display:flex;gap:1rem;flex-wrap:wrap;align-items:flex-start}
+.two>div{flex:1 1 15rem;min-width:0}
+svg{display:block;width:100%;height:auto}
+.ctl{margin:1.1rem 0 .2rem}
+.ctl label{display:flex;justify-content:space-between;align-items:baseline;font-size:14px;
+ margin-bottom:.35rem;gap:1rem}
+.ctl label span.n{font-weight:600;font-variant-numeric:tabular-nums;white-space:nowrap}
+.togs{display:flex;gap:.6rem;flex-wrap:wrap;margin-top:1.1rem;align-items:center}
+.btn{background:none;border:1px solid var(--gray-200);padding:.6rem 1.15rem;font-size:14px;
+ font-family:var(--sans);color:var(--black);cursor:pointer;transition:all .15s}
+.btn:hover{border-color:var(--black);background:var(--gray-100)}
+.btn.on{background:var(--black);color:var(--white);border-color:var(--black)}
+.btn.go{background:var(--black);color:var(--white);border-color:var(--black)}
+.btn.sm{font-size:13px;padding:.45rem .85rem;color:var(--gray-500)}
+.btn:disabled{opacity:.35;cursor:default}
+
+.gauge{margin:1.2rem 0 0}
+.gauge .row{display:flex;align-items:baseline;gap:.7rem;margin-bottom:.5rem}
+.gauge .u{font-size:14px;color:var(--gray-500)}
+.gtrack{height:10px;background:#e9e9e9;position:relative;overflow:hidden}
+.gfill{display:block;height:100%;background:#c00;transition:width .12s linear}
+.gfill.ok{background:var(--accent)}
+.gmark{position:absolute;top:-3px;bottom:-3px;width:2px;background:#000}
+.gcap{display:flex;justify-content:space-between;font-size:12px;color:var(--gray-500);
+ margin-top:.35rem}
+.big{font-family:var(--serif);font-size:2rem;font-weight:400;font-variant-numeric:tabular-nums;
+ line-height:1}
+.panel .gauge{margin-top:.9rem}
+.verdict{margin-top:1.2rem;padding:.9rem 1.1rem;border:1px solid var(--gray-200);font-size:14px;
+ line-height:1.75;background:var(--gray-100)}
+.verdict.ok{border-color:var(--accent);background:#f2fbf6}
+.verdict.stuck{border-color:#c00;background:#fdf4f4}
+.next{margin-top:1rem;font-size:13px;color:var(--gray-500)}
+.src{border-left:2px solid var(--black);padding:.9rem 0 .9rem 1.1rem;margin:1.4rem 0;
+ font-size:14px;line-height:1.85;color:var(--gray-600)}
+.src .h{font-size:12px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;
+ color:var(--black);margin-bottom:.4rem}
+.src q{font-style:normal;color:var(--black)}
+.src .ref{font-size:13px;color:var(--gray-500);margin-top:.4rem;display:block}
+.box{border:1px solid var(--gray-200);padding:1.1rem 1.3rem;margin:1.3rem 0;background:var(--gray-100)}
+.box .h{font-size:12px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;
+ margin-bottom:.5rem}
+.mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+.calc{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13.5px;line-height:2;
+ background:var(--white);border:1px solid var(--gray-200);padding:.9rem 1.1rem;margin:.9rem 0;
+ overflow-x:auto;white-space:pre}
+.sc-row{display:flex;align-items:center;gap:.75rem;margin-bottom:.5rem}
+.sc-label{width:3.4rem;font-size:14px;text-align:right;flex-shrink:0;font-family:var(--serif)}
+.sc-label.wide{width:6.4rem;font-size:13px}
+.sc-track{flex:1;background:#e9e9e9;height:14px;position:relative}
+.sc-fill{display:block;height:100%;background:var(--black);transition:width .1s linear}
+.sc-fill.hit{background:var(--accent)}
+.sc-track .goal{position:absolute;top:-3px;bottom:-3px;width:1px;background:#c00}
+.sc-pct{width:3.6rem;font-size:14px;font-variant-numeric:tabular-nums;text-align:right}
+details{border-top:1px solid var(--gray-200);padding-top:1rem;margin-top:1.5rem}
+summary{font-size:14px;font-weight:500;cursor:pointer}
+.lg{font-size:14px;line-height:1.9;color:var(--gray-600);margin-top:.9rem}
+.lg table{width:100%;border-collapse:collapse;margin:.8rem 0;font-size:13px}
+.lg th,.lg td{padding:.45rem .6rem;border:1px solid var(--gray-200);text-align:left}
+.lg th{background:var(--gray-100);font-weight:600}
+.dtab th,.dtab td{padding:.35rem .5rem;border:1px solid var(--gray-200);text-align:right}
+.dtab th{background:var(--gray-100);font-weight:600;font-size:11.5px}
+.dtab td.l,.dtab th.l{text-align:left}
+
+.dtab tr.sum td{background:#f2fbf6;border-top:2px solid var(--black)}
+.hide{display:none}
+.foot{border-top:1px solid var(--gray-200);margin-top:3rem;padding-top:1.5rem;font-size:13px;
+ color:var(--gray-500);line-height:1.8}
+/* ── 語の列 ─────────────────────────────── */
+.sent{display:flex;flex-wrap:wrap;gap:.35rem;align-items:center;margin:.6rem 0}
+.sent span{border:1px solid var(--gray-200);background:var(--white);padding:.3rem .55rem;
+ font-size:15px;font-family:var(--serif)}
+.sent span.now{border-color:#c00;color:#c00;font-weight:600}
+.sent span.tgt{border-color:var(--accent);color:var(--accent);font-weight:600}
+.sent span.prompt{background:var(--gray-100);color:var(--gray-500)}
+.sent span.new{border-color:var(--black);font-weight:600}
+.caret{display:inline-block;width:2px;height:1.2rem;background:#c00;animation:bl 1s step-end infinite}
+@keyframes bl{50%{opacity:0}}
+.out{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12.5px;line-height:1.75;
+ background:var(--white);border:1px solid var(--gray-200);padding:.7rem .9rem;margin:.7rem 0;
+ white-space:pre;overflow-x:auto}
+
+
+.split-on .splittop .out{font-size:11.5px;line-height:1.55;padding:.4rem .55rem;margin:.35rem 0 0;
+  max-height:132px;overflow-y:auto}
+.split-on .splittop .two .cap{font-size:11px;margin:0 0 .1rem}
+.split-on .splittop .sc-row{margin:0}
+.split-on .splittop .sc-label,.split-on .splittop .sc-pct{font-size:11.5px}
+.split-on .splittop .gauge{margin-top:.3rem}
+.split-on .splittop .gauge .big{font-size:18px}
+.split-on .splittop .gauge .u{font-size:10.5px}
+.split-on .splittop .gauge .gcap{font-size:10px;margin-top:0}
+.split-on .splittop .gauge .gtrack{margin:.1rem 0}
+.split-on .splittop .togs{margin-top:.3rem;gap:.3rem}
+.split-on .splittop .togs .btn{padding:.3rem .6rem;font-size:11.5px}
+.split-on .splittop .panel{padding:.45rem .5rem}
+.split-on .splittop .sent{font-size:13px;margin:0 0 .2rem}
+
+.wf{display:flex;gap:.8rem;align-items:center;flex-wrap:wrap;margin:.6rem 0 .2rem}
+.wbox{border:1px solid var(--black);background:var(--white);padding:.6rem .9rem;text-align:center;
+ font-size:16px;font-family:var(--serif);line-height:1.5}
+.wbox span{font-size:12px;color:var(--gray-500);font-family:var(--sans)}
+.warr div{font-size:13.5px;line-height:2.1;font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+
+.st{font-size:13.5px;line-height:1.7;margin:.9rem 0 .35rem}
+.br{display:flex;align-items:center;gap:.5rem;margin:.3rem 0}
+.br .n{width:2.8rem;font-family:var(--serif);font-size:14px;flex-shrink:0}
+.br .v{width:3.4rem;text-align:right;font-size:13px;flex-shrink:0;
+ font-variant-numeric:tabular-nums;color:var(--gray-500)}
+.br .ax{flex:1;position:relative;height:14px;background:#e9e9e9;min-width:0}
+.br .ax:after{content:'';position:absolute;left:50%;top:-3px;bottom:-3px;width:1px;background:#6e6e6e}
+.br .ax i{position:absolute;top:0;height:100%;background:#000}
+.br.g .ax i{background:var(--accent)}
+.bd{display:flex;height:30px;margin:.5rem 0 0}
+.bd span{display:flex;align-items:center;justify-content:center;font-size:13px;color:#fff;
+ font-family:var(--serif);overflow:hidden;white-space:nowrap}
+
+.blk{border:1px solid var(--black);padding:.8rem .6rem;margin:1rem 0;background:var(--white)}
+.blk .r{display:flex;gap:.3rem}
+.blk .r>span{flex:1 1 0;min-width:0;text-align:center;font-size:13px;padding:.4rem .1rem;
+ border:1px solid var(--gray-200);font-family:var(--serif)}
+.blk .u{border:1px solid var(--black);padding:.5rem .4rem;margin:.35rem 0;text-align:center;
+ font-size:13.5px;line-height:1.6}
+.blk .u.n{border-style:dashed}
+.blk .op{text-align:center;font-size:13px;color:var(--gray-500);margin:.15rem 0}
+.blk .rep{text-align:center;font-size:13px;margin-top:.5rem}
+.blk .hl{border-color:#c00;color:#c00}
+@media (max-width:430px){
+  .wrap{padding-left:.5rem;padding-right:.5rem}
+  .card{padding-left:.75rem;padding-right:.75rem}
+  .box,.panel{padding-left:.5rem;padding-right:.5rem}
+  .top .in{padding-left:.5rem;padding-right:.5rem}
+  
+  #hd text{font-size:17px}
+  
+  #v13,#v14a,#v14b{max-width:15rem;margin:0 auto}
+  .panel .ctl{margin:.55rem 0 .1rem}
+  .panel .ctl label{margin-bottom:.15rem}
+  
+  
+  .lg th,.lg td{padding:.35rem .3rem}
+  
+  .sc-row{flex-wrap:nowrap;row-gap:0;margin-bottom:.3rem}
+  .sc-label{width:4.6rem;font-size:13px;text-align:left;flex:0 0 auto}
+  .sc-label.wide{width:6.2rem;font-size:12px;text-align:left;flex:0 0 auto}
+  .sc-pct{width:3.2rem;font-size:13px;flex:0 0 auto}
+  .sc-track{flex:1 1 auto;order:0;min-width:0}
+  
+  .br .n{width:4.4rem;font-size:13px}
+  .br .v{width:3.4rem;font-size:12.5px}
+  .br{margin:.2rem 0}
+  
+  .panel .two{gap:.6rem}
+  .panel .verdict{margin-top:.7rem}
+  #v13{max-width:14rem}
+  
+  
+  
+  .cast2{padding:.7rem .75rem}
+  .cast2 .ic{width:46px;height:46px}
+  .cast2 .row{gap:.6rem}
+  
+  
+  .fg{padding:.7rem .75rem}
+  .rw .nmx{flex:0 0 4.6rem;font-size:12px}
+  .rw .pc2{flex:0 0 3rem;font-size:12px}
+}
+
+
+.cast2{border:1px solid var(--gray-200);background:var(--gray-100);
+  padding:1rem 1.1rem;margin:0 0 2.4rem}
+.cast2 .row{display:flex;gap:.9rem;align-items:flex-start}
+.cast2 .row+.row{margin-top:.9rem;padding-top:.9rem;border-top:1px solid var(--gray-200)}
+.cast2 .ic{width:54px;height:54px;border-radius:50%;flex-shrink:0;display:block;
+  border:2px solid var(--white);box-shadow:0 0 0 1px var(--gray-200),0 1px 3px rgba(0,0,0,.10)}
+.cast2 .nm2{display:block;font-size:18px;line-height:1.5;font-weight:700;margin-bottom:.2rem}
+.cast2 .rb{font-size:14px;font-weight:400;color:var(--gray-500);margin-left:.45rem}
+.cast2 .tx2{font-size:16.6px;line-height:1.831;color:var(--gray-600)}
+.cast2 .tx2 b{color:var(--black)}
+.cv{margin:1.6rem 0}
+.cl{display:flex;gap:.75rem;align-items:flex-start;margin:0 0 .85rem}
+.cl .ic{width:46px;height:46px;border-radius:50%;flex-shrink:0;display:block;
+  border:2px solid var(--white);box-shadow:0 0 0 1px var(--gray-200),0 1px 3px rgba(0,0,0,.10)}
+.cl .bb b{color:var(--black)}
+.cl .bb:before{content:'';position:absolute;left:-6px;top:15px;width:10px;height:10px;
+  background:inherit;border-left:1px solid;border-bottom:1px solid;border-color:inherit;
+  transform:rotate(45deg)}
+
+.cl.m .bb{background:#fff7ea;border-color:#efd6a6}
+.cl.d .bb{background:#eef4fa;border-color:#c3d9ee}
+
+.cl .nm{display:block;font-weight:700;letter-spacing:.07em;margin-bottom:.15rem}
+.cl.m .nm{color:#b0700c}   
+.cl.d .nm{color:#2f6fb5}   
+.keyh{font-size:11.5px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--gray-500);margin:1.6rem 0 .5rem}
+
+
+
+
+.fg{border:1px solid var(--gray-200);border-radius:.6rem;background:var(--white);
+  padding:.9rem 1rem;margin:0 0 .85rem}
+.fg .fn b{color:var(--black)}
+.fg .fn+.fn{margin-top:.4rem}
+/* 入れ子の箱 */
+.nst{border:2px solid var(--gray-200);border-radius:.5rem;padding:.55rem .6rem}
+.nst.a{border-color:#c3d9ee;background:#f6fafd}
+.nst.b{border-color:#bcdfc9;background:#f5fbf7}
+.nst.c{border-color:#efd6a6;background:#fffaf0}
+/* 段を並べる（390px では縦に積む） */
+.flw{display:flex;flex-wrap:wrap;align-items:stretch;gap:.45rem}
+.flw>.st{flex:1 1 9rem;min-width:0;border:1px solid var(--gray-200);border-radius:.45rem;
+  background:var(--gray-100);padding:.55rem .6rem}
+.flw>.st.on{background:#fffaf0;border-color:#efd6a6}
+.flw .hd2{font-size:11.5px;font-weight:700;color:var(--gray-500);margin:0 0 .3rem}
+.flw .bg2{font-size:15px;font-weight:700;color:var(--black)}
+.flw .sm2{font-size:12.5px;color:var(--gray-600);line-height:1.75}
+/* 割合の帯 */
+.rw{display:flex;align-items:center;gap:.5rem;margin:.32rem 0}
+.rw .nmx{flex:0 0 5.6rem;font-size:12.5px;color:var(--gray-600)}
+.rw .tk{position:relative;flex:1 1 auto;height:15px;background:var(--gray-100);
+  border-radius:8px;overflow:hidden;min-width:0}
+.rw .fl2{position:absolute;left:0;top:0;bottom:0;background:#9aa2a8;border-radius:8px}
+.rw .fl2.k{background:#000}
+.rw .fl2.g{background:#019949}
+.rw .pc2{flex:0 0 3.4rem;text-align:right;font-size:12.5px;color:var(--black)}
+/* 図の中の表 */
+.fg table{width:100%;border-collapse:collapse;margin:.5rem 0 0;font-size:12.5px}
+.fg th,.fg td{padding:.4rem .5rem;border:1px solid var(--gray-200);text-align:left}
+.fg th{background:var(--gray-100);font-weight:600}
+/* 数字の個数を四角で見せる */
+.dots{display:flex;flex-wrap:wrap;gap:2px;margin:.3rem 0 0}
+.dots i{display:block;width:9px;height:9px;background:#c3d9ee;border-radius:2px}
+.dots.many i{background:#efd6a6}
+
+
+.fg svg.dg{display:block;width:100%;max-width:520px;height:auto;margin:.5rem auto .2rem}
+
+
+.tf{display:flex;gap:.5rem;align-items:flex-end;margin:.6rem 0 .2rem}
+.tf>.col{flex:1 1 0;min-width:0}
+.tf .cap2{font-size:11.5px;color:var(--gray-500);text-align:center;margin:.15rem 0}
+.tf .arw{text-align:center;font-size:15px;color:var(--gray-500);line-height:1.1}
+.tf .stk2{border:1.6px solid;border-radius:.55rem;padding:.4rem .35rem}
+.tf .ttl{font-size:12.5px;font-weight:700;text-align:center;margin:0 0 .3rem}
+.tf .pc{border:1.2px solid;border-radius:.4rem;background:var(--white);
+  font-size:12.5px;line-height:1.5;text-align:center;padding:.35rem .25rem;margin:0}
+.tf .pc.gy{border-style:dashed;border-color:var(--gray-200);background:#f2f2f2;color:var(--gray-500)}
+.tf .pl{font-size:11.5px;color:var(--gray-500);text-align:center;margin:.16rem 0}
+.tf .io{border:1.2px solid #2f6fb5;border-radius:.4rem;background:#eef4fa;color:#2f6fb5;
+  font-size:12px;line-height:1.5;text-align:center;padding:.35rem .25rem}
+.tf .gpt{border:2px dashed #c00;border-radius:.6rem;padding:.35rem;background:#fffdf7}
+.tf .gptl{font-size:11.5px;font-weight:700;color:#c00;text-align:center;margin:0 0 .25rem}
+@media (max-width:430px){.tf{gap:.35rem}.tf .pc{font-size:11.5px;padding:.3rem .15rem}
+  .tf .io{font-size:11px;padding:.3rem .15rem}.tf .ttl{font-size:11.5px}}
+
+.stkw{margin:.35rem 0 .1rem}
+.stkl{font-size:12px;color:var(--gray-600);margin:0 0 .15rem}
+.stk{position:relative;display:flex;height:26px;border-radius:4px;overflow:hidden;
+  border:1px solid var(--gray-200)}
+.stk span{display:block;height:100%}
+.stk i{position:absolute;top:-3px;bottom:-3px;width:2px;background:#c00;left:50%}
+.stkn{display:flex;font-size:11.5px;color:var(--gray-600);margin:.15rem 0 0}
+.stkn span{display:block;text-align:center;overflow:hidden;white-space:nowrap}
+
+table.wtb{width:100%;border-collapse:collapse;font-size:13px;margin:0}
+table.wtb td{padding:.35rem .3rem;border:1px solid var(--gray-200);text-align:center;background:var(--white);font-feature-settings:'tnum'}
+</style>
+</head>
+<body data-split="A2" data-top="q12top" data-talk="q12talk"
+      data-verdict="j12,j10" data-ratio="0.70">
+
+<div class="top"><div class="in">Deep Black Box<span class="tag">AIのブラックボックスを、1問ずつ開けて手で動かす。全21問。</span></div></div>
+<div class="wrap">
+
+
+<div class="prog">
+ <div class="steps" id="steps"></div>
+ <div class="cnt" id="prog_cnt"></div>
+</div>
+<div class="chap" id="chap"></div>
+<div id="nest"></div>
+
+
+<div id="chaptab"></div>
+<div id="chapdet"></div>
+
+<!-- ══════════════════ c12 ══════════════════ -->
+<div class="card" id="c12">
+<div class="tagline">Question 12</div>
+<h2>次の1語は、確率で選んでいる</h2>
+
+
+<div id="e12a"></div>
+<p class="lead">
+<b>目標：10回やって、目標の文「日本の首都は東京です。」が 8.0回以上 出ること。<br>
+そのうえで、出てくる文の種類を 2.5通り以上 にしてください。</b><br>
+<span style="color:var(--gray-500)">どちらも<b>温度（temperature）</b>で決まります。
+この2つの目標は、この問題で そう置いた値です。</span></p>
+
+
+<div id="q12top">
+<div class="panel">
+ <div class="sent" id="sent"></div>
+ <div class="two">
+  <div><div class="cap">次に来る語の確率（6語に縮めています）</div><div id="b12"></div></div>
+  <div><div class="ctl" style="margin-top:0">
+   
+   <label for="t12"><span><b>温度（temperature）</b></span><span class="n" id="t12v">1.00</span></label>
+   <input type="range" id="t12" min="10" max="250" step="5" value="100">
+  </div>
+  <div class="cap">下げると上位に集まり、上げると裾まで出ます</div></div>
+ </div>
+ <div class="togs">
+  
+  <button class="btn go" id="r10">10回 やらせてみる</button>
+  <button class="btn sm" id="d1">1語だけ 引く</button>
+  <button class="btn sm" id="dA">最後まで引く</button>
+  <button class="btn sm" id="rs">はじめから</button>
+ </div>
+ 
+ <div class="gauge">
+  <div class="row"><span class="big" id="e12">–</span><span class="u">回 ／ 10回やって 目標の文が出る回数（計算値）</span></div>
+  <div class="gtrack"><span class="gfill" id="g12"></span><span class="gmark" id="m12"></span></div>
+  <div class="gcap"><span>0</span><span>目標 8.0回</span><span>10</span></div>
+ </div>
+ <div class="gauge">
+  <div class="row"><span class="big" id="e12k">–</span><span class="u">通り ／ 10回やって出てくる文の種類（計算値）</span></div>
+  <div class="gtrack"><span class="gfill" id="g12k"></span><span class="gmark" id="m12k"></span></div>
+  <div class="gcap"><span>0</span><span>目標 2.5通り</span><span>10</span></div>
+ </div>
+ <div class="verdict" id="j12"></div>
+ 
+ <div class="out hide" id="o10"></div>
+ <div class="verdict hide" id="j10"></div>
+</div>
+</div><!-- /#q12top -->
+
+
+<div id="q12talk">
+<div class="cap" style="margin:.7rem 0 0;color:var(--black)">
+どちらも、10回やるのを何度もくり返したときの平均です。だから小数が出ます。<br>
+温度 0.65 なら、実際に出るのは<b>2種類か3種類</b>がほとんどです（合わせて約7割）。</div>
+
+
+
+
+<table class="dtab" style="margin-top:1.2rem">
+<tr><th class="l">次に来る語</th><th>温度（temperature）0.20</th><th>温度 1.00</th><th>温度 2.50</th></tr>
+<tr><td class="l">東京</td><td>1.000</td><td>0.736</td><td>0.372</td></tr>
+<tr><td class="l">大阪</td><td>0.000</td><td>0.100</td><td>0.167</td></tr>
+<tr><td class="l">京都</td><td>0.000</td><td>0.060</td><td>0.137</td></tr>
+<tr><td class="l">名古屋</td><td>0.000</td><td>0.045</td><td>0.121</td></tr>
+<tr><td class="l">札幌</td><td>0.000</td><td>0.037</td><td>0.112</td></tr>
+<tr><td class="l">そこ</td><td>0.000</td><td>0.022</td><td>0.092</td></tr>
+<tr class="sum"><td class="l"><b>10回中 目標の文が出る回数</b></td><td><b>10.0</b></td><td><b>5.1</b></td><td><b>0.7</b></td></tr>
+<tr class="sum"><td class="l"><b>10回中 出てくる文の種類</b></td><td><b>1.0</b></td><td><b>5.3</b></td><td><b>9.2</b></td></tr>
+</table>
+<div class="cap" style="margin:.2rem 0 0">下2行はこの6語の先までたどって計算した値です。
+<b>温度 1.00 のままでは 10回中 5回しか正しく答えません。かといって 0.20 まで下げると、
+10回とも まったく同じ文になります。</b></div>
+
+<div id="e12b"></div>
+
+<div id="r12" class="hide">
+ <div id="e12z"></div>
+ <div class="keyh">この問で覚えること</div>
+ 
+ <div class="verdict ok">
+  この1本のつまみを <b>温度（temperature）</b>と呼びます。
+  <span style="color:var(--gray-500)">使い方の側のつまみで、作る工程には出てきません。</span>
+ </div>
+</div>
+
+
+
+
+
+
+
+<div class="src">
+ <div class="h">役に立つところ</div>
+ 事実を1つだけ答えさせたいときは温度を下げ、言い方を何通りも出させたいときは上げます。
+ <b>ChatGPT や API の <span class="mono">temperature</span> が、このつまみです。</b>
+</div>
+
+</div><!-- /#q12talk --></div>
+
+
+<div id="nav"></div>
+
+<div id="foot"></div>
+</div>
+
+
+<script src="common.js"></script>
+<script>
+
+var QBASE = 11;
+drawProg(12); drawChap(12, "");
+drawNav(["q11.html","問11 覚えただけ"], ["q13.html","問13 どの語を見るか"]);
+drawNest("nest", 3);
+drawChapTab(3); drawChapDet(3);
+drawFoot()   ;
+
+(function(){
+
+const $=id=>document.getElementById(id);
+const show=id=>$(id).classList.remove('hide');
+const hide=id=>$(id).classList.add('hide');
+
+const R3=v=>+v.toFixed(3);
+
+function gauge(fillId,markId,v,goal,max){
+  const g=$(fillId); g.style.width=Math.min(100,v/max*100).toFixed(1)+'%';
+  g.className='gfill'+(v>=goal?' ok':''); $(markId).style.left=(goal/max*100).toFixed(1)+'%'; }
+
+function disp3(vals){
+  const d=vals.map(v=>R3(v));
+  const gap=+(1-d.reduce((a,b)=>a+b,0)).toFixed(3);
+  if(gap!==0){ let mi=0; d.forEach((v,i)=>{ if(v>d[mi])mi=i; }); d[mi]=R3(d[mi]+gap); }
+  return d;
+}
+function bars(el,names,vals,goal,idx,cols,sum1,gt){
+  const v=sum1?disp3(vals):vals;
+  $(el).innerHTML=names.map((n,i)=>{
+    const on=(!idx||idx.indexOf(i)>=0);
+    const hit=(goal&&on&&(gt?R3(v[i])>goal:R3(v[i])>=goal));
+    const g=(goal&&on)?`<span class="goal" style="left:${goal*100}%"></span>`:'';
+    const c=cols?cols[i]:(hit?'':'#000');
+    return `<div class="sc-row"><span class="sc-label">${n}</span>`
+     +`<span class="sc-track"><span class="sc-fill${hit?' hit':''}"`
+     +` style="width:${(v[i]*100).toFixed(1)}%${c?';background:'+c:''}"></span>${g}</span>`
+     +`<span class="sc-pct">${v[i].toFixed(3)}</span></div>`;}).join('');
+}
+
+
+const P='日本の首都は';
+const TREE={
+ '日本の首都は':[['東京',3.0],['大阪',1.0],['京都',0.5],['名古屋',0.2],['札幌',0.0],['そこ',-0.5]],
+ '日本の首都は東京':[['です',3.0],['都',1.0],['に',0.3],['だ',0.0],['タワー',-0.5],['、',-1.0]],
+ '日本の首都は東京です':[['。',3.5],['が',0.5],['ね',0.0],['から',-0.5],['けど',-1.0],['、',-1.5]],
+ '日本の首都は東京都':[['です',3.0],['の',0.5],['と',0.0],['に',-0.5],['、',-1.0],['を',-1.5]],
+ '日本の首都は東京都です':[['。',3.5],['が',0.3],['ね',-0.2],['から',-0.7],['けど',-1.2],['、',-1.7]],
+ '日本の首都は大阪':[['です',3.0],['に',0.5],['だ',0.0],['城',-0.3],['府',-0.6],['、',-1.0]],
+ '日本の首都は大阪です':[['。',3.5],['が',0.3],['ね',-0.2],['から',-0.7],['けど',-1.2],['、',-1.7]],
+ '日本の首都は京都':[['です',3.0],['に',0.5],['だ',0.0],['市',-0.3],['府',-0.6],['、',-1.0]],
+ '日本の首都は京都です':[['。',3.5],['が',0.3],['ね',-0.2],['から',-0.7],['けど',-1.2],['、',-1.7]],
+ '日本の首都は名古屋':[['です',3.0],['に',0.5],['だ',0.0],['市',-0.3],['城',-0.6],['、',-1.0]],
+ '日本の首都は名古屋です':[['。',3.5],['が',0.3],['ね',-0.2],['から',-0.7],['けど',-1.2],['、',-1.7]],
+ '日本の首都は札幌':[['です',3.0],['に',0.5],['だ',0.0],['市',-0.3],['、',-0.6],['を',-1.0]],
+ '日本の首都は札幌です':[['。',3.5],['が',0.3],['ね',-0.2],['から',-0.7],['けど',-1.2],['、',-1.7]],
+ '日本の首都はそこ':[['です',3.0],['だ',0.5],['に',0.0],['から',-0.5],['、',-1.0],['が',-1.5]],
+ '日本の首都はそこです':[['。',3.5],['が',0.3],['ね',-0.2],['から',-0.7],['けど',-1.2],['、',-1.7]],
+ '日本の首都は東京に':[['あります',3.0],['ある',0.5],['は',0.0],['も',-0.5],['、',-1.0],['なる',-1.5]],
+ '日本の首都は東京にあります':[['。',3.5],['が',0.3],['ね',-0.2],['から',-0.7],['けど',-1.2],['、',-1.7]],
+ '日本の首都は東京だ':[['。',3.5],['ね',0.5],['よ',0.0],['から',-0.5],['けど',-1.0],['、',-1.5]],
+ '日本の首都は東京タワー':[['です',2.5],['の',1.0],['が',0.5],['に',0.0],['、',-0.5],['を',-1.0]],
+ '日本の首都は東京タワーです':[['。',3.5],['が',0.3],['ね',-0.2],['から',-0.7],['けど',-1.2],['、',-1.7]]
+};
+
+const CLOSE=[['。',3.0]];
+function nextOf(s){ if(TREE[s])return TREE[s]; if(s.slice(-1)==='。')return null; return CLOSE; }
+function soft(z,T){ const m=Math.max.apply(null,z);
+  const e=z.map(v=>Math.exp((v-m)/T)), s=e.reduce((a,b)=>a+b,0); return e.map(v=>v/s); }
+function pick(pairs,T){ const pr=soft(pairs.map(x=>x[1]),T); let r=Math.random(), a=0;
+  for(let i=0;i<pr.length;i++){ a+=pr[i]; if(r<=a)return pairs[i][0]; }
+  return pairs[pairs.length-1][0]; }
+
+
+
+const GOAL12=8.0, GOAL12K=2.5, SEQ12=['東京','です','。'];
+function seqProb12(T){ let s=P, p=1;
+  for(const w of SEQ12){ const nx=nextOf(s); if(!nx)return 0;
+    const pr=soft(nx.map(x=>x[1]),T); const i=nx.findIndex(x=>x[0]===w); if(i<0)return 0;
+    p*=pr[i]; s+=w; }
+  return p; }
+
+function paths12(T,maxDepth){ const out=[], lim=maxDepth||14;
+  (function walk(s,p,d){ const nx=nextOf(s);
+    if(!nx||d>=lim){ out.push(p); return; }
+    const pr=soft(nx.map(x=>x[1]),T);
+    nx.forEach((pair,i)=>{ if(pr[i]>0)walk(s+pair[0],p*pr[i],d+1); });
+  })(P,1,0);
+  return out; }
+function kinds12(T){ return paths12(T).reduce((a,p)=>a+(1-Math.pow(1-p,10)),0); }
+let W12=[], ok12=false, mv12=0;
+
+function clr10(){ hide('o10'); hide('j10'); $('o10').textContent=''; $('j10').innerHTML=''; }
+function up12(){
+  clr10();
+  const T=(+$('t12').value)/100; $('t12v').textContent=T.toFixed(2);
+  const cur=P+W12.join('');
+  let s=`<span class="prompt">${P}</span>`;
+  W12.forEach((w,i)=>{ s+=`<span${i===W12.length-1?' class="new"':''}>${w}</span>`; });
+  const nx=nextOf(cur);
+  if(nx)s+=`<span class="caret"></span>`;
+  $('sent').innerHTML=s;
+  if(nx){ const pr=soft(nx.map(x=>x[1]),T);
+    bars('b12',nx.map(x=>x[0]),pr,null,null,nx.map((x,i)=>i===0?'#000':'#9aa2a8'));
+    if(nx===CLOSE)$('b12').innerHTML+=`<div class="cap" style="margin:.3rem 0 0">`
+      +`この先は用意していないので「。」で閉じます。</div>`;
+    $('d1').disabled=false; $('dA').disabled=false; }
+  else { $('b12').innerHTML=`<div class="cap" style="margin:0">文が終わりました。</div>`;
+         $('d1').disabled=true; $('dA').disabled=true; }
+  
+  const ex=seqProb12(T)*10, kn=kinds12(T);
+  const exD=+ex.toFixed(1), knD=+kn.toFixed(1);
+  $('e12').textContent=exD.toFixed(1);
+  $('e12k').textContent=knD.toFixed(1);
+  gauge('g12','m12',exD,GOAL12,10);
+  gauge('g12k','m12k',knD,GOAL12K,10);
+  const okE=exD>=GOAL12, okK=knD>=GOAL12K, okNow=okE&&okK;
+  if(okNow&&!ok12){ ok12=true; mark(0,'done'); show('r12'); }
+  $('j12').className='verdict'+(okNow?' ok':'');
+  
+  const hint12=(mv12>=6&&!okNow)
+   ? `<br><span style="color:var(--gray-500)"><b>下げると正しさは上がりますが、
+      出てくる文が1種類になります。</b>両方が立つところを探してください。</span>` : '';
+  $('j12').innerHTML = okNow
+   ? `温度 <b>${T.toFixed(2)}</b> なら、10回やって <b>${exD.toFixed(1)}回</b> 正しく答え、
+      言い方は <b>${knD.toFixed(1)}通り</b> 出ます。<b>両方 届きました。</b>
+      <span style="color:var(--gray-500)">「10回 やらせてみる」で確かめてください。</span>`
+   : okE
+   ? `正しさは足りていますが、出てくる文が <b>${knD.toFixed(1)}通り</b> しかありません
+      （目標 2.5通り）。<span style="color:var(--gray-500)">温度が低すぎます。</span>${hint12}`
+   : okK
+   ? `言い方はばらけていますが、正しく答えるのが <b>${exD.toFixed(1)}回</b> しかありません
+      （目標 8.0回）。<span style="color:var(--gray-500)">温度が高すぎます。</span>${hint12}`
+   : `温度 <b>${T.toFixed(2)}</b> では、正しく答えるのが <b>${exD.toFixed(1)}回</b>、
+      出てくる文は <b>${knD.toFixed(1)}通り</b>。<b>両方 届いていません。</b>${hint12}`;
+}
+function drawN(n){ const T=(+$('t12').value)/100;
+  for(let k=0;k<n;k++){ const nx=nextOf(P+W12.join('')); if(!nx)break;
+    W12.push(pick(nx,T)); if(W12[W12.length-1]==='。')break; }
+  up12(); }
+$('d1').onclick=()=>drawN(1);
+$('dA').onclick=()=>drawN(12);
+$('rs').onclick=()=>{ W12=[]; up12(); };
+$('t12').oninput=up12;
+
+$('t12').onchange=()=>{ mv12++; up12(); };
+$('r10').onclick=()=>{
+  const T=(+$('t12').value)/100, outs=[], cnt={};
+  for(let i=0;i<10;i++){ let s=P;
+    for(let k=0;k<12;k++){ const nx=nextOf(s); if(!nx)break; const g=pick(nx,T); s+=g; if(g==='。')break; }
+    outs.push(s); cnt[s]=(cnt[s]||0)+1; }
+  show('o10'); show('j10');
+  
+  requestAnimationFrame(()=>{ requestAnimationFrame(()=>{
+    const box=$('o10');
+    const top_=document.querySelector('.split-on .splittop');
+    if(top_ && top_.contains(box)){
+      
+      top_.scrollTop = box.offsetTop - top_.offsetTop - 8;
+    } else {
+      box.scrollIntoView({block:'center', behavior:'smooth'});
+    }
+  }); });
+  $('o10').textContent=outs.map((o,i)=>`${String(i+1).padStart(2)}  ${o}`).join('\n');
+  const kinds=Object.keys(cnt).length;
+  
+  const good=outs.filter(o=>/^日本の首都は東京(?!タワー)/.test(o)).length;
+  
+  
+  const win10=outs.filter(o=>o==='日本の首都は東京です。').length;
+  
+  const ex=seqProb12(T)*10, kn=kinds12(T);
+  $('j10').className='verdict';
+  $('j10').innerHTML=`温度 <b>${T.toFixed(2)}</b> で実際に10回やったら、`
+   +`<b>「日本の首都は東京です。」は ${win10}回</b>（計算値は ${ex.toFixed(1)}回）。`
+   +`<br>出てきた文は <b>${kinds}種類</b>（計算値は ${kn.toFixed(1)}種類）で、`
+   +`首都を「東京」と答えたのは ${good}／10。`
+   +`<br><span style="color:var(--gray-500)">引くたびにぶれます。だから判定は計算値で見ています。</span>`;
+};
+
+
+
+up12();
+
+
+var CV = {
+ "e12a": [
+  [
+   "d",
+   "学くん、<b>問5</b> で ChatGPT の出口は何本だと言った？"
+  ],
+  [
+   "m",
+   "5万本。5万語ぶんの線。……あれ、でも僕が作ったのは <b>3本</b>だったよね。"
+  ],
+  [
+   "d",
+   "そうだ。君が作ったのは3本だ。<b>5万本は、これから見る話</b>だよ。"
+  ],
+  [
+   "m",
+   "……でも博士、その<b>5万</b>って何。日本語の辞書に載ってる言葉ぜんぶ、ってこと？"
+  ],
+  [
+   "d",
+   "ちがう。辞書ではない。LLM は文章を、あらかじめ決めた<b>部品の一覧</b>に切って読む。その一覧が5万個だ。見てごらん。"
+  ],
+  [
+   "f",
+   "<div class='ft'>「5万語」とは ── 辞書ではなく、決められた「部品の一覧」</div><div class='fn'>LLM は文章を<b>部品に切って</b>読みます。部品の一覧の大きさは、モデルによって決まっています。</div><table><tr><th>モデル</th><th>部品の一覧の大きさ</th></tr><tr><td>このゲームが言っている「5万語」</td><td><b>5万個</b>（GPT-2 の値）</td></tr><tr><td>いまの ChatGPT（GPT-4）</td><td><b>約10万個</b></td></tr></table><div class='fn' style='margin-top:.6rem'><b>部品に切ると 短くなります</b>（切れ目はモデルごとに違うので、考え方を示した作り例です）</div><div class='sm2' style='margin-top:.4rem'>日本の首都は東京です。　<span style='color:var(--gray-500)'>10文字</span><br>↓<br>日本 ／ の ／ 首都 ／ は ／ <b>東京</b> ／ です ／ 。　<span style='color:var(--gray-500)'>7個</span><br><span style='color:var(--gray-500)'>「東京」は2文字ですが、よく出てくるので <b>1個</b>です。よく出るかたまりを1個にまとめてあるので、10文字が7個で済みます。</span></div><div class='fn' style='margin-top:.6rem'>ひらがな・カタカナ・漢字・数字・記号は <b>1字ずつ</b> 一覧に入っています。<span style='color:var(--gray-500)'>だから一覧に無いかたまりが来ても、1字ずつに落とせば必ず書けます。</span></div><div class='fn' style='margin-top:.6rem'><b>5万個は多いのか ── 日本語の数と比べます</b></div><div class='rw'><span class='nmx'>小学校の漢字</span><span class='tk'><span class='fl2' style='width:0.4%'></span></span><span class='pc2'>1,026字</span></div><div class='rw'><span class='nmx'>常用漢字</span><span class='tk'><span class='fl2' style='width:0.9%'></span></span><span class='pc2'>2,136字</span></div><div class='rw'><span class='nmx'>LLM の部品</span><span class='tk'><span class='fl2 k' style='width:20%'></span></span><span class='pc2'>5万個</span></div><div class='rw'><span class='nmx'>広辞苑の項目</span><span class='tk'><span class='fl2 g' style='width:100%'></span></span><span class='pc2'>約25万語</span></div><div class='fn'>5万は辞典より少ないのです。広辞苑の 5分の1 しかありません。だから言葉をそのまま登録する方式は、最初から無理でした ── 人の名前も、新しい言葉も、打ち間違いも、辞典には載っていません。</div><div class='fn'>そこで言葉を登録するのをやめて、部品を登録しました。これは <b>漢字を 2,136字 覚えれば、辞典の 25万語が読める</b>のと同じ関係です。5万個で世の中の言葉を網羅しているのではなく、組み合わせて表しています。</div><div class='fn'>そして LLM が見ているのは<b>部品の並び</b>で、文字ではありません。だから単語を逆から言わせるのは苦手です。<span style='color:var(--gray-500)'>いまの製品は電卓やプログラムを呼んで補うので、普段は間違えません。これは中の仕組みの話です。</span></div>"
+  ],
+  [
+   "m",
+   "じゃあ「次の1語を選ぶ」って、<b>5万個の部品から1個 選ぶ</b>ってことか。"
+  ],
+  [
+   "d",
+   "そのとおりだ！ ……ところで学くん。その関数をうんと大きくしたものが <b>LLM</b>（大規模言語モデル）だ。ChatGPT のように文章を作って返す道具を <b>生成AI</b> と呼ぶが、その中で文章を作っているのが こいつだよ。"
+  ],
+  [
+   "m",
+   "第1章や 第2章でやったのとは、別の技術なの？"
+  ],
+  [
+   "d",
+   "別ではない。同じ関数の中の話だ。見てごらん。"
+  ],
+  [
+   "d",
+   "さて。その5万個の出口から、<b>次の1語をどうやって選ぶ</b>？"
+  ],
+  [
+   "m",
+   "……いちばん確率が高いやつ？"
+  ],
+  [
+   "d",
+   "それも手だ。だが LLM は<b>確率でくじを引いている</b>。引いた語をうしろに足して、また引く。それだけだ。"
+  ],
+  [
+   "m",
+   "くじ？ じゃあ毎回ちがう答えになるの？"
+  ],
+  [
+   "d",
+   "なる。……だから<b>おかしなことが起きる</b>よ。下のつまみを回してごらん。<b>温度</b>という名前だ。"
+  ]
+ ],
+ "e12b": [
+  [
+   "m",
+   "温度を下げたら10回とも正解になったよ。じゃあ下げればいいじゃん。"
+  ],
+  [
+   "d",
+   "下げてごらん。……<b>0.20</b> ではどうなった？"
+  ],
+  [
+   "m",
+   "正しさは <b>10.0</b>。……あ、<b>ばらけが 1.0</b> だ。"
+  ],
+  [
+   "d",
+   "そこだ！ 言い方が1つしか出てこない。逆に <b>1.00</b> まで上げると ばらけは <b>5.3</b>、だが正しさは <b>5.1</b> に落ちるよ。"
+  ],
+  [
+   "m",
+   "なんで両方いっぺんに良くならないの？"
+  ],
+  [
+   "d",
+   "温度がやっていることは<b>1つだけ</b>だ。<b>1位に集めるか、みんなに散らすか。</b>見てごらん。"
+  ],
+  [
+   "f",
+   "<div class='ft'>温度がやっていること ── 1位に集めるか、みんなに散らすか</div><div class='fn'>上の表の <b>1語目で「東京」が出る割合</b>を、3つの温度で並べたものです（表のいちばん上の数字と同じもの）。</div><div class='fn' style='margin-top:.6rem'><b>温度 0.20</b>　下げきったとき</div><div class='rw'><span class='nmx'>東京</span><span class='tk'><span class='fl2 k' style='width:100%'></span></span><span class='pc2'>1.000</span></div><div class='rw'><span class='nmx'>それ以外 5語</span><span class='tk'><span class='fl2' style='width:0%'></span></span><span class='pc2'>0.000</span></div><div class='fn' style='margin-top:.6rem'><b>温度 0.65</b>　まん中</div><div class='rw'><span class='nmx'>東京</span><span class='tk'><span class='fl2 k' style='width:91.3%'></span></span><span class='pc2'>0.913</span></div><div class='rw'><span class='nmx'>それ以外 5語</span><span class='tk'><span class='fl2' style='width:8.7%'></span></span><span class='pc2'>0.087</span></div><div class='fn' style='margin-top:.6rem'><b>温度 1.00</b>　上げたとき</div><div class='rw'><span class='nmx'>東京</span><span class='tk'><span class='fl2 k' style='width:73.6%'></span></span><span class='pc2'>0.736</span></div><div class='rw'><span class='nmx'>それ以外 5語</span><span class='tk'><span class='fl2' style='width:26.4%'></span></span><span class='pc2'>0.264</span></div><div class='fn'>どの温度でも <b>2本を足すと 1.000</b> です。温度は「1位にどれだけ集めるか」だけを動かしています。</div><div class='fn'>だから <b>正しさ</b>（目標の文が出る回数）は下げるほど上がり、<b>ばらけ</b>（出てくる文の種類）は上げるほど増える ── <b>必ず反対に動きます。</b>片方だけ良くする温度はありません。</div>"
+  ],
+  [
+   "m",
+   "<b>引っぱり合ってる</b>んだ。……両方まんなかにすればいいの？"
+  ],
+  [
+   "d",
+   "<b>全部 試した。</b>両方の目標に届く温度は<b>1つだけ</b>だよ。探してごらん。"
+  ]
+ ],
+ "e12z": [
+  [
+   "m",
+   "<b>0.65</b>。……両方 届いた！"
+  ],
+  [
+   "d",
+   "見つけたな！ <b>確率で1語引いて、うしろに足して、また引く。これだけだ。</b>"
+  ],
+  [
+   "m",
+   "下げると同じ文、上げると散る。"
+  ],
+  [
+   "d",
+   "そのとおり。……ではな、学くん。<b>その1語を決めるとき、前のどの語を見ていた</b>？"
+  ],
+  [
+   "m",
+   "え。"
+  ],
+  [
+   "d",
+   "そこが次の問だ。"
+  ]
+ ]
+};
+drawCV(CV);
+})();
+</script>
+</body>
+</html>
