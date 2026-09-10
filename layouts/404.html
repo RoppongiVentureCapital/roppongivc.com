@@ -1,0 +1,22 @@
+{{/* ★2026-09-10 新設。サイトに404のテンプレートが1枚も無く、GitHub Pages の素の英語画面
+     （<title>Page not found · GitHub Pages</title>）が出ていたため作った。
+     ★GitHub Pages は、存在しないパスに対して常にサイト直下の /404.html を返す。
+     ★英語版が無いページ（記事・Deep Black Box）の English を押したときにここへ来るので、
+       日本語と英語の両方を書いてある。
+     ★既存のCSSクラス（.hero / .eyebrow / .col-body）だけを使い、style.css には1行も足していない。 */}}
+{{ define "main" }}
+<section class="hero">
+  <p class="eyebrow">404</p>
+  <h1>このページはありません。</h1>
+  <div class="col-body" style="margin-top:2rem;max-width:34em">
+    <p>お探しのページは、移動したか、削除された可能性があります。英語版を用意していないページもあります。</p>
+    <p style="color:var(--gray-600)">The page you are looking for was not found. Some pages are available in Japanese only.</p>
+  </div>
+  <div class="col-body" style="margin-top:2.5rem;display:flex;flex-wrap:wrap;gap:0 1.75rem">
+    <a href="{{ "" | relURL }}" style="font-family:var(--sans);font-size:15px;font-weight:500;text-decoration:underline;text-underline-offset:3px">トップへ戻る →</a>
+    <a href="{{ "agora/" | relURL }}" style="font-family:var(--sans);font-size:15px;font-weight:500;text-decoration:underline;text-underline-offset:3px">Agora →</a>
+    <a href="{{ "deep-black-box/" | relURL }}" style="font-family:var(--sans);font-size:15px;font-weight:500;text-decoration:underline;text-underline-offset:3px">Deep Black Box →</a>
+    <a href="{{ "jiwa/" | relURL }}" style="font-family:var(--sans);font-size:15px;font-weight:500;text-decoration:underline;text-underline-offset:3px">Media →</a>
+  </div>
+</section>
+{{ end }}
