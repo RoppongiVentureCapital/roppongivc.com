@@ -356,7 +356,7 @@ function drawChap(q, intro) {
        ★検索する側にも Agora と同じ話題のかたまりだと示せるため。
    ★★旧URLは Hugo の aliases で【転送されます】── ★山井さん・飯塚さんに配ったURLは生きます。
    ⚠️★★★ここを直しても【本番には出ません】── ★A105 で同期し、★push しないと反映されません */
-var SITE = { ver: 'v1.0', date: '2026-09-10',
+var SITE = { ver: 'v1.0', date: '2026-09-11',
              /* 🔴🔴🔴🔴 2026-09-10 22:3x 記録担当：★★★★date は【最終更新日】として扱います。
                 ★★★決めた理由（★公開準備セッションに2案を出されて選びました）──
                   ⒜ 公開日で固定する → ★却下。★山田様が「公開後も更新していく」とおっしゃっているので
@@ -1191,7 +1191,27 @@ drawTop();
   bar.querySelector('.closebtn').onclick = function () { setOpen(false); };
 
   var dragging = false;
-  bar.addEventListener('touchstart', function (e) { dragging = true; e.preventDefault(); }, { passive: false });
+  /* 🔴🔴🔴🔴 2026-09-11：★★★★指で「閉じる」が押せない不具合を直しました（★山田様のご報告）
+     ★山田様「iphone、アンドロイド、safari、LINE、の環境で閉じる押しても消えない。★少なくとも二人そうなってる」
+     ★★★原因 ── ★「閉じる」ボタンは【この帯（bar）の中】にあります（★上の bar.innerHTML）。
+       ★指で触ると touchstart がボタンから帯へ伝わり、★ここで e.preventDefault() が走ります。
+       ★★touchstart で preventDefault すると、★ブラウザは【そのあとの click を作りません】
+         （★タッチイベントの決まり。★指の操作からマウス操作を真似て作る流れごと止まります）。
+       ★★★閉じる処理は【onclick にだけ】付いているので（★すぐ上の行）、★永久に呼ばれませんでした。
+     ★★なぜ手元で気づけなかったか ── ★マウスは mousedown を通り、
+       ★★【mousedown の preventDefault は click を止めません】。★だからPCでは必ず閉じられます。
+       ★分割ボタンは幅700px以下でしか出ないので、★PCの窓を細くして確認していました。
+       ★★★見た目はスマホと同じでも【押しているのはマウス】なので、★この穴は手元では出ません。
+     ★★もう1つの症状 ── ★dragging も立てていたので、★閉じるを押した指がわずかに動くと
+       ★境目が指の位置へ動いていました（★「押したのに消えず配分が変わる」）。
+     → ★★★閉じるボタンの上では【何もしない】。★これで click が復活し、★マウスと同じ道を通ります。
+     ⚠️★★帯（grip）を掴んで動かす操作は【そのまま効きます】── ★除けるのはボタンの上だけです。
+     ⚠️★★★これは共有ファイルなので【分割が入っている16問すべて】に効きます
+       （★q02 q04 q06〜q18 q21。★q19・q20 は分割を外したので対象外。★q01・q03・q05 も対象外） */
+  bar.addEventListener('touchstart', function (e) {
+    if (e.target && e.target.closest && e.target.closest('.closebtn')) return;
+    dragging = true; e.preventDefault();
+  }, { passive: false });
   bar.addEventListener('mousedown', function (e) { dragging = true; e.preventDefault(); });
   function move(e) {
     if (!dragging) return;
