@@ -26,6 +26,37 @@
   {{ end }}
   <div class="content">{{ .Content }}</div>
   <script>document.querySelectorAll('.blog-single .content a[href^="http"]').forEach(a=>{a.target='_blank';a.rel='noopener'})</script>
+  {{/* 🔴🔴🔴🔴 2026-09-12 記録担当：★★★★日本語版 single.html の「あわせて読む」の英語版。
+       ⚠️★★★2026-09-12 の夕方まで【入れ忘れていた】── ★日本語側で足したとき、
+         ★.en.html が別ファイルであることを見落とした。
+       ★★★向きは【JIWA → Agora の一方通行】── ★Agora記事からJIWAへは足さない
+         （山田様のご判断「AgoraからJIWAには行かせたくない」）。
+       ⚠️★ゲームのカードは /en/deep-black-box/ を指す ── ★英語版ゲームは作成中。 */}}
+  <h2 style="font-family:var(--sans);font-size:15px;font-weight:600;letter-spacing:0.02em;color:var(--black);margin:4rem 0 1.25rem">You may also like</h2>
+  <div class="articles-grid" style="margin-top:0">
+    <div class="article-item">
+      <a href="/en/agora/ai-olympiad-record/">
+        <img class="article-item-img" src="{{ "img/agora/r1/thumb-r1-article.jpg" | relURL }}" alt="">
+        <div class="article-item-body">
+          <div class="article-pillar" style="text-transform:none">Agora ｜ Session 1</div>
+          <h3 style="margin:0.75rem 0">A record of thinking with AI: an AI Olympiad medalist on growing more AI builders</h3>
+          <span class="blog-arrow">Read the record →</span>
+        </div>
+      </a>
+    </div>
+    <div class="article-item">
+      <a href="/en/deep-black-box/">
+        <img class="article-item-img" src="{{ "img/agora/r1/thumb-r1-game.svg" | relURL }}" alt="">
+        <div class="article-item-body">
+          <div class="article-pillar">Learning material</div>
+          <h3 style="margin:0.75rem 0">Deep Black Box ── open up the black box of AI one question at a time, with your own hands.</h3>
+          <p>21 questions ／ just open it in a browser</p>
+          <span class="blog-arrow">Try it →</span>
+        </div>
+      </a>
+    </div>
+  </div>
+
   <a href="{{ "en/jiwa/" | relURL }}" class="back">&larr; Back to JIWA</a>
 </article>
 {{ end }}
