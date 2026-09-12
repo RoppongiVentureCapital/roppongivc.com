@@ -1,0 +1,2532 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<meta name="description" content="Insert one layer - Problem 9 of Deep Black Box. One layer plus a bend in each node, and the boundary starts to fold.">
+<meta property="og:title" content="Deep Black Box - Problem 9: one layer, and the middle can be fenced off (Chapter 2)">
+<meta property="og:description" content="Insert one layer - Problem 9.">
+<!-- 🔴🔴🔴🔴 2026-09-10 記録担当：★★★★共有したときの画像（★公開準備セッションの指示）。
+     ★★この2行は【23ページとも入っていませんでした】（★実測0件）。
+     ★★★入れる値は先方が確定させたものです ──
+       roppongivc.com/static/img/agora/r1/og-r1-game.jpg（★59KB。★案A＝白地・エンブレム左）。
+     ★★記事用（og-r1-article.jpg）とは【別のファイル】です。★記事側のものは触っていません。
+     ★値は絶対URLです（★OGP の決まり。★href の絶対パス禁止とは別の話です） -->
+<meta property="og:image" content="https://www.roppongivc.com/en/deep-black-box/og-deep-black-box-en.jpg">
+<meta name="twitter:image" content="https://www.roppongivc.com/en/deep-black-box/og-deep-black-box-en.jpg">
+<!-- 🔴🔴🔴🔴 2026-09-10 21:4x 記録担当：★★★★X（Twitter）で大きい絵にする1行（★公開準備セッションの依頼）。
+     ★★★og:image を入れても、★この1行が無いと【小さいカード】になります。
+     ★記事側は全13ページを summary → summary_large_image にしたとのことです（★先方の実測）。
+     ★★ゲーム23ページは【0件】でした -->
+<meta name="twitter:card" content="summary_large_image">
+<!-- 🔴🔴🔴🔴 2026-09-10 22:3x 記録担当：★★★★ブラウザのタブに出る絵（★公開準備セッションの依頼）。
+     ★★実測 ── ★23ページとも【0件】でした（★タブに絵が出ていませんでした）。
+     ★★★実体はサイト側にあり、★本番で全部 引けます（★新しく作っていません）──
+       /favicon.svg 200・53KB ／ /favicon.ico 200 ／ /favicon-192.png 200・8KB
+     ⚠️★★/apple-touch-icon.png は【404】なので使いません。★favicon-192.png を指しています
+       （★サイト側 baseof.html と同じ扱いです）。
+     ⚠️★★★絶対URLです ── ★このゲームは /deep-black-box/ の下にあるので、
+       ★相対だと /deep-black-box/favicon.svg を探して【外します】。
+       ★「絶対パスを書かない」（★同じ場所の中を指すときの決まり）とは別の話です -->
+<link rel="icon" href="https://www.roppongivc.com/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="https://www.roppongivc.com/favicon.ico" sizes="32x32">
+<link rel="icon" href="https://www.roppongivc.com/favicon-192.png" type="image/png" sizes="192x192">
+<link rel="apple-touch-icon" href="https://www.roppongivc.com/favicon-192.png">
+<title>Deep Black Box - Problem 9: one layer, and the middle can be fenced off (Chapter 2)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@300;400;600;700&family=Inter:wght@300;400;500;600;700&family=Noto+Serif+JP:wght@300;400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../deep-black-box/common.css">
+<style>
+/* ══════════════════════════════════════════════════════════════════════════
+   🔴 2026-09-02 1問1ページ担当：★この章だけの CSS
+     ★★原本 tsume-01-deep-dialog-v2.html の <style> をそのまま写し、★【戻さないこと】のフォント規則だけ落としました
+     ★落としたもの：.cap{font-size:12.5px;color:var(--gray-500);margin-bottom:.5rem;line-height:1.5}／.lead{font-size:16px;line-height:1.9;color:var(--gray-600);margin:0 0 1.1rem}／h2{font-family:var(--serif);font-size:1.45rem;font-weight:300;line-height:1.4;margin:0 0 1rem}／h3{font-size:16px;font-weight:600;margin:1.4rem 0 .6rem}／.dtab{width:100%;border-collapse:collapse;font-size:12.5px;margin:.9rem 0;  font-variant-numeric:tabular-nums}／.cl .bb{position:relative;min-width:0;padding:.65rem .95rem;font-size:15px;line-height:1.9;   border:1px solid var(--gray-200);border-radius:.85rem;background:var(--white);color:var(--gray-600)}／.cl .bb{font-size:14.5px;padding:.55rem .75rem;line-height:1.8}
+   ★.offpage ── ★★この章の【他の問のカード】を DOM に置いたまま隠す枠。
+     ★理由：ゲーム本体の JS（起動・つまみの bind）を1バイトも触らないため。
+       ★$('…') が null にならないので、原本と同じコードがそのまま動きます
+   ══════════════════════════════════════════════════════════════════════════ */
+.offpage{display:none}
+:root{
+ --bg:#fff; --white:#fff; --black:#000;
+ --gray-100:#f9f9f9; --gray-200:#d9d9d9; --gray-500:#444; --gray-600:#2a2a2a;
+ --accent:#019949;
+ --sans:'Inter',system-ui,sans-serif;
+ --serif:'Source Serif 4','Noto Serif JP',Georgia,serif;
+ --content-w:52.625rem;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--black);font-family:var(--sans);
+ -webkit-font-smoothing:antialiased}
+.wrap{max-width:var(--content-w);margin:0 auto;padding:0 1.5rem 5rem}
+.top{border-bottom:1px solid var(--gray-200);margin-bottom:2.4rem}
+/* 🔴🔴🔴 2026-09-09 A：★★★この上書きを外した ── ★★これが【全部大文字】の正体だった
+     ★★★山田様「トップと他でフォント違うし全部大文字かどうかも違うし」（2026-09-09）
+   ★.top .in に text-transform:uppercase と letter-spacing:.14em が入っており、
+     ★★子の製品名とタグラインまで【大文字＋字間広め】に変えていた。
+   ★実測：★これがある18ページは uppercase ／ 無い5ページ（index・q15〜17・end）は none。
+     → ★★★同じ製品名が【大文字のページと そうでないページ】に分かれていた
+   ★common.css の .top .in（★大文字にしない）を効かせる */
+/* 🔴 2026-09-09 A：★★この上書きを外した ── ★common.css の
+     .top .in .tag（15.5px / #555 / 行間1.75 / サンセリフ）を効かせる。
+   ★★★これが後勝ちしていたので、★上のバーだけ 明朝 12.5px のままだった。
+     → ★山田様「トップと他でフォント違うし全部大文字かどうかも違うし」の原因のひとつ */
+.eyebrow{font-size:13px;font-weight:500;letter-spacing:.16em;text-transform:uppercase;
+ color:var(--gray-500);margin-bottom:.9rem}
+h1{font-family:var(--serif);font-size:2.1rem;font-weight:300;line-height:1.35;margin:0 0 .8rem}
+.lead b{color:var(--black)}
+.meta{font-size:13px;letter-spacing:.1em;color:var(--gray-500);padding-bottom:1.2rem;
+ border-bottom:1px solid var(--gray-200);margin-bottom:1.2rem}
+.steps{display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:2.4rem}
+.steps div{flex:1 1 5rem;padding:.55rem .3rem;text-align:center;font-size:12px;
+ border:1px solid var(--gray-200);color:var(--gray-500);background:var(--white)}
+.steps div.open{border-color:var(--black);color:var(--black)}
+.steps div.done{background:var(--black);border-color:var(--black);color:var(--white)}
+.card{border:1px solid var(--gray-200);padding:2rem;margin-bottom:2rem;background:var(--white)}
+.tagline{font-size:13px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;
+ color:var(--gray-500);margin-bottom:.9rem}
+.figbox{background:var(--gray-100);border:1px solid var(--gray-200);padding:1rem;margin:1.3rem 0}
+/* ★★図・つまみ・判定を1つの枠にまとめる（→00 の §2-2） */
+.panel{background:var(--gray-100);border:1px solid var(--gray-200);padding:1rem;margin:1.3rem 0}
+.panel .ctl{margin:.9rem 0 .2rem}
+.panel .togs{margin-top:.7rem}
+.panel .gauge{margin-top:.9rem}
+.panel .verdict{margin-top:.8rem;background:var(--white)}
+.two{display:flex;gap:1rem;flex-wrap:wrap}
+.two>div{flex:1 1 15rem;min-width:0}
+svg{display:block;width:100%;height:auto}
+
+/* ══════════════════════════════════════════════════════════
+   🔴🔴🔴 2026-08-29 山田様の FB：「スマホサイズだとつまみとグラフが同時に見れないから、
+     グラフを上に固定して下に別のが見えるようにした。PCサイズのが画面大きいとは言え
+     同じように固定しないと同時に見えないものがいっぱいあるんだ。
+     だからPCのほうもスマホと同様の処置をやってくれないか」
+   → ★★01 には .stick が【1つも無かった】。★★00 と同じ処置をどの幅でも入れる
+   ★★実測（貼り付けを入れる前。→検証ツール/00/A_vis_01_*.json）
+     問6  つまみを画面中央 → ゲージ e6 と判定文 j6 が【画面外】
+          ゲージを画面中央 → 図 fig6 と つまみ sl6 が【画面外】
+          ★★390px でも 1280px でも同じ。★図・つまみ・結果が同時に見えていなかった
+     問8  1280px で 散布図 bd8 が【52% しか見えない】
+   ★★上限高さ（max-height）が必要な理由 ── PC は本文幅 842px なので
+     viewBox 560×268 の図は 403px になる。★貼り付けると画面の 45% を占領して
+     ★下のつまみが押し出される。→ 42vh（900px なら 378px）で止める
+   ★★390px では図が 348px 幅しか無く 42vh（353px）に当たらないので、スマホは1px も変わらない
+   ★背景色は必須 ── ★敷かないと下から来た文字が図に【透けて重なる】
+   ★確認済み：.top は固定ヘッダではない ／ .card・.panel・body に overflow は無い
+     （★祖先に overflow があると sticky は無効になる）
+   ══════════════════════════════════════════════════════════ */
+/* 🆕 V2 ★★sticky が貼り付く範囲を【この入れ物の中】に限る。
+   ★position:sticky は親の箱の外へは出られないので、入れ物を抜けたら剥がれる。
+   ★これで 第2幕（機械ボタン・階段・表）を読むとき 動かす絵が上に居座らない。
+   ★overflow は【付けない】── ★祖先に overflow があると sticky そのものが無効になる */
+.stickwrap{position:relative}
+.stick{position:sticky;top:0;z-index:5;background:var(--gray-100);
+       padding-bottom:.35rem;box-shadow:0 6px 8px -6px rgba(0,0,0,.18)}
+/* 🔴🔴🔴 2026-09-09 図の担当：★★★この規則を消しました ── ★死んでいた上に vh でした
+   ★実測：★このページに class="stick" の要素は【0件】です（★貼り付きは #q9wrap > .panel が担当）。
+   ★★vh は使いません（★ツールバーの出入りで高さが変わる）。★→ 決定「vh を外す」 */
+/* 🆕🆕🆕 2026-08-31 01v2：★★問9 は【枠そのものを 貼り付ける】。
+   ★★山田様「つまみの図が同時に見えるための位置固定が今一瞬でとけるから、
+     もっと下の方まで、同時に見せるべきところまでちゃんと固定するようにしてよ」
+   ★★理由：position:sticky は【親の箱の外へ出られない】。
+     ★もとは .stick が .panel の中にあったので、panel の高さぶん（＝すぐ）で剥がれていた
+   → ✅ .panel 自体を sticky にし、その入れ物（#q9wrap）を
+      【説明の図が終わるところまで】広げた。★これで 図を読みながら つまみを押せる
+   ★中身：境目のグラフ（bd9）＋ つまみの中身（net9）＋ ボタン ＋ 判定文 ── 全部 一緒に貼り付く
+   ★1280px は【横並び】／390px は【縦積み】（★横に割ると 文字が 4.1px になって読めない） */
+#q9wrap{position:relative}
+#q9wrap > .panel{position:sticky;top:0;z-index:5;
+  box-shadow:0 8px 10px -8px rgba(0,0,0,.22)}
+/* 🔴 2026-09-09 図の担当：★当たりの数・棒・目標（★SVG から HTML に出したもの）
+   ★大きさは common.css の物差しに合わせる（★数字は .gauge の .big と同じ 26px） */
+.bdhead{display:flex;align-items:baseline;gap:.5rem;flex-wrap:wrap;margin:0 0 .35rem}
+.bdhead .lb{font-size:13px;color:var(--gray-500)}
+.bdhead .big{font-size:26px;font-weight:600;font-family:'Source Serif 4',serif;line-height:1.1}
+.bdhead .big.ok{color:#019949}
+.bdhead .tr{flex:1 1 120px;min-width:110px;height:9px;background:#e9e9e9;position:relative}
+.bdhead .fl{position:absolute;left:0;top:0;bottom:0;background:#c00}
+.bdhead .fl.ok{background:#019949}
+.bdhead .mk{position:absolute;top:-3px;width:2px;height:15px;background:#111}
+.bdhead .rt{font-size:13px;color:var(--gray-500)}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   🔴🔴🔴🔴 2026-09-10 記録担当（3代目）：★★★★分割中だけ 詰める（★ニューラルネットの図を
+     上の枠に入れるための場所づくり）
+   ★★★山田様のご指摘（2026-09-10 14:4x）──
+     「今二分割したら上半分にニューラルネットのやつが入らないから外してるんだな？
+       ★今結構その状態でスペース余裕あるぞ」
+     「★0人のうち 当たり 23／目標 38人／0 歩／●の中の 折り曲げ方／つまみ 13 個／0 歩
+       ★★ここらへんの字デカくね？ これを読める最小くらい、もう少し小さくして詰めて、
+       ★★★なんとかニューラルネット入れろよ。もう文字だいぶ小さくてもいいからさ」
+   ★★実測した内わけ（★390×664・分割中。★直す前）──
+     上の枠 465px ＝ 図の行198（見出し16＋図179）＋ つまみの枠169 ＋ 余白98
+     ★つまみの枠169 の中 ── 当たりの数57 ／ ボタン2段 62＋35 ／ すき間15
+     ★★ニューラルネットの図は 366×152px 必要で、そのまま入れると溢れます。
+   ★★★どこを削ったか（★全部 分割中だけ。★公開版の見た目は変わりません）──
+     ⒜ 当たりの数の「23」を 26px → 20px（★棒も 9px → 7px）
+     ⒝ ボタンの行の文字を 13px → 11.5px、★ボタンの余白と すき間を詰める
+     ⒞ 上下のすき間を詰める（★合計 約30px → 約12px）
+     ⒟ ★ニューラルネットの図に 上限 112px を与える（★横は自動で決まります）
+   ⚠️★★common.css より【後ろ】に書いています。★同じ強さなら後勝ちします（→ 引き継ぎ書 §4⑹）
+   ══════════════════════════════════════════════════════════════════════════ */
+.split-on .splittop .bdhead{gap:.35rem;margin:0 0 .15rem}
+.split-on .splittop .bdhead .lb,
+.split-on .splittop .bdhead .rt{font-size:11.5px}
+.split-on .splittop .bdhead .big{font-size:20px}
+.split-on .splittop .bdhead .tr{height:7px;flex:1 1 90px;min-width:80px}
+.split-on .splittop .bdhead .mk{top:-2px;height:11px}
+.split-on .splittop .panel .togs{margin-top:.2rem;gap:.3rem}
+.split-on .splittop .panel .togs span{font-size:11.5px}
+.split-on .splittop .panel .togs .btn{padding:.3rem .6rem;font-size:11.5px}
+.split-on .splittop .panel{padding:.45rem .5rem}
+/* ★★ニューラルネットの図 ── ★上の枠に入れるための上限。
+   ★★★layout() が高さを入れるのは【row に入れた図（bd9）だけ】なので、
+     ★この図は CSS で決めます（★row の外＝つまみの枠の中に残っています） */
+.split-on .splittop #net9{max-height:112px;margin:.1rem 0 0}
+.split-on .splittop .figrow{gap:.2rem;margin:.1rem 0 0}
+#c9 .figrow{display:flex;gap:.5rem;align-items:flex-start;justify-content:center}
+#c9 .figrow > svg{margin:0}
+/* 🔴 2026-09-09 図の担当：★max-height:38vh を外した（★vh 禁止）。
+   ★★文字の大きさは bdDraw / net9 が【描画幅から逆算】して決めるので、
+     ★高さで縛る必要がありません（★縛ると幅まで連れて縮み、文字が小さくなります） */
+#c9 .figrow > #bd9{width:36%;height:auto}
+#c9 .figrow > #net9{width:62%;height:auto}
+/* 🆕🆕🆕 2026-09-01 01v2：★★問10 も【問9 と同じ形】にした ──
+   ★左＝境目のグラフ（bd9b）／右＝3層の●と線（gr10）を横並びにし、枠ごと貼り付ける。
+   ★★山田様「いいものを消すなよ。うまいこと 9、10番に入れろよ」
+   ★問9 の #q9wrap と同じ仕掛け（★position:sticky は 親の箱の外へ出られない） */
+#c9b .figrow{display:flex;gap:.5rem;align-items:flex-start;justify-content:center}
+#c9b .figrow > svg{margin:0}
+#c9b .figrow > #bd9b{width:36%;height:auto}
+#c9b .figrow > #gr10{width:62%;height:auto}
+#q10wrap{position:relative}
+#q10wrap > .panel{position:sticky;top:0;z-index:5;
+  box-shadow:0 8px 10px -8px rgba(0,0,0,.22)}
+/* 🔴🔴🔴 2026-08-29 A（#25・第5版）② ★★問6 の「ずれ」は fig6 の【中】に埋め込んだ。
+   ★読者テスト「いちばん上のズレがいくつってやつが小さく潰されすぎてほぼ全く見えない」
+   ★★数字だけ大きくする。★@media の `#fig6 text{font-size:17px}` より詳細度が高いので
+     ★両方の幅で この指定が勝つ（★#fig6 + text + .big6 ＞ #fig6 + text）
+   ★★第4版の .stickbot / .grp6 / .sub6 は【外した】（★静止画がつまみより前に来たので不要） */
+#fig6 text.big6,#fig7 text.big6{font-size:26px;font-weight:600;font-family:var(--serif)}
+#fig6 text.lim6,#fig7 text.lim6{font-size:13px}
+/* 🔴 2026-08-29 A（#25）★#ov10 は @media で 17px に上がるので、数字だけ勝たせる */
+#ov10 text.num6{font-size:26px}
+/* 🔴🔴🔴 2026-08-29【訂正・A の自己申告】★★一度 34vh に下げたが【42vh に戻した】。
+   ★下げた理由は「1280px で 01 の問6 の判定文が同時に入らない」という実測だったが、
+     ★★それは【走査の刻みが 40px で粗く、入る位置を飛ばしていた】ための誤判定だった。
+   ★刻みを 12px にして測り直すと、42vh でも 00 の6か所・01 の5か所すべてで
+     ★「図100% ＋ つまみ・結果すべて見えて押せる位置がある」（★両幅）
+   ★★教訓：スクロール位置を刻んで測る検査は、刻みが粗いと【偽の不合格】を出す。
+     ★A はこれで PC の図を不必要に小さくしかけた（→ 規則案㉔ の同型） */
+/* 🔴🔴 2026-08-29：★★棒の図は PC で全幅（842px）に伸ばさない。
+   ★実測：棒だけの図は PC で全幅（842px）に伸びると高さが 300px を超え、枠が膨らむ
+   🔴 2026-08-29 第2版：★#eff6 と #res6fig は【削除した】ので指定から外した
+   ★420px で止めると高さ 168px。★390px では使える幅が 348px なのでスマホは1px も変わらない
+   ★#fig6 は主役なので対象にしない（★.stick 側の max-height で効いている） */
+#stair6{max-width:440px;margin:0 auto}
+.ctl{margin:1.1rem 0 .2rem}
+.ctl label{display:flex;justify-content:space-between;align-items:baseline;font-size:14px;
+ margin-bottom:.35rem;gap:1rem}
+.ctl label span.n{font-weight:600;font-variant-numeric:tabular-nums;white-space:nowrap}
+.togs{display:flex;gap:.6rem;flex-wrap:wrap;margin-top:1.1rem;align-items:center}
+.btn{background:none;border:1px solid var(--gray-200);padding:.6rem 1.15rem;font-size:14px;
+ font-family:var(--sans);color:var(--black);cursor:pointer;transition:all .15s}
+.btn:hover{border-color:var(--black);background:var(--gray-100)}
+.btn.on{background:var(--black);color:var(--white);border-color:var(--black)}
+.btn.go{background:var(--black);color:var(--white);border-color:var(--black)}
+.btn.sm{font-size:13px;padding:.45rem .85rem;color:var(--gray-500)}
+.btn:disabled{opacity:.35;cursor:default}
+.gauge{margin:1.2rem 0 0}
+.gauge .row{display:flex;align-items:baseline;gap:.7rem;margin-bottom:.5rem}
+.gauge .u{font-size:14px;color:var(--gray-500)}
+.gtrack{height:10px;background:#e9e9e9;position:relative;overflow:hidden}
+.gfill{display:block;height:100%;background:#c00;transition:width .12s linear}
+.gfill.ok{background:var(--accent)}
+.gmark{position:absolute;top:-3px;bottom:-3px;width:2px;background:#000}
+.gcap{display:flex;justify-content:space-between;font-size:12px;color:var(--gray-500);
+ margin-top:.35rem}
+.read{font-size:15px;line-height:1.8;margin:.9rem 0 0;font-variant-numeric:tabular-nums}
+.big{font-family:var(--serif);font-size:2rem;font-weight:400;font-variant-numeric:tabular-nums;
+ line-height:1}
+.calc{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13.5px;line-height:2;
+ background:var(--white);border:1px solid var(--gray-200);padding:.9rem 1.1rem;margin:.9rem 0;
+ overflow-x:auto;white-space:pre}
+.verdict{margin-top:1.2rem;padding:.9rem 1.1rem;border:1px solid var(--gray-200);font-size:14px;
+ line-height:1.75;background:var(--gray-100)}
+.verdict.ok{border-color:var(--accent);background:#f2fbf6}
+.verdict.stuck{border-color:#c00;background:#fdf4f4}
+.next{margin-top:1rem;font-size:13px;color:var(--gray-500)}
+.src{border-left:2px solid var(--black);padding:.9rem 0 .9rem 1.1rem;margin:1.4rem 0;
+ font-size:14px;line-height:1.85;color:var(--gray-600)}
+.src .h{font-size:12px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;
+ color:var(--black);margin-bottom:.4rem}
+.src .ref{font-size:13px;color:var(--gray-500);margin-top:.4rem;display:block}
+.box{border:1px solid var(--gray-200);padding:1.1rem 1.3rem;margin:1.3rem 0;background:var(--gray-100)}
+.box .h{font-size:12px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;
+ margin-bottom:.5rem}
+.mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+td.mono{word-break:break-word;line-height:1.7}
+.sc-row{display:flex;align-items:center;gap:.75rem;margin-bottom:.6rem}
+.sc-label{width:5.4rem;font-size:14px;text-align:right;flex-shrink:0}
+.sc-track{flex:1;background:#e9e9e9;height:9px;position:relative}
+.sc-fill{display:block;height:100%;background:var(--black);transition:width .1s linear}
+.sc-fill.hit{background:var(--accent)}
+.sc-pct{width:3.4rem;font-size:14px;font-variant-numeric:tabular-nums}
+details{border-top:1px solid var(--gray-200);padding-top:1rem;margin-top:1.5rem}
+summary{font-size:14px;font-weight:500;cursor:pointer}
+.lg{font-size:14px;line-height:1.9;color:var(--gray-600);margin-top:.9rem}
+.lg table{width:100%;border-collapse:collapse;margin:.8rem 0;font-size:13px}
+.lg th,.lg td{padding:.45rem .6rem;border:1px solid var(--gray-200);text-align:left}
+.lg th{background:var(--gray-100);font-weight:600}
+.dtab th,.dtab td{padding:.35rem .5rem;border:1px solid var(--gray-200);text-align:right}
+.dtab th{background:var(--gray-100);font-weight:600;font-size:11.5px}
+.dtab tr.sum td{background:#f2fbf6;border-top:2px solid var(--black)}
+/* 🔴🔴 2026-08-29 山田様の FB：問6 の式の表が読めない
+   → ★★原因：class="l"（左寄せの意図）に CSS が1行も無く、式が【右寄せ】になっていた。
+     ★3本の式の「点数 ＝」が縦にそろわないので、増えた項がどこか目で追えない */
+.dtab .l{text-align:left}
+.hide{display:none}
+.foot{border-top:1px solid var(--gray-200);margin-top:3rem;padding-top:1.5rem;font-size:13px;
+ color:var(--gray-500);line-height:1.8}
+.arrow{text-align:center;font-size:22px;color:var(--gray-500);margin:.5rem 0}
+/* ══════ 小さい画面では横の余白を削って図に幅を渡す（★00 と同じ） ══════ */
+@media (max-width:430px){
+  /* ★★枠（.panel）を 390×840 の1画面に収めるため、つまみの縦だけ詰める（→ 枠の上限） */
+  .panel .ctl{margin:.55rem 0 .1rem}
+  .panel .ctl label{margin-bottom:.15rem}
+  .wrap{padding-left:.5rem;padding-right:.5rem}
+  .card{padding-left:.75rem;padding-right:.75rem}
+  .figbox,.panel{padding-left:.5rem;padding-right:.5rem}
+  .top .in{padding-left:.5rem;padding-right:.5rem}
+  /* ★★560幅の図だけ文字を 17px に上げる（★根拠は 00 の @media のコメント）
+     ★17 × 0.589 ＝ 10.0px。★300幅の図（倍率1.1）は対象外
+     🔴 2026-08-29：★stair6・bars6 も 560幅なので足した。
+       ★座標は最初から font 17 前提で組んである（→作りの規則⑼）
+     🔴 2026-08-29 第2版：★res6fig と eff6 は【削除した】ので外した
+     🔴 2026-08-29 A（#25・第4版）④：★bars6 を【削除した】ので外した */
+  /* 🔴 2026-09-09 図の担当：★#net9 を この一覧から外した ── ★17px 固定では
+     ★実効 10.02px にしかならず 14px に届きません（★17 × 0.589）。
+     → ★net9() が【描画幅から逆算】して決めます */
+  #fig6 text,#fig7 text,#p7 text,
+  #stair6 text,#st6a text,#st6b text,#st6c text,
+  #ov10 text,#ep11 text{font-size:17px}
+  /* 🔴🔴🔴 2026-08-29 A（#25・第5版）②：★★SVG の font-size は【viewBox の単位】なので、
+     ★390px では 実効が 0.621倍になる（★#24 の「17 × 0.589 ＝ 10.0px」と同じ話）。
+     ★★A の実測：26単位は PC で 32.2px だが 390px では 16.2px しかならなかった
+     → ★390px だけ 42単位（実効 26.1px）に上げる。★これで「潰されて見えない」が消える */
+  #fig6 text.big6{font-size:42px}
+  #fig6 text.lim6{font-size:20px}
+  #fig7 text.big6{font-size:42px}
+  #fig7 text.lim6{font-size:20px}
+  #ov10 text.num6{font-size:30px}
+  /* 🆕 2026-08-30 F：会話（→ .cv）★スマホは顔を小さくして横幅を吹き出しに回す */
+  /* 🔴 2026-09-06：★スマホでアイコンを 38px に縮める指定を【消した】（★記事はスマホでも 46px）。
+     ★★この2行は、同じ <style> の後ろにある .cl .ic{46px} / .cl{gap:.75rem;margin:0 0 .85rem} に
+       ★同じ詳細度で【後勝ちされていて、すでに効いていませんでした】（★実測 ic 46px・gap 12px）。
+     → ★消しても見た目は1pxも動きません。★死んだ規則を残すと次の担当が誤読します */
+  /* 🔴 2026-09-02 1問1ページ担当：★A の【戻さないこと】に反するので外した ── .cl .bb{font-size:14.5px;padding:.55rem .75rem;line-height:1.8} */
+  .cast2{padding:.7rem .75rem}
+  .cast2 .ic{width:46px;height:46px}
+  .cast2 .row{gap:.6rem}
+  /* 🔴 2026-09-07 A：★.cast2 .tx2 の 13px/1.8 を外した ── ★これがスマホで
+     ★★登場人物の紹介が 13px のままだった原因（★common.css の 16.6px を後勝ちで潰していた）。
+     → ★山田様「記事と同じサイズって言っただろ」「行間も記事に合わせろよ」（2026-09-07） */
+  /* 🆕 2026-08-31 01v2：★390px は 横に割ると 文字が読めなくなるので【縦積み】に戻す
+     ★実測：横に割ると bd9 の 13単位が 4.1px になる（★7px未満）
+     ★★枠ごと貼り付けるので、2枚あわせて【画面の半分以内】に収める
+       （★でないと 下の説明が1行も見えない） */
+  #c9 .figrow{flex-direction:column;align-items:center}
+  /* 🔴🔴🔴🔴 2026-09-09 図の担当：★★★★ここが「文字が小さすぎる」の真の原因でした
+     ★★★山田様「文字が小さすぎて全然見えねえよ」（2026-09-09）
+     ★★前任は「図を横に2つ並べているのが原因」と書きましたが【誤りです】──
+       ★この @media の中に flex-direction:column があり、★390px では【既に縦積み】でした。
+     ★★★本当の原因は max-height の vh です。
+       ★preserveAspectRatio の指定が無いので既定の meet が効き、
+         ★★倍率は min(幅比, 高さ比) で決まります。
+       ★bd9（viewBox 300×392／390×664）── 幅比 0.94 ／【高さ比 0.51】← 小さい方が採用
+         → ★描画幅 300 × 0.51 ＝【152.5px】★実測 152.4px と一致します。
+       ★★つまり【高さ199pxに収めるために 幅まで連れて縮んで】いました。
+     → ★★★vh を外して幅いっぱいにします。★実効 6.61px → 14px 台になります */
+  #c9 .figrow > #bd9{width:100%;max-width:none;height:auto}
+  #c9 .figrow > #net9{width:100%;height:auto}
+  /* 🆕 2026-09-01 01v2：★問10 も同じ扱い（★横に割ると文字が 7px を割る） */
+  #c9b .figrow{flex-direction:column;align-items:center}
+  #c9b .figrow > #bd9b{width:100%;max-width:none;height:auto}
+  #c9b .figrow > #gr10{width:100%;height:auto}
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   🆕 2026-08-30 F【対話版】会話の見た目 ── ★00-dialog と同じ CSS（写し）
+   ★★ゲーム本体（つまみ・図・ゲージ・判定・数値）は1行も触っていない。
+     ★この CSS と末尾の IIFE を消せば、原本とまったく同じ挙動に戻る
+   ★色は【図のデータ色と衝突しないもの】だけ使う
+     01 の図が使う色  #019949 ／ #c00 ／ #2f6fb5 ／ #c26100 ／ #0b3d6b ／ #9dc3e6 ／ #9aa3a9
+     → ★学 #2f6fb5（★01 は睡眠の色に #2f6fb5 を使っているが、これは会話の枠の色で
+        図の中には1pxも描かない。★図と会話は場所が完全に分かれている）
+     → ★博士 #b0700c（★#c26100 とは別。★図に使われていない）
+   ★position:sticky を壊さないため、会話は .figbox stick / .panel の【外】にだけ置く
+   ══════════════════════════════════════════════════════════════════════════ */
+.cast2{border:1px solid var(--gray-200);background:var(--gray-100);
+  padding:1rem 1.1rem;margin:0 0 2.4rem}
+.cast2 .row{display:flex;gap:.9rem;align-items:flex-start}
+.cast2 .row+.row{margin-top:.9rem;padding-top:.9rem;border-top:1px solid var(--gray-200)}
+.cast2 .ic{width:54px;height:54px;border-radius:50%;flex-shrink:0;display:block;
+  border:2px solid var(--white);box-shadow:0 0 0 1px var(--gray-200),0 1px 3px rgba(0,0,0,.10)}
+.cast2 .nm2{display:block;font-size:18px;line-height:1.5;font-weight:700;margin-bottom:.2rem}
+.cast2 .rb{font-size:14px;font-weight:400;color:var(--gray-500);margin-left:.45rem}
+.cast2 .tx2{font-size:16.6px;line-height:1.831;color:var(--gray-600)}
+.cast2 .tx2 b{color:var(--black)}
+.cv{margin:1.6rem 0}
+.cl{display:flex;gap:.75rem;align-items:flex-start;margin:0 0 .85rem}
+.cl .ic{width:46px;height:46px;border-radius:50%;flex-shrink:0;display:block;
+  border:2px solid var(--white);box-shadow:0 0 0 1px var(--gray-200),0 1px 3px rgba(0,0,0,.10)}
+.cl .bb b{color:var(--black)}
+.cl .bb:before{content:'';position:absolute;left:-6px;top:15px;width:10px;height:10px;
+  background:inherit;border-left:1px solid;border-bottom:1px solid;border-color:inherit;
+  transform:rotate(45deg)}
+/* 🔴 2026-09-02 A：★★博士＝青／学＝オレンジ に入れ替えた（★アイコンの背景色に合わせた）
+   ★山田様「今フォントとか吹き出しが 博士がオレンジで学が青じゃん。画像はもとの
+     博士青、高校生オレンジでいいから、フォントの方を逆にしてよ」（2026-09-02）
+   ✗✗ 戻さないこと。★★common.css だけ直しても【各ページの style が後勝ちで効かない】 */
+.cl.m .bb{background:#fff7ea;border-color:#efd6a6}
+.cl.d .bb{background:#eef4fa;border-color:#c3d9ee}
+/* 🔴 2026-09-06：★font-size:11.5px を外した ── ★.cl .av .nm と同じ要素に当たり、
+   ★詳細度で負けていて【効いていなかった】（★実測 10.5px）。★話者名の大きさは common.css の
+   ★.cl .av .nm{font-size:14px} が持つ。★この規則は色と margin のためだけに残す */
+.cl .nm{display:block;font-weight:700;letter-spacing:.07em;margin-bottom:.15rem}
+.cl.m .nm{color:#b0700c}   /* 🔴 学 → オレンジ */
+.cl.d .nm{color:#2f6fb5}   /* 🔴 博士 → 青 */
+.keyh{font-size:11.5px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--gray-500);margin:1.6rem 0 .5rem}
+</style>
+</head>
+<body data-split="A2" data-top="q09top" data-talk="q09talk"
+      data-figs="bd9"
+      data-verdict="j9,net9c" data-ratio="0.70"
+      data-figcap="The boundary (circle = passed, cross = failed)">
+
+<div class="top"><div class="in">Deep Black Box<span class="tag">Open up the black box of AI one problem at a time, with your own hands. 21 problems in all.</span></div></div>
+<div class="wrap">
+
+<!-- 🔴 2026-09-02 1問1ページ担当：★進み具合の帯（全21問）＋いま何章か -->
+<div class="prog">
+ <div class="steps" id="steps"></div>
+ <div class="cnt" id="prog_cnt"></div>
+</div>
+<div class="chap" id="chap"></div>
+
+<!-- ══════════════════ c9 ══════════════════ -->
+<div class="card" id="c9">
+<div class="tagline">Question 9</div>
+<h2>One layer, and the middle can be fenced off</h2>
+<!-- 🔴🔴🔴 2026-08-29 A（#25）山田様の指示で作り直した（★DATA・passOf は触っていない）
+     ★★【1位】折り曲げ方に「なし」を足した。★層と折り曲げを【別々に】外せるようにした
+       ★実測（種101・幅3・1歩0.6）：折り曲げなしは 1層でも3層でも 30人。
+         ★★30,000歩まで回しても変わらない ＝ 層が1つも無いのと【完全に同じ】
+     ✗✗【戻さないこと】「段」「切り方」── ★「切り方」は何を切るのか分からない。
+       ★この問の題は「境目が折れる」なので【折り曲げ方】にした（ReLU＝折れ線・シグモイド＝曲線）
+     ✗✗【戻さないこと】.gauge の外枠は使わない。★当たりの数は境目の図の【中】に埋め込む
+     🔴 2026-08-29：★★枠の中身を「つまみ＋結果1つ」にした（→規則⑴）。
+       ★形の図（net9）は説明なので枠の【外】に出した -->
+<!-- 🆕 F：この lead は会話 e9a に移した（★目標の1行だけ残す） -->
+<div id="e9a"></div>
+
+<!-- ══════════════════════════════════════════════════════════════
+     🆕🆕🆕 2026-08-30 V2【新規・静止画①】層の作りと つまみの内わけ
+     ★★山田様「入口と出口のあいだに●をもう一列置くんだよ……下の絵を見てごらん。
+       ── 絵が遠すぎて見えない。かと言って近づけたら つまみのグラフと離れて
+          線が太くなっていくのが見えないし。……静止画で一旦近くに
+          ニューラルネットの絵入れればいいんじゃない？ 二つあってもいいでしょ」
+     → ✅ ここに【動かない絵】を置く。★線の太さは全部同じ（★重みの話はしない）
+        ★下のほうにある net9（つまみで太さが変わる絵）は そのまま残す
+     ══════════════════════════════════════════════════════════════ -->
+<div class="figbox">
+ <div class="cap" style="text-align:left;margin:0 0 .3rem"><b>This is what &ldquo;one layer inserted&rdquo; looks like</b></div>
+ <svg id="anat9" viewBox="0 0 560 235"></svg>
+ <div class="cap" id="anat9c" style="text-align:left;margin:.2rem 0 0"></div>
+ <!-- 🆕🆕🆕 2026-08-30 V2 第3稿【新規・図A】★★絵と同じものを【式】で書く。
+      ★★山田様「重みとバイアスってなんだ。y=ax+なんとかみたいな形でいうと
+        どれが重みでどれがバイアスかいえ」／「これらはさっきの数式でいうと
+        d1,d2,d3みたいな形で足し算がどんどん増えていくの？」→ ★★そのとおり。
+      ★★●1個につき 式1本。★まん中の●3個で3本、出口の●で4本目 ＝ 式4本
+        ★重みは 6＋3 ＝ 9個 ／ バイアスは d₁d₂d₃ ＋ d₄ ＝ 4個 → つまみ13個
+      ★重みを【緑】、バイアスを【橙】で色分けする（★↑印の位置合わせは 幅で崩れるので使わない）
+      ★勉強・睡眠は x₁・x₂ ＝【掛けられる側】。★つまみではないので 入口の●に点が付かない -->
+ <div id="eqs9" style="font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13.5px;
+  line-height:2.3;background:var(--white);border:1px solid var(--gray-200);
+  padding:.7rem 1rem;margin:.7rem 0 .3rem;overflow-x:auto"></div>
+ <div class="cap" id="eqs9c" style="text-align:left;margin:0"></div>
+</div>
+
+<div id="e9a2"></div>
+
+<p class="lead">Get <b>38 or more</b> of them right.</p>
+
+<!-- 🆕🆕🆕 2026-08-31 01v2：★★ここから【つまみの枠が貼り付く範囲】。
+     ★★山田様「もっと下の方まで、同時に見せるべきところまでちゃんと固定するように」
+     ★position:sticky は親の箱の外へ出られないので、★箱をここまで広げるのが唯一の手
+     ★閉じるのは 説明の図が終わったところ（★締めの会話 e9e の直前） -->
+<div id="q9wrap">
+
+<!-- 🔴🔴🔴🔴 2026-09-09 展開担当：★★★★上下2分割の【上の枠】
+     ★★★出所：山田様のご判断 ── ★「スマホでつまみが固定できず全然操作できない」を防ぐ。
+       ★貼り付き（sticky）は捨てました（★山田様「今だとカクカクして気持ち悪いやん」）。
+     ★★★決定1 ── 上に置く図は【1枚】。★bd9 を残し、★net9 は下の枠へ移します。
+       ★理由（実測）── ★2枚同時は算数として不可能です。
+         ★14px にするには高さ422px 必要ですが、分割中は119px（664）／182px（844）しかありません。
+     ★部品は common.css / common.js が持ちます（★このページに link も script も足しません）。 -->
+<div id="q09top">
+<div class="panel">
+ <!-- 🆕🆕 2026-08-31 01v2：★★この枠に入れるのは【図2枚 ＋ ボタン】だけにした。
+      ★★山田様「つまみのグラフが大きすぎて固定すると したがほとんど見えない」
+        「グラフ＋絵＋ボタンだけを貼り付け、判定文と説明文を外に出す」
+      → ★判定文（j9）と つまみの内わけ（net9c）は【枠の外】へ出した -->
+ <!-- 🔴🔴🔴🔴 2026-09-10 記録担当（3代目）：★★★★この説明文（2文）を【削除しました】。
+      ★山田様のご指摘（2026-09-10 14:4x）──
+        「今公開されてるものだとそれでもう縦全部締めて下が全く見えないけど、
+          ★『境目（○が合格・✕が不合格）と、いま合わせているつまみの中身。色の点線が…』
+          ★★これがなくて、あと全体的に小さくして詰めればスペースあくんじゃないの？」
+      ★★実測 ── ★分割中は既に見えていませんでした（★common.css が隠していた）。
+        ★★★ところが【分割の高さを計算するときには まだ見えている】ので、
+          ★図に回せる高さが【57px 少なく】見積もられていました。
+        → ★消すと 図に回る高さが増えます。★公開版（分割なし）では縦の占領も無くなります。
+      ★同じ中身は 下の枠の net9c と会話に残っています（★情報は失われません） -->
+ <!-- 🔴🔴🔴 2026-09-09 図の担当：★★★当たりの数・棒・目標を【SVG の外（HTML）】に出した
+      ★★出所：規則「文章・数字は SVG の中に入れない」
+      ★★★理由（実測）── ★SVG の中では 13単位＝6.61px にしかならず読めませんでした。
+        ★HTML なら 本文と同じ物差し（16.6px）で出せます。
+      ★★あわせて bd9 の viewBox を 0 0 300 392 → 0 104 300 288 にしました ──
+        ★見出し部（y 0〜103）が要らなくなったので、★その分を切り、
+        ★★図の縦を 431px → 317px に縮めました（★横幅は変えていません） -->
+ <div class="bdhead" id="bdh9"></div>
+ <div class="figrow"><svg id="bd9" viewBox="0 104 300 288"></svg><svg id="net9" viewBox="0 14 560 232"></svg></div>
+ <div class="togs" style="margin-top:.2rem">
+  <!-- 🆕🆕 2026-08-31 01v2：★★［折り曲げない］を消した。
+       ★★山田様「使わないなら入れるなよ。真っ直ぐを通すも意味不明なんだよ」
+       ★★もう1つの理由：★「折り曲げなし＝直線1本」は【問8 でもう見せている】。
+         ★同じ絵を2回 出していた（→§2-14 の型3）
+       ★★［3層］も 問9 から外した ── ★押すと 23人 に落ちて 問10 のネタが割れる。
+         ★3層は 問10 で 初めて出す -->
+  <span style="font-size:13px;color:var(--gray-500)">How each ● bends</span>
+  <button class="btn on" id="f9r">ReLU</button>
+  <button class="btn" id="f9s">Sigmoid</button>
+  <span style="font-size:13px;color:var(--gray-500);margin-left:.6rem"><b id="np9">13</b> knobs</span>
+ </div>
+ <div class="togs">
+  <button class="btn go" id="st9">One step</button>
+  <button class="btn" id="st9b">100 steps</button>
+  <button class="btn" id="st9e">1000 steps</button>
+  <button class="btn sm" id="rs9">Back to the start</button>
+  <span style="font-size:13px;color:var(--gray-500)"><b id="n9c">0</b> steps</span>
+ </div>
+</div>
+<!-- 🆕 2026-08-31 01v2：★★判定文と つまみの内わけは【枠の外】。★貼り付かないので 下が見える -->
+<div class="verdict" id="j9">Press [One step].</div>
+<div class="cap" id="net9c" style="text-align:left;margin:.3rem 0 0"></div>
+</div><!-- /#q09top -->
+
+<!-- 🆕 F：★★この問の柱（折り曲げ【なし】は1層でも3層でも 30人）を会話で確かめさせる -->
+<!-- ★★下の枠 ── ★会話。★独立してスクロールします -->
+<div id="q09talk">
+<div id="e9b"></div>
+
+<!-- ══════════════════════════════════════════════════════════════
+     🆕🆕🆕 2026-08-31 01v2【新規】関数は【1つ】。40人を 1人ずつ 通す
+     ★★山田様「結局できる関数って一つでしょ、それに対して一人一人通して
+       関数作ってたらどうなの？ わからん」
+     ★★ここが 絵と40人の関係を つなぐ唯一の場所。★これが無かったので
+       ★式も 折り紙も 宙に浮いていた
+     ══════════════════════════════════════════════════════════════ -->
+<div class="figbox">
+ <div class="cap" style="text-align:left;margin:0 0 .3rem"><b>There is <em>one</em> function. The 40 go through it one at a time</b>
+  <span style="color:var(--gray-500)">&mdash; we are not building 40 separate functions</span></div>
+ <table class="dtab" id="flow9" style="font-size:12px"></table>
+ <div class="cap" id="flow9c" style="text-align:left;margin:.3rem 0 0"></div>
+</div>
+
+<div id="e9b2"></div>
+
+<!-- ══════════════════════════════════════════════════════════════
+     🆕🆕🆕 2026-08-31 01v2【新規・図B】3層の形 と ●1個の中身
+     ★★山田様「なんで？ 3回も 式を通してるのに ── このあたりのすぐ近くに、
+       層を3つにしたニューラルネットワークの静止画が必要。一回もそれでてきてないだろ」
+     ★★「ここの折り曲げ方のイメージもこの辺りに必要」
+     ★★「絵の中でどこからどこに ReLU とかを通してどう変わっていくのかと言う説明がないとわからない」
+     ★ここに置く理由：★★読者が［3層］を押して「変わらない」を見た【直後】に来る。
+       ★上の静止画①（anat9）は 1層の形なので、3層の形は 01 に1枚も無かった
+     ══════════════════════════════════════════════════════════════ -->
+<!-- 🆕🆕 2026-08-31 01v2：★★枠を【2つに分けた】── ⒜ ●の中身 ⒝ その折り曲げ方。
+     ★もとは 1つの枠に 逆の順で入っていて（折り曲げ方 → 中身）、見出しも
+       「3層は こういう形です」のまま（★3層の絵は 問10 へ移した）だった。
+     ★分けたことで 1280px の枠が 1,084px → 2つとも 840以内 に収まる -->
+<div class="figbox">
+ <div class="cap" style="text-align:left;margin:0 0 .4rem"><b>What goes on inside a single ●</b>
+  <span style="color:var(--gray-500)">&mdash; following it line by line, from where the numbers come from</span></div>
+ <div id="inner9"></div>
+</div>
+
+<div class="figbox">
+ <svg id="dive9" viewBox="0 0 560 232"></svg>
+ <div class="cap" id="dive9c" style="text-align:left;margin:.4rem 0 0"></div>
+</div>
+
+<!-- 🆕🆕🆕 2026-08-31 01v2：★★式の代入と展開の枠（★左＝かっこを外す／右＝4区域＋表）は
+     【丸ごと削除した】。
+     ★★山田様「この部分別にいらなくない？ 4つの区域に分かれるまでで十分わかるだろ」
+       「なぜ『折り曲げ』が要るのか って書かれながら ただ式が書かれてるだけで なぜかがわからない」
+       「この折り目の図はわかりやすいから、上で俺が言葉でわかりにくいと言ってたやつは これで説明しろ」
+     → ✅ 中身は【折り紙の図（ori9）】に寄せた。★4区域の絵も そこへ入れた。
+        ★表（区域1〜4 と 直線A/B/C）は 復活させない -->
+
+<div id="e9c"></div>
+
+<!-- 🆕 2026-08-31 01v2：★★順を入れ替えた ── 先に【折り紙（なぜ要るのか）】、
+     ★そのあとに【折れ目と当たり（どれだけ得か）】。
+     ★もとは 当たりの話が先に来ていて、「なぜ」の答えが後回しになっていた -->
+<!-- ══════════════════════════════════════════════════════════════
+     🆕🆕🆕 2026-08-30 V2 第4稿【新規・図D】折り紙 ── 層と折り曲げは セット
+     ★★山田様「じゃあ なんのために層増やしてるんだ、何が言いたいんだ」
+       ★★いままでの対話は「層は無意味」と読めてしまっていた（★私のミス）
+     ✅ ●1個 ＝ 折り目1本 ／ 折り曲げ方 ＝ 折る道具 ／ 層 ＝ 折る回数
+        ★道具が無ければ、回数をいくら増やしても 平らなまま
+     ══════════════════════════════════════════════════════════════ -->
+<div class="figbox">
+ <div class="cap" style="text-align:left;margin:0 0 .3rem"><b>Why the bend is needed</b>
+  <span style="color:var(--gray-500)">&mdash; think of it as folding paper</span></div>
+ <!-- 🆕 2026-08-31 01v2：★viewBox を 145 → 545 に伸ばした
+      （★4区域の絵と「折り曲げなし」の段を この図に入れたため）
+      🆕 2026-09-01 01v2：★★その2段は【消した】ので この伸ばしは 無効になった（下の行が いま有効） -->
+ <!-- 🆕 2026-09-01 01v2：★viewBox を 562 → 205 に詰めた（★中段と下段を消したぶん） -->
+ <svg id="ori9" viewBox="0 0 560 205"></svg>
+ <!-- 🆕🆕 2026-09-01 01v2：★★ori9c（折り紙の下の説明文）を【div ごと 消した】。
+      ★★山田様「ori9c を完全に消せ」── ★前任は短く書き換えただけで 文が残っていた
+      ★中身は 図の中の「本数は 人・位置は 機械」と 会話 e9d が受け持つ（★どちらも残す）
+      ★JS 側の $('ori9c') への代入も 同時に 消した（★null に書き込むと落ちるため） -->
+</div>
+
+<div id="e9d"></div>
+
+<!-- ══════════════════════════════════════════════════════════════
+     🆕🆕🆕 2026-09-01 01v2【新規・図E】なぜ 折れるのか ── 3段を つなげて 1枚にした
+     ★★山田様がこの案で「なんとなくわかった」と承認した図。
+     ★★いままで 画面は「項が消える → 式が変わる → 境目の傾きが変わる → 折れる」を
+       【1度も つなげて書いていなかった】。★これが最後の穴だった
+     ★① 折り目の点線で 面が2つに分かれる（左上＝●③は 0／右下＝●③は 数を通す）
+       ② どちら側かで【出口の式が ちがう】（左上は r×③ が 消える）
+       ③ それぞれの式で「持ち点 ＝ 0」の線を引くと【向きがちがう2本】になり、
+          折り目の上で つながる ── だから そこで 折れる
+     ★★2本の傾きは【出荷コードで計算して】描いている（→規則⑹。★推測で描かない）
+     ★あわせて「持ち点が 0 になる線 ＝ 境目」の定義を ここで言い直す
+       （★問9 では 1度も 言っていなかった）
+     ══════════════════════════════════════════════════════════════ -->
+<div class="figbox">
+ <div class="cap" style="text-align:left;margin:0 0 .3rem"><b>Why it folds</b>
+  <span style="color:var(--gray-500)">&mdash; what those dotted lines above are doing</span></div>
+ <svg id="why9" viewBox="0 0 560 512"></svg>
+ <div class="cap" id="why9c" style="text-align:left;margin:.3rem 0 0"></div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════
+     🆕🆕🆕 2026-08-30 V2 第4稿【新規・図C】折れ目が増えると どうなるか
+     ★★本当の境目（弧）に接する直線を組み合わせて、40人を当ててみた結果。
+       ★実測  直線1本 35人 ／ 折れ目1つ 38人 ／ 折れ目2つ 39人 ／ 弧そのもの 40人
+       ★★問9 の目標が 38人 なのは「折れ目を1つ手に入れろ」という意味
+     ★背景の破線が 本当の境目。★どれだけ近づけたかが 一目で分かる
+     ══════════════════════════════════════════════════════════════ -->
+<div class="figbox">
+ <div class="cap" style="text-align:left;margin:0 0 .3rem"><b>What happens as bends are added</b>
+  <span style="color:var(--gray-500)">&mdash; the dashed line is the real boundary (the arc)</span></div>
+ <svg id="fold9" viewBox="0 0 560 250"></svg>
+ <div class="cap" id="fold9c" style="text-align:left;margin:.2rem 0 0"></div>
+</div>
+
+<div id="e9c2"></div>
+
+<div id="e9d2"></div>
+
+<!-- 🆕 2026-08-31 01v2：★★net9（動く絵）は【panel の中】へ移した（下の j9 の直後）。
+     ★★山田様「これってつまみと連動してるの？ つまみとこんな離れてたら見えないだろ。
+       グラフ固定にして同時に見えるようにするとかしろよ」
+     ★連動はしていた（up9 が net9 を呼ぶ）が、画面で確かめられなかった。
+     ★bd9 は .stick（sticky）なので、panel の中に入れると
+       【境目のグラフが貼り付いたまま つまみの中身まで見える】── 同時に見える -->
+<!-- 🆕🆕🆕 2026-09-01 01v2：★★#q9wrap を【会話 e9e の後まで】伸ばした。
+     ★★山田様「ここらへんでグラフの画面固定が解除されてる。
+       ちょうど赤とか太線とか見たいところなのに」
+     ★e9e は つまみの絵（net9）の【線の色と太さ】を読ませる会話。
+       ★グラフと絵が貼り付いていないと 読みながら確かめられない ＝ 会話が成立しない
+     ★締めのカード（r9）は もう つまみを押さないので 外に置く -->
+<div id="e9e"></div>
+<!-- 🔴🔴🔴 2026-09-10 記録担当（A149_movehide.py）：★★★この枠を【下の枠の中】へ移しました。
+     ★理由：★分割の規則で【上の枠と下の枠のどちらにも属さないものは隠されます】。
+       ★★この枠は「解いたら出てくる枠」なので、外にあると
+         ★★★解いて hide が外れても【分割中は永久に出てきません】。
+     ★山田様「ここで止まる」の正体がこれでした（★2026-09-10。★分割18問中15問で起きていた）。
+     ★中身は1文字も変えていません。★置き場所だけ変えました -->
+<div id="r9" class="hide">
+ <div id="e9z"></div>
+ <div class="keyh">What to take away</div>
+ <!-- 🆕 F：★中身（折り曲げなしは30人・まとめると1回ぶんに戻る）は会話 e9b・e9z に寄せた。
+      ★ここは【用語の対応だけ】を残す -->
+ <div class="verdict ok">
+  A form with no layer is called a <b>simple perceptron</b>, a form with one layer or more a
+  <b>multilayer perceptron</b>, and the bend itself an <b>activation function</b>.
+ </div>
+ <div class="src">
+  <div class="h">Where this pays off</div>
+  You can tell apart <b>&ldquo;the knobs are set badly&rdquo;</b> from <b>&ldquo;the shape is not enough&rdquo;</b>.<br>
+  Problem 8 was the second kind. <b>Adding one layer got us there.</b><br>
+  <span style="color:var(--gray-500)">Walking downhill settles at 30 correct (counting every combination in Problem 8 reached 35).
+  Walking downhill is not raising the number of correct answers directly; it is lowering the error in the probabilities,
+  so it can fall short of the best count.</span>
+ </div>
+</div>
+<!-- 🔴🔴🔴 2026-09-10 記録担当（A149_movehide.py）：★★★この枠を【下の枠の中】へ移しました。
+     ★理由：★分割の規則で【上の枠と下の枠のどちらにも属さないものは隠されます】。
+       ★★この枠は「解いたら出てくる枠」なので、外にあると
+         ★★★解いて hide が外れても【分割中は永久に出てきません】。
+     ★山田様「ここで止まる」の正体がこれでした（★2026-09-10。★分割18問中15問で起きていた）。
+     ★中身は1文字も変えていません。★置き場所だけ変えました -->
+<div id="r9b" class="hide"></div>
+</div><!-- /#q09talk -->
+</div><!-- ★#q9wrap ここまで（★ここから先は つまみの枠が剥がれる） -->
+
+
+</div>
+
+<!-- 🔴 2026-09-02 1問1ページ担当：★戻る／次へ（★どのページでも常に押せる） -->
+<div id="nav"></div>
+
+<div id="foot"></div>
+</div>
+
+<!-- 🔴 2026-09-02 1問1ページ担当2代目：★★【受け皿】── この問の JS が触るのに
+     このページには無い要素です（★他の問のパネル）。★読者には出しません（.offpage）。
+     ★★これを置く理由：原本の $('…') を【1文字も変えない】ため。
+       ★空のタグだけなので中身は 0 バイトです -->
+<div class="offpage" aria-hidden="true">
+<button class="btn on" id="L1b"></button>
+<button class="btn" id="L3b"></button>
+<div class="verdict" id="j9b"></div>
+<b id="n9cb"></b>
+<b id="np9b"></b>
+
+<button class="btn" id="sk9ib"></button>
+<button class="btn on" id="sk9ob"></button>
+</div>
+
+<script src="common.js"></script>
+<script>
+/* ══════════════════════════════════════════════════════════════════════════
+   🔴 2026-09-02 1問1ページ担当2代目：★★下は原本 tsume-01 の <script> から
+     【この問が使う行だけ】をそのまま写したものです。★1文字も変えていません（★行を落としただけ）
+   ★★IIFE で包んだ理由 ── 原本の const $ / const show / const T が common.js の同名 const と
+     ぶつかって【SyntaxError でページ全体が動かなくなる】ため。★包んだだけで中身は変わりません
+   ★★mark() だけは common.js のものを使います（★帯が5章グループに変わったため。→ 指示⑶）
+   ══════════════════════════════════════════════════════════════════════════ */
+var QBASE = 8;
+drawProg(9); drawChap(9, "");
+drawNav(["q08.html","Problem 8: The limit of one line"], ["q10.html","Problem 10: When it gets deeper"]);
+drawFoot()   /* 🔴 2026-09-02 A：★注記を消した（★山田様。★同じ一文が21回出るのは型3／§2-6 の言い訳）*/;
+
+(function(){
+/* 🔴 2026-09-02 1問1ページ担当2代目：★★【受け皿】── この問には無い
+     【他の問の関数】を空にしておきます。★これが無いと ReferenceError になります。
+   ★★呼んでいる側（原本の関数）は1文字も変えていません */
+if (typeof bd9b === 'undefined') var bd9b = function(){};
+if (typeof gr10 === 'undefined') var gr10 = function(){};
+if (typeof tabs9 === 'undefined') var tabs9 = function(){};
+
+/* ══════════════════════════════════════════════════════════════
+   詰めKaggle 01 ── 深くするとどうなるか
+   ★★数値は全部コードで出す（→ 00 の §2-9）。手計算や記憶で書かない
+   ★確定した値（/tmp/tk00d/d06〜d09.mjs で総当たり・多出発点で確認）
+     問6  入力1個の限界 10.30（a=6.5 d=21）／2個 7.92（a=6.8 b=2.6 d=3）
+           3個 6.30（a=6.3 b=2.8 c=35 d=−22）  → 目標 8.5 は 1個では届かない
+     問7  伸縮なし・分   どの1歩の大きさでも 2〜4歩で発散
+           伸縮なし・時間 1歩 0.01 で 6.30 まで下がる
+           伸縮あり      時間でも分でも【完全に同じ】。1歩 0.005〜0.3 で 6.30〜6.31
+     問8  合格 23人 / 不合格 17人。★線1本の総当たりの最良 35人（1·勉強＋2·睡眠−13>0）
+           → 目標 38人 は線1本では届かない（不詰）
+     問9  ★★出荷コードを実ブラウザで回して測った（種101・幅3・1歩 0.6）
+           段  切り方      足す道  手前÷出口側   3,000歩の当たり  つまみ
+           なし  −          −       −            30人            3
+           1   ReLU        切      −             39人            13
+           1   シグモイド    切      −             39人            13
+           2   ReLU        切      129.4%        39人            25
+           2   ReLU        入      318.2%        30人            25
+           2   シグモイド    切       20.8%        40人            25
+           2   シグモイド    入      135.4%        40人            25
+           3   ReLU        切      122.1%        23人            37
+           3   ReLU        入      168.1%        39人            37
+           3   シグモイド    切        8.6%        38人            37
+           3   シグモイド    入      169.2%        40人            37
+         🔴🔴 ★★効き方の大きさと【最終の当たり】は直結しない。
+           ★3,000歩も回せば効き方が小さくても収束するし、ReLU は死んだノードで悪化する。
+           → ★★だから「効き方が小さいと学習しない」と断定してはいけない（→ 00 の §2-5）。
+             ★言えるのは「手前の段に届く力が弱くなる」まで。
+           → ★★「深くすれば良い」も否定できる ── 3段は 23人まで落ちる（実測）
+   ══════════════════════════════════════════════════════════════ */
+const $ = id => document.getElementById(id);
+/* 🔴🔴🔴 2026-08-29 A（01）：★★起動中は【クリア判定を効かせない】。
+   ★理由：問7〜11 の図を開いた時点で描くために起動部で up7()〜up11() を呼んだが、
+     ★★問10 の up10() は初期状態でクリア条件を満たしてしまい、
+       ★開いた瞬間に上の帯の「11 覚えただけ」が done になっていた（★A が実測で見つけた）
+   ★★これは A が起動部に up10() を足したことで生んだ副作用である（自己申告）
+   → ★mark() と show() の1か所で止める。★問7〜11 の中身には触らない */
+let BOOT = true;
+const show = id => { if (BOOT) return; const e = $(id); if (e) e.classList.remove('hide'); };
+const R2 = v => +v.toFixed(2);
+/* ══════════ データ 40人（★乱数は固定。★毎回同じ数字が出る）══════════ */
+const DATA = (() => {
+  let S = 20260828;
+  const r = () => { S ^= S << 13; S ^= S >>> 17; S ^= S << 5; S |= 0; return (S >>> 0) / 4294967296; };
+  const nrm = () => { let u = 0, v = 0; while (!u) u = r(); while (!v) v = r();
+    return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v); };
+  const a = [];
+  for (let i = 0; i < 40; i++) {
+    const x1 = Math.round(r() * 20) / 2, x2 = 2 + Math.round(r() * 18) / 2;
+    const x3 = Math.round((0.5 + r() * 0.5) * 100) / 100;
+    const y = 6.2 * x1 + (14 - 1.1 * (x2 - 7.5) ** 2) + 22 * x3 + nrm() * 3.0;
+    a.push({ x1, x2, x3, y: Math.max(0, Math.min(100, Math.round(y * 10) / 10)) });
+  }
+  return a;
+})();
+const NN = DATA.length;
+/* 合格（問8・問9）＝ 睡眠の山を強くした点数が 55 以上 */
+const passOf = d => (6.2 * d.x1 + (30 - 2.5 * (d.x2 - 7.5) ** 2) + 20) >= 55 ? 1 : 0;
+DATA.forEach(d => d.t = passOf(d));
+/* ══════════ 共通の絵の部品 ══════════ */
+const T = (x, y, s, o) => { o = o || {};
+  return `<text x="${x}" y="${y}" font-size="${o.fs || 13}" fill="${o.c || '#3f3f3f'}"
+    text-anchor="${o.a || 'start'}" font-family="${o.f || 'Inter'}"${o.b ? ' font-weight="600"' : ''}
+    >${s}</text>`; };
+const NODE = (x, y, r, fill, stroke) =>
+  `<circle cx="${x}" cy="${y}" r="${r}" fill="${fill}" stroke="${stroke || '#fff'}" stroke-width="1.6"/>`;
+/* 重みの線。太さは |w| に比例。緑が＋・赤が− */
+function EDGE(x1, y1, x2, y2, w, scale) {
+  const t = Math.min(7, 0.6 + Math.abs(w) * (scale || 1));
+  const c = w >= 0 ? '#019949' : '#c00';
+  return `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${c}"
+    stroke-width="${t.toFixed(2)}" opacity=".75"/>`;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   問6 ── 入力を増やす（★★2026-08-29 第2版。★判断は【どの列を足すか】）
+   🔴🔴🔴 第2版で変わったこと（★経緯は HTML 側のコメント）
+     ⑴ 出席番号（d.id）を候補の列に足した ── ★問11 で使う列と同じもの
+     ⑵ ★★限界は【最小二乗の厳密解をその場で解く】。★16通りをハードコードしない
+     ⑶ 手で最良に合わせることを合格条件にしない（★1億通り・手がかりなし）
+     ⑷ 削除：mean6（つまみの意味の表）／eq6live（ずれの数式）／res6fig（赤い線の静止画）／
+             rec6（記録表）／eff6（効きの棒）／SLP6・HL6・RES6・EX6・REC6・BEST6・NAME6・LIM6
+   ★★確定値（★A が出荷の DATA で厳密解を解いて確認。→検証ツール/00/A_lsq.mjs。不一致0件）
+     勉強だけ 10.2959 ／ ＋睡眠 7.9197 ／ ＋出席率 6.2968 ／ ＋出席番号 6.2816
+     出席番号だけ 20.4296 ／ 勉強＋出席番号 10.2917 ／ 列なし（平均点）20.6737
+     下がった分  ＋睡眠 2.38 ／ ＋出席率 1.62 ／ ★★＋出席番号 0.02
+     ★単位を変えても限界は同じ（睡眠を分・出席率を0〜100 で 6.296795 完全一致）→ ★単位の話は問7
+   ══════════════════════════════════════════════════════════════ */
+DATA.forEach((d, i) => d.id = i + 1);       /* ★出席番号 1〜40（★点数と無関係な列） */
+
+const XR8 = [0, 10], YR8 = [2, 11];
+function sx8(v, P) { return P.x0 + (v - XR8[0]) / (XR8[1] - XR8[0]) * (P.x1 - P.x0); }
+function sy8(v, P) { return P.y0 - (v - YR8[0]) / (YR8[1] - YR8[0]) * (P.y0 - P.y1); }
+/* ══════ ★合格に必要な勉強時間（U字）── ★passOf から その場で解く（→規則⑹）══════
+   passOf: 6.2×勉強 ＋（30 − 2.5×(睡眠−7.5)²）＋ 20 ≧ 55
+   → 勉強 ≧ （5 ＋ 2.5×(睡眠−7.5)²）÷ 6.2 */
+const need8 = x2 => (5 + 2.5 * (x2 - 7.5) ** 2) / 6.2;
+/* ══════════════════════════════════════════════════════════════
+   問9（段を1つ入れる）・問10（深くすると安定しなくなる）
+   ★出発点の種 101・幅3・1歩 0.6 で固定。★効き方の % は画面に埋め込まない（→ 下の注記）
+   ★そのまま足す道は【2段目以降】に付ける（1段目は入力2個・段3個で数が合わない）
+     → ★だから 1段では足す道のボタンを選べないようにしている
+   ══════════════════════════════════════════════════════════════ */
+const GOAL9 = 38, WID9 = 3, SEED9 = 101, LR9 = 0.6;
+let L9 = 1, A9 = 'relu', SK9 = false, n9 = 0, ok9 = false;
+let Ws9 = [], bs9 = [], Wo9 = [], bo9 = 0, div9 = false;
+
+/* 🔴🔴🔴 2026-08-29 A（#25）★★折り曲げ方に【なし】を足した（恒等＝そのまま通す）。
+   ★★これで「層を積んでも折り曲げが無ければ 1層ぶんと同じ」が実際に確かめられる
+   ★実測：なし＋1層＝30人／なし＋3層＝30人／層なし＝30人（★30,000歩まで変わらない） */
+const f9 = v => A9 === 'none' ? v : (A9 === 'relu' ? Math.max(0, v) : 1 / (1 + Math.exp(-v)));
+const df9 = v => { if (A9 === 'none') return 1;
+  if (A9 === 'relu') return v > 0 ? 1 : 0;
+  const g = 1 / (1 + Math.exp(-v)); return g * (1 - g); };
+const skOn = l => SK9 && l >= 1;
+const x9 = d => [d.x1 / 10, d.x2 / 11];
+
+function init9() {
+  let S = SEED9;
+  const r = () => { S ^= S << 13; S ^= S >>> 17; S ^= S << 5; S |= 0; return (S >>> 0) / 4294967296 - 0.5; };
+  const K = 2, dims = [K].concat(new Array(L9).fill(WID9));
+  Ws9 = []; bs9 = [];
+  for (let l = 0; l < L9; l++) {
+    const sc = Math.sqrt(2 / dims[l]);
+    Ws9.push(Array.from({ length: dims[l + 1] }, () =>
+      Array.from({ length: dims[l] }, () => r() * 2 * sc)));
+    bs9.push(new Array(dims[l + 1]).fill(0));
+  }
+  const OD = L9 ? WID9 : K;
+  Wo9 = Array.from({ length: OD }, () => r() * 2 * Math.sqrt(2 / OD));
+  bo9 = 0; n9 = 0; div9 = false;
+}
+function fwd9(x) {
+  const as = [], hs = [x];
+  for (let l = 0; l < L9; l++) {
+    const a = Ws9[l].map((row, i) => row.reduce((s, v, j) => s + v * hs[l][j], 0) + bs9[l][i]);
+    as.push(a);
+    hs.push(a.map((v, i) => f9(v) + (skOn(l) ? hs[l][i] : 0)));
+  }
+  return { as, hs, z: hs[L9].reduce((s, v, i) => s + v * Wo9[i], 0) + bo9 };
+}
+const say9 = d => fwd9(x9(d)).z > 0 ? 1 : 0;
+function cnt9() { return DATA.reduce((s, d) => s + (say9(d) === d.t ? 1 : 0), 0); }
+function np9() {
+  const K = 2, dims = [K].concat(new Array(L9).fill(WID9));
+  let n = 0;
+  for (let l = 0; l < L9; l++) n += dims[l] * dims[l + 1] + dims[l + 1];
+  return n + (L9 ? WID9 : K) + 1;
+}
+/* 🆕🆕 V2 ★★つまみの内わけ ── [線の数, 下駄の数]。★「13個」の中身を画面に出すため
+   ★1層のとき  線 2×3 ＋ 3×1 ＝ 9本 ／ 下駄 3＋1 ＝ 4個 → 13個（★np9() と一致）
+   ★3層のとき  線 6＋9＋9＋3 ＝ 27本 ／ 下駄 9＋1 ＝ 10個 → 37個 */
+const NPB9 = l => {
+  const dims = [2].concat(new Array(l).fill(WID9)).concat([1]);
+  let e = 0;
+  for (let i = 0; i < dims.length - 1; i++) e += dims[i] * dims[i + 1];
+  return [e, l * WID9 + 1];
+};
+/* 🆕 2026-08-31 01v2：★★学習の中身だけを core9 に切り出した（★描画を呼ばない）。
+   ★理由：下の解剖図（dive9）の数字を【出荷コードで採る】ために、
+     画面を描かずに 1000歩 走らせる必要がある（→§10⒋ 数字は出荷コードを走らせる）
+   ★★式は1文字も変えていない。★step9 の外から見た挙動も変えていない */
+function step9(k) {
+  if (div9) { up9(); return; }
+  core9(k);
+  up9();
+}
+/* 🆕 2026-08-31 01v2：★★逆伝播だけを bp9 に切り出した（★更新はしない）。
+   ★理由：問10 の図が「いま つまみが動く量」を出すので、更新なしで勾配だけ要る。
+   ★★式は1文字も変えていない。★core9 はこれを呼んで更新する（＝式は1つだけ） */
+function bp9() {
+  const OD = Wo9.length;
+  const gW = Ws9.map(m => m.map(r => r.map(() => 0)));
+  const gb = bs9.map(b => b.map(() => 0));
+  const gWo = new Array(OD).fill(0); let gbo = 0;
+  for (const d of DATA) {
+    const x = x9(d), o = fwd9(x);
+    const q = 1 / (1 + Math.exp(-o.z)), dz = (q - d.t) / NN;
+    o.hs[L9].forEach((v, i) => gWo[i] += dz * v); gbo += dz;
+    let dd = Wo9.map(v => dz * v);
+    for (let l = L9 - 1; l >= 0; l--) {
+      const da = dd.map((v, i) => v * df9(o.as[l][i]));
+      da.forEach((v, i) => { o.hs[l].forEach((hv, j) => gW[l][i][j] += v * hv); gb[l][i] += v; });
+      const nd = new Array(o.hs[l].length).fill(0);
+      da.forEach((v, i) => Ws9[l][i].forEach((wv, j) => nd[j] += v * wv));
+      /* ★そのまま足す道の恒等項。★これが勾配を消えにくくする */
+      if (skOn(l)) dd.forEach((v, i) => { if (i < nd.length) nd[i] += v; });
+      dd = nd;
+    }
+  }
+  return { gW, gb, gWo, gbo };
+}
+function core9(k) {
+  for (let t = 0; t < k; t++) {
+    const g = bp9();
+    for (let l = 0; l < L9; l++) {
+      Ws9[l] = Ws9[l].map((row, i) => row.map((v, j) => v - LR9 * g.gW[l][i][j]));
+      bs9[l] = bs9[l].map((v, i) => v - LR9 * g.gb[l][i]);
+    }
+    Wo9 = Wo9.map((v, i) => v - LR9 * g.gWo[i]); bo9 -= LR9 * g.gbo;
+    n9++;
+    if (!Wo9.every(isFinite)) { div9 = true; break; }
+  }
+}
+/* 🆕🆕🆕 2026-08-31 01v2【問10 の主役】●が【数を通しているか】を数える
+   ★★数を通している ＝ 40人のうち1人でも「0 でない数」を先に渡している
+   ★★「生きた・死んだ」という言い方は使わない（→山田様「汚い言葉で 伝わらない」）
+   ★★実測（3,000歩・種101・幅3・1歩0.6）
+     1層         2/3 生きている  → 39人
+     3層 飛越なし 1/9            → 23人   ★★ほとんど死ぬ
+     3層 飛越あり 5/9            → 40人
+   ★問9 の dive9 で「●が 0 を返すと 出口へ何も伝わらない」を見せてあるので、そこに繋がる
+   ★★台詞「いちばん手前の層に届く力が 0」は誤り（→ 実測では【全層】が 0）。★台詞を直した */
+function alive9() {
+  const out = [];
+  for (let l = 0; l < L9; l++) {
+    const row = [];
+    for (let i = 0; i < WID9; i++) row.push(0);
+    out.push(row);
+  }
+  DATA.forEach(d => { const o = fwd9(x9(d));
+    for (let l = 0; l < L9; l++) for (let i = 0; i < WID9; i++) if (o.as[l][i] > 0) out[l][i]++; });
+  return out;
+}
+/* 🆕🆕🆕 2026-08-30 V2【新規・静止画①】層の作り ══════════════════════
+   ★動かない。★線の太さは全部同じ（★重みの話は しない）
+   ★●の下の点＝バイアス。★入口の●には付かない */
+function anat9() {
+  /* 🔴🔴 2026-09-09 展開担当：★★文字を【12px 以上】にする（★決定2 の下限）
+     ★実効px ＝ 単位 × 描画幅 ÷ viewBox幅（560）。★描画幅は 390px の画面で 330px。
+     ★★倍率を掛ける形なので【元の大小関係は そのまま】です。
+     ★上限 2.2倍 ── ★これを超えると行が重なります（★A125_svgfit2.js で確かめます）。
+     ⚠️★CSS の指定が無いことを確かめた上で属性を上げています（★A130_raise.py が検査） */
+  const Kanat9 = Math.min(2.2, Math.max(1, Math.ceil(12 * 560 / ((($('anat9') || {}).getBoundingClientRect ? $('anat9').getBoundingClientRect().width : 330) || 330) / 12 * 100) / 100));
+  const IX = 116, MX = 288, OX = 456;
+  const iy = [88, 152], my = [66, 120, 174], oy = 120;
+  let s = '';
+  s += T(IX, 38, 'Input', { a: 'middle', fs: 13 * Kanat9, b: 1, f: "'Noto Serif JP',serif" });
+  s += T(MX, 38, 'Middle layer', { a: 'middle', fs: 13 * Kanat9, b: 1, c: '#2f6fb5', f: "'Noto Serif JP',serif" });
+  s += T(OX, 38, 'Output', { a: 'middle', fs: 13 * Kanat9, b: 1, f: "'Noto Serif JP',serif" });
+  /* ★線（つまみ）── 太さは全部同じ */
+  my.forEach(y => iy.forEach(y0 =>
+    s += `<line x1="${IX}" y1="${y0}" x2="${MX}" y2="${y}" stroke="#019949" stroke-width="1.8" opacity=".8"/>`));
+  my.forEach(y =>
+    s += `<line x1="${MX}" y1="${y}" x2="${OX}" y2="${oy}" stroke="#019949" stroke-width="1.8" opacity=".8"/>`);
+  /* ★● */
+  iy.forEach(y => s += NODE(IX, y, 8, '#000'));
+  my.forEach(y => s += NODE(MX, y, 8, '#2f6fb5'));
+  s += NODE(OX, oy, 10, '#019949');
+  /* ★バイアス（●の下の点）── 入口には付かない */
+  my.forEach(y => {
+    s += `<line x1="${MX}" y1="${y + 8}" x2="${MX}" y2="${y + 15}" stroke="#9aa3a9" stroke-width="1.2"/>`;
+    s += `<circle cx="${MX}" cy="${y + 19}" r="3.2" fill="#9aa3a9"/>`;
+  });
+  s += `<line x1="${OX}" y1="${oy + 10}" x2="${OX}" y2="${oy + 17}" stroke="#9aa3a9" stroke-width="1.2"/>`;
+  s += `<circle cx="${OX}" cy="${oy + 21}" r="3.2" fill="#9aa3a9"/>`;
+  /* ★名前 */
+  /* ★★英語版だけ ラベルの x を 14 → 42 に広げました ── ★'study' は anchor end で
+     ★左へ約52単位 伸びるので、★IX−14（＝82）では 入口の●（IX=96・r8）に かぶります */
+  s += T(IX - 42, iy[0] + 4, 'study', { a: 'end', fs: 13 * Kanat9, f: "'Noto Serif JP',serif" });
+  s += T(IX - 42, iy[1] + 4, 'sleep', { a: 'end', fs: 13 * Kanat9, f: "'Noto Serif JP',serif" });
+  /* 🆕 V2 ★問8 とそろえて「持ち点」。★問9 も 判定は 持ち点の符号（z>0）で出している */
+  s += T(OX + 16, oy + 4, 'points', { fs: 13 * Kanat9, c: '#019949', f: "'Noto Serif JP',serif" });
+  /* ★見分け方 */
+  /* 🔴🔴🔴 2026-09-09 展開担当：★★★凡例の2行を【SVG の外（HTML）】へ移した
+     ★★出所：規則「文章は SVG の中に入れない」
+     ★★★理由（実測）── ★12.5 → 21.25単位 に上げたら【横に33.41単位（19.69px）重なった】。
+       ★横に並べて置いてあるので、★大きくすると必ずぶつかります。
+     → ★HTML なら本文と同じ物差しで出せて、折り返しも効きます。 */
+  $('anat9').innerHTML = s;
+  const b = NPB9(1);
+  $('anat9c').innerHTML =
+    /* 🆕 V2 第3稿 ★★かっこ書きの内わけは【外した】（→山田様「このかっこ書きはいらない。
+       数えればわかる」）。★中身は すぐ下の【式】が受け持つ */
+    `<b>${b[0]} lines</b> + <b>${b[1]} biases</b> = <b>${b[0] + b[1]} knobs</b>`
+    + `<span style="color:var(--gray-500)">&nbsp; &mdash; written out as formulas, that comes to what you see below.</span>`
+    /* 🔴 2026-09-09 展開担当：★SVG から移した凡例（★文言は1文字も変えていません） */
+    + `<br><span style="color:var(--gray-500)">`
+    + `<b style="color:#019949">──</b> a line = one knob (a weight) &nbsp;`
+    + `<b style="color:#9aa3a9">●</b> a dot = one knob (a bias)</span>`;
+}
+
+/* 🆕🆕🆕 2026-08-30 V2 第3稿【新規・図A】絵と同じものを 式で書く ══════════
+   ★●1個につき 式1本。★重みは緑・バイアスは橙
+   ★個数は NPB9(1) から その場で出す（→規則⑹。★埋め込まない） */
+function eqs9() {
+  const W = c => `<b style="color:#019949">${c}</b>`;
+  const B = c => `<b style="color:#c26100">${c}</b>`;
+  /* 🆕🆕🆕 2026-08-31 01v2：★★【一般の式】を先頭に置いた。
+     ★★山田様「もっと一般化した y=ax1+bx2+ みたいなやつがないと
+       どれがなにが x1 かとかわからん」
+     ★★●が何個あっても、1個の中でやることは この式1本だけ。★それを先に言う */
+  const G = [
+    `<div style="font-size:15px;padding:.15rem 0 .35rem">`
+    + `　y ＝ ${W('a')} × ${'x₁'} ＋ ${W('b')} × ${'x₂'} ＋ ${B('d')}</div>`,
+    `<div style="font-size:12px;color:var(--gray-500);padding-bottom:.5rem;`
+    + `border-bottom:1px solid var(--gray-200);margin-bottom:.5rem">`
+    + `&nbsp;x₁ = hours studied &nbsp; x₂ = hours slept &nbsp;`
+    + `<b style="color:#019949">a, b = weights</b>&nbsp; <b style="color:#c26100">d = bias</b>`
+    + `&nbsp;&nbsp; &mdash; this is all a single ● does</div>`
+  ];
+  const rows = [
+    `middle ① = ${W('a₁')} &times; studied + ${W('b₁')} &times; slept + ${B('d₁')}`,
+    `middle ② = ${W('a₂')} &times; studied + ${W('b₂')} &times; slept + ${B('d₂')}`,
+    `middle ③ = ${W('a₃')} &times; studied + ${W('b₃')} &times; slept + ${B('d₃')}`,
+    `output&nbsp;&nbsp;&nbsp; = ${W('p')} &times; ① + ${W('q')} &times; ② + ${W('r')} &times; ③ + ${B('d₄')}`
+  ];
+  $('eqs9').innerHTML = G.join('')
+    + `<div style="font-size:12px;color:var(--gray-500);padding-bottom:.3rem">`
+    + `&nbsp;There are 3 ● here, so we name them and write 3 formulas (the output ● makes a fourth)</div>`
+    + rows.map(r => `<div>${r}</div>`).join('');
+  const b = NPB9(1);
+  $('eqs9c').innerHTML =
+    `<b style="color:#019949">Green</b> marks the <b>weights</b> (the multipliers), <b>${b[0]}</b> of them. `
+    + `<b style="color:#c26100">Orange</b> marks the <b>biases</b> (added at the end), <b>${b[1]}</b> of them. `
+    + `<b>That is ${b[0] + b[1]} knobs in total.</b><br>`
+    + `<span style="color:var(--gray-500)"><b>Studied</b> and <b>slept</b> are <b>x₁ and x₂</b> &mdash; `
+    + `<b>the things being multiplied</b>. They are the records of 40 students, so they do not move. `
+    + `That is why <b>not one knob sits on the input ●</b>.</span>`;
+}
+
+/* 🆕🆕🆕 2026-08-30 V2 第4稿【図B′の右】4つの区域と 出口の式 ══════════
+   ★2本の境で 平面が4つに分かれる。★①の中身は 右で＋、②の中身は 上で＋ */
+/* 🆕 2026-08-31 01v2：★★rg9()（4区域の絵と 出口の式の表）は【削除した】。
+   ★★山田様「この部分別にいらなくない？ 4つの区域に分かれるまでで十分わかるだろ」
+   ★4区域の絵そのものは 折り紙の図（ori9）の中段へ入れた。★表は復活させない
+   ★呼び出しも起動部から外してある（→規則㉑ 死んだ道具は残さない） */
+
+
+/* 🆕🆕🆕 2026-08-31 01v2【最大の追加②】関数は【1つ】。40人を 1人ずつ 通す ══════
+   ★★山田様「結局できる関数って一つでしょ、それに対して一人一人通して
+     関数作ってたらどうなの？ わからん」
+   → ★★関数を 人ごとに作ってはいない。★1つの関数に 40人を 1人ずつ 入れている。
+     ★人ごとに ちがうのは【どの●が 0 を返すか】だけ
+   ★出す4人は その場で選ぶ（★●③が通す人／0 の人・合格／不合格・当たり／外れ を含む）
+   ★★1層 ReLU で 1000歩 下らせた時点の値（★dive9 と同じ状態） */
+let FLOW9 = null;
+function flowNum9() {
+  if (FLOW9) return FLOW9;
+  const sv = [L9, A9, SK9, Ws9, bs9, Wo9, bo9, n9, div9];
+  L9 = 1; A9 = 'relu'; SK9 = false; init9(); core9(1000);
+  const all = DATA.map((d, k) => { const o = fwd9(x9(d));
+    return { no: k + 1, x1: d.x1, x2: d.x2, p: o.as[0].map(v => v > 0),
+      z: o.z, say: o.z > 0 ? 1 : 0, t: d.t, ok: (o.z > 0 ? 1 : 0) === d.t }; });
+  /* ★4人を条件で選ぶ ── ★見せたい型が全部 入るように */
+  const pick = [
+    all.find(r => r.p[2] && r.say === 1 && r.ok),      /* ●③が通す・合格・当たり */
+    all.find(r => !r.p[2] && r.say === 1 && r.ok),     /* ●③が0・合格・当たり */
+    all.find(r => r.p[2] && r.say === 0 && r.ok),      /* ●③が通す・不合格・当たり */
+    all.find(r => !r.ok)                               /* ★外した人 */
+  ].filter(Boolean);
+  FLOW9 = { rows: pick.map(r => ({ ...r, z: +r.z.toFixed(2) })),
+    hit: all.filter(r => r.ok).length, miss: all.filter(r => !r.ok).length, n: all.length };
+  [L9, A9, SK9, Ws9, bs9, Wo9, bo9, n9, div9] = sv;
+  return FLOW9;
+}
+function flow9() {
+  const F = flowNum9();
+  /* 🆕🆕🆕 2026-09-01 01v2：★★【前提】を表の中に書いた。
+     ★★山田様「これどういう条件でなんぽ行った時の話かわからない」
+     ★★表の数は［1層］［ReLU］で 1,000歩 下らせた時点のもの（＝flowNum9 が固定している状態） */
+  let t = `<tr><td class="l" colspan="9" style="background:var(--white);color:var(--gray-600)">`
+    + `<b>Setup</b> &mdash; computed with the knobs as they stand after <b>one layer</b>, <b>ReLU</b> and <b>[1000 steps] downhill</b>`
+    + `</td></tr>`;
+  t += `<tr><th class="l">Student</th><th>Studied</th><th>Slept</th>`
+    + `<th>●①</th><th>●②</th><th>●③</th><th>Points</th><th>Answer given</th><th>Truth</th></tr>`;
+  F.rows.forEach(r => {
+    const cell = b => b
+      ? `<td style="color:#019949">passes it on</td>`
+      : `<td style="color:#c00;background:#fbf0f0"><b>0</b></td>`;
+    t += `<tr><td class="l">No. ${r.no}</td><td>${r.x1.toFixed(1)}</td><td>${r.x2.toFixed(1)}</td>`
+      + cell(r.p[0]) + cell(r.p[1]) + cell(r.p[2])
+      + `<td><b>${r.z > 0 ? '+' : '−'}${Math.abs(r.z).toFixed(2)}</b></td>`
+      + `<td><b style="color:${r.say ? '#019949' : '#3f3f3f'}">${r.say ? 'pass' : 'fail'}</b></td>`
+      + `<td>${r.t ? 'pass' : 'fail'}&nbsp;`
+      + `<b style="color:${r.ok ? '#019949' : '#c00'}">${r.ok ? '○' : '✕'}</b></td></tr>`;
+  });
+  t += `<tr><td class="l" colspan="9" style="color:var(--gray-500)">&hellip; and ${F.n - F.rows.length} more below this</td></tr>`;
+  t += `<tr class="sum"><td class="l" colspan="6"><b>Counting all ${F.n}</b></td>`
+    + `<td colspan="3"><b style="font-size:17px">${F.hit} correct</b>`
+    + `<span style="color:var(--gray-500)"> (${F.miss} missed)</span></td></tr>`;
+  $('flow9').innerHTML = t;
+  $('flow9c').innerHTML =
+    `<b>There is only one function.</b> Fix the 13 knobs and one function is fixed with them. `
+    + `<b>The 40 students are what you feed into that one function, one at a time</b> &mdash; you do not build a function per student.<br>`
+    + `<span style="color:var(--gray-500)"><b>The only thing that differs from student to student is which ● returns 0.</b> `
+    + `Where the table above shows <b style="color:#c00">0</b>, <b>that ● is passing nothing on</b> for that student. `
+    + `<b>So the route through changes from one student to the next.</b></span>`;
+}
+/* 🆕🆕🆕 2026-08-31 01v2【新規・図B】3層の形 と ●1個の中身 ══════════════
+   ★★山田様「なんで？ 3回も 式を通してるのに ── このあたりのすぐ近くに、
+     層を3つにしたニューラルネットワークの静止画が必要。一回もそれでてきてないだろ、
+     それでイメージできるわけないだろ」
+   ★★「ここの折り曲げ方のイメージもこの辺りに必要」
+   ★★「絵の中でどこからどこに ReLU とかを通してどう変わっていくのかと言う説明がないとわからない」
+   ✅ 3つを1枚にまとめた ── 上段＝3層の形（●の中に折り曲げ方の印）／下段＝●1個の中身
+   ★下段の数字は 出荷コードで その場で採る（→規則⑹。★埋め込まない）
+   ══════════════════════════════════════════════════════════════ */
+/* ★●の中に描く「折り曲げ方」の小さな印。★横＝入ってきた数／たて＝出る数（act9 と同じ向き） */
+function INMARK9(cx, cy, r, kind) {
+  const h = r * 0.60, o = r * 0.10;
+  let g = `<line x1="${(cx - h).toFixed(1)}" y1="${(cy + o).toFixed(1)}" x2="${(cx + h).toFixed(1)}"
+    y2="${(cy + o).toFixed(1)}" stroke="#fff" stroke-width=".9" opacity=".5"/>`;
+  if (kind === 'none') return g + `<line x1="${(cx - h).toFixed(1)}" y1="${(cy + h * 0.8 + o).toFixed(1)}"
+    x2="${(cx + h).toFixed(1)}" y2="${(cy - h * 0.8 + o).toFixed(1)}"
+    stroke="#fff" stroke-width="1.9"/>`;
+  if (kind === 'sig') return g + `<path d="M${(cx - h).toFixed(1)} ${(cy + h * 0.7 + o).toFixed(1)}
+    Q${cx.toFixed(1)} ${(cy + h * 0.7 + o).toFixed(1)} ${cx.toFixed(1)} ${(cy + o).toFixed(1)}
+    Q${cx.toFixed(1)} ${(cy - h * 0.7 + o).toFixed(1)} ${(cx + h).toFixed(1)} ${(cy - h * 0.7 + o).toFixed(1)}"
+    fill="none" stroke="#fff" stroke-width="1.9"/>`;
+  return g + `<path d="M${(cx - h).toFixed(1)} ${(cy + o).toFixed(1)} L${cx.toFixed(1)} ${(cy + o).toFixed(1)}
+    L${(cx + h).toFixed(1)} ${(cy - h + o).toFixed(1)}"
+    fill="none" stroke="#fff" stroke-width="1.9" stroke-linejoin="round"/>`;
+}
+/* ★下段の数字 ── 1層 ReLU で【1000歩 下らせた実際の重み】で 実データの2人を通す。
+   ★e9a2 が「［1000歩］を押してごらん」と言うので、読者が1回 押した時点と一致する
+   ★★状態は丸ごと退避して戻す（★読者の画面を汚さない。★ok9 を立てない）
+   ★例に使う●は【③】── ①は学習後 ほぼ全員で中身がマイナス（＝いつも 0）なので
+     「人によって 通す／止める が切り替わる」が見えない。★③は睡眠で符号が変わる（実測） */
+let DIVE9N = null;
+function diveNum9() {
+  if (DIVE9N) return DIVE9N;
+  const sv = [L9, A9, SK9, Ws9, bs9, Wo9, bo9, n9, div9];
+  L9 = 1; A9 = 'relu'; SK9 = false;
+  init9(); core9(1000);
+  const I = 2, w = Ws9[0][I].slice(), b = bs9[0][I];
+  const R2 = v => +v.toFixed(2);
+  /* ★★★読者が【画面の2桁の数字を そのまま掛けて足しても 合う】人だけを選ぶ（→規則⑻）。
+     ★これをやらないと、読者が電卓で確かめたとき 合計が 1 ずれる（★40人中 2人だけ合う） */
+  const fit = d => {
+    const xv = x9(d);
+    const t1 = R2(R2(w[0]) * R2(xv[0])), t2 = R2(R2(w[1]) * R2(xv[1]));
+    return Math.abs(R2(t1 + t2 + R2(b)) - R2(w[0] * xv[0] + w[1] * xv[1] + b)) < 1e-9;
+  };
+  const mk = d => { const xv = x9(d);
+    return { x1: d.x1, x2: d.x2, n1: R2(xv[0]), n2: R2(xv[1]),
+      t1: R2(R2(w[0]) * R2(xv[0])), t2: R2(R2(w[1]) * R2(xv[1])),
+      v: R2(w[0] * xv[0] + w[1] * xv[1] + b) }; };
+  const cand = DATA.filter(fit);
+  const hi = cand.find(d => { const xv = x9(d); return w[0] * xv[0] + w[1] * xv[1] + b > 0; });
+  const lo = cand.find(d => { const xv = x9(d); return w[0] * xv[0] + w[1] * xv[1] + b <= 0; });
+  /* ★入力をそろえる割る数（★40人の中で いちばん大きい値）も その場で出す */
+  const mx1 = Math.max(...DATA.map(d => d.x1)), mx2 = Math.max(...DATA.map(d => d.x2));
+  DIVE9N = { n: I + 1, a: R2(w[0]), b: R2(w[1]), d: R2(b),
+    div1: 10, div2: 11, max1: mx1, max2: mx2,
+    hi: hi ? mk(hi) : null, lo: lo ? mk(lo) : null, fitN: cand.length };
+  [L9, A9, SK9, Ws9, bs9, Wo9, bo9, n9, div9] = sv;
+  return DIVE9N;
+}
+/* 🆕🆕🆕 2026-08-31 01v2【新規】●1個の中身を【HTML で 1行ずつ】出す
+   ★★山田様「この書き方だと省略しすぎで なんでこういう +2.64 とかになるのか 全くわからねえよ」
+   ★SVG では 式が読めないので HTML にした */
+function inner9() {
+  const N = diveNum9();
+  const SG = v => (v >= 0 ? '+' : '−') + Math.abs(v).toFixed(2);
+  /* 🆕🆕 2026-09-01 01v2：★★番号の書き方を 式（eqs9）・表（flow9）・つまみの絵（net9）と
+     同じ【●③・a₃・b₃・d₃】にそろえた。
+     ★★山田様「a3 ＝ ＋1.71　b3 ＝ −4.83　d3 ＝ ＋2.15　ここ意味不明じゃバグか？」
+       ★同じものが 図では ●③、ここでは ●3 と 2通りに書かれていた */
+  const MB = ['①', '②', '③'][N.n - 1] || String(N.n);
+  const SB = ['₁', '₂', '₃'][N.n - 1] || String(N.n);
+  const one = p => {
+    if (!p) return '';
+    return `<div style="background:var(--white);border:1px solid var(--gray-200);padding:.7rem .8rem">`
+      + `<div style="font-size:13px;font-weight:600;margin-bottom:.45rem">`
+      + `A student with ${p.x1} hrs studied and ${p.x2} hrs slept</div>`
+      + `<div class="mono" style="font-size:12.5px;line-height:2.1">`
+      + `x₁ = ${p.x1} &divide; ${N.div1} = <b>${p.n1.toFixed(2)}</b><br>`
+      + `x₂ = ${p.x2} &divide; ${N.div2} = <b>${p.n2.toFixed(2)}</b><br>`
+      + `<span style="color:#019949">${SG(N.a)}</span> &times; ${p.n1.toFixed(2)} = `
+      + `<b>${SG(p.t1)}</b><br>`
+      + `<span style="color:#019949">${SG(N.b)}</span> &times; ${p.n2.toFixed(2)} = `
+      + `<b>${SG(p.t2)}</b><br>`
+      + `<span style="color:#c26100">d${SB}</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; = <b>${SG(N.d)}</b></div>`
+      + `<div style="border-top:1px solid var(--gray-200);margin:.4rem 0 .3rem"></div>`
+      + `<div class="mono" style="font-size:13.5px">total = <b>${SG(p.v)}</b></div>`
+      + `<div class="cap" style="text-align:left;margin:.35rem 0 0;color:${p.v > 0 ? '#019949' : '#c00'}">`
+      + `<b>${p.v > 0 ? 'Positive, so it passes straight through' : 'Negative, so it becomes 0'}</b></div></div>`;
+  };
+  $('inner9').innerHTML =
+    /* ★前提 ── 割る数の由来と、重みが どこから来たか */
+    `<div style="background:var(--white);border:1px solid var(--gray-200);padding:.7rem .9rem;margin-bottom:.7rem">`
+    + `<div style="font-size:13px;font-weight:600;margin-bottom:.4rem">First &mdash; where the numbers come from</div>`
+    + `<div class="mono" style="font-size:12.5px;line-height:2.1">`
+    /* 🆕🆕 2026-08-31 01v2【自己申告】★★はじめ「40人でいちばん多い人の値」と書いたが
+       ★実測すると 40人の最大は 勉強 9時間・睡眠 10.5時間 で、割る数（10・11）と【合わない】。
+       ★★出荷コードの MX7 / x9 は【この問題が決めた 上限】で割っている（勉強 0〜10・睡眠 2〜11）。
+       → ★★事実どおりに「決めてある上限で割る」と書く（→規則⑴・⑸ 誰が決めたかを言う） */
+    + `x₁ = studied &divide; ${N.div1}&nbsp;&nbsp;<span style="color:var(--gray-500)">`
+    + `&larr; hours studied is set as <b>0 to ${N.div1} hours</b>, so divide by the top of it, ${N.div1}</span><br>`
+    + `x₂ = slept &divide; ${N.div2}&nbsp;&nbsp;<span style="color:var(--gray-500)">`
+    + `&larr; hours slept is set as <b>2 to ${N.div2} hours</b>, so divide by the top of it, ${N.div2}</span></div>`
+    + `<div class="cap" style="text-align:left;margin:.4rem 0 .5rem">`
+    + `Both come out between <b>0 and 1</b> &mdash; `
+    + `<b>the same division as matching up the rulers in Problem 7</b>. `
+    + `<span style="color:var(--gray-500)">The <b>${N.div1}</b> and <b>${N.div2}</b> were chosen by `
+    + `<b>this problem</b> (numbers a person picked).</span></div>`
+    + `<div class="mono" style="font-size:13px;line-height:2.1">`
+    + `inside ●${MB} = <span style="color:#019949">a${SB}</span>&times;x₁ + `
+    + `<span style="color:#019949">b${SB}</span>&times;x₂ + <span style="color:#c26100">d${SB}</span>`
+    + `&nbsp;&nbsp;<b><span style="color:#019949">a${SB} = ${SG(N.a)}</span>&nbsp; `
+    + `<span style="color:#019949">b${SB} = ${SG(N.b)}</span>&nbsp; `
+    + `<span style="color:#c26100">d${SB} = ${SG(N.d)}</span></b></div>`
+    + `<div class="cap" style="text-align:left;margin:.4rem 0 0">`
+    /* 🆕🆕🆕 2026-09-01 01v2【本題】★★「1.71 が 画面の どの線か」を ここで言う。
+       ★★山田様「1.71とかどこから出てきたんだよ わからんって前いっただろ」
+         「a3 ＝ ＋1.71　b3 ＝ −4.83　d3 ＝ ＋2.15　ここ意味不明じゃバグか？ 全くわからん」
+       ★★答え ── この3つは【上の枠の 右の絵に 描いてある線と 点そのもの】。
+         ★絵の側にも ●①②③ と a₃・b₃・d₃ を書いた（→ net9）ので、目で追える
+       ★★あわせて「太くて赤い ＝ マイナスで大きい」「太さが変わる ＝ この数が動いている」も言う
+       ✗ 旧「つまみを押しても この3つは変わりません」── ★誤りだった */
+    + `<b>These three (a₃, b₃, d₃) are the <span style="color:#0b7d8c">picture on the right</span> in the panel above &mdash;`
+    + `<span style="color:#0b7d8c"> the two lines going into ●③ and the dot beneath it</span>.</b><br>`
+    + `<span style="color:var(--gray-500)"><b>The line coming in from sleep is thick and red</b> because`
+    + `<b> b₃ is negative and large</b> (${SG(N.b)}). `
+    + `<b>The thickness shifts every time you take steps because this number is moving.</b><br>`
+    + `All three are <b>numbers the machine found for itself by walking downhill</b>, `
+    + `as they stand <b>after [1000 steps] down</b> `
+    + `(there is <b>nothing for you to turn by hand in this problem</b>. <b>Here the machine does the turning</b>).`
+    + `</span></div></div>`
+    /* ★2人を横に並べる */
+    + `<div class="two">${one(N.hi)}${one(N.lo)}</div>`
+    + `<div class="cap" style="text-align:left;margin:.5rem 0 0">`
+    + `<b>Same ●, same three numbers. The only difference is which student went in.</b>`
+    + `<span style="color:var(--gray-500)"> These two were chosen as `
+    + `<b>students whose figures add up if you type them into a calculator exactly as shown</b>. `
+    + `&mdash; And the same thing is done for all 40.</span></div>`;
+}
+function dive9() {
+  /* 🔴🔴 2026-09-09 展開担当：★★文字を【12px 以上】にする（★決定2 の下限）
+     ★実効px ＝ 単位 × 描画幅 ÷ viewBox幅（560）。★描画幅は 390px の画面で 330px。
+     ★★倍率を掛ける形なので【元の大小関係は そのまま】です。
+     ★上限 2.2倍 ── ★これを超えると行が重なります（★A125_svgfit2.js で確かめます）。
+     ⚠️★CSS の指定が無いことを確かめた上で属性を上げています（★A130_raise.py が検査） */
+  const Kdive9 = Math.min(2.2, Math.max(1, Math.ceil(12 * 560 / ((($('dive9') || {}).getBoundingClientRect ? $('dive9').getBoundingClientRect().width : 330) || 330) / 12 * 100) / 100));
+  const N = diveNum9();
+  let s = '';
+  /* 🆕🆕 2026-08-31 01v2：★★3層の形の絵は【問10 へ移した】。
+     ★問9 は 1層だけを扱う（★［3層］のボタンも 問9 から外した）。
+     ★★山田様「この3層の絵はわかりやすくていいよ」→ ★問10 で 主役として使う */
+  /* 🆕 2026-08-31 01v2：★★●1個の中身は【HTML の inner9】に移した
+     （★SVG では 式が読めない。→山田様「省略しすぎで なんでこうなるのか わからねえよ」） */
+  /* ══ 折り曲げ方 ── ★●の中身の説明（inner9）の すぐ下に来る ══════ */
+  /* 🔴🔴🔴 2026-09-09 展開担当：★★★この2つの文を【SVG の外（HTML）】へ移した
+     ★★★理由（実測）── ★上げたら ⒜ 横に125.16単位（73.75px）重なった
+       ⒝「横＝入ってきた数 ／ たて＝出る数」が viewBox の右へはみ出した。
+     ★横に2つ並べて置いてあるので、★大きくすると必ずぶつかります。 */
+  s += actSVG9(36);
+  $('dive9').innerHTML = s;
+  const b3 = NPB9(3);
+  /* 🆕 2026-08-31 01v2：★★「なぜ2つあるのか」は【問10 で ちがいが出る】ので ここでは ここでは書かない。
+     ★シグモイドの傾き（0.25）の話も 問10（勾配消失）へ移した
+     ★ここで言うのは「どちらも まっすぐでない＝だから 折れる」だけ */
+  $('dive9c').innerHTML =
+    /* 🔴 2026-09-09 展開担当：★SVG から移した2つの文（★文言は1文字も変えていません） */
+    `<b>These are the two bends that live inside a ●</b>`
+    + `<span style="color:var(--gray-500)"> (across = the number coming in / up = the number going out)</span><br>`
+    + `<b>Neither of them is straight.</b>`
+    + `<span style="color:var(--gray-500)"> Pass a number through straight lines as many times as you like and `
+    + `<b>you have only gathered up multiplications and additions</b> &mdash; nothing folds. `
+    + `It folds because <b>something bends along the way</b>. `
+    + `&mdash; This bend is called an <b>activation function</b>. `
+    + `<b>The difference between the two shows up in Problem 10.</b></span>`
+}
+/* 🆕🆕🆕 2026-08-30 V2 第4稿【図C】折れ目が増えると どうなるか ══════════
+   ★本当の境目 勉強 ＝ need8(睡眠) の【接線】を組み合わせて 合格の側を作る
+   ★接線は x ＝ need8(y₀) ＋ k(y₀)×(睡眠 − y₀)、k(y₀) ＝ 5(y₀−7.5)/6.2
+   ★★接線は 凸な弧の【下】に来るので、合格の側は 本当の合格の側を すこし広めに含む
+   ★当たりの数は その場で数える（→規則⑹） */
+const TAN9 = y0 => ({ at: y0, x0: need8(y0), k: 5 * (y0 - 7.5) / 6.2 });
+const WEDGE9 = (x, y, ts) => ts.every(t => x >= t.x0 + t.k * (y - t.at));
+function fold9() {
+  /* 🔴🔴 2026-09-09 展開担当：★★文字を【12px 以上】にする（★決定2 の下限）
+     ★実効px ＝ 単位 × 描画幅 ÷ viewBox幅（560）。★描画幅は 390px の画面で 330px。
+     ★★倍率を掛ける形なので【元の大小関係は そのまま】です。
+     ★上限 2.2倍 ── ★これを超えると行が重なります（★A125_svgfit2.js で確かめます）。
+     ⚠️★CSS の指定が無いことを確かめた上で属性を上げています（★A130_raise.py が検査） */
+  const Kfold9 = Math.min(2.2, Math.max(1, Math.ceil(12 * 560 / ((($('fold9') || {}).getBoundingClientRect ? $('fold9').getBoundingClientRect().width : 330) || 330) / 12 * 100) / 100));
+  const PN = [
+    { nm: 'One line', sub: 'as in Problem 8', f: (x, y) => (1 * x + 2 * y - 13) > 0 },
+    { nm: '1 bend', sub: '2 lines joined', ts: [TAN9(4), TAN9(11)] },
+    { nm: '2 bends', sub: '3 lines joined', ts: [TAN9(4), TAN9(7.5), TAN9(11)] }
+  ].map(p => ({ ...p, f: p.f || ((x, y) => WEDGE9(x, y, p.ts)) }));
+  let s = '';
+  const cnts = [];
+  PN.forEach((p, k) => {
+    const X = k * 188;
+    const P = { x0: X + 28, y0: 186, x1: X + 172, y1: 52 };
+    const sx = v => P.x0 + (v - XR8[0]) / (XR8[1] - XR8[0]) * (P.x1 - P.x0);
+    const sy = v => P.y0 - (v - YR8[0]) / (YR8[1] - YR8[0]) * (P.y0 - P.y1);
+    /* 🆕 2026-08-31 01v2【自己申告】★副題が 390px で 6.78px（7px未満）／
+       ★1280px で 題と 1.17px 重なっていた（★A_gap の実測）
+       → ★12.5 に上げ、行を 16 → 22単位 離した（→§10㉛ 文字を大きくしたら重なりを測り直す） */
+    s += T(X + 28, 22, p.nm, { fs: 13.5 * Kfold9, b: 1, f: "'Noto Serif JP',serif" });
+    /* 🔴 2026-09-09 展開担当：★x を +28 → +8 に詰めた
+       ★★理由（実測）── ★上げたら3枚目の「直線3本をつなぐ」が viewBox の右へはみ出した。
+       ★字が広くなったぶん 左の余白を 20単位 削って収めます（★座標だけの調整） */
+    s += T(X + 8, 44, p.sub, { fs: 12.5 * Kfold9, c: '#6e6e6e', f: "'Noto Serif JP',serif" });
+    /* ★合格と答える側を 塗る */
+    const G = 30;
+    for (let i = 0; i < G; i++) for (let j = 0; j < G; j++) {
+      const x = XR8[0] + (XR8[1] - XR8[0]) * (i + 0.5) / G;
+      const y = YR8[0] + (YR8[1] - YR8[0]) * (j + 0.5) / G;
+      if (p.f(x, y)) {
+        const a = sx(XR8[0] + (XR8[1] - XR8[0]) * i / G);
+        const b = sx(XR8[0] + (XR8[1] - XR8[0]) * (i + 1) / G);
+        const c = sy(YR8[0] + (YR8[1] - YR8[0]) * (j + 1) / G);
+        const e = sy(YR8[0] + (YR8[1] - YR8[0]) * j / G);
+        s += `<rect x="${(a - 0.4).toFixed(1)}" y="${(c - 0.4).toFixed(1)}"
+          width="${(b - a + 1.4).toFixed(1)}" height="${(e - c + 1.4).toFixed(1)}"
+          fill="#019949" opacity=".15"/>`;
+      }
+    }
+    /* ★本当の境目（破線） */
+    let d = '';
+    for (let y = YR8[0]; y <= YR8[1] + 0.001; y += 0.1) {
+      const x = need8(y);
+      if (x < XR8[0] || x > XR8[1]) continue;
+      d += (d ? 'L' : 'M') + sx(x).toFixed(1) + ' ' + sy(y).toFixed(1);
+    }
+    if (d) s += `<path d="${d}" fill="none" stroke="#019949" stroke-width="2.2"
+      stroke-dasharray="6 3.5"/>`;
+    /* ★40人 */
+    let c = 0;
+    DATA.forEach(dd => {
+      const say = p.f(dd.x1, dd.x2) ? 1 : 0, good = say === dd.t;
+      if (good) c++;
+      const x = sx(dd.x1), y = sy(dd.x2);
+      if (dd.t) s += `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="3.4" fill="none"
+        stroke="${good ? '#019949' : '#c00'}" stroke-width="1.8"/>`;
+      else s += `<path d="M${(x - 3).toFixed(1)} ${(y - 3).toFixed(1)}l6 6M${(x + 3).toFixed(1)}
+        ${(y - 3).toFixed(1)}l-6 6" stroke="${good ? '#3f3f3f' : '#c00'}" stroke-width="1.8"/>`;
+    });
+    cnts.push(c);
+    s += `<line x1="${P.x0}" y1="${P.y0}" x2="${P.x1}" y2="${P.y0}" stroke="#000"/>`;
+    s += `<line x1="${P.x0}" y1="${P.y1}" x2="${P.x0}" y2="${P.y0}" stroke="#000"/>`;
+    s += T(X + 100, 212, 'correct', { a: 'middle', fs: 12 * Kfold9, c: '#6e6e6e', f: "'Noto Serif JP',serif" });
+    s += `<text x="${X + 100}" y="238" text-anchor="middle" font-size="22" font-weight="600"
+      font-family="'Source Serif 4',serif" fill="#111">${c}</text>`;
+  });
+  $('fold9').innerHTML = s;
+  const all = DATA.reduce((t, d) => t + ((d.x1 >= need8(d.x2) ? 1 : 0) === d.t ? 1 : 0), 0);
+  $('fold9c').innerHTML =
+    `Across = hours studied / up = hours slept. A circle passed, a cross did not, and <b style="color:#c00">red</b> is who was missed.<br>`
+    + `<b>One line ${cnts[0]} &rarr; 1 bend ${cnts[1]} &rarr; 2 bends ${cnts[2]}`
+    + `&nbsp; (the dashed arc itself would be ${all})</b><br>`
+    + `<span style="color:var(--gray-500)">The target of <b>${GOAL9}</b> in Problem 9 amounts to `
+    + `<b>&ldquo;go and get yourself one bend&rdquo;</b>.</span>`;
+}
+
+/* 🆕🆕🆕 2026-08-31 01v2【この問の答えの図】折り紙 ══════════════════════
+   ★★山田様「この折り目の図はわかりやすいから、上で俺が言葉でわかりにくいと言ってたやつは
+     これで説明しろ」
+   ★★受ける疑問は4つ
+     ⒜ 折れ目の本数は●の数と同じ ── ★●の絵を並べて 目で見せる
+     ⒝ 折り目の【位置】は 機械が決める／【本数】は 人が決める
+     ⒞ 上から見ると 平面が 区域に分かれる（★4区域の絵をここへ。★表は復活させない）
+     ⒟ 折り曲げ【なし】だと 何回 折っても 平ら ＝ この問の柱
+   ══════════════════════════════════════════════════════════════ */
+function ori9() {
+  const PN = [
+    { nm: 'no ●', sub: '0 creases', pts: [[0, 0], [1, 0]], dots: 0 },
+    { nm: 'one ●', sub: '1 crease', pts: [[0, 0], [0.5, 1], [1, 0]], dots: 1 },
+    { nm: 'two ●', sub: '2 creases', pts: [[0, 0], [0.34, 0.86], [0.66, 0.86], [1, 0]], dots: 2 }
+  ];
+  /* 🆕🆕🆕 2026-09-10 図修正担当：★★★スマホだけ 図の文字を【実効 10px 以上】にする
+     ★★★★PC は【1pxも変えません】── ★Math.max(1, …) で PC は倍率 1 に落ち、
+       ★fs も文の並べ方も 元のまま（★下の 縦 が false の枝を通ります）。
+     ★算数 ── この図のいちばん小さい文字は 12単位。★実効 ＝ 12 × K × (描画幅 ÷ 560)。
+       ★これを 10px にする K ＝ 10 × 560 ÷ 描画幅 ÷ 12
+         ・390px幅（描画 330）→ K 1.42 → 実効 10.04px
+         ・分割中（描画 348）→ さらに余裕
+         ・PC（描画 694）→ 0.67 なので max(1,…) で 1（★倍率1＝現物のまま）
+     ★★型は この同じファイルの anat9 / dive9 / fold9 と同じです（★借りました） */
+  const K9o = Math.min(2.2, Math.max(1, Math.ceil(10 * 560 /
+    ((($('ori9') || {}).getBoundingClientRect ? $('ori9').getBoundingClientRect().width : 330) || 330)
+    / 12 * 100) / 100));
+  const F9o = v => Math.round(v * K9o * 100) / 100;
+  /* ★★スマホのときだけ 下の2文を【2行に分ける】── ★★★文言は1文字も変えていません。
+     ★もともと文の中にある半角スペース1つを【改行に替えただけ】です（★語句の増減なし）。
+     ★理由（★実測）── 17.68単位に上げると 1行では右へ 62単位・217単位 はみ出します。
+       ★2行に分ければ いちばん長い行でも 442単位で 560 に収まります */
+  const 縦 = K9o > 1;
+  let s = '';
+  s += T(16, 22, 'Number of ● = number of creases', { fs: F9o(13.5), b: 1, f: "'Noto Serif JP',serif" });
+  /* 🔴 2026-09-10 図修正担当：★★上げたら 題と この行の隙間が【2.7単位＝1.6px】になり、
+     ★★★機械の重なりは0でも【目でくっついて見えました】（★実物を撮って気づきました）。
+     → ★スマホだけ x を 220 → 250 にずらした（★隙間 33単位＝19px／右の余白 29単位）。
+       ★★PC は 220 のまま（★F9o が 1倍のときは 元の x を使います） */
+  /* ★★英語版だけ x を 250/220 → 330/300 にずらしました ── ★左の題が英語で長くなり、
+     ★250 では 題（実測 約307単位）と重なります */
+  s += T(縦 ? 310 : 300, 22, 'dashed = the shape we want', { fs: F9o(12), c: '#6e6e6e', f: "'Noto Serif JP',serif" });
+  PN.forEach((p, k) => {
+    const X = k * 188, x0 = X + 26, x1 = X + 168, yb = 124, yt = 56;
+    const sx = t => x0 + t * (x1 - x0);
+    const sy = v => yb - v * (yb - yt);
+    /* ★●の絵（この段が ●いくつ ぶんか）を 題の横に描く */
+    s += T(X + 26, 46, p.nm, { fs: F9o(13), b: 1, c: p.dots ? '#2f6fb5' : '#9aa3a9', f: "'Noto Serif JP',serif" });
+    for (let i = 0; i < p.dots; i++) {
+      const cx = X + 96 + i * 26;
+      s += NODE(cx, 41, 9, '#2f6fb5'); s += INMARK9(cx, 41, 9, 'relu');
+    }
+    /* ★めざす形（なめらかな山）を 破線で */
+    let d = '';
+    for (let t = 0; t <= 1.001; t += 0.02)
+      d += (d ? 'L' : 'M') + sx(t).toFixed(1) + ' ' + sy(Math.sin(Math.PI * t)).toFixed(1);
+    s += `<path d="${d}" fill="none" stroke="#9aa3a9" stroke-width="1.4" stroke-dasharray="4 3"/>`;
+    /* ★折り目でできる形 */
+    const d2 = p.pts.map((q, i) => (i ? 'L' : 'M') + sx(q[0]).toFixed(1) + ' ' + sy(q[1]).toFixed(1)).join('');
+    s += `<path d="${d2}" fill="none" stroke="#019949" stroke-width="3"/>`;
+    /* ★折り目の位置に印 ＋ 下に落とす縦線（★位置が どこかを見せる） */
+    p.pts.slice(1, -1).forEach(q => {
+      s += `<circle cx="${sx(q[0]).toFixed(1)}" cy="${sy(q[1]).toFixed(1)}" r="4" fill="#019949"/>`;
+      s += `<line x1="${sx(q[0]).toFixed(1)}" y1="${sy(q[1]).toFixed(1)}" x2="${sx(q[0]).toFixed(1)}"
+        y2="${yb}" stroke="#019949" stroke-width="1" stroke-dasharray="3 2" opacity=".6"/>`;
+    });
+    s += `<line x1="${x0}" y1="${yb}" x2="${x1}" y2="${yb}" stroke="#d9d9d9"/>`;
+    s += T(X + 26, 146, p.sub, { fs: F9o(12.5), b: 1, c: '#019949', f: "'Noto Serif JP',serif" });
+  });
+  if (縦) {
+    /* ★★スマホ ── 2文を それぞれ「──」の前で改行して 4行にする（★文言そのまま） */
+    s += T(16, 172, 'HOW MANY creases you get is set by how many ● you place',
+      { fs: F9o(12.5), f: "'Noto Serif JP',serif" });
+    s += T(16, 194, '── a person decides that',
+      { fs: F9o(12.5), f: "'Noto Serif JP',serif" });
+    s += T(16, 220, 'WHERE a crease falls is where the inside of a ● hits 0',
+      { fs: F9o(12.5), f: "'Noto Serif JP',serif" });
+    s += T(16, 242, '── the machine decides that (the weights move)',
+      { fs: F9o(12.5), f: "'Noto Serif JP',serif" });
+    /* ★4行に増えた分だけ たてを伸ばす（★205 → 250。★★スマホだけ。★PC は 205 のまま） */
+    $('ori9').setAttribute('viewBox', '0 0 560 250');
+  } else {
+    /* ★★英語版だけ 文言を詰めました ── ★直訳（100字＝628単位）では
+       ★viewBox 560 の右へ 84単位 出ました（★1280px で実測）。★意味は落としていません */
+    s += T(16, 172, 'HOW MANY creases there are is set by how many ● you place ── a person decides',
+      { fs: 12.5, f: "'Noto Serif JP',serif" });
+    s += T(16, 192, 'WHERE it falls is where a ● hits 0 ── the machine decides (weights move)',
+      { fs: 12.5, f: "'Noto Serif JP',serif" });
+  }
+  /* 🆕🆕🆕 2026-09-01 01v2：★★中段「上から見ると ── 折り目が 面を 区切ります」と
+     下段「折り曲げ【なし】だと」を【丸ごと 削除した】。
+     ★★山田様「ここだけ残せって言ってただろ」「これも消えてないじゃん」
+     ★消した理由（★山田様が言われていない部分は 01v2 の判断）
+       ⒜ 中段は【新しい図「なぜ 折れるのか」（why9）】が そのまま受け持っている。
+          ★同じことを 2枚で説明していた（→§2-14 の型3）
+       ⒝ 下段「折り曲げなしだと 平ら」は 会話 e9d が言っている
+          （「掛け算と足し算だけになる」「問8 と まったく同じ形に 戻る」）── 図と会話で二重だった
+     ★viewBox は 562 → 205 に詰めた（★上段の最後の行が y=192 なので その下に 13 だけ残す）
+     ✅ 残したもの：題（●の数 ＝ 折り目の本数）／●なし・●1個・●2個 の3枚／
+        本数は 人が決める・位置は 機械が決める の2行 */
+  $('ori9').innerHTML = s;
+  /* 🆕🆕 2026-09-01 01v2：★★ori9c への代入も【消した】（→山田様「完全に消せ」）。
+     ★前任は 長い文を1行に縮めただけだった。★div ごと 消したので 代入も消す
+     ★中身は 図の中の2行（本数は 人・位置は 機械）と 会話 e9d が受け持つ */
+}
+
+/* 🆕🆕🆕 2026-09-01 01v2【新規・図E】なぜ 折れるのか ══════════════════════
+   ★★「項が消える → 出口の式が変わる → 境目の傾きが変わる → 折れる」の3段を
+     1枚に つなげた図。★★山田様がこの案で「なんとなくわかった」と承認した
+   ★★2本の傾きは【この出荷コードを 1,000歩 走らせた重みから 計算して】描く。
+     ★埋め込まない・推測しない（→規則⑹、→§10⒋）
+   ★状態は丸ごと退避して戻す（★読者の画面を汚さない。★flow9・inner9 と同じ作り）
+   ══════════════════════════════════════════════════════════════ */
+let WHY9N = null;
+function whyNum9() {
+  if (WHY9N) return WHY9N;
+  const sv = [L9, A9, SK9, Ws9, bs9, Wo9, bo9, n9, div9];
+  L9 = 1; A9 = 'relu'; SK9 = false; init9(); core9(1000);
+  const A = Ws9[0], B = bs9[0], Wo = Wo9.slice(), bo = bo9;
+  const alv = alive9()[0].slice();
+  /* ★●③の折り目（中身 ＝ 0）を 勉強 について解く
+     a×(勉強/10) ＋ b×(睡眠/11) ＋ d ＝ 0 → 勉強 ＝ −( b×(睡眠/11) ＋ d ) × 10 / a */
+  const fold = y => -((A[2][1] * (y / 11)) + B[2]) * 10 / A[2][0];
+  /* ★「持ち点 ＝ 0」の線。★S に入れた●だけが 数を通している区域の式で引く
+     持ち点 ＝ Σ r_i×( a_i×(勉強/10) ＋ b_i×(睡眠/11) ＋ d_i ) ＋ d₄ */
+  const lineOf = S => {
+    let av = 0, bv = 0, cc = bo;
+    S.forEach(i => { av += Wo[i] * A[i][0]; bv += Wo[i] * A[i][1]; cc += Wo[i] * B[i]; });
+    return { f: y => -((bv * (y / 11)) + cc) * 10 / av,
+      k: -(bv / 11) * 10 / av, c: -cc * 10 / av };
+  };
+  /* ★実測（種101・幅3・1歩0.6・1,000歩）：●①は 40人 全員に 0 を返す。
+     ★●②は 39人に 数を通す。★●③は 20人（＝ここで 通す／0 が 入れ替わる） */
+  const up = lineOf([1]), dn = lineOf([1, 2]);
+  /* ★2本が つながる点は 折り目の上。★二分法で出す（★座標を推測しない） */
+  let lo = YR8[0], hi = YR8[1];
+  for (let t = 0; t < 80; t++) { const m = (lo + hi) / 2; if (up.f(m) - fold(m) > 0) lo = m; else hi = m; }
+  const ym = (lo + hi) / 2;
+  WHY9N = { fold, up, dn, ym, xm: up.f(ym), alv,
+    a3: A[2][0], b3: A[2][1], d3: B[2],
+    fk: (fold(YR8[1]) - fold(YR8[0])) / (YR8[1] - YR8[0]), fc: fold(0) };
+  [L9, A9, SK9, Ws9, bs9, Wo9, bo9, n9, div9] = sv;
+  return WHY9N;
+}
+function why9() {
+  const N = whyNum9();
+  const SF = "'Noto Serif JP',serif";
+  const CU = '#7b4fb5', CD = '#c26100', C3 = '#0b7d8c';
+  const num = v => (v < 0 ? '−' : '') + Math.abs(v).toFixed(2);
+  const PL = (x0, y0, x1, y1) => ({ x0, y0, x1, y1,
+    sx: v => x0 + (v - XR8[0]) / (XR8[1] - XR8[0]) * (x1 - x0),
+    sy: v => y0 - (v - YR8[0]) / (YR8[1] - YR8[0]) * (y0 - y1) });
+  const frame = P => `<rect x="${P.x0}" y="${P.y1}" width="${P.x1 - P.x0}"
+    height="${P.y0 - P.y1}" fill="none" stroke="#d9d9d9"/>`;
+  /* ★枠に入る部分だけ 線を引く（★はみ出させない） */
+  const draw = (P, f, ya, yb, col, w, dash) => {
+    const pts = [];
+    for (let y = ya; y <= yb + 1e-9; y += 0.05) { const x = f(y);
+      if (x >= XR8[0] && x <= XR8[1]) pts.push([P.sx(x), P.sy(y)]); }
+    if (pts.length < 2) return '';
+    return `<path d="${pts.map((q, i) => (i ? 'L' : 'M') + q[0].toFixed(1) + ' ' + q[1].toFixed(1)).join('')}"
+      fill="none" stroke="${col}" stroke-width="${w}"${dash ? ` stroke-dasharray="${dash}"` : ''}/>`;
+  };
+  const arrow = (x, y0, y1) =>
+    `<line x1="${x}" y1="${y0}" x2="${x}" y2="${y1 - 7}" stroke="#9aa3a9" stroke-width="1.4"/>`
+    + `<path d="M${x - 4} ${y1 - 7}L${x + 4} ${y1 - 7}L${x} ${y1}Z" fill="#9aa3a9"/>`;
+  let s = '';
+  /* 🆕🆕🆕 2026-09-10 図修正担当：★★★スマホだけ 図の文字を【実効 10px 以上】にする
+     ★★★★PC は【1pxも変えません】── ★K9w は PC では 1 になり、★下の【else の枝】＝
+       ★2026-09-01 に組まれた元の絵が そのまま描かれます（★座標も fs も 1つも動かしていません）。
+     ★算数 ── いちばん小さい文字は 12単位。★K ＝ 10 × 560 ÷ 描画幅 ÷ 12
+       ・390px幅（描画 330）→ 1.42 → 実効 10.04px ／ PC（描画 694）→ max(1,…) で 1
+     ★★★★なぜ 縦に積むのか（★実測。→ A161_figdetail.js）
+       ★文字を 1.42倍にすると【右へ はみ出すのが4件・重なりが1件】出ます ──
+         ⒜ ②の右の枠「持ち点 ＝ p×① ＋ q×② ＋ r×③ ＋ d₄」は 301単位。
+            ★★枠の幅が 258単位しかないので【横並びのままでは 物理的に入りません】
+         ⒝ ③の右の列は 307単位 要るのに、絵の右に空いているのは 288単位
+         ⒞ ③の「横＝勉強時間 ／ たて＝睡眠時間」と 右の列の最後の行が 重なる
+     → ★★山田様のご指示「左右に並べてるのは縦並びにする」に沿って ──
+        ① 説明の列を 絵の【右】から すこし左へ寄せ、絵を 14単位 細くした（★余白 27単位）
+        ② 2つの枠を【縦に積んだ】（★幅 258 → 532単位。★余白 219単位）
+        ③ 説明の列を 絵の【下】へ移した（★幅 288 → 546単位。★重なりも消えます）
+     ★★たては 512 → 795単位（★スマホの見た目で 302px → 468px）。★★★PC は 512 のまま */
+  const K9w = Math.min(2.2, Math.max(1, Math.ceil(10 * 560 /
+    ((($('why9') || {}).getBoundingClientRect ? $('why9').getBoundingClientRect().width : 330) || 330)
+    / 12 * 100) / 100));
+  const F9w = v => Math.round(v * K9w * 100) / 100;
+  if (K9w > 1) {
+    /* ══ ①（スマホ）折り目で 面が 2つに分かれる ══════════════ */
+    s += T(14, 20, '① The crease (dotted) splits the plane in two', { fs: F9w(13.5), b: 1, f: SF });
+    const Q1 = PL(40, 150, 230, 46);
+    s += frame(Q1);
+    s += draw(Q1, N.fold, YR8[0], YR8[1], C3, 2, '7 4');
+    s += T(48, 66, '●③ returns 0', { fs: F9w(12.5), b: 1, c: '#c00', f: SF });
+    s += T(226, 142, '●③ passes it on', { a: 'end', fs: F9w(12.5), b: 1, c: '#019949', f: SF });
+    s += T(40, 172, 'across = hours studied / up = hours slept', { fs: F9w(12), c: '#6e6e6e', f: SF });
+    s += T(240, 60, '[top left] much sleep, little study', { fs: F9w(12.5), f: SF });
+    s += T(240, 80, '&nbsp;&rarr; inside ●③ goes negative &rarr; 0', { fs: F9w(12.5), c: '#c00', f: SF });
+    s += T(240, 104, '[bottom right] ●③ passes it on', { fs: F9w(12.5), c: '#019949', f: SF });
+    s += T(240, 128, 'the dotted line (inside ●③ = 0)', { fs: F9w(12), c: '#6e6e6e', f: SF });
+    s += T(240, 150, '&nbsp;studied = ' + num(N.fk) + '&times;slept ' + (N.fc < 0 ? '−' : '+') + ' '
+      + Math.abs(N.fc).toFixed(2), { fs: F9w(12.5), b: 1, c: C3, f: SF });
+    /* ══ ②（スマホ）2つの枠を【縦に積む】 ══════════════════ */
+    s += arrow(280, 184, 206);
+    s += T(14, 216, '② Which side you are on changes the output formula', { fs: F9w(13.5), b: 1, f: SF });
+    s += `<rect x="14" y="226" width="532" height="72" fill="var(--white)" stroke="#d9d9d9"/>`;
+    s += T(24, 246, 'top left (●③ = 0)', { fs: F9w(12.5), b: 1, c: CU, f: SF });
+    s += T(24, 270, 'points = p&times;① + q&times;② + d₄', { fs: F9w(12.5), f: SF });
+    s += T(24, 292, 'r&times;③ drops out', { fs: F9w(12), b: 1, c: '#c00', f: SF });
+    s += `<rect x="14" y="306" width="532" height="72" fill="var(--white)" stroke="#d9d9d9"/>`;
+    s += T(24, 326, 'bottom right (●③ passes it on)', { fs: F9w(12.5), b: 1, c: CD, f: SF });
+    s += T(24, 350, 'points = p&times;① + q&times;② + r&times;③ + d₄', { fs: F9w(12), f: SF });
+    s += T(24, 372, 'r&times;③ stays', { fs: F9w(12), b: 1, c: '#019949', f: SF });
+    /* ══ ③（スマホ）説明の列を 絵の【下】へ ══════════════════ */
+    s += arrow(280, 386, 408);
+    s += T(14, 428, '③ Draw the line where points = 0 for each formula', { fs: F9w(13.5), b: 1, f: SF });
+    const Q2 = PL(46, 588, 250, 444);
+    s += frame(Q2);
+    s += draw(Q2, N.fold, YR8[0], YR8[1], C3, 1.4, '5 4');
+    s += draw(Q2, N.up.f, N.ym, YR8[1], CU, 3);
+    s += draw(Q2, N.dn.f, YR8[0], N.ym, CD, 3);
+    {
+      const cx = Q2.sx(N.xm), cy = Q2.sy(N.ym);
+      s += `<circle cx="${cx.toFixed(1)}" cy="${cy.toFixed(1)}" r="4.6" fill="#111"/>`;
+      s += T(cx + 9, cy - 6, 'they meet here', { fs: F9w(12), b: 1, f: SF });
+    }
+    s += T(Q2.sx(N.up.f(YR8[1])) + 8, 458, 'top-left line', { fs: F9w(12), b: 1, c: CU, f: SF });
+    /* 🔴 2026-09-10 図修正担当：★★この行を 絵の中の右下（246,578）に置いたら
+       ★★★【オレンジの線の上に重なって 文字が潰れました】（★実物を撮って気づきました）。
+       ★★A160/A161 は 文字と文字・文字と四角しか見ないので【線との重なりは出ません】。
+       → ★絵の【外の右】へ出した（★絵は x 46〜250。★右は 250〜560 が空いています）。
+         ★オレンジの線が 枠の右下から出てくる高さの すぐ横なので 指すものは変わりません */
+    s += T(258, 572, 'bottom-right line', { fs: F9w(12), b: 1, c: CD, f: SF });
+    s += T(46, 608, 'across = hours studied / up = hours slept', { fs: F9w(12), c: '#6e6e6e', f: SF });
+    s += T(14, 634, 'the line where points = 0 is the boundary', { fs: F9w(12.5), b: 1, f: SF });
+    s += T(14, 654, '&nbsp;the divide between pass and fail', { fs: F9w(12), c: '#6e6e6e', f: SF });
+    s += T(14, 678, 'top-left formula&nbsp; studied = ' + num(N.up.k) + '&times;slept + ' + N.up.c.toFixed(2),
+      { fs: F9w(12.5), b: 1, c: CU, f: SF });
+    s += T(14, 698, '&nbsp;almost upright (+1 sleep shifts it ' + num(N.up.k) + ')', { fs: F9w(12), c: '#6e6e6e', f: SF });
+    s += T(14, 722, 'bottom-right formula&nbsp; studied = ' + num(N.dn.k) + '&times;slept + ' + N.dn.c.toFixed(2),
+      { fs: F9w(12.5), b: 1, c: CD, f: SF });
+    s += T(14, 742, '&nbsp;sloping down (+1 sleep shifts it ' + num(N.dn.k) + ')', { fs: F9w(12), c: '#6e6e6e', f: SF });
+    s += T(14, 766, 'two different slopes meet at the crease', { fs: F9w(12.5), b: 1, f: SF });
+    s += T(14, 788, 'so that is where the boundary folds', { fs: F9w(12.5), b: 1, c: '#019949', f: SF });
+    $('why9').setAttribute('viewBox', '0 0 560 795');
+  } else {
+  /* ══ ① 折り目で 面が 2つに分かれる ══════════════════════════ */
+  s += T(14, 20, '① The crease (dotted) splits the plane in two', { fs: 13.5, b: 1, f: SF });
+  const P1 = PL(46, 150, 250, 46);
+  s += frame(P1);
+  s += draw(P1, N.fold, YR8[0], YR8[1], C3, 2, '7 4');
+  s += T(54, 66, '●③ returns 0', { fs: 12.5, b: 1, c: '#c00', f: SF });
+  s += T(246, 142, '●③ passes it on', { a: 'end', fs: 12.5, b: 1, c: '#019949', f: SF });
+  s += T(46, 170, 'across = hours studied / up = hours slept', { fs: 12, c: '#6e6e6e', f: SF });
+  s += T(272, 60, '[top left] much sleep, little study', { fs: 12.5, f: SF });
+  s += T(272, 80, '&nbsp;&rarr; inside ●③ goes negative &rarr; 0', { fs: 12.5, c: '#c00', f: SF });
+  s += T(272, 106, '[bottom right] ●③ passes it on', { fs: 12.5, c: '#019949', f: SF });
+  s += T(272, 132, 'the dotted line (inside ●③ = 0)', { fs: 12, c: '#6e6e6e', f: SF });
+  s += T(272, 152, '&nbsp;studied = ' + num(N.fk) + '&times;slept ' + (N.fc < 0 ? '−' : '+') + ' '
+    + Math.abs(N.fc).toFixed(2), { fs: 12.5, b: 1, c: C3, f: SF });
+  /* ══ ② どちら側かで 出口の式が ちがう ══════════════════════ */
+  s += arrow(148, 178, 200); s += arrow(412, 178, 200);
+  s += T(14, 196, '② Which side you are on changes the output formula', { fs: 13.5, b: 1, f: SF });
+  s += `<rect x="14" y="206" width="258" height="72" fill="var(--white)" stroke="#d9d9d9"/>`;
+  s += `<rect x="288" y="206" width="258" height="72" fill="var(--white)" stroke="#d9d9d9"/>`;
+  s += T(24, 226, 'top left (●③ = 0)', { fs: 12.5, b: 1, c: CU, f: SF });
+  s += T(24, 250, 'points = p&times;① + q&times;② + d₄', { fs: 12.5, f: SF });
+  s += T(24, 270, 'r&times;③ drops out', { fs: 12, b: 1, c: '#c00', f: SF });
+  s += T(298, 226, 'bottom right (●③ passes it on)', { fs: 12.5, b: 1, c: CD, f: SF });
+  s += T(298, 250, 'points = p&times;① + q&times;② + r&times;③ + d₄', { fs: 12, f: SF });
+  s += T(298, 270, 'r&times;③ stays', { fs: 12, b: 1, c: '#019949', f: SF });
+  /* ══ ③ それぞれの「持ち点 ＝ 0」の線 ══════════════════════ */
+  s += arrow(148, 284, 306); s += arrow(412, 284, 306);
+  s += T(14, 324, '③ Draw the line where points = 0 for each formula', { fs: 13.5, b: 1, f: SF });
+  const P2 = PL(46, 480, 250, 336);
+  s += frame(P2);
+  s += draw(P2, N.fold, YR8[0], YR8[1], C3, 1.4, '5 4');
+  s += draw(P2, N.up.f, N.ym, YR8[1], CU, 3);
+  s += draw(P2, N.dn.f, YR8[0], N.ym, CD, 3);
+  {
+    const cx = P2.sx(N.xm), cy = P2.sy(N.ym);
+    s += `<circle cx="${cx.toFixed(1)}" cy="${cy.toFixed(1)}" r="4.6" fill="#111"/>`;
+    s += T(cx + 9, cy - 6, 'they meet here', { fs: 12, b: 1, f: SF });
+  }
+  s += T(P2.sx(N.up.f(YR8[1])) + 8, 350, 'top-left line', { fs: 12, b: 1, c: CU, f: SF });
+  s += T(246, 470, 'bottom-right line', { a: 'end', fs: 12, b: 1, c: CD, f: SF });
+  s += T(46, 500, 'across = hours studied / up = hours slept', { fs: 12, c: '#6e6e6e', f: SF });
+  s += T(272, 348, 'the line where points = 0 is the boundary', { fs: 12.5, b: 1, f: SF });
+  s += T(272, 368, '&nbsp;the divide between pass and fail', { fs: 12, c: '#6e6e6e', f: SF });
+  s += T(272, 394, 'top-left&nbsp; studied = ' + num(N.up.k) + '&times;slept + ' + N.up.c.toFixed(2),
+    { fs: 12.5, b: 1, c: CU, f: SF });
+  s += T(272, 412, '&nbsp;almost upright (+1 sleep shifts it ' + num(N.up.k) + ')', { fs: 12, c: '#6e6e6e', f: SF });
+  s += T(272, 436, 'bottom-right&nbsp; studied = ' + num(N.dn.k) + '&times;slept + ' + N.dn.c.toFixed(2),
+    { fs: 12.5, b: 1, c: CD, f: SF });
+  s += T(272, 454, '&nbsp;sloping down (+1 sleep shifts it ' + num(N.dn.k) + ')', { fs: 12, c: '#6e6e6e', f: SF });
+  s += T(272, 478, 'two different slopes meet at the crease', { fs: 12.5, b: 1, f: SF });
+  s += T(272, 498, 'so that is where the boundary folds', { fs: 12.5, b: 1, c: '#019949', f: SF });
+  }
+  $('why9').innerHTML = s;
+  $('why9c').innerHTML =
+    `<b>A term that hits 0 drops out &rarr; the output formula changes &rarr; the slope of the boundary changes &rarr; it folds.</b>`
+    + `<span style="color:var(--gray-500)"> Those four steps run into one another. `
+    + `<b>On the crease itself both formulas give the same points</b>, so the two lines meet there cleanly `
+    + `(${N.xm.toFixed(2)} hrs studied, ${N.ym.toFixed(2)} hrs slept). `
+    + `&mdash; The three formulas above are drawn from the knobs <b>as they stand after 1,000 steps down with [one layer] and [ReLU]</b>. `
+    + `<b>Take more steps and the lines move too.</b></span>`;
+}
+
+/* 🆕🆕 2026-08-31 01v2：★★act9 は【独立した図をやめて】dive9 の下段に入れた。
+   ★★山田様「ここの段階で ReLU が出てくるんだから そこのすぐあととかに入れないと
+     全くわからないよ」── ★●の中身の真下に「その ReLU とは これだ」を置く
+   ★だから この関数は【文字列を返す】形にした（★oy ＝ たての ずらし幅） */
+function actSVG9(oy) {
+  /* 🔴🔴 2026-09-09 展開担当：★★文字を【12px 以上】にする
+     ★★★この関数は dive9 の中身を描いています（★#actSVG9 という要素はありません）。
+       ★なので 描画幅は【#dive9】から測ります */
+  const Kact9 = Math.min(2.2, Math.max(1, Math.ceil(12 * 560 /
+    ((($('dive9') || {}).getBoundingClientRect ? $('dive9').getBoundingClientRect().width : 330) || 330)
+    / 12 * 100) / 100));
+  /* 🆕 2026-08-31 01v2：★★［折り曲げない］は 押せなくしたので 図からも外した
+     （→山田様「使わないなら入れるなよ。真っ直ぐを通すも意味不明なんだよ」）。
+     ★「折り曲げなかったら 平ら」は 下の折り紙が受け持つ */
+  const FS = [
+    { nm: 'ReLU', sub: 'turns anything negative into 0', f: v => Math.max(0, v), c: '#019949' },
+    { nm: 'Sigmoid', sub: 'squeezes it into 0 to 1', f: v => 1 / (1 + Math.exp(-v)), c: '#2f6fb5' }
+  ];
+  const XL = -3, XH = 3, YL = -1.5, YH = 3;
+  let s = '';
+  FS.forEach((g, k) => {
+    const X = k * 250 + 20;                     /* 🆕 2枚になったので 間を広げた */
+    const x0 = X + 30, x1 = X + 198, y0 = 152 + oy, y1 = 44 + oy;
+    const sx = v => x0 + (v - XL) / (XH - XL) * (x1 - x0);
+    const sy = v => y0 - (v - YL) / (YH - YL) * (y0 - y1);
+    s += T(X + 30, 22 + oy, g.nm, { fs: 14 * Kact9, b: 1, c: g.c, f: "'Noto Serif JP',serif" });
+    /* ★わく と 0 の線 */
+    s += `<rect x="${x0}" y="${y1}" width="${x1 - x0}" height="${y0 - y1}" fill="none" stroke="#ececec"/>`;
+    s += `<line x1="${x0}" y1="${sy(0).toFixed(1)}" x2="${x1}" y2="${sy(0).toFixed(1)}" stroke="#c8c8c8"/>`;
+    s += `<line x1="${sx(0).toFixed(1)}" y1="${y1}" x2="${sx(0).toFixed(1)}" y2="${y0}" stroke="#c8c8c8"/>`;
+    /* 🆕 2026-08-31 01v2【自己申告】★390px で 6.78px（7px未満）だった → 12.5 に上げた */
+    s += T(sx(0) - 4, sy(0) + 14, '0', { a: 'end', fs: 12.5 * Kact9, c: '#9aa3a9' });
+    /* ★折り曲げ方の線 */
+    let d = '';
+    for (let v = XL; v <= XH + 0.001; v += 0.06) {
+      const y = g.f(v);
+      if (y < YL || y > YH) continue;
+      d += (d ? 'L' : 'M') + sx(v).toFixed(1) + ' ' + sy(y).toFixed(1);
+    }
+    s += `<path d="${d}" fill="none" stroke="${g.c}" stroke-width="3"/>`;
+    s += T(X + 30, 176 + oy, g.sub, { fs: 12.5 * Kact9, c: '#3f3f3f', f: "'Noto Serif JP',serif" });
+  });
+  return s;
+}
+function net9() {
+  /* 🔴🔴 2026-09-09 図の担当：★★文字の単位を【描画幅から逆算】する（★bdDraw と同じ手）
+     ★単位 ＝ 14 × 560 ÷ 描画幅 → ★330px なら 23.8 ／ 430px なら 18.2
+     ★上限28単位 ── ★これを超えると ●の間（46単位）に収まりません */
+  const RW9 = ($('net9').getBoundingClientRect().width) || 330;
+  const FS9 = Math.max(12, Math.min(28, Math.ceil(14 * 560 / RW9 * 10) / 10));
+  const K = 2, dims = [K].concat(new Array(L9).fill(WID9)).concat([1]);
+  const cols = dims.length;
+  const xs = dims.map((_, i) => 92 + i * (400 / Math.max(1, cols - 1)));
+  const ysOf = n => { const gap = 46, top = 130 - (n - 1) * gap / 2;
+    return Array.from({ length: n }, (_, i) => top + i * gap); };
+  let s = '';
+  /* エッジ */
+  for (let l = 0; l < cols - 1; l++) {
+    const ya = ysOf(dims[l]), yb = ysOf(dims[l + 1]);
+    const M = (l < L9) ? Ws9[l] : [Wo9];
+    for (let i = 0; i < dims[l + 1]; i++) for (let j = 0; j < dims[l]; j++) {
+      const w = (M[i] && M[i][j] !== undefined) ? M[i][j] : 0;
+      s += EDGE(xs[l], ya[j], xs[l + 1], yb[i], w, 1.1);
+    }
+    /* そのまま足す道（★段の間を跳ぶ弧） */
+    if (skOn(l)) {
+      const y0 = ysOf(dims[l])[0], y1 = ysOf(dims[l + 1])[0];
+      s += `<path d="M${xs[l]} ${y0 - 30}Q${(xs[l] + xs[l + 1]) / 2} ${y0 - 62} ${xs[l + 1]} ${y1 - 30}"
+        fill="none" stroke="#2f6fb5" stroke-width="2.4" stroke-dasharray="5 3"/>`;
+    }
+  }
+  /* ノード */
+  const names = ['in', ...Array(L9).fill('layer'), 'out'];
+  for (let l = 0; l < cols; l++) {
+    const ys = ysOf(dims[l]);
+    ys.forEach(y => s += NODE(xs[l], y, l === 0 ? 8 : (l === cols - 1 ? 10 : 7),
+      l === 0 ? '#000' : (l === cols - 1 ? '#019949' : '#2f6fb5')));
+    s += T(xs[l], 232, names[l] + (l > 0 && l < cols - 1 ? String(l) : ''),
+      { a: 'middle', fs: FS9, c: '#3f3f3f', f: "'Noto Serif JP',serif" });
+  }
+  /* 🆕🆕 V2 ★★下駄（バイアス）を描く。★入口の●には付かない。
+     ★●の真下に 短い棒と小さな灰色の点。★次の●とは 20単位以上 空くので重ならない */
+  for (let l = 1; l < cols; l++) {
+    const ys = ysOf(dims[l]), r = (l === cols - 1 ? 10 : 7);
+    ys.forEach(y => {
+      s += `<line x1="${xs[l]}" y1="${y + r}" x2="${xs[l]}" y2="${y + r + 7}"
+        stroke="#9aa3a9" stroke-width="1.2"/>`;
+      s += `<circle cx="${xs[l]}" cy="${y + r + 11}" r="3" fill="#9aa3a9"/>`;
+    });
+  }
+  /* ★★英語版だけ x を 16 → 12 に詰め、語も短くしました ── ★入口の●は xs[0]=70 なので
+     ★anchor end で左に使えるのは 約58単位。★'study' は FS9 が 23.8単位のとき 約60単位です */
+  s += T(xs[0] - 12, ysOf(2)[0] + 4, 'study', { a: 'end', fs: FS9, f: "'Noto Serif JP',serif" });
+  s += T(xs[0] - 12, ysOf(2)[1] + 4, 'sleep', { a: 'end', fs: FS9, f: "'Noto Serif JP',serif" });
+  /* 🆕🆕🆕 2026-09-01 01v2：★★まん中の●に【番号】を書く。
+     ★★山田様「①とかが真ん中の層の丸が3つあるからどれのこと言ってるのか
+       なんとなくわかるが、ニューラルネットの絵に直接どれが①で③だとか書いたほうがいい。
+       入り口とかにも丸あるからどれかわかりにくいんだよ」
+     ★★表記は 式（eqs9）と表（flow9）と同じ【●①●②●③】にそろえた
+     ★★色は 境目のグラフ（bd9）の点線と そろえた ── ★同じ●が 同じ色で つながる
+     ★対応は 出荷コードで確認した ── ●① ＝ Ws9[0][0]（いちばん上・y 84）／
+       ●② ＝ [1]（y 130）／●③ ＝ [2]（いちばん下・y 176）
+     ★あわせて ●③に入る2本を a₃・b₃、●③の下の点を d₃ と 名指しする
+       ★★これが「1.71 は どこから来たのか」への答え（＝この線の つまみそのもの）
+     ★1層のときだけ 出す（★3層では ●が9個になって 番号が意味を持たない） */
+  if (L9 === 1 && dims[1] === WID9) {
+    const COL9 = ['#7b4fb5', '#c26100', '#0b7d8c'];
+    const NUM9 = ['●①', '●②', '●③'];
+    const ym = ysOf(dims[1]), yi = ysOf(2);
+    /* ★白地を敷いてから書く（★線の上でも読める） */
+    /* 🔴🔴 2026-09-09 図の担当：★★白地の見積りを直した（★2件とも 単位を上げて初めて見えた不具合）
+       ⒜ ★幅 0.62em → 1.0em ── ★実測 a₃ は2文字で 44.5単位（＝1文字 0.935em）。
+         ★添え字は全角ぶん取ります。★0.62em では 3.25単位 はみ出しました。
+       ⒝ ★高さ 1.12em → 1.34em ── ★白地は y−0.72em から 1.12em ぶん、つまり y＋0.40em まで。
+         ★★文字の下端は y＋0.54em にあるので【0.14em 足りません】。 */
+    const tag = (x, y, tx, col, fs) =>
+      `<rect x="${(x - tx.length * (fs * 1.0) - 5).toFixed(1)}" y="${(y - fs * 0.72).toFixed(1)}"
+        width="${(tx.length * (fs * 1.0) + 10).toFixed(1)}" height="${(fs * 1.34).toFixed(1)}"
+        fill="#f9f9f9" opacity=".92"/>`
+      + T(x, y + fs * 0.34, tx, { a: 'end', fs, b: 1, c: col, f: "'Noto Serif JP',serif" });
+    ym.forEach((y, i) => { s += tag(xs[1] - 12, y, NUM9[i], COL9[i], FS9); });
+    /* ★●③に入る2本（勉強→●③ ＝ a₃ ／ 睡眠→●③ ＝ b₃）を 名指しする
+       🆕 2026-09-01 01v2【自己申告】★はじめ 両方を 55% の位置に置いたら、
+         ★390px で a₃ と b₃ が 9.77 × 2.8px 重なった（★実測）→ 40% と 70% に離した */
+    const at = (j, t) => [xs[0] + t * (xs[1] - xs[0]), yi[j] + t * (ym[2] - yi[j])];
+    /* 🔴 2026-09-09 図の担当：★b₃ を 0.70 → 0.54 に寄せた
+       ★★理由（実測）── ★単位を上げたら b₃ が ●③ のラベルと 9.6単位（5.66px）重なりました */
+    const pa = at(0, 0.34), pb = at(1, 0.54);
+    s += tag(pa[0] + 13, pa[1], 'a₃', COL9[2], FS9);
+    s += tag(pb[0] + 13, pb[1], 'b₃', COL9[2], FS9);
+    /* ★●③の下の点（バイアス）に d₃ を付ける。★点は y + r + 11 の位置に描いてある */
+    s += tag(xs[1] + 30, ym[2] + 7 + 13, 'd₃', COL9[2], FS9);
+  }
+  /* 🆕 2026-08-31 01v2：★名前を【飛び越す道】にそろえた（★問10 の表・図・ボタンと同じ語） */
+  if (SK9 && L9 >= 2) s += T(xs[1] + 40, 44, 'skip path',
+    { fs: FS9, c: '#2f6fb5', f: "'Noto Serif JP',serif" });
+  $('net9').innerHTML = s;
+  /* 🆕🆕 V2 ★★つまみの内わけを その場で数えて出す（→規則⑹） */
+  const nb = $('net9c');
+  if (nb) { const b = NPB9(L9);
+    /* 🆕🆕 2026-08-31 01v2：★★【色の意味】を書いていなかった（★太さの話しかしていない）。
+       ★★山田様「睡眠側が太く見えてるけど、これはなぜなの？」── 説明が無いから当然です
+       ★あわせて「使われない●があってもいい」を足す（★実測：●3個のうち 使われるのは2個） */
+    const A = alive9();
+    const lv = A[0] ? A[0].filter(v => v > 0).length : 0;
+    nb.innerHTML = `Right now that is <b>${b[0]} lines</b> + <b>${b[1]} biases</b> = <b>${b[0] + b[1]} knobs</b>. `
+      + `<b style="color:#019949">Green is positive</b> (it <b>raises</b> the points of anyone strong on that trait), `
+      + `<b style="color:#c00">red is negative</b> (it <b>lowers</b> them). <b>The thicker it is, the harder it pushes.</b><br>`
+      /* 🆕🆕 2026-09-01 01v2：★★番号と a₃・b₃ が【どの線か】を言う。
+         ★★山田様「入り口とかにも丸あるからどれかわかりにくいんだよ」
+         ★★下の枠の 1.71 のような数は【この線そのもの】── そこを繋ぐ1行 */
+      + (L9 === 1
+        ? `<span style="color:var(--gray-500)">The middle ● are numbered <b style="color:#7b4fb5">●①</b>`
+          + `<b style="color:#c26100">●②</b><b style="color:#0b7d8c">●③</b>`
+          + ` (<b>a number takes the colour of the matching dotted line in the graph above</b>). `
+          + `<b style="color:#0b7d8c">The two lines going into ●③ are a₃ and b₃, and the dot below it is d₃</b> &mdash; `
+          + `<b>the three numbers used in the working further down are the values of those lines and that dot</b>.</span><br>`
+        : '')
+      + `<span style="color:var(--gray-500)">A bias is the same thing as <b>d in Problem 6</b> and <b>the number added to everyone in Problem 8</b>, `
+      + `and there is <b>one per ●</b> (none on the input ●). `
+      + (L9 === 1 && lv < WID9
+        ? `&nbsp;&mdash; <b>${lv} of the ${WID9} ● are doing work right now.</b> `
+          + `The rest return 0 for all 40 and <b>go unused</b> (too few would be a problem, but spares do no harm).`
+        : '')
+      + `</span>`; }
+}
+/* 🆕🆕🆕 2026-09-01 01v2：★★bd9() を【描く先の id を指定できる形】に切り出した。
+   ★理由：★問10 にも 同じ境目のグラフを置くため（→山田様「いいものを消すなよ。
+     うまいこと 9、10番に入れろよ」）。★★式も描き方も 1文字も変えていない
+   ★opt.tid  描く先（bd9 ＝ 問9 ／ bd9b ＝ 問10）
+   ★opt.okId 当たりの数の text の id（★同じ id を2つ作らない）
+   ★opt.goal 目標 38人 の印を出すか（★問10 の目標は 3通り記録なので 出さない）
+   ★opt.fold ●の中身が 0 になる線（折り目）を描くか
+     ★★問10 では描かない ── 3層だと 手前の●の折り目が 出口まで届かないことがあり、
+       ★点線が【嘘になる】（★実測：3層・飛び越す道なしは 40人 全員に 同じ答え＝境目が無い） */
+function bdDraw(opt) {
+  const P = { x0: 42, y0: 320, x1: 288, y1: 126 };
+  /* 🔴🔴🔴 2026-09-09 図の担当：★★★文字の単位を【描画幅から逆算】する
+     ★実効px ＝ 単位 × 倍率。★倍率は min(幅÷300, 高さ÷viewBox高)。
+     ★★高さの縛り（vh）を外したので 倍率は 幅で決まります → 単位 ＝ 14 × 300 ÷ 描画幅
+       ★390px の画面で 描画330px なら 12.7単位（★実効 14.0px）
+       ★1280px で 描画250px なら 16.8単位（★実効 14.0px）
+     ★★★1つの数字では どちらも 14px にできないので、★その場で測って割り戻します */
+  const RWb = (document.getElementById(opt.tid) || {}).getBoundingClientRect
+    ? document.getElementById(opt.tid).getBoundingClientRect().width : 330;
+  /* 🔴 2026-09-09 図の担当：★丸めを【切り上げ】にした ── ★四捨五入だと 12.7単位 になり
+     ★実効 13.97px で【0.03px 足りません】でした（★実測）。★切り上げで 12.8単位＝14.08px */
+  const FSb = Math.max(12, Math.min(22, Math.ceil(14 * 300 / (RWb || 330) * 10) / 10));
+  let s = '';
+  const G = 44;
+  for (let i = 0; i < G; i++) for (let j = 0; j < G; j++) {
+    const x = XR8[0] + (XR8[1] - XR8[0]) * (i + 0.5) / G;
+    const y = YR8[0] + (YR8[1] - YR8[0]) * (j + 0.5) / G;
+    if (fwd9([x / 10, y / 11]).z > 0) {
+      const a = sx8(XR8[0] + (XR8[1] - XR8[0]) * i / G, P);
+      const b = sx8(XR8[0] + (XR8[1] - XR8[0]) * (i + 1) / G, P);
+      const c = sy8(YR8[0] + (YR8[1] - YR8[0]) * (j + 1) / G, P);
+      const e = sy8(YR8[0] + (YR8[1] - YR8[0]) * j / G, P);
+      s += `<rect x="${(a - 0.4).toFixed(1)}" y="${(c - 0.4).toFixed(1)}" width="${(b - a + 1.5).toFixed(1)}"
+        height="${(e - c + 1.5).toFixed(1)}" fill="#019949" opacity=".13"/>`;
+    }
+  }
+  for (let v = 0; v <= 10; v += 2) s += T(sx8(v, P), P.y0 + 18, String(v), { a: 'middle', fs: FSb, c: '#6e6e6e' });
+  for (let v = 2; v <= 11; v += 3) s += T(P.x0 - 8, sy8(v, P) + 4, String(v), { a: 'end', fs: FSb, c: '#6e6e6e' });
+  DATA.forEach(d => {
+    const x = sx8(d.x1, P), y = sy8(d.x2, P), good = say9(d) === d.t;
+    if (d.t) s += `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="5.5" fill="none"
+      stroke="${good ? '#019949' : '#c00'}" stroke-width="2.2"/>`;
+    else s += `<path d="M${(x - 4.6).toFixed(1)} ${(y - 4.6).toFixed(1)}l9.2 9.2M${(x + 4.6).toFixed(1)}
+      ${(y - 4.6).toFixed(1)}l-9.2 9.2" stroke="${good ? '#3f3f3f' : '#c00'}" stroke-width="2.2"/>`;
+  });
+  /* ══════════════════════════════════════════════════════════
+     🆕🆕🆕 2026-08-31 01v2【最大の追加】●の中身が ちょうど 0 になる線＝【折り目】
+     ★★山田様「あの絵のを人数分全部やるの？ よくそこの関係性がわからん」
+     ★★この線を境に、その●が【数を通す】か【0 を返す】かが 入れ替わる。
+       ★線を越えると 出口の式が変わるので、★★境目の傾きが そこで変わる ＝ 折れる
+     ★式：a×(勉強/10) ＋ b×(睡眠/11) ＋ d ＝ 0 を 勉強 について解く
+       → 勉強 ＝ −( b×(睡眠/11) ＋ d ) × 10 / a
+     ★★折り曲げが【なし】のときは 0 で切り替わらないので 描かない
+     ══════════════════════════════════════════════════════════ */
+  if (opt.fold && A9 !== 'none' && L9 >= 1 && Ws9[0]) {
+    const COL = ['#7b4fb5', '#c26100', '#0b7d8c'];
+    for (let i = 0; i < WID9; i++) {
+      const a = Ws9[0][i][0], b = Ws9[0][i][1], d = bs9[0][i];
+      if (Math.abs(a) < 1e-9) continue;
+      /* ★睡眠を動かして 勉強を求め、枠の中に入る部分だけ 線を引く */
+      let seg = [], on = false, pts = [];
+      for (let y = YR8[0]; y <= YR8[1] + 1e-9; y += 0.05) {
+        const x = -(b * (y / 11) + d) * 10 / a;
+        if (x >= XR8[0] && x <= XR8[1]) { pts.push([x, y]); on = true; }
+        else if (on) { if (pts.length > 1) seg.push(pts); pts = []; on = false; }
+      }
+      if (pts.length > 1) seg.push(pts);
+      seg.forEach(g => {
+        const dd = g.map((q, k) => (k ? 'L' : 'M') + sx8(q[0], P).toFixed(1) + ' ' + sy8(q[1], P).toFixed(1)).join('');
+        s += `<path d="${dd}" fill="none" stroke="${COL[i]}" stroke-width="1.6"
+          stroke-dasharray="7 4" opacity=".85"/>`;
+        /* ★線の端に ●の番号を出す（★枠の中に収まる側へ）
+           🆕 2026-09-01 01v2：★表記を つまみの絵（net9）・式（eqs9）・表（flow9）と
+             同じ【●①●②●③】にそろえた（★どの図の どの●か 迷わせない） */
+        const NM9 = ['●①', '●②', '●③'];
+        const e = g[g.length - 1], x2 = sx8(e[0], P), y2 = sy8(e[1], P);
+        if (y2 > P.y1 + 14 && y2 < P.y0 - 4)
+          s += T(Math.min(x2 + 5, P.x1 - 26), y2 + 4, NM9[i],
+            { fs: FSb, b: 1, c: COL[i], f: "'Noto Serif JP',serif" });
+        else {
+          const b0 = g[0], x1v = sx8(b0[0], P), y1v = sy8(b0[1], P);
+          s += T(Math.min(x1v + 5, P.x1 - 26), Math.max(y1v - 4, P.y1 + 12), NM9[i],
+            { fs: FSb, b: 1, c: COL[i], f: "'Noto Serif JP',serif" });
+        }
+      });
+    }
+  }
+  s += `<line x1="${P.x0}" y1="${P.y0}" x2="${P.x1}" y2="${P.y0}" stroke="#000"/>`;
+  s += `<line x1="${P.x0}" y1="${P.y1}" x2="${P.x0}" y2="${P.y0}" stroke="#000"/>`;
+  s += T(P.x1, P.y0 + 52, 'hours studied', { a: 'end', fs: FSb, f: "'Noto Serif JP',serif" });
+  s += T(P.x0 - 6, 116, 'hours slept', { fs: FSb, f: "'Noto Serif JP',serif" });
+  /* 🔴🔴🔴 2026-09-09 図の担当：★★★当たりの数・棒・目標を【HTML に出した】
+     ★前は ここで SVG の中に描いていました（★13単位＝6.61px で読めなかった）。
+     ★★数える中身（cnt9・GOAL9・n9）は1つも変えていません。★置く場所だけ変えました。
+     ★opt.headId ＝ 書き込む先（★bdh9 ＝ 問9 ／ bdh10 ＝ 問10） */
+  if (opt.headId) {
+    const h = document.getElementById(opt.headId);
+    if (h) {
+      const c = cnt9(), top = c >= GOAL9 && A9 !== 'none';
+      const pc = v => Math.max(0, Math.min(1, v / 40)) * 100;
+      h.innerHTML =
+        '<span class="lb">correct out of 40</span>'
+      + '<span class="big' + (top ? ' ok' : '') + '" id="' + opt.okId + '">' + c + '</span>'
+      + '<span class="tr"><span class="fl' + (top ? ' ok' : '') + '" style="width:'
+      +   pc(c).toFixed(1) + '%"></span>'
+      + (opt.goal ? '<span class="mk" style="left:' + pc(GOAL9).toFixed(1) + '%"></span>' : '')
+      + '</span>'
+      + '<span class="rt">' + (opt.goal ? 'target ' + GOAL9 + '&nbsp;&nbsp;' : '') + n9 + ' steps</span>';
+    }
+  }
+  /* 🆕🆕🆕 2026-09-01 01v2：★★40人 全員に 同じ答えを返している状態を【図の中で言う】。
+     ★実測（3層・飛び越す道なし・3,000歩）：z が 40人 全員 同じ値になり、境目の線が 1本も無い。
+       ★★このとき 当たりの数は「その答えに当たる人の数」と同じになる（★合格 23人）
+     ★数は その場で数える（→規則⑹）。★問10 の図だけに出す */
+  if (opt.note) {
+    const ans = DATA.map(d => say9(d)), one = new Set(ans).size === 1;
+    if (one) {
+      s += T(42, 394, 'There is no boundary line', { fs: 12.5, b: 1, c: '#c00', f: "'Noto Serif JP',serif" });
+      /* 🆕 2026-09-01 01v2【自己申告】★fs 12 では 390px で 6.89px（7px未満）だった → 12.5 に上げた */
+      s += T(42, 414, 'It answers &ldquo;' + (ans[0] ? 'pass' : 'fail') + '&rdquo; for all 40',
+        { fs: 12.5, c: '#c00', f: "'Noto Serif JP',serif" });
+    }
+  }
+  $(opt.tid).innerHTML = s;
+}
+/* ★問9 の境目のグラフ（★折り目の点線あり・目標 38人 の印あり） */
+function bd9() { bdDraw({ tid: 'bd9', okId: 'ok9t', headId: 'bdh9', goal: true, fold: true }); }
+/* 🔴🔴🔴 2026-08-29 A（#25）★★10通り → 3通りに絞った（→山田様の指示【1】）。
+   ★残した3つ：1層 ReLU 切（39人・基準）／3層 ReLU 切（23人・壊れた）／3層 ReLU 入（40人・戻った）
+   ✗ 落としたもの：2層の4通り／1層シグ（1層ReLUと同じ39人で情報が無い）／
+     ★★3層シグ切（実ブラウザ39・Node38 でズレるので使わない） */
+const COMBO9 = [[1, 'relu', false], [3, 'relu', false], [3, 'relu', true]];
+const REC9 = {};
+const key9 = (l, a, s) => l + '|' + a + '|' + (s ? 1 : 0);
+let ok9b = false;
+
+function up9() {
+  /* 🆕 2026-08-31 01v2：★問9 から［1層］［3層］［折り曲げない］を消したので 参照も外した */
+  ['f9r', 'f9s'].forEach((id, i) => $(id).classList.toggle('on', ['relu', 'sig'][i] === A9));
+  /* 🆕 2026-08-31 01v2：★★問10 のボタンを 10個 → 6個 に減らした（→山田様「ボタン多すぎ」）。
+     ★消したもの：2層（記録表に無い）／折り曲げ方 ReLU・シグモイド（問9 で説明済み・
+       ★★シグモイドを押しても記録されないので、押した人が迷子になっていた）／100歩 */
+  ['L1b', 'L3b'].forEach((id, i) => $(id).classList.toggle('on', [1, 3][i] === L9));
+  ['sk9ob', 'sk9ib'].forEach((id, i) => $(id).classList.toggle('on', (i === 1) === SK9));
+  /* 🔴 FB ⒜：そのまま足す道は【2段目以降】にしか付かない。★1段では選べないようにする */
+  const skNG = L9 <= 1;
+  $('sk9ob').disabled = skNG; $('sk9ib').disabled = skNG;
+  $('np9').textContent = np9(); $('np9b').textContent = np9();
+  $('n9c').textContent = n9; $('n9cb').textContent = n9;
+  /* 🆕 2026-09-01 01v2：★問10 にも 境目のグラフ（bd9b）を置いたので 一緒に描く */
+  net9(); bd9(); bd9b(); gr10();
+  const c = cnt9();
+  /* ★3,000歩まで下らせたときだけ記録する（★表の見出しと一致させる）
+     🆕 2026-08-31 01v2：★生きている●の数も一緒に記録する（★これが人数の理由なので） */
+  if (n9 >= 3000 && L9 >= 1) {
+    const A = alive9();
+    REC9[key9(L9, A9, SK9)] = { c: c,
+      live: A.map(r => r.filter(v => v > 0).length).reduce((a, b) => a + b, 0), tot: L9 * WID9 };
+  }
+  tabs9();
+  /* ── 問9 ── ★★当たりの数は bd9 の中に出す（.gauge は削除した） */
+  const ok = (c >= GOAL9 && L9 >= 1 && A9 !== 'none');
+  $('j9').className = 'verdict' + (ok ? ' ok' : '');
+  /* ★判定文は【1行】。★人数は図の中に出ている */
+  /* 🆕 V2 ★★［3層］を問9 に足したので、判定文を直した。
+     ✗✗【戻さないこと】L9>=2 のときに「いまは問10 で ○層 にしています」を出す ──
+       ★問9 のパネルで 3層 を選べるようになったので、この文だと おかしい */
+  /* 🆕 2026-08-31 01v2：★［折り曲げない］を消したので その分岐も消した。
+     ★L9>=2 は 問10 で層を増やしたときに ここへ戻ってきた場合の案内 */
+  $('j9').innerHTML = ok
+    ? `<b>The boundary folded.</b>`
+    : (L9 >= 2 ? `You are on <b>${L9} layers</b> right now (raised in Problem 10). Take more steps.`
+               : `<b>Take more steps.</b>`);
+  if (ok && !ok9) { ok9 = true; mark(3, 'done'); show('r9'); mark(4, 'open'); }
+  /* ── 問10（深さ）── ★.gauge を消したので ok9b / g9b / m9b / gc9b の参照も消した */
+  const left = COMBO9.filter(x => REC9[key9.apply(null, x)] === undefined).length;
+  $('j9b').className = 'verdict' + (left === 0 ? ' ok' : '');
+  /* ★判定文は【1行】 */
+  /* 🆕 2026-08-31 01v2：★判定文に【生きている●】を出す（★これが人数の理由）。
+     ★★3通りそろったら「飛び越す道で 23人 → 40人」と 差そのものを言う
+     🆕🆕 2026-09-01 01v2：★★●の【個数】を 判定文から 外した。
+       ★★理由：alive9() の個数は 実ブラウザと Node で 1個 ずれることがある（→§5-25 の型）。
+         ★環境で変わる数字を画面に出さない（→§5-22 ⑺）。
+       ★★個数は【図（gr10）と 記録表（rec9）だけ】に出す ── 読者が目で見る現物なので
+         ★環境差があっても 画面の中で 矛盾しない */
+  {
+    const r3o = REC9[key9(3, 'relu', false)], r3i = REC9[key9(3, 'relu', true)];
+    $('j9b').innerHTML = left === 0
+      ? `<b>Add a skip path and it comes back from ${r3o.c} to ${r3i.c}.</b>`
+        + `<span style="font-weight:400"> More ● are passing numbers on (see the figure above and the record table).</span>`
+      : `<b>${L9} layers${L9 >= 2 ? ' / skip path ' + (SK9 ? 'on' : 'off') : ''}</b>`
+        + `&nbsp;${c} correct (${n9} steps)`;
+  }
+  if (left === 0 && !ok9b) { ok9b = true; mark(4, 'done'); show('r9b'); mark(5, 'open'); }
+}
+/* 問9 の操作（1層 ＋ 折り曲げ方 ＋ 歩数）
+   🔴 2026-08-29 A（#25）★★[なし]（層なし）のボタンは廃止した。
+     ★かわりに【折り曲げ方 なし】で「層が無いのと同じ」を見せる（→山田様の指示【1】） */
+/* 🆕 2026-08-31 01v2：★問9 の［1層］［3層］は消した（★層は 問10 で扱う）。
+   ★問9 に入ったときは 1層 ReLU から始める（★問10 から戻ってきた場合も そろえる） */
+/* 🆕 2026-08-31 01v2：★［折り曲げない］（f9n）は消した。★f9 の 'none' 分岐は
+   ★★検算と 折り紙の説明で使うので【関数側は残す】（★押す道だけ 無くした） */
+$('f9r').onclick = () => { A9 = 'relu'; init9(); up9(); };
+$('f9s').onclick = () => { A9 = 'sig'; init9(); up9(); };
+$('st9').onclick = () => step9(1);
+$('st9b').onclick = () => step9(100);
+$('st9e').onclick = () => step9(1000);
+$('rs9').onclick = () => { init9(); up9(); };
+DATA.forEach((d, i) => d.id = i + 1);
+/* ══════════════════════════════════════════════════════════════
+   問11 ── ひと通り流す（★①〜⑥ を1画面で。★数字はその場で計算する）
+   ══════════════════════════════════════════════════════════════ */
+let FS = 1;
+
+/* ══════ 起動（★この問のぶんだけ。★原本の起動行から他の問の呼び出しを落としました）══════ */
+init9();
+up9();
+anat9(); eqs9(); flow9(); dive9(); inner9(); why9(); fold9(); ori9();
+BOOT = false;
+
+/* ══════ 会話（★原本の CV の写し。★この問のぶんだけ）══════ */
+var CV = {
+ "e9a": [
+  [
+   "m",
+   "What does putting a <b>layer</b> in the middle actually mean?"
+  ],
+  [
+   "d",
+   "It means placing <b>one more column of ●</b> between the input and the output. &hellip; <b>Just below. Have a look at the picture and the formulas under it.</b>"
+  ]
+ ],
+ "e9a2": [
+  [
+   "m",
+   "Nine lines and four grey dots. &hellip; And <b>the formulas below</b>?"
+  ],
+  [
+   "d",
+   "<b>Exactly the same thing as the picture above.</b> &hellip; <b>One formula per ●.</b>"
+  ],
+  [
+   "m",
+   "Three ● in the middle, so three formulas. And the output ● makes a fourth."
+  ],
+  [
+   "d",
+   "Right. &hellip; <b>The green letters are the weights</b> &mdash; the multipliers. <b>The orange letters are the biases</b> &mdash; what gets added at the end."
+  ],
+  [
+   "m",
+   "Nine weights, and four biases in <b>d₁ d₂ d₃ d₄</b>. &hellip; <b>Thirteen altogether.</b>"
+  ],
+  [
+   "d",
+   "That is what &ldquo;13 knobs&rdquo; is made of."
+  ],
+  [
+   "m",
+   "What about <b>studied</b> and <b>slept</b>? Are those knobs too?"
+  ],
+  [
+   "d",
+   "No. Those are <b>x₁ and x₂</b> &mdash; <b>the things being multiplied</b>. They are the records of 40 students. <b>They do not move.</b>"
+  ],
+  [
+   "m",
+   "Ah, so that is why <b>the input ● have no dots on them</b>."
+  ],
+  [
+   "d",
+   "That is it! <b>The input is just a hole for numbers to come in through</b>; it does no arithmetic. &hellip; <b>Only a ● that calculates carries a bias, one each.</b> Three in the middle and one at the output makes four."
+  ],
+  [
+   "d",
+   "Now see if you can get <b>38 or more</b> right. &hellip; <b>Press [1000 steps].</b>"
+  ]
+ ],
+ "e9b": [
+  [
+   "m",
+   "It went up! &hellip; <b>The boundary is folded.</b>"
+  ],
+  [
+   "d",
+   "So it is. &hellip; <b>Can you say why?</b>"
+  ],
+  [
+   "m",
+   "Because we added a layer?"
+  ],
+  [
+   "d",
+   "A layer was certainly added &mdash; <b>Problem 8 had none, and now there is one</b>. &hellip; But <b>putting a layer in does not fold anything on its own</b>."
+  ],
+  [
+   "m",
+   "Then what folded it?"
+  ],
+  [
+   "d",
+   "<b>The bend inside each ●.</b> &hellip; What changed is <b>what goes on inside a ●</b>."
+  ],
+  [
+   "m",
+   "Inside a ●?"
+  ],
+  [
+   "d",
+   "Look at the <b>coloured dotted lines</b> in the graph. &hellip; Those mark <b>where the inside of a ● comes to exactly 0</b>."
+  ],
+  [
+   "m",
+   "There are three of them."
+  ],
+  [
+   "d",
+   "Because there are three ●. &hellip; <b>Cross that line and the ● switches over from passing the number on to returning 0.</b>"
+  ],
+  [
+   "m",
+   "And what does switching over change?"
+  ],
+  [
+   "d",
+   "<b>The output formula changes.</b> &hellip; And so <b>the boundary folds along that line</b>."
+  ],
+  [
+   "m",
+   "&hellip; Oh. The dotted line and the bend in the boundary sit in the same place."
+  ],
+  [
+   "d",
+   "That is it! &hellip; So then, <b>who decides that a ● returns 0</b>? Look below first."
+  ]
+ ],
+ "e9b2": [
+  [
+   "m",
+   "Hold on. <b>Is every one of the 40 calculated separately?</b>"
+  ],
+  [
+   "d",
+   "They are. &hellip; <b>They go through one at a time.</b> Forty students, forty passes."
+  ],
+  [
+   "m",
+   "Then are there <b>40 functions</b> as well?"
+  ],
+  [
+   "d",
+   "No! &hellip; <b>There is only one function.</b> Fix the 13 knobs and the function is fixed with them."
+  ],
+  [
+   "m",
+   "But the insides come out differently for different students."
+  ],
+  [
+   "d",
+   "What differs is <b>the route through</b>. &hellip; <b>Same function, but which ● returns 0 depends on who goes in.</b>"
+  ],
+  [
+   "m",
+   "&hellip; In the table above, the <b style=\"color:#c00\">0</b> lands in a different place for each student."
+  ],
+  [
+   "d",
+   "That is it! <b>A ● at 0 is telling that student nothing at all.</b> &hellip; <b>The route changes from student to student.</b>"
+  ],
+  [
+   "m",
+   "So that is how <b>one function ends up as a line with bends</b>."
+  ],
+  [
+   "d",
+   "That is it! &hellip; <b>The place where it switches over</b> is the crease. Look at the <b>coloured dotted lines</b> in the graph above."
+  ]
+ ],
+ "e9c": [
+  [
+   "m",
+   "&hellip; So <b>studied and slept get divided first</b>, then multiplied."
+  ],
+  [
+   "d",
+   "They do. <b>Matching up the rulers, from Problem 7.</b> &hellip; Feed them in raw and the large numbers run wild."
+  ],
+  [
+   "m",
+   "Where did a₃ and b₃ come from?"
+  ],
+  [
+   "d",
+   "<b>Numbers the machine found by walking 1000 steps downhill.</b> &hellip; It starts out from arbitrary ones."
+  ],
+  [
+   "m",
+   "Same ●, yet the first student comes out positive and the second negative."
+  ],
+  [
+   "d",
+   "That is it! <b>Same ●, same three numbers. The only difference is which student went in.</b>"
+  ],
+  [
+   "m",
+   "The negative one <b>becomes 0</b>, so &hellip; <b>does that student fail</b>?"
+  ],
+  [
+   "d",
+   "That is the trap. &hellip; What becomes 0 is <b>only that ● term, r&times;③</b>. <b>One term out of the formula drops away, that is all.</b>"
+  ],
+  [
+   "m",
+   "Then what happens to the points?"
+  ],
+  [
+   "d",
+   "<b>If the other ● are passing numbers on, points still come out.</b> &hellip; Look at <b>the table above</b>. There is a student <b>whose ●③ is 0 and who is still answered as a pass</b>."
+  ],
+  [
+   "m",
+   "&hellip; So there is. ●③ at 0, and the points still come out positive."
+  ],
+  [
+   "d",
+   "Quite. &hellip; <b>And this is done for all 40.</b> Which ● goes to 0 differs from student to student."
+  ],
+  [
+   "m",
+   "So <b>the route changes from student to student</b>."
+  ],
+  [
+   "d",
+   "It does. &hellip; This <b>if-negative-then-0 device</b> is called <b>ReLU</b>."
+  ],
+  [
+   "m",
+   "There is another shape below it."
+  ],
+  [
+   "d",
+   "<b>The sigmoid.</b> &hellip; Whatever number arrives, it <b>squeezes it in between 0 and 1</b>."
+  ],
+  [
+   "m",
+   "Neither of them is straight."
+  ],
+  [
+   "d",
+   "That is it! <b>Not being straight</b> is the whole point. &hellip; The two together are called <b>activation functions</b>. Keep hold of that term."
+  ],
+  [
+   "m",
+   "Does it still get 38 right if I switch over?"
+  ],
+  [
+   "d",
+   "Try it yourself. &hellip; <b>The boundary folds either way.</b>"
+  ],
+  [
+   "m",
+   "Then why are there two of them?"
+  ],
+  [
+   "d",
+   "Good question. &hellip; <b>The difference shows up in Problem 10.</b> For now, just hold on to &ldquo;both of them fold&rdquo;."
+  ]
+ ],
+ "e9c2": [
+  [
+   "m",
+   "One straight line, 35. One bend, 38. Two bends, 39. &hellip; <b>And the dashed line itself, 40.</b>"
+  ],
+  [
+   "d",
+   "<b>One extra bend buys you three more students.</b>"
+  ],
+  [
+   "m",
+   "Oh. So <b>the target of 38 in Problem 9</b> &hellip;"
+  ],
+  [
+   "d",
+   "Just so. &hellip; It is a problem that says <b>&ldquo;go and get yourself one bend&rdquo;</b>."
+  ],
+  [
+   "m",
+   "Then could we reach 40 by piling on ●?"
+  ],
+  [
+   "d",
+   "&hellip; <b>That is for Problem 11.</b> But keep this in mind &mdash; <b>hug the dashed line too closely and a different trouble turns up</b>."
+  ]
+ ],
+ "e9d": [
+  [
+   "m",
+   "&hellip; <b>One ● gives one crease.</b> Two ● give two."
+  ],
+  [
+   "d",
+   "That is it! <b>The number of ● is the number of creases.</b>"
+  ],
+  [
+   "m",
+   "So who decides how many creases there are?"
+  ],
+  [
+   "d",
+   "<b>A person does.</b> &hellip; How many ● to place is up to us."
+  ],
+  [
+   "m",
+   "And where they fall?"
+  ],
+  [
+   "d",
+   "<b>The machine decides that.</b> &hellip; A crease is where the inside of a ● comes to 0, and <b>move the weights and that place moves with them</b>."
+  ],
+  [
+   "m",
+   "It moves itself towards wherever the error is smaller."
+  ],
+  [
+   "d",
+   "It does. <b>How many is the person, where is the machine.</b> &hellip; Keep hold of that."
+  ],
+  [
+   "m",
+   "What if there are not enough of them?"
+  ],
+  [
+   "d",
+   "You will not reach the dashed line. &hellip; <b>A spare ●, on the other hand, ends up returning 0 for all 40 and goes unused.</b>"
+  ],
+  [
+   "m",
+   "So spares do no harm."
+  ],
+  [
+   "d",
+   "None at all. &hellip; Too few is the trouble."
+  ],
+  [
+   "m",
+   "And if a ● <b>did not bend</b> at all?"
+  ],
+  [
+   "d",
+   "You would have <b>nothing but multiplication and addition</b>. &hellip; <b>Line up as many as you like and the paper stays flat.</b>"
+  ],
+  [
+   "m",
+   "Flat, meaning &hellip; <b>a single straight line</b>?"
+  ],
+  [
+   "d",
+   "Just so. <b>Right back to the same shape as Problem 8.</b> &hellip; <b>The layer and the bend come as a pair.</b> One without the other does nothing."
+  ]
+ ],
+ "e9d2": [
+  [
+   "d",
+   "Last of all, let us look at <b>what the machine is actually tuning</b>. &hellip; <b>The picture on the right in the panel above.</b>"
+  ],
+  [
+   "m",
+   "All right."
+  ]
+ ],
+ "e9e": [
+  [
+   "m",
+   "The lines are <b>different thicknesses</b>."
+  ],
+  [
+   "d",
+   "<b>The thicker it is, the harder it pushes.</b> &hellip; That is <b>the 13 being tuned right now</b>."
+  ],
+  [
+   "m",
+   "The colours differ too. Green and red."
+  ],
+  [
+   "d",
+   "<b style=\"color:#019949\">Green is positive</b> &mdash; it <b>raises the points</b> of anyone strong on that trait. <b style=\"color:#c00\">Red is negative</b> &mdash; it <b>lowers them</b>."
+  ],
+  [
+   "m",
+   "&hellip; <b>One of the lines out of sleep is very thick and red.</b>"
+  ],
+  [
+   "d",
+   "Good eye! For the ● that line runs into, <b>the more sleep there is, the smaller its insides get</b>. &hellip; <b>Once negative, it is 0.</b>"
+  ],
+  [
+   "m",
+   "And at 0, nothing comes out of that ●."
+  ],
+  [
+   "d",
+   "Nothing. &hellip; Which is to say <b>that ● term drops out of the formula</b>. When this one does pass a number on, it <b>lowers</b> the points."
+  ],
+  [
+   "m",
+   "Then what is this ● for?"
+  ],
+  [
+   "d",
+   "<b>To lower the points of anyone short on sleep.</b> &hellip; It is <b>the one in charge of failing those who have not slept</b>."
+  ],
+  [
+   "m",
+   "That ties back to sleep making a U shape in Problem 8."
+  ],
+  [
+   "d",
+   "It does. &hellip; One more, then. <b>How about the topmost ●?</b>"
+  ],
+  [
+   "m",
+   "All of its lines are thin."
+  ],
+  [
+   "d",
+   "<b>It returns 0 for all 40</b> &mdash; <b>it went unused</b>."
+  ],
+  [
+   "m",
+   "We laid out three and only two get used?"
+  ],
+  [
+   "d",
+   "Quite. &hellip; <b>Too few is a problem; spares are not.</b> The machine uses as many as it needs."
+  ],
+  [
+   "m",
+   "And why do the thicknesses shift each time it takes steps?"
+  ],
+  [
+   "d",
+   "Because <b>all 13 are being moved at once, by walking downhill</b>. &hellip; Just as in Problem 7."
+  ]
+ ],
+ "e9z": [
+  [
+   "m",
+   "Back to the start, then [1000 steps]. &hellip; <b>We are there.</b>"
+  ],
+  [
+   "d",
+   "Good. &hellip; <b>Put one layer in and the boundary folds, so the middle can be fenced off. That is what &ldquo;deep&rdquo; comes down to.</b>"
+  ],
+  [
+   "m",
+   "Simpler than I expected."
+  ],
+  [
+   "d",
+   "It is. &hellip; But <b>without the bend, depth does nothing whatsoever.</b> And you have just checked that with your own hands. &hellip; That is the takings for today, Adam."
+  ]
+ ]
+};
+drawCV(CV);
+})();
+</script>
+</body>
+</html>
