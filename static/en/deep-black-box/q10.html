@@ -1,0 +1,1842 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<meta name="description" content="When it gets deeper - Problem 10 of Deep Black Box. Three layers, and the count falls. What a grey node means, and what a skip path fixes.">
+<meta property="og:title" content="Deep Black Box - Problem 10: go deeper and it can break (Chapter 2)">
+<meta property="og:description" content="When it gets deeper - Problem 10.">
+<!-- 🔴🔴🔴🔴 2026-09-10 記録担当：★★★★共有したときの画像（★公開準備セッションの指示）。
+     ★★この2行は【23ページとも入っていませんでした】（★実測0件）。
+     ★★★入れる値は先方が確定させたものです ──
+       roppongivc.com/static/img/agora/r1/og-r1-game.jpg（★59KB。★案A＝白地・エンブレム左）。
+     ★★記事用（og-r1-article.jpg）とは【別のファイル】です。★記事側のものは触っていません。
+     ★値は絶対URLです（★OGP の決まり。★href の絶対パス禁止とは別の話です） -->
+<meta property="og:image" content="https://www.roppongivc.com/en/deep-black-box/og-deep-black-box-en.jpg">
+<meta name="twitter:image" content="https://www.roppongivc.com/en/deep-black-box/og-deep-black-box-en.jpg">
+<!-- 🔴🔴🔴🔴 2026-09-10 21:4x 記録担当：★★★★X（Twitter）で大きい絵にする1行（★公開準備セッションの依頼）。
+     ★★★og:image を入れても、★この1行が無いと【小さいカード】になります。
+     ★記事側は全13ページを summary → summary_large_image にしたとのことです（★先方の実測）。
+     ★★ゲーム23ページは【0件】でした -->
+<meta name="twitter:card" content="summary_large_image">
+<!-- 🔴🔴🔴🔴 2026-09-10 22:3x 記録担当：★★★★ブラウザのタブに出る絵（★公開準備セッションの依頼）。
+     ★★実測 ── ★23ページとも【0件】でした（★タブに絵が出ていませんでした）。
+     ★★★実体はサイト側にあり、★本番で全部 引けます（★新しく作っていません）──
+       /favicon.svg 200・53KB ／ /favicon.ico 200 ／ /favicon-192.png 200・8KB
+     ⚠️★★/apple-touch-icon.png は【404】なので使いません。★favicon-192.png を指しています
+       （★サイト側 baseof.html と同じ扱いです）。
+     ⚠️★★★絶対URLです ── ★このゲームは /deep-black-box/ の下にあるので、
+       ★相対だと /deep-black-box/favicon.svg を探して【外します】。
+       ★「絶対パスを書かない」（★同じ場所の中を指すときの決まり）とは別の話です -->
+<link rel="icon" href="https://www.roppongivc.com/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="https://www.roppongivc.com/favicon.ico" sizes="32x32">
+<link rel="icon" href="https://www.roppongivc.com/favicon-192.png" type="image/png" sizes="192x192">
+<link rel="apple-touch-icon" href="https://www.roppongivc.com/favicon-192.png">
+<title>Deep Black Box - Problem 10: go deeper and it can break (Chapter 2)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@300;400;600;700&family=Inter:wght@300;400;500;600;700&family=Noto+Serif+JP:wght@300;400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../deep-black-box/common.css">
+<style>
+/* ══════════════════════════════════════════════════════════════════════════
+   🔴 2026-09-02 1問1ページ担当：★この章だけの CSS
+     ★★原本 tsume-01-deep-dialog-v2.html の <style> をそのまま写し、★【戻さないこと】のフォント規則だけ落としました
+     ★落としたもの：.cap{font-size:12.5px;color:var(--gray-500);margin-bottom:.5rem;line-height:1.5}／.lead{font-size:16px;line-height:1.9;color:var(--gray-600);margin:0 0 1.1rem}／h2{font-family:var(--serif);font-size:1.45rem;font-weight:300;line-height:1.4;margin:0 0 1rem}／h3{font-size:16px;font-weight:600;margin:1.4rem 0 .6rem}／.dtab{width:100%;border-collapse:collapse;font-size:12.5px;margin:.9rem 0;  font-variant-numeric:tabular-nums}／.cl .bb{position:relative;min-width:0;padding:.65rem .95rem;font-size:15px;line-height:1.9;   border:1px solid var(--gray-200);border-radius:.85rem;background:var(--white);color:var(--gray-600)}／.cl .bb{font-size:14.5px;padding:.55rem .75rem;line-height:1.8}
+   ★.offpage ── ★★この章の【他の問のカード】を DOM に置いたまま隠す枠。
+     ★理由：ゲーム本体の JS（起動・つまみの bind）を1バイトも触らないため。
+       ★$('…') が null にならないので、原本と同じコードがそのまま動きます
+   ══════════════════════════════════════════════════════════════════════════ */
+.offpage{display:none}
+:root{
+ --bg:#fff; --white:#fff; --black:#000;
+ --gray-100:#f9f9f9; --gray-200:#d9d9d9; --gray-500:#444; --gray-600:#2a2a2a;
+ --accent:#019949;
+ --sans:'Inter',system-ui,sans-serif;
+ --serif:'Source Serif 4','Noto Serif JP',Georgia,serif;
+ --content-w:52.625rem;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--black);font-family:var(--sans);
+ -webkit-font-smoothing:antialiased}
+.wrap{max-width:var(--content-w);margin:0 auto;padding:0 1.5rem 5rem}
+.top{border-bottom:1px solid var(--gray-200);margin-bottom:2.4rem}
+/* 🔴🔴🔴 2026-09-09 A：★★★この上書きを外した ── ★★これが【全部大文字】の正体だった
+     ★★★山田様「トップと他でフォント違うし全部大文字かどうかも違うし」（2026-09-09）
+   ★.top .in に text-transform:uppercase と letter-spacing:.14em が入っており、
+     ★★子の製品名とタグラインまで【大文字＋字間広め】に変えていた。
+   ★実測：★これがある18ページは uppercase ／ 無い5ページ（index・q15〜17・end）は none。
+     → ★★★同じ製品名が【大文字のページと そうでないページ】に分かれていた
+   ★common.css の .top .in（★大文字にしない）を効かせる */
+/* 🔴 2026-09-09 A：★★この上書きを外した ── ★common.css の
+     .top .in .tag（15.5px / #555 / 行間1.75 / サンセリフ）を効かせる。
+   ★★★これが後勝ちしていたので、★上のバーだけ 明朝 12.5px のままだった。
+     → ★山田様「トップと他でフォント違うし全部大文字かどうかも違うし」の原因のひとつ */
+.eyebrow{font-size:13px;font-weight:500;letter-spacing:.16em;text-transform:uppercase;
+ color:var(--gray-500);margin-bottom:.9rem}
+h1{font-family:var(--serif);font-size:2.1rem;font-weight:300;line-height:1.35;margin:0 0 .8rem}
+.lead b{color:var(--black)}
+.meta{font-size:13px;letter-spacing:.1em;color:var(--gray-500);padding-bottom:1.2rem;
+ border-bottom:1px solid var(--gray-200);margin-bottom:1.2rem}
+.steps{display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:2.4rem}
+.steps div{flex:1 1 5rem;padding:.55rem .3rem;text-align:center;font-size:12px;
+ border:1px solid var(--gray-200);color:var(--gray-500);background:var(--white)}
+.steps div.open{border-color:var(--black);color:var(--black)}
+.steps div.done{background:var(--black);border-color:var(--black);color:var(--white)}
+.card{border:1px solid var(--gray-200);padding:2rem;margin-bottom:2rem;background:var(--white)}
+.tagline{font-size:13px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;
+ color:var(--gray-500);margin-bottom:.9rem}
+.figbox{background:var(--gray-100);border:1px solid var(--gray-200);padding:1rem;margin:1.3rem 0}
+/* ★★図・つまみ・判定を1つの枠にまとめる（→00 の §2-2） */
+.panel{background:var(--gray-100);border:1px solid var(--gray-200);padding:1rem;margin:1.3rem 0}
+.panel .ctl{margin:.9rem 0 .2rem}
+.panel .togs{margin-top:.7rem}
+.panel .gauge{margin-top:.9rem}
+.panel .verdict{margin-top:.8rem;background:var(--white)}
+.two{display:flex;gap:1rem;flex-wrap:wrap}
+.two>div{flex:1 1 15rem;min-width:0}
+svg{display:block;width:100%;height:auto}
+
+/* ══════════════════════════════════════════════════════════
+   🔴🔴🔴 2026-08-29 山田様の FB：「スマホサイズだとつまみとグラフが同時に見れないから、
+     グラフを上に固定して下に別のが見えるようにした。PCサイズのが画面大きいとは言え
+     同じように固定しないと同時に見えないものがいっぱいあるんだ。
+     だからPCのほうもスマホと同様の処置をやってくれないか」
+   → ★★01 には .stick が【1つも無かった】。★★00 と同じ処置をどの幅でも入れる
+   ★★実測（貼り付けを入れる前。→検証ツール/00/A_vis_01_*.json）
+     問6  つまみを画面中央 → ゲージ e6 と判定文 j6 が【画面外】
+          ゲージを画面中央 → 図 fig6 と つまみ sl6 が【画面外】
+          ★★390px でも 1280px でも同じ。★図・つまみ・結果が同時に見えていなかった
+     問8  1280px で 散布図 bd8 が【52% しか見えない】
+   ★★上限高さ（max-height）が必要な理由 ── PC は本文幅 842px なので
+     viewBox 560×268 の図は 403px になる。★貼り付けると画面の 45% を占領して
+     ★下のつまみが押し出される。→ 42vh（900px なら 378px）で止める
+   ★★390px では図が 348px 幅しか無く 42vh（353px）に当たらないので、スマホは1px も変わらない
+   ★背景色は必須 ── ★敷かないと下から来た文字が図に【透けて重なる】
+   ★確認済み：.top は固定ヘッダではない ／ .card・.panel・body に overflow は無い
+     （★祖先に overflow があると sticky は無効になる）
+   ══════════════════════════════════════════════════════════ */
+/* 🆕 V2 ★★sticky が貼り付く範囲を【この入れ物の中】に限る。
+   ★position:sticky は親の箱の外へは出られないので、入れ物を抜けたら剥がれる。
+   ★これで 第2幕（機械ボタン・階段・表）を読むとき 動かす絵が上に居座らない。
+   ★overflow は【付けない】── ★祖先に overflow があると sticky そのものが無効になる */
+.stickwrap{position:relative}
+.stick{position:sticky;top:0;z-index:5;background:var(--gray-100);
+       padding-bottom:.35rem;box-shadow:0 6px 8px -6px rgba(0,0,0,.18)}
+/* 🔴🔴🔴 2026-09-09 図の担当：★★★この規則を消しました ── ★死んでいた上に vh でした
+   ★実測：★このページに class="stick" の要素は【0件】です。★→ 決定「vh を外す」 */
+/* 🆕🆕🆕 2026-08-31 01v2：★★問9 は【枠そのものを 貼り付ける】。
+   ★★山田様「つまみの図が同時に見えるための位置固定が今一瞬でとけるから、
+     もっと下の方まで、同時に見せるべきところまでちゃんと固定するようにしてよ」
+   ★★理由：position:sticky は【親の箱の外へ出られない】。
+     ★もとは .stick が .panel の中にあったので、panel の高さぶん（＝すぐ）で剥がれていた
+   → ✅ .panel 自体を sticky にし、その入れ物（#q9wrap）を
+      【説明の図が終わるところまで】広げた。★これで 図を読みながら つまみを押せる
+   ★中身：境目のグラフ（bd9）＋ つまみの中身（net9）＋ ボタン ＋ 判定文 ── 全部 一緒に貼り付く
+   ★1280px は【横並び】／390px は【縦積み】（★横に割ると 文字が 4.1px になって読めない） */
+#q9wrap{position:relative}
+#q9wrap > .panel{position:sticky;top:0;z-index:5;
+  box-shadow:0 8px 10px -8px rgba(0,0,0,.22)}
+/* 🔴 2026-09-09 図の担当：★当たりの数・棒（★SVG から HTML に出したもの） */
+.bdhead{display:flex;align-items:baseline;gap:.5rem;flex-wrap:wrap;margin:0 0 .35rem}
+.bdhead .lb{font-size:13px;color:var(--gray-500)}
+.bdhead .big{font-size:26px;font-weight:600;font-family:'Source Serif 4',serif;line-height:1.1}
+.bdhead .big.ok{color:#019949}
+.bdhead .tr{flex:1 1 120px;min-width:110px;height:9px;background:#e9e9e9;position:relative}
+.bdhead .fl{position:absolute;left:0;top:0;bottom:0;background:#c00}
+.bdhead .fl.ok{background:#019949}
+.bdhead .mk{position:absolute;top:-3px;width:2px;height:15px;background:#111}
+.bdhead .rt{font-size:13px;color:var(--gray-500)}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   🔴🔴🔴🔴 2026-09-10 記録担当（3代目）：★★★★分割中だけ 上の枠を詰めて【下の枠を広げる】
+   ★★★山田様のご判断（2026-09-10 17:0x。★私が3案を出して「この3つでよろしい」）──
+     ⑴ ★ニューラルネットの図を【判定文の直後】へ上げる
+        → ★data-verdict の並びを "j9b,gr10,gr10n,rec9" にした（★data-movedown をやめた）
+        ★★仕組み ── ★common.js の moveVerdict は data-verdict → data-movedown の順に
+          下の枠の先頭へ積みます。★★★だから並べたい順に data-verdict へ書けば済みます。
+        ★直す前の並び ── 判定 → 説明 → 記録表 → 図（★図が4番目でした）
+        ★直したあと ── 判定 → ★★図 → 説明 → 記録表
+     ⑵ ★★上の枠の【つまみとボタンの文字】を詰めて、★下の枠を広げる（★下の規則）
+        ★あわせて data-ratio を 0.70 → 0.62 にした（★下の枠が 199px → 250px 前後になります）
+     ⑶ ★★★ニューラルネットの図は【上の枠に入れない】
+        ★理由（実測）── ★上の枠に入れると 境目のグラフ 8.04→6.3px、
+          ★★ニューラルネットの図 7.84→5.2px で【両方 読めなくなります】。
+        ★★★★さらに「図を縦に伸ばす」方針と相反します ── ★上の枠は高さが限られるので
+          viewBox のたてを伸ばすほど倍率が下がります。
+   ★★★★境目のグラフ（bd9b）は【縮めません】── ★縮めると図の文字が小さくなります。
+     ★詰めるのは つまみとボタンだけです。
+   ⚠️★★common.css より【後ろ】に書いています。★同じ強さなら後勝ちします（→ 引き継ぎ書 §4⑹）
+   ══════════════════════════════════════════════════════════════════════════ */
+.split-on .splittop .bdhead{gap:.35rem;margin:0 0 .15rem}
+.split-on .splittop .bdhead .lb,
+.split-on .splittop .bdhead .rt{font-size:11.5px}
+.split-on .splittop .bdhead .big{font-size:20px}
+.split-on .splittop .bdhead .tr{height:7px;flex:1 1 90px;min-width:80px}
+.split-on .splittop .bdhead .mk{top:-2px;height:11px}
+.split-on .splittop .panel .togs{margin-top:.18rem;gap:.3rem}
+.split-on .splittop .panel .togs span{font-size:11.5px}
+.split-on .splittop .panel .togs .btn{padding:.28rem .55rem;font-size:11.5px}
+.split-on .splittop .panel{padding:.45rem .5rem}
+#c9 .figrow{display:flex;gap:.5rem;align-items:flex-start;justify-content:center}
+#c9 .figrow > svg{margin:0}
+/* 🔴 2026-09-09 図の担当：★max-height:38vh を外した（★vh 禁止）。
+   ★文字の大きさは描画幅から逆算するので、高さで縛る必要がありません */
+#c9 .figrow > #bd9{width:36%;height:auto}
+#c9 .figrow > #net9{width:62%;height:auto}
+/* 🆕🆕🆕 2026-09-01 01v2：★★問10 も【問9 と同じ形】にした ──
+   ★左＝境目のグラフ（bd9b）／右＝3層の●と線（gr10）を横並びにし、枠ごと貼り付ける。
+   ★★山田様「いいものを消すなよ。うまいこと 9、10番に入れろよ」
+   ★問9 の #q9wrap と同じ仕掛け（★position:sticky は 親の箱の外へ出られない） */
+#c9b .figrow{display:flex;gap:.5rem;align-items:flex-start;justify-content:center}
+#c9b .figrow > svg{margin:0}
+/* 🔴🔴🔴🔴 2026-09-10 記録担当（3代目）：★★★★PC でも【縦に積む】ことにしました。
+   ★★★山田様のご指示（2026-09-10 17:5x）──「PCなんかお前がいいと思う感じで
+     ★スマホ版とは別でブラウザで反映して新旧並べて見せてくれよ」
+   ★★★★測って出した理由（★1280×900 で全21問を測りました）──
+     ★PC で 10px を下回っていたのは【3枚・2問だけ】でした。
+       q10 ── 境目のグラフ 9.75px（幅173px）／ ニューラルネットの図 6.39px（幅298px）
+       q02 ── 静止画 p2b 9.05px（★これは触りません。→ 下の理由）
+     ★★原因 ── ★この2枚は【横に並べて 694px を 36% と 62% で分けて】いました。
+       ★★★だから 173px と 298px しかもらえず、★倍率が 0.577 と 0.532 に落ちていました。
+     → ★★縦に積むと それぞれ【694px】もらえるので、★倍率は 1.239 になります。
+   ★★スマホは【もともと縦積み】です（★@media の中に flex-direction:column があります）。
+     ★★★だから この直しは【PC だけ】に効きます。スマホは1pxも変わりません。
+   ⚠️★★q02 の静止画（p2b 9.05px）は【触っていません】── ★親の幅が 390px 固定で、
+     ★★これは【動く図の中身を写して作った静止画】なので、★写し元と同じ大きさにしている
+     ★可能性があります（→§5-50 ⑷）。★★★勝手に変えると静止画が崩れる恐れがあります。
+     ★山田様がご確認済みの問なので、★ご指示をいただいてから触ります。 */
+#c9b .figrow{flex-direction:column;align-items:center}
+#c9b .figrow > #bd9b{width:100%;max-width:420px;height:auto}
+#c9b .figrow > #gr10{width:100%;height:auto}
+/* ★★★★境目のグラフだけ 上限 420px を付けた理由（★実測）──
+   ★この図は viewBox が 300幅なので、★694px を渡すと倍率が【2.313】になり、
+     ★★実効フォントが【27.76px】＝本文（16.6px）の1.7倍になってしまいました。
+     ★枠も 694×740px で画面の大半を占めます。
+   ★★420px にすると 倍率1.4・実効【16.8px】で、★★★本文とほぼ同じ大きさに揃います。
+   ★ニューラルネットの図は viewBox が 560幅なので、694px で倍率1.239・実効14.87px。
+     ★★こちらは上限を付けなくても ちょうど本文と同じくらいです。
+   ⚠️★★この上限は【PC だけ】です ── ★@media の中で max-width:none に戻しているので、
+     ★スマホには効きません（★スマホは 330px 幅で 14.08px）。 */
+#q10wrap{position:relative}
+#q10wrap > .panel{position:sticky;top:0;z-index:5;
+  box-shadow:0 8px 10px -8px rgba(0,0,0,.22)}
+/* 🔴🔴🔴 2026-08-29 A（#25・第5版）② ★★問6 の「ずれ」は fig6 の【中】に埋め込んだ。
+   ★読者テスト「いちばん上のズレがいくつってやつが小さく潰されすぎてほぼ全く見えない」
+   ★★数字だけ大きくする。★@media の `#fig6 text{font-size:17px}` より詳細度が高いので
+     ★両方の幅で この指定が勝つ（★#fig6 + text + .big6 ＞ #fig6 + text）
+   ★★第4版の .stickbot / .grp6 / .sub6 は【外した】（★静止画がつまみより前に来たので不要） */
+#fig6 text.big6,#fig7 text.big6{font-size:26px;font-weight:600;font-family:var(--serif)}
+#fig6 text.lim6,#fig7 text.lim6{font-size:13px}
+/* 🔴 2026-08-29 A（#25）★#ov10 は @media で 17px に上がるので、数字だけ勝たせる */
+#ov10 text.num6{font-size:26px}
+/* 🔴🔴🔴 2026-08-29【訂正・A の自己申告】★★一度 34vh に下げたが【42vh に戻した】。
+   ★下げた理由は「1280px で 01 の問6 の判定文が同時に入らない」という実測だったが、
+     ★★それは【走査の刻みが 40px で粗く、入る位置を飛ばしていた】ための誤判定だった。
+   ★刻みを 12px にして測り直すと、42vh でも 00 の6か所・01 の5か所すべてで
+     ★「図100% ＋ つまみ・結果すべて見えて押せる位置がある」（★両幅）
+   ★★教訓：スクロール位置を刻んで測る検査は、刻みが粗いと【偽の不合格】を出す。
+     ★A はこれで PC の図を不必要に小さくしかけた（→ 規則案㉔ の同型） */
+/* 🔴🔴 2026-08-29：★★棒の図は PC で全幅（842px）に伸ばさない。
+   ★実測：棒だけの図は PC で全幅（842px）に伸びると高さが 300px を超え、枠が膨らむ
+   🔴 2026-08-29 第2版：★#eff6 と #res6fig は【削除した】ので指定から外した
+   ★420px で止めると高さ 168px。★390px では使える幅が 348px なのでスマホは1px も変わらない
+   ★#fig6 は主役なので対象にしない（★.stick 側の max-height で効いている） */
+#stair6{max-width:440px;margin:0 auto}
+.ctl{margin:1.1rem 0 .2rem}
+.ctl label{display:flex;justify-content:space-between;align-items:baseline;font-size:14px;
+ margin-bottom:.35rem;gap:1rem}
+.ctl label span.n{font-weight:600;font-variant-numeric:tabular-nums;white-space:nowrap}
+.togs{display:flex;gap:.6rem;flex-wrap:wrap;margin-top:1.1rem;align-items:center}
+.btn{background:none;border:1px solid var(--gray-200);padding:.6rem 1.15rem;font-size:14px;
+ font-family:var(--sans);color:var(--black);cursor:pointer;transition:all .15s}
+.btn:hover{border-color:var(--black);background:var(--gray-100)}
+.btn.on{background:var(--black);color:var(--white);border-color:var(--black)}
+.btn.go{background:var(--black);color:var(--white);border-color:var(--black)}
+.btn.sm{font-size:13px;padding:.45rem .85rem;color:var(--gray-500)}
+.btn:disabled{opacity:.35;cursor:default}
+.gauge{margin:1.2rem 0 0}
+.gauge .row{display:flex;align-items:baseline;gap:.7rem;margin-bottom:.5rem}
+.gauge .u{font-size:14px;color:var(--gray-500)}
+.gtrack{height:10px;background:#e9e9e9;position:relative;overflow:hidden}
+.gfill{display:block;height:100%;background:#c00;transition:width .12s linear}
+.gfill.ok{background:var(--accent)}
+.gmark{position:absolute;top:-3px;bottom:-3px;width:2px;background:#000}
+.gcap{display:flex;justify-content:space-between;font-size:12px;color:var(--gray-500);
+ margin-top:.35rem}
+.read{font-size:15px;line-height:1.8;margin:.9rem 0 0;font-variant-numeric:tabular-nums}
+.big{font-family:var(--serif);font-size:2rem;font-weight:400;font-variant-numeric:tabular-nums;
+ line-height:1}
+.calc{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13.5px;line-height:2;
+ background:var(--white);border:1px solid var(--gray-200);padding:.9rem 1.1rem;margin:.9rem 0;
+ overflow-x:auto;white-space:pre}
+.verdict{margin-top:1.2rem;padding:.9rem 1.1rem;border:1px solid var(--gray-200);font-size:14px;
+ line-height:1.75;background:var(--gray-100)}
+.verdict.ok{border-color:var(--accent);background:#f2fbf6}
+.verdict.stuck{border-color:#c00;background:#fdf4f4}
+.next{margin-top:1rem;font-size:13px;color:var(--gray-500)}
+.src{border-left:2px solid var(--black);padding:.9rem 0 .9rem 1.1rem;margin:1.4rem 0;
+ font-size:14px;line-height:1.85;color:var(--gray-600)}
+.src .h{font-size:12px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;
+ color:var(--black);margin-bottom:.4rem}
+.src .ref{font-size:13px;color:var(--gray-500);margin-top:.4rem;display:block}
+.box{border:1px solid var(--gray-200);padding:1.1rem 1.3rem;margin:1.3rem 0;background:var(--gray-100)}
+.box .h{font-size:12px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;
+ margin-bottom:.5rem}
+.mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+td.mono{word-break:break-word;line-height:1.7}
+.sc-row{display:flex;align-items:center;gap:.75rem;margin-bottom:.6rem}
+.sc-label{width:5.4rem;font-size:14px;text-align:right;flex-shrink:0}
+.sc-track{flex:1;background:#e9e9e9;height:9px;position:relative}
+.sc-fill{display:block;height:100%;background:var(--black);transition:width .1s linear}
+.sc-fill.hit{background:var(--accent)}
+.sc-pct{width:3.4rem;font-size:14px;font-variant-numeric:tabular-nums}
+details{border-top:1px solid var(--gray-200);padding-top:1rem;margin-top:1.5rem}
+summary{font-size:14px;font-weight:500;cursor:pointer}
+.lg{font-size:14px;line-height:1.9;color:var(--gray-600);margin-top:.9rem}
+.lg table{width:100%;border-collapse:collapse;margin:.8rem 0;font-size:13px}
+.lg th,.lg td{padding:.45rem .6rem;border:1px solid var(--gray-200);text-align:left}
+.lg th{background:var(--gray-100);font-weight:600}
+.dtab th,.dtab td{padding:.35rem .5rem;border:1px solid var(--gray-200);text-align:right}
+.dtab th{background:var(--gray-100);font-weight:600;font-size:11.5px}
+.dtab tr.sum td{background:#f2fbf6;border-top:2px solid var(--black)}
+/* 🔴🔴 2026-08-29 山田様の FB：問6 の式の表が読めない
+   → ★★原因：class="l"（左寄せの意図）に CSS が1行も無く、式が【右寄せ】になっていた。
+     ★3本の式の「点数 ＝」が縦にそろわないので、増えた項がどこか目で追えない */
+.dtab .l{text-align:left}
+.hide{display:none}
+.foot{border-top:1px solid var(--gray-200);margin-top:3rem;padding-top:1.5rem;font-size:13px;
+ color:var(--gray-500);line-height:1.8}
+.arrow{text-align:center;font-size:22px;color:var(--gray-500);margin:.5rem 0}
+/* ══════ 小さい画面では横の余白を削って図に幅を渡す（★00 と同じ） ══════ */
+@media (max-width:430px){
+  /* ★★枠（.panel）を 390×840 の1画面に収めるため、つまみの縦だけ詰める（→ 枠の上限） */
+  .panel .ctl{margin:.55rem 0 .1rem}
+  .panel .ctl label{margin-bottom:.15rem}
+  .wrap{padding-left:.5rem;padding-right:.5rem}
+  .card{padding-left:.75rem;padding-right:.75rem}
+  .figbox,.panel{padding-left:.5rem;padding-right:.5rem}
+  .top .in{padding-left:.5rem;padding-right:.5rem}
+  /* ★★560幅の図だけ文字を 17px に上げる（★根拠は 00 の @media のコメント）
+     ★17 × 0.589 ＝ 10.0px。★300幅の図（倍率1.1）は対象外
+     🔴 2026-08-29：★stair6・bars6 も 560幅なので足した。
+       ★座標は最初から font 17 前提で組んである（→作りの規則⑼）
+     🔴 2026-08-29 第2版：★res6fig と eff6 は【削除した】ので外した
+     🔴 2026-08-29 A（#25・第4版）④：★bars6 を【削除した】ので外した */
+  #fig6 text,#fig7 text,#p7 text,#net9 text,
+  #stair6 text,#st6a text,#st6b text,#st6c text,
+  #ov10 text,#ep11 text{font-size:17px}
+  /* 🔴🔴🔴 2026-08-29 A（#25・第5版）②：★★SVG の font-size は【viewBox の単位】なので、
+     ★390px では 実効が 0.621倍になる（★#24 の「17 × 0.589 ＝ 10.0px」と同じ話）。
+     ★★A の実測：26単位は PC で 32.2px だが 390px では 16.2px しかならなかった
+     → ★390px だけ 42単位（実効 26.1px）に上げる。★これで「潰されて見えない」が消える */
+  #fig6 text.big6{font-size:42px}
+  #fig6 text.lim6{font-size:20px}
+  #fig7 text.big6{font-size:42px}
+  #fig7 text.lim6{font-size:20px}
+  #ov10 text.num6{font-size:30px}
+  /* 🆕 2026-08-30 F：会話（→ .cv）★スマホは顔を小さくして横幅を吹き出しに回す */
+  /* 🔴 2026-09-06：★スマホでアイコンを 38px に縮める指定を【消した】（★記事はスマホでも 46px）。
+     ★★この2行は、同じ <style> の後ろにある .cl .ic{46px} / .cl{gap:.75rem;margin:0 0 .85rem} に
+       ★同じ詳細度で【後勝ちされていて、すでに効いていませんでした】（★実測 ic 46px・gap 12px）。
+     → ★消しても見た目は1pxも動きません。★死んだ規則を残すと次の担当が誤読します */
+  /* 🔴 2026-09-02 1問1ページ担当：★A の【戻さないこと】に反するので外した ── .cl .bb{font-size:14.5px;padding:.55rem .75rem;line-height:1.8} */
+  .cast2{padding:.7rem .75rem}
+  .cast2 .ic{width:46px;height:46px}
+  .cast2 .row{gap:.6rem}
+  /* 🔴 2026-09-07 A：★.cast2 .tx2 の 13px/1.8 を外した ── ★これがスマホで
+     ★★登場人物の紹介が 13px のままだった原因（★common.css の 16.6px を後勝ちで潰していた）。
+     → ★山田様「記事と同じサイズって言っただろ」「行間も記事に合わせろよ」（2026-09-07） */
+  /* 🆕 2026-08-31 01v2：★390px は 横に割ると 文字が読めなくなるので【縦積み】に戻す
+     ★実測：横に割ると bd9 の 13単位が 4.1px になる（★7px未満）
+     ★★枠ごと貼り付けるので、2枚あわせて【画面の半分以内】に収める
+       （★でないと 下の説明が1行も見えない） */
+  #c9 .figrow{flex-direction:column;align-items:center}
+  #c9 .figrow > #bd9{width:100%;max-width:none;height:auto}
+  #c9 .figrow > #net9{width:100%;height:auto}
+  /* 🆕 2026-09-01 01v2：★問10 も同じ扱い（★横に割ると文字が 7px を割る） */
+  #c9b .figrow{flex-direction:column;align-items:center}
+  /* 🔴🔴🔴🔴 2026-09-09 図の担当：★★★★ここが「文字が小さすぎる」の真の原因でした
+     ★★preserveAspectRatio の指定が無いので既定の meet が効き、倍率は min(幅比, 高さ比)。
+     ★bd9b（viewBox 300×424／390×664）── 幅比 0.94 ／【高さ比 0.47】← 小さい方が採用
+       → ★描画幅 300 × 0.47 ＝【140.9px】★実測 140.92px と一致します。
+     ★★【高さ199pxに収めるために 幅まで連れて縮んで】いました。
+     ★★★横並びのせいではありません ── ★390px では すぐ上の flex-direction:column で
+       ★【既に縦積み】でした */
+  #c9b .figrow > #bd9b{width:100%;max-width:none;height:auto}
+  #c9b .figrow > #gr10{width:100%;height:auto}
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   🆕 2026-08-30 F【対話版】会話の見た目 ── ★00-dialog と同じ CSS（写し）
+   ★★ゲーム本体（つまみ・図・ゲージ・判定・数値）は1行も触っていない。
+     ★この CSS と末尾の IIFE を消せば、原本とまったく同じ挙動に戻る
+   ★色は【図のデータ色と衝突しないもの】だけ使う
+     01 の図が使う色  #019949 ／ #c00 ／ #2f6fb5 ／ #c26100 ／ #0b3d6b ／ #9dc3e6 ／ #9aa3a9
+     → ★学 #2f6fb5（★01 は睡眠の色に #2f6fb5 を使っているが、これは会話の枠の色で
+        図の中には1pxも描かない。★図と会話は場所が完全に分かれている）
+     → ★博士 #b0700c（★#c26100 とは別。★図に使われていない）
+   ★position:sticky を壊さないため、会話は .figbox stick / .panel の【外】にだけ置く
+   ══════════════════════════════════════════════════════════════════════════ */
+.cast2{border:1px solid var(--gray-200);background:var(--gray-100);
+  padding:1rem 1.1rem;margin:0 0 2.4rem}
+.cast2 .row{display:flex;gap:.9rem;align-items:flex-start}
+.cast2 .row+.row{margin-top:.9rem;padding-top:.9rem;border-top:1px solid var(--gray-200)}
+.cast2 .ic{width:54px;height:54px;border-radius:50%;flex-shrink:0;display:block;
+  border:2px solid var(--white);box-shadow:0 0 0 1px var(--gray-200),0 1px 3px rgba(0,0,0,.10)}
+.cast2 .nm2{display:block;font-size:18px;line-height:1.5;font-weight:700;margin-bottom:.2rem}
+.cast2 .rb{font-size:14px;font-weight:400;color:var(--gray-500);margin-left:.45rem}
+.cast2 .tx2{font-size:16.6px;line-height:1.831;color:var(--gray-600)}
+.cast2 .tx2 b{color:var(--black)}
+.cv{margin:1.6rem 0}
+.cl{display:flex;gap:.75rem;align-items:flex-start;margin:0 0 .85rem}
+.cl .ic{width:46px;height:46px;border-radius:50%;flex-shrink:0;display:block;
+  border:2px solid var(--white);box-shadow:0 0 0 1px var(--gray-200),0 1px 3px rgba(0,0,0,.10)}
+.cl .bb b{color:var(--black)}
+.cl .bb:before{content:'';position:absolute;left:-6px;top:15px;width:10px;height:10px;
+  background:inherit;border-left:1px solid;border-bottom:1px solid;border-color:inherit;
+  transform:rotate(45deg)}
+/* 🔴 2026-09-02 A：★★博士＝青／学＝オレンジ に入れ替えた（★アイコンの背景色に合わせた）
+   ★山田様「今フォントとか吹き出しが 博士がオレンジで学が青じゃん。画像はもとの
+     博士青、高校生オレンジでいいから、フォントの方を逆にしてよ」（2026-09-02）
+   ✗✗ 戻さないこと。★★common.css だけ直しても【各ページの style が後勝ちで効かない】 */
+.cl.m .bb{background:#fff7ea;border-color:#efd6a6}
+.cl.d .bb{background:#eef4fa;border-color:#c3d9ee}
+/* 🔴 2026-09-06：★font-size:11.5px を外した ── ★.cl .av .nm と同じ要素に当たり、
+   ★詳細度で負けていて【効いていなかった】（★実測 10.5px）。★話者名の大きさは common.css の
+   ★.cl .av .nm{font-size:14px} が持つ。★この規則は色と margin のためだけに残す */
+.cl .nm{display:block;font-weight:700;letter-spacing:.07em;margin-bottom:.15rem}
+.cl.m .nm{color:#b0700c}   /* 🔴 学 → オレンジ */
+.cl.d .nm{color:#2f6fb5}   /* 🔴 博士 → 青 */
+.keyh{font-size:11.5px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--gray-500);margin:1.6rem 0 .5rem}
+</style>
+</head>
+<body data-split="A2" data-top="q10top" data-talk="q10talk"
+      data-figs="bd9b"
+      data-verdict="j9b,gr10,gr10n,rec9" data-ratio="0.653"
+      data-figcap="The boundary (circle = passed, cross = failed)">
+
+<div class="top"><div class="in">Deep Black Box<span class="tag">Open up the black box of AI one problem at a time, with your own hands. 21 problems in all.</span></div></div>
+<div class="wrap">
+
+<!-- 🔴 2026-09-02 1問1ページ担当：★進み具合の帯（全21問）＋いま何章か -->
+<div class="prog">
+ <div class="steps" id="steps"></div>
+ <div class="cnt" id="prog_cnt"></div>
+</div>
+<div class="chap" id="chap"></div>
+
+<!-- ══════════════════ c9b ══════════════════ -->
+<div class="card" id="c9b">
+<div class="tagline">Question 10</div>
+<h2>Go deeper and it can break</h2>
+<!-- 🔴🔴🔴 2026-08-29 A（#25）山田様の指示で作り直した（★DATA・passOf は触っていない）
+     ✗✗【戻さないこと】10通りの総当たり ── ★読者テスト「作業感が強く、8通り目で飽きる」
+       → ★★【3通り】に絞った。★価値のある発見は「足す道で 23人 → 40人 に戻る」の17人差だけ
+     ✗✗【戻さないこと】「深くしても、当たりは上がりませんでした」── ★★実測と矛盾する。
+       ★3層 ReLU ＋ 足す道 入 は 40人 で、1層の 39人 を【上回っている】
+     ✗✗【戻さないこと】「幅」の表 ── ★出発点1個の実測なので「たまたまでは」と言われる。
+       ★3通りに減らすと そもそも成立しない
+     ✗✗【戻さないこと】補助図 gr9（手前の層に届く効き方の棒）── ★ページ自身が
+       「効き方の大きさと最終の当たりは直結しない」と書いていた。★読者を混乱させるだけ
+       → ★★1行の説明に置き換えた
+     ✗✗【戻さないこと】3層シグモイド＋足す道【切】は使わない。
+       ★この組だけ 実ブラウザ39人／Node38人 とズレる（★Math.exp の実装差） -->
+<!-- 🆕 F：この lead は会話 e10a に移した（★目標の1行だけ残す） -->
+<div id="e10a"></div>
+<!-- 🆕 2026-08-31 01v2：★★lead を「3通り埋めろ」から【何を見るか】に変えた。
+     ★★山田様「何言ってるかわからん、複雑、こういうのは文字でわからん、図で示せ」
+     ★埋める作業ではなく【●の色を見る】ことが この問の中身なので、そう書く
+     🆕 2026-09-01 01v2：★境目のグラフを足したので、見るものを3つ書く -->
+<p class="lead"><b>Take the depth from 1 layer to 3, and watch what happens to the <b>boundary</b>,
+ the <b>colour of the ●</b> and the <b>number correct</b>.</b></p>
+
+<!-- 🆕🆕🆕 2026-09-01 01v2：★★ここから【つまみの枠が貼り付く範囲】（＝問9 と同じ仕掛け）。
+     ★★山田様「一回 問9、問10 まとめて作り直せ」「いいものを消すなよ。
+       おれがこれまで消せと明確に指示したもの以外は消さずに うまいこと 9、10番に入れろよ」
+     ★閉じるのは 説明の図（飛び越す道）と その会話が終わったところ -->
+<div id="q10wrap">
+
+<!-- 🔴🔴🔴🔴 2026-09-09 展開担当：★★★★上下2分割の【上の枠】
+     ★★★出所：山田様のご判断 ── ★「スマホでつまみが固定できず全然操作できない」を防ぐ。
+       ★貼り付き（sticky）は捨てました（★山田様「今だとカクカクして気持ち悪いやん」）。
+     ★★★決定1 ── 上に置く図は【1枚】。★bd9b を残し、★gr10 は下の枠へ移します。
+       ★理由（実測）── ★2枚同時は算数として不可能です。
+         ★14px にするには高さ422px 必要ですが、分割中は119px（664）／182px（844）しかありません。
+     ★★★記録表（#rec9・131px）も下の枠へ移します ── ★つまみではないので上に置く必要がありません。
+       ★実測：★上に置くと 図に回せる高さが 81px しか残らず、★bd9b が下限の 80px（実効 3.2px）に潰れました。
+     ★部品は common.css / common.js が持ちます（★このページに link も script も足しません）。 -->
+<div id="q10top">
+<div class="panel">
+ <!-- 🆕🆕🆕 2026-09-01 01v2：★★【境目のグラフ（bd9b）】を足した ── 問9 と同じ描き方。
+      ★★これが無いと「3層で 23人に落ちた」ときに【境目がどうなったか】が見えなかった
+      ★実測（3層・飛び越す道なし・3,000歩）：40人ぜんぶに 同じ答えを返す（z が全員 同じ値）。
+        ★★＝ 境目の線が 1本も無くなる。★だから 当たりは 合格者の数 23人と同じになる
+      ★★折り目の点線は 問10 では描かない ── 3層では 手前の●の折り目が
+        出口まで届かないことがあり、点線が【嘘になる】ため（→ bdDraw の opt.fold） -->
+ <div class="cap">The <b>boundary</b> (a circle passed, a cross did not) and <b>which ● are passing numbers on</b>
+  <span style="color:var(--gray-500)">&mdash; a <b>grey ●</b> is returning <b>0</b> for all 40 and
+  <b>passing nothing on</b> (the ReLU from Problem 9)</span></div>
+ <div class="figrow"><!-- 🆕 2026-09-01 01v2：★★bd9b だけ viewBox の縦を 392 → 424 にした。
+      ★理由：★「境目の線が ありません」の注記が 軸のラベルと 7.0×3.3px 重なった（★実測）→
+        ★軸の下に 置き場所を作った。★問9 の bd9 は 392 のまま（★注記を出さないので不要） -->
+ <!-- 🔴🔴🔴 2026-09-09 図の担当：★★★当たりの数・棒を【SVG の外（HTML）】に出した
+      ★★viewBox を 0 0 300 424 → 0 104 300 320 にした（★見出し部 y 0〜103 を切った。
+        ★注記の置き場所（y 394・414）は 424 までなので そのまま残ります） -->
+ <div class="bdhead" id="bdh10"></div>
+ <svg id="bd9b" viewBox="0 104 300 320"></svg><svg id="gr10" viewBox="0 0 560 258"></svg></div>
+ <!-- 🆕🆕 2026-08-31 01v2：★★ボタンを【10個 → 6個】に減らした（→山田様「ボタン多すぎ」）。
+      ★消したもの ⒜ 2層（記録表に無い）⒝ 折り曲げ方 ReLU／シグモイド（★問9 で説明済み。
+        ★★シグモイドを押しても記録されないので、押した人が迷子になっていた）⒞ 100歩 -->
+ <div class="togs" style="margin-top:.7rem">
+  <span style="font-size:13px;color:var(--gray-500)">Depth</span>
+  <button class="btn on" id="L1b">1 layer</button>
+  <button class="btn" id="L3b">3 layers</button>
+  <span style="font-size:13px;color:var(--gray-500);margin-left:.6rem"><b id="np9b">13</b> knobs</span>
+ </div>
+ <div class="togs">
+  <!-- 🆕 2026-08-31 01v2：★★「そのまま足す道」→【飛び越す道】に変えた。
+       ★★山田様「そのまま足す道って意味不明」。★下の図で「層を飛び越えて そのまま足す」を見せる -->
+  <span style="font-size:13px;color:var(--gray-500)">Skip a layer and add the number straight on</span>
+  <button class="btn on" id="sk9ob">off</button>
+  <button class="btn" id="sk9ib">on</button>
+ </div>
+ <div class="togs">
+  <button class="btn go" id="st9c">Walk down to 3,000 steps</button>
+  <button class="btn sm" id="rs9b">Back to the start</button>
+  <span style="font-size:13px;color:var(--gray-500)"><b id="n9cb">0</b> steps</span>
+ </div>
+ <!-- 🔴 2026-08-29 A（#25）★.gauge は削除。★記録した数は下の表の中に出す（→共通要件⑴） -->
+</div>
+<!-- 🆕🆕 2026-08-31 01v2：★★記録表と判定文は【枠の外】へ出した。
+     ★★山田様「グラフ＋絵＋ボタンだけを貼り付け、判定文と説明文を外に出す」
+     ★これで 図を貼り付けたまま 下の記録表が見える
+     🆕 2026-09-01 01v2：★図の説明（gr10n）も 問9 の net9c と同じく 枠の外に出した -->
+<div class="cap" id="gr10n" style="text-align:left;margin:.3rem 0 0"></div>
+<table class="dtab" id="rec9"></table>
+<div class="verdict" id="j9b">Press [Walk down to 3,000 steps].</div>
+</div><!-- /#q10top -->
+
+<!-- 🆕 F：この箱（勾配消失の説明）は会話 e10b に移した -->
+<!-- ★★下の枠 ── ★会話。★独立してスクロールします -->
+<div id="q10talk">
+<div id="e10b"></div>
+
+<!-- ══════════════════════════════════════════════════════════════
+     🆕🆕🆕 2026-09-01 01v2【新規・図】●1個の【行き】と【帰り】
+     ★★問9 の「●の中身」（inner9）は【行き】だけだった。★問10 で足すのは【帰り】
+       行き：勉強・睡眠 → 掛けて足す → マイナスなら 0 → 先へ
+       帰り：出口で ずれを測る → 手がかりが 手前へ 戻る
+             → ★0 を返した●のところで 止まる → その手前の つまみは 1歩も動かない
+     ★★あわせて【シグモイドの受け】を ここで果たす（★問9 の dive9c が
+       「2つの ちがいは 問10 で出ます」と予告している。★果たせない約束にしない）
+     ✗✗ 言わないこと「だから ReLU の方が良い」── ★この画面の1つの設定では 一般化できない
+       （★実測：3層シグモイドは 3層ReLU より 良い数字が出る）
+     ✗✗ 3層シグモイドの人数を 画面にも台詞にも出さない（★実ブラウザと Node でズレる）
+     ══════════════════════════════════════════════════════════════ -->
+<div class="figbox">
+ <div class="cap" style="text-align:left;margin:0 0 .3rem"><b>The trip out and the trip back, for a single ●</b>
+  <span style="color:var(--gray-500)">&mdash; the trip back has a proper name: <b>backpropagation</b>. A ● returning 0 brings that trip to a halt</span></div>
+ <!-- 🆕 2026-09-01 01v2：★viewBox は 336（★帰りの用語の1行を足したぶんだけ 伸ばした）。
+      ★★「1歩の中身」は【別の枠】に分けた ── 1枚にすると 1280px で 863.2px（840超）だった（★実測） -->
+ <svg id="back10" viewBox="0 0 560 336"></svg>
+ <div class="cap" id="back10c" style="text-align:left;margin:.2rem 0 0"></div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════
+     🆕🆕🆕 2026-09-01 01v2【新規・図】「1歩」の中身（★①→②→③→④→①へ戻る）
+     ★★山田様「それこそ何回も重みを調整していって関数作っていくものなんだろうから、
+       ちゃんと図解とかも交えて説明してよね」
+     ══════════════════════════════════════════════════════════════ -->
+<div class="figbox">
+ <div class="cap" style="text-align:left;margin:0 0 .3rem"><b>What one step is made of</b>
+  <span style="color:var(--gray-500)">&mdash; the trip out (forward propagation) and the trip back (backpropagation), repeated thousands of times</span></div>
+ <svg id="loop10" viewBox="0 0 560 152"></svg>
+ <div class="cap" id="loop10c" style="text-align:left;margin:.2rem 0 0"></div>
+</div>
+
+<div id="e10b2"></div>
+
+<!-- ══════════════════════════════════════════════════════════════
+     🆕🆕🆕 2026-08-31 01v2【新規・静止画】飛び越す道は 何をしているのか
+     ★★山田様「そのまま足す道って意味不明」「言葉だけで全く伝わらん、図解ちゃんと入れろ」
+     ★★行き（数を渡す）と 帰り（つまみを動かす手がかり）を 上下に並べて見せる。
+       ★●が 0 を返すと 行きも帰りも止まる。★飛び越す道があると 素通りする
+     ══════════════════════════════════════════════════════════════ -->
+<div class="figbox">
+ <!-- 🆕🆕 2026-09-01 01v2：★★正式な用語を【見えるところ】に出した。
+      ★★山田様「飛び越す道って正式な機械学習用語でなに？ それもちゃんと説明してね」
+      ★スキップ結合／残差接続。★締めの折りたたみの中にしか無かったので 表に出した -->
+ <div class="cap" style="text-align:left;margin:0 0 .3rem"><b>What the skip path is doing</b>
+  <span style="color:var(--gray-500)">&mdash; its proper name is a <b>skip connection</b> (also a <b>residual connection</b>). It skips one layer and <b>adds the incoming number straight on</b></span></div>
+ <svg id="sk10" viewBox="0 0 560 268"></svg>
+ <div class="cap" id="sk10c" style="text-align:left;margin:.2rem 0 0"></div>
+</div>
+
+<div id="e10b3"></div>
+<!-- 🔴🔴🔴 2026-09-10 記録担当（A149_movehide.py）：★★★この枠を【下の枠の中】へ移しました。
+     ★理由：★分割の規則で【上の枠と下の枠のどちらにも属さないものは隠されます】。
+       ★★この枠は「解いたら出てくる枠」なので、外にあると
+         ★★★解いて hide が外れても【分割中は永久に出てきません】。
+     ★山田様「ここで止まる」の正体がこれでした（★2026-09-10。★分割18問中15問で起きていた）。
+     ★中身は1文字も変えていません。★置き場所だけ変えました -->
+<div id="r9" class="hide"></div>
+<!-- 🔴🔴🔴 2026-09-10 記録担当（A149_movehide.py）：★★★この枠を【下の枠の中】へ移しました。
+     ★理由：★分割の規則で【上の枠と下の枠のどちらにも属さないものは隠されます】。
+       ★★この枠は「解いたら出てくる枠」なので、外にあると
+         ★★★解いて hide が外れても【分割中は永久に出てきません】。
+     ★山田様「ここで止まる」の正体がこれでした（★2026-09-10。★分割18問中15問で起きていた）。
+     ★中身は1文字も変えていません。★置き場所だけ変えました -->
+<div id="r9b" class="hide">
+ <div id="e10z"></div>
+ <div class="keyh">What to take away</div>
+ <!-- 🆕 F：★中身（23人・40人・02 の Transformer）は会話 e10b・e10z に寄せた。
+      ★ここは【用語の対応だけ】を残す -->
+ <div class="verdict ok">
+  Two parts hold a deep network steady &mdash; the <b>skip path</b> (skip connection, residual connection) and
+  <b>putting everything on 0 to 1, from Problem 7</b> (normalization).
+ </div>
+ <div class="src">
+  <div class="h">Where this pays off</div>
+  <b>When training goes nowhere, suspect things in this order:</b> (a) the size of the inputs (Problem 7), (b) the step size,
+  (c) the bend, (d) whether there is a <b>skip path</b>.<br>
+  <span style="color:var(--gray-500)">If every ● has gone grey, it is (c) or (d).</span>
+ </div>
+ <details>
+  <summary>How the terms line up (see the sources for more)</summary>
+  <div class="lg">
+   <table>
+    <tr><th>Term</th><th>On this screen</th></tr>
+    <tr><td>Fully connected layer</td><td>every line drawn from ● to ●</td></tr>
+    <tr><td>Activation function</td><td>the bend (ReLU, sigmoid)</td></tr>
+    <tr><td>Layer</td><td>the middle layer</td></tr>
+    <!-- 🆕 2026-09-01 01v2：★★正式な用語を 表に足した（→山田様「正しい用語で言って、
+         その上でこういうものだと説明して」）。★英語のつづりは出さない -->
+    <tr><td>Forward propagation</td><td>the trip out &mdash; handing numbers from input to output to produce a prediction</td></tr>
+    <tr><td>Backpropagation</td><td>the trip back &mdash; sharing the error at the output back towards the input, which gives each knob its own &ldquo;which way, and how far&rdquo;</td></tr>
+    <!-- 🆕 2026-08-31 01v2：★★「手前の層に届く力が小さくなる」は実測と食い違う。
+         ★3層・飛び越す道なしでは【全層】の つまみが動く量が ぴったり 0 になる（★実測）。
+         ★原因は ReLU が 0 ばかり返す状態に落ちること（★死んだ ReLU） -->
+    <!-- 🆕 2026-09-01 01v2：★★用語表から英語（dying ReLU）を削った。
+      ★★読者に見える箇所に英語を出さない（→山田様「わからんことを説明しないでくれ」）。
+      ★日本語側の「生きた・死んだ」は 8/31 に 0件にしてある -->
+    <tr><td>Vanishing gradients</td><td>● returning nothing but 0, so the clue for moving the knobs never gets back upstream</td></tr>
+    <!-- 🆕🆕 2026-09-01 01v2：★★読者の画面から【ResNet】を削った（→A の指摘）。
+         ★カナ統一の方針と食い違っていた（★dying ReLU を消したのと同じ扱い）。
+         ★★英語のつづり・略称は 読者に見える箇所に出さない -->
+    <tr><td>Skip connection, residual connection</td><td>the skip path</td></tr>
+    <tr><td>Divergence (in gradient descent)</td><td>the numbers running away</td></tr>
+    <tr><td>Normalization (batch, layer)</td><td>putting everything on 0 to 1 (dividing by the top of the range)</td></tr>
+    <tr><td>Learning rate</td><td>the step size</td></tr>
+    <tr><td>Multilayer perceptron</td><td>a form with one layer or more</td></tr>
+    <tr><td>Simple perceptron</td><td>a form with no layer (that is Problem 8)</td></tr>
+   </table>
+  </div>
+ </details>
+</div>
+</div><!-- /#q10talk -->
+</div><!-- ★#q10wrap ここまで（★ここから先は つまみの枠が剥がれる） -->
+
+
+</div>
+
+<!-- 🔴 2026-09-02 1問1ページ担当：★戻る／次へ（★どのページでも常に押せる） -->
+<div id="nav"></div>
+
+<div id="foot"></div>
+</div>
+
+<!-- 🔴 2026-09-02 1問1ページ担当2代目：★★【受け皿】── この問の JS が触るのに
+     このページには無い要素です（★他の問のパネル）。★読者には出しません（.offpage）。
+     ★★これを置く理由：原本の $('…') を【1文字も変えない】ため。
+       ★空のタグだけなので中身は 0 バイトです -->
+<div class="offpage" aria-hidden="true">
+<button class="btn on" id="f9r"></button>
+<button class="btn" id="f9s"></button>
+<div class="verdict" id="j9"></div>
+<b id="n9c"></b>
+<b id="np9"></b>
+
+</div>
+
+<script src="common.js"></script>
+<script>
+/* ══════════════════════════════════════════════════════════════════════════
+   🔴 2026-09-02 1問1ページ担当2代目：★★下は原本 tsume-01 の <script> から
+     【この問が使う行だけ】をそのまま写したものです。★1文字も変えていません（★行を落としただけ）
+   ★★IIFE で包んだ理由 ── 原本の const $ / const show / const T が common.js の同名 const と
+     ぶつかって【SyntaxError でページ全体が動かなくなる】ため。★包んだだけで中身は変わりません
+   ★★mark() だけは common.js のものを使います（★帯が5章グループに変わったため。→ 指示⑶）
+   ══════════════════════════════════════════════════════════════════════════ */
+var QBASE = 9;
+drawProg(10); drawChap(10, "");
+drawNav(["q09.html","Problem 9: Insert one layer"], ["q11.html","Problem 11: Just memorized"]);
+drawFoot()   /* 🔴 2026-09-02 A：★注記を消した（★山田様。★同じ一文が21回出るのは型3／§2-6 の言い訳）*/;
+
+(function(){
+/* 🔴 2026-09-02 1問1ページ担当2代目：★★【受け皿】── この問には無い
+     【他の問の関数】を空にしておきます。★これが無いと ReferenceError になります。
+   ★★呼んでいる側（原本の関数）は1文字も変えていません */
+if (typeof bd9 === 'undefined') var bd9 = function(){};
+if (typeof net9 === 'undefined') var net9 = function(){};
+
+/* ══════════════════════════════════════════════════════════════
+   詰めKaggle 01 ── 深くするとどうなるか
+   ★★数値は全部コードで出す（→ 00 の §2-9）。手計算や記憶で書かない
+   ★確定した値（/tmp/tk00d/d06〜d09.mjs で総当たり・多出発点で確認）
+     問6  入力1個の限界 10.30（a=6.5 d=21）／2個 7.92（a=6.8 b=2.6 d=3）
+           3個 6.30（a=6.3 b=2.8 c=35 d=−22）  → 目標 8.5 は 1個では届かない
+     問7  伸縮なし・分   どの1歩の大きさでも 2〜4歩で発散
+           伸縮なし・時間 1歩 0.01 で 6.30 まで下がる
+           伸縮あり      時間でも分でも【完全に同じ】。1歩 0.005〜0.3 で 6.30〜6.31
+     問8  合格 23人 / 不合格 17人。★線1本の総当たりの最良 35人（1·勉強＋2·睡眠−13>0）
+           → 目標 38人 は線1本では届かない（不詰）
+     問9  ★★出荷コードを実ブラウザで回して測った（種101・幅3・1歩 0.6）
+           段  切り方      足す道  手前÷出口側   3,000歩の当たり  つまみ
+           なし  −          −       −            30人            3
+           1   ReLU        切      −             39人            13
+           1   シグモイド    切      −             39人            13
+           2   ReLU        切      129.4%        39人            25
+           2   ReLU        入      318.2%        30人            25
+           2   シグモイド    切       20.8%        40人            25
+           2   シグモイド    入      135.4%        40人            25
+           3   ReLU        切      122.1%        23人            37
+           3   ReLU        入      168.1%        39人            37
+           3   シグモイド    切        8.6%        38人            37
+           3   シグモイド    入      169.2%        40人            37
+         🔴🔴 ★★効き方の大きさと【最終の当たり】は直結しない。
+           ★3,000歩も回せば効き方が小さくても収束するし、ReLU は死んだノードで悪化する。
+           → ★★だから「効き方が小さいと学習しない」と断定してはいけない（→ 00 の §2-5）。
+             ★言えるのは「手前の段に届く力が弱くなる」まで。
+           → ★★「深くすれば良い」も否定できる ── 3段は 23人まで落ちる（実測）
+   ══════════════════════════════════════════════════════════════ */
+const $ = id => document.getElementById(id);
+/* 🔴🔴🔴 2026-08-29 A（01）：★★起動中は【クリア判定を効かせない】。
+   ★理由：問7〜11 の図を開いた時点で描くために起動部で up7()〜up11() を呼んだが、
+     ★★問10 の up10() は初期状態でクリア条件を満たしてしまい、
+       ★開いた瞬間に上の帯の「11 覚えただけ」が done になっていた（★A が実測で見つけた）
+   ★★これは A が起動部に up10() を足したことで生んだ副作用である（自己申告）
+   → ★mark() と show() の1か所で止める。★問7〜11 の中身には触らない */
+let BOOT = true;
+const show = id => { if (BOOT) return; const e = $(id); if (e) e.classList.remove('hide'); };
+/* ══════════ データ 40人（★乱数は固定。★毎回同じ数字が出る）══════════ */
+const DATA = (() => {
+  let S = 20260828;
+  const r = () => { S ^= S << 13; S ^= S >>> 17; S ^= S << 5; S |= 0; return (S >>> 0) / 4294967296; };
+  const nrm = () => { let u = 0, v = 0; while (!u) u = r(); while (!v) v = r();
+    return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v); };
+  const a = [];
+  for (let i = 0; i < 40; i++) {
+    const x1 = Math.round(r() * 20) / 2, x2 = 2 + Math.round(r() * 18) / 2;
+    const x3 = Math.round((0.5 + r() * 0.5) * 100) / 100;
+    const y = 6.2 * x1 + (14 - 1.1 * (x2 - 7.5) ** 2) + 22 * x3 + nrm() * 3.0;
+    a.push({ x1, x2, x3, y: Math.max(0, Math.min(100, Math.round(y * 10) / 10)) });
+  }
+  return a;
+})();
+const NN = DATA.length;
+/* 合格（問8・問9）＝ 睡眠の山を強くした点数が 55 以上 */
+const passOf = d => (6.2 * d.x1 + (30 - 2.5 * (d.x2 - 7.5) ** 2) + 20) >= 55 ? 1 : 0;
+DATA.forEach(d => d.t = passOf(d));
+/* ══════════ 共通の絵の部品 ══════════ */
+const T = (x, y, s, o) => { o = o || {};
+  return `<text x="${x}" y="${y}" font-size="${o.fs || 13}" fill="${o.c || '#3f3f3f'}"
+    text-anchor="${o.a || 'start'}" font-family="${o.f || 'Inter'}"${o.b ? ' font-weight="600"' : ''}
+    >${s}</text>`; };
+const NODE = (x, y, r, fill, stroke) =>
+  `<circle cx="${x}" cy="${y}" r="${r}" fill="${fill}" stroke="${stroke || '#fff'}" stroke-width="1.6"/>`;
+/* 重みの線。太さは |w| に比例。緑が＋・赤が− */
+function EDGE(x1, y1, x2, y2, w, scale) {
+  const t = Math.min(7, 0.6 + Math.abs(w) * (scale || 1));
+  const c = w >= 0 ? '#019949' : '#c00';
+  return `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${c}"
+    stroke-width="${t.toFixed(2)}" opacity=".75"/>`;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   問6 ── 入力を増やす（★★2026-08-29 第2版。★判断は【どの列を足すか】）
+   🔴🔴🔴 第2版で変わったこと（★経緯は HTML 側のコメント）
+     ⑴ 出席番号（d.id）を候補の列に足した ── ★問11 で使う列と同じもの
+     ⑵ ★★限界は【最小二乗の厳密解をその場で解く】。★16通りをハードコードしない
+     ⑶ 手で最良に合わせることを合格条件にしない（★1億通り・手がかりなし）
+     ⑷ 削除：mean6（つまみの意味の表）／eq6live（ずれの数式）／res6fig（赤い線の静止画）／
+             rec6（記録表）／eff6（効きの棒）／SLP6・HL6・RES6・EX6・REC6・BEST6・NAME6・LIM6
+   ★★確定値（★A が出荷の DATA で厳密解を解いて確認。→検証ツール/00/A_lsq.mjs。不一致0件）
+     勉強だけ 10.2959 ／ ＋睡眠 7.9197 ／ ＋出席率 6.2968 ／ ＋出席番号 6.2816
+     出席番号だけ 20.4296 ／ 勉強＋出席番号 10.2917 ／ 列なし（平均点）20.6737
+     下がった分  ＋睡眠 2.38 ／ ＋出席率 1.62 ／ ★★＋出席番号 0.02
+     ★単位を変えても限界は同じ（睡眠を分・出席率を0〜100 で 6.296795 完全一致）→ ★単位の話は問7
+   ══════════════════════════════════════════════════════════════ */
+DATA.forEach((d, i) => d.id = i + 1);       /* ★出席番号 1〜40（★点数と無関係な列） */
+
+const XR8 = [0, 10], YR8 = [2, 11];
+function sx8(v, P) { return P.x0 + (v - XR8[0]) / (XR8[1] - XR8[0]) * (P.x1 - P.x0); }
+function sy8(v, P) { return P.y0 - (v - YR8[0]) / (YR8[1] - YR8[0]) * (P.y0 - P.y1); }
+/* ══════════════════════════════════════════════════════════════
+   問9（段を1つ入れる）・問10（深くすると安定しなくなる）
+   ★出発点の種 101・幅3・1歩 0.6 で固定。★効き方の % は画面に埋め込まない（→ 下の注記）
+   ★そのまま足す道は【2段目以降】に付ける（1段目は入力2個・段3個で数が合わない）
+     → ★だから 1段では足す道のボタンを選べないようにしている
+   ══════════════════════════════════════════════════════════════ */
+const GOAL9 = 38, WID9 = 3, SEED9 = 101, LR9 = 0.6;
+let L9 = 1, A9 = 'relu', SK9 = false, n9 = 0, ok9 = false;
+let Ws9 = [], bs9 = [], Wo9 = [], bo9 = 0, div9 = false;
+
+/* 🔴🔴🔴 2026-08-29 A（#25）★★折り曲げ方に【なし】を足した（恒等＝そのまま通す）。
+   ★★これで「層を積んでも折り曲げが無ければ 1層ぶんと同じ」が実際に確かめられる
+   ★実測：なし＋1層＝30人／なし＋3層＝30人／層なし＝30人（★30,000歩まで変わらない） */
+const f9 = v => A9 === 'none' ? v : (A9 === 'relu' ? Math.max(0, v) : 1 / (1 + Math.exp(-v)));
+const df9 = v => { if (A9 === 'none') return 1;
+  if (A9 === 'relu') return v > 0 ? 1 : 0;
+  const g = 1 / (1 + Math.exp(-v)); return g * (1 - g); };
+const skOn = l => SK9 && l >= 1;
+const x9 = d => [d.x1 / 10, d.x2 / 11];
+
+function init9() {
+  let S = SEED9;
+  const r = () => { S ^= S << 13; S ^= S >>> 17; S ^= S << 5; S |= 0; return (S >>> 0) / 4294967296 - 0.5; };
+  const K = 2, dims = [K].concat(new Array(L9).fill(WID9));
+  Ws9 = []; bs9 = [];
+  for (let l = 0; l < L9; l++) {
+    const sc = Math.sqrt(2 / dims[l]);
+    Ws9.push(Array.from({ length: dims[l + 1] }, () =>
+      Array.from({ length: dims[l] }, () => r() * 2 * sc)));
+    bs9.push(new Array(dims[l + 1]).fill(0));
+  }
+  const OD = L9 ? WID9 : K;
+  Wo9 = Array.from({ length: OD }, () => r() * 2 * Math.sqrt(2 / OD));
+  bo9 = 0; n9 = 0; div9 = false;
+}
+function fwd9(x) {
+  const as = [], hs = [x];
+  for (let l = 0; l < L9; l++) {
+    const a = Ws9[l].map((row, i) => row.reduce((s, v, j) => s + v * hs[l][j], 0) + bs9[l][i]);
+    as.push(a);
+    hs.push(a.map((v, i) => f9(v) + (skOn(l) ? hs[l][i] : 0)));
+  }
+  return { as, hs, z: hs[L9].reduce((s, v, i) => s + v * Wo9[i], 0) + bo9 };
+}
+const say9 = d => fwd9(x9(d)).z > 0 ? 1 : 0;
+function cnt9() { return DATA.reduce((s, d) => s + (say9(d) === d.t ? 1 : 0), 0); }
+function np9() {
+  const K = 2, dims = [K].concat(new Array(L9).fill(WID9));
+  let n = 0;
+  for (let l = 0; l < L9; l++) n += dims[l] * dims[l + 1] + dims[l + 1];
+  return n + (L9 ? WID9 : K) + 1;
+}
+/* 🆕 2026-08-31 01v2：★★学習の中身だけを core9 に切り出した（★描画を呼ばない）。
+   ★理由：下の解剖図（dive9）の数字を【出荷コードで採る】ために、
+     画面を描かずに 1000歩 走らせる必要がある（→§10⒋ 数字は出荷コードを走らせる）
+   ★★式は1文字も変えていない。★step9 の外から見た挙動も変えていない */
+function step9(k) {
+  if (div9) { up9(); return; }
+  core9(k);
+  up9();
+}
+/* 🆕 2026-08-31 01v2：★★逆伝播だけを bp9 に切り出した（★更新はしない）。
+   ★理由：問10 の図が「いま つまみが動く量」を出すので、更新なしで勾配だけ要る。
+   ★★式は1文字も変えていない。★core9 はこれを呼んで更新する（＝式は1つだけ） */
+function bp9() {
+  const OD = Wo9.length;
+  const gW = Ws9.map(m => m.map(r => r.map(() => 0)));
+  const gb = bs9.map(b => b.map(() => 0));
+  const gWo = new Array(OD).fill(0); let gbo = 0;
+  for (const d of DATA) {
+    const x = x9(d), o = fwd9(x);
+    const q = 1 / (1 + Math.exp(-o.z)), dz = (q - d.t) / NN;
+    o.hs[L9].forEach((v, i) => gWo[i] += dz * v); gbo += dz;
+    let dd = Wo9.map(v => dz * v);
+    for (let l = L9 - 1; l >= 0; l--) {
+      const da = dd.map((v, i) => v * df9(o.as[l][i]));
+      da.forEach((v, i) => { o.hs[l].forEach((hv, j) => gW[l][i][j] += v * hv); gb[l][i] += v; });
+      const nd = new Array(o.hs[l].length).fill(0);
+      da.forEach((v, i) => Ws9[l][i].forEach((wv, j) => nd[j] += v * wv));
+      /* ★そのまま足す道の恒等項。★これが勾配を消えにくくする */
+      if (skOn(l)) dd.forEach((v, i) => { if (i < nd.length) nd[i] += v; });
+      dd = nd;
+    }
+  }
+  return { gW, gb, gWo, gbo };
+}
+function core9(k) {
+  for (let t = 0; t < k; t++) {
+    const g = bp9();
+    for (let l = 0; l < L9; l++) {
+      Ws9[l] = Ws9[l].map((row, i) => row.map((v, j) => v - LR9 * g.gW[l][i][j]));
+      bs9[l] = bs9[l].map((v, i) => v - LR9 * g.gb[l][i]);
+    }
+    Wo9 = Wo9.map((v, i) => v - LR9 * g.gWo[i]); bo9 -= LR9 * g.gbo;
+    n9++;
+    if (!Wo9.every(isFinite)) { div9 = true; break; }
+  }
+}
+/* 🆕🆕🆕 2026-08-31 01v2【問10 の主役】●が【数を通しているか】を数える
+   ★★数を通している ＝ 40人のうち1人でも「0 でない数」を先に渡している
+   ★★「生きた・死んだ」という言い方は使わない（→山田様「汚い言葉で 伝わらない」）
+   ★★実測（3,000歩・種101・幅3・1歩0.6）
+     1層         2/3 生きている  → 39人
+     3層 飛越なし 1/9            → 23人   ★★ほとんど死ぬ
+     3層 飛越あり 5/9            → 40人
+   ★問9 の dive9 で「●が 0 を返すと 出口へ何も伝わらない」を見せてあるので、そこに繋がる
+   ★★台詞「いちばん手前の層に届く力が 0」は誤り（→ 実測では【全層】が 0）。★台詞を直した */
+function alive9() {
+  const out = [];
+  for (let l = 0; l < L9; l++) {
+    const row = [];
+    for (let i = 0; i < WID9; i++) row.push(0);
+    out.push(row);
+  }
+  DATA.forEach(d => { const o = fwd9(x9(d));
+    for (let l = 0; l < L9; l++) for (let i = 0; i < WID9; i++) if (o.as[l][i] > 0) out[l][i]++; });
+  return out;
+}
+/* 🆕🆕🆕 2026-08-31 01v2【新規・図B】3層の形 と ●1個の中身 ══════════════
+   ★★山田様「なんで？ 3回も 式を通してるのに ── このあたりのすぐ近くに、
+     層を3つにしたニューラルネットワークの静止画が必要。一回もそれでてきてないだろ、
+     それでイメージできるわけないだろ」
+   ★★「ここの折り曲げ方のイメージもこの辺りに必要」
+   ★★「絵の中でどこからどこに ReLU とかを通してどう変わっていくのかと言う説明がないとわからない」
+   ✅ 3つを1枚にまとめた ── 上段＝3層の形（●の中に折り曲げ方の印）／下段＝●1個の中身
+   ★下段の数字は 出荷コードで その場で採る（→規則⑹。★埋め込まない）
+   ══════════════════════════════════════════════════════════════ */
+/* ★●の中に描く「折り曲げ方」の小さな印。★横＝入ってきた数／たて＝出る数（act9 と同じ向き） */
+function INMARK9(cx, cy, r, kind) {
+  const h = r * 0.60, o = r * 0.10;
+  let g = `<line x1="${(cx - h).toFixed(1)}" y1="${(cy + o).toFixed(1)}" x2="${(cx + h).toFixed(1)}"
+    y2="${(cy + o).toFixed(1)}" stroke="#fff" stroke-width=".9" opacity=".5"/>`;
+  if (kind === 'none') return g + `<line x1="${(cx - h).toFixed(1)}" y1="${(cy + h * 0.8 + o).toFixed(1)}"
+    x2="${(cx + h).toFixed(1)}" y2="${(cy - h * 0.8 + o).toFixed(1)}"
+    stroke="#fff" stroke-width="1.9"/>`;
+  if (kind === 'sig') return g + `<path d="M${(cx - h).toFixed(1)} ${(cy + h * 0.7 + o).toFixed(1)}
+    Q${cx.toFixed(1)} ${(cy + h * 0.7 + o).toFixed(1)} ${cx.toFixed(1)} ${(cy + o).toFixed(1)}
+    Q${cx.toFixed(1)} ${(cy - h * 0.7 + o).toFixed(1)} ${(cx + h).toFixed(1)} ${(cy - h * 0.7 + o).toFixed(1)}"
+    fill="none" stroke="#fff" stroke-width="1.9"/>`;
+  return g + `<path d="M${(cx - h).toFixed(1)} ${(cy + o).toFixed(1)} L${cx.toFixed(1)} ${(cy + o).toFixed(1)}
+    L${(cx + h).toFixed(1)} ${(cy - h + o).toFixed(1)}"
+    fill="none" stroke="#fff" stroke-width="1.9" stroke-linejoin="round"/>`;
+}
+/* 🆕🆕🆕 2026-09-01 01v2：★★bd9() を【描く先の id を指定できる形】に切り出した。
+   ★理由：★問10 にも 同じ境目のグラフを置くため（→山田様「いいものを消すなよ。
+     うまいこと 9、10番に入れろよ」）。★★式も描き方も 1文字も変えていない
+   ★opt.tid  描く先（bd9 ＝ 問9 ／ bd9b ＝ 問10）
+   ★opt.okId 当たりの数の text の id（★同じ id を2つ作らない）
+   ★opt.goal 目標 38人 の印を出すか（★問10 の目標は 3通り記録なので 出さない）
+   ★opt.fold ●の中身が 0 になる線（折り目）を描くか
+     ★★問10 では描かない ── 3層だと 手前の●の折り目が 出口まで届かないことがあり、
+       ★点線が【嘘になる】（★実測：3層・飛び越す道なしは 40人 全員に 同じ答え＝境目が無い） */
+function bdDraw(opt) {
+  const P = { x0: 42, y0: 320, x1: 288, y1: 126 };
+  /* 🔴🔴 2026-09-09 図の担当：★★文字の単位を【描画幅から逆算】する
+     ★単位 ＝ 14 × 300 ÷ 描画幅（★切り上げ。★四捨五入だと 0.03px 足りませんでした） */
+  const RWb = (document.getElementById(opt.tid) || {}).getBoundingClientRect
+    ? document.getElementById(opt.tid).getBoundingClientRect().width : 330;
+  const FSb = Math.max(12, Math.min(22, Math.ceil(14 * 300 / (RWb || 330) * 10) / 10));
+  let s = '';
+  const G = 44;
+  for (let i = 0; i < G; i++) for (let j = 0; j < G; j++) {
+    const x = XR8[0] + (XR8[1] - XR8[0]) * (i + 0.5) / G;
+    const y = YR8[0] + (YR8[1] - YR8[0]) * (j + 0.5) / G;
+    if (fwd9([x / 10, y / 11]).z > 0) {
+      const a = sx8(XR8[0] + (XR8[1] - XR8[0]) * i / G, P);
+      const b = sx8(XR8[0] + (XR8[1] - XR8[0]) * (i + 1) / G, P);
+      const c = sy8(YR8[0] + (YR8[1] - YR8[0]) * (j + 1) / G, P);
+      const e = sy8(YR8[0] + (YR8[1] - YR8[0]) * j / G, P);
+      s += `<rect x="${(a - 0.4).toFixed(1)}" y="${(c - 0.4).toFixed(1)}" width="${(b - a + 1.5).toFixed(1)}"
+        height="${(e - c + 1.5).toFixed(1)}" fill="#019949" opacity=".13"/>`;
+    }
+  }
+  for (let v = 0; v <= 10; v += 2) s += T(sx8(v, P), P.y0 + 18, String(v), { a: 'middle', fs: FSb, c: '#6e6e6e' });
+  for (let v = 2; v <= 11; v += 3) s += T(P.x0 - 8, sy8(v, P) + 4, String(v), { a: 'end', fs: FSb, c: '#6e6e6e' });
+  DATA.forEach(d => {
+    const x = sx8(d.x1, P), y = sy8(d.x2, P), good = say9(d) === d.t;
+    if (d.t) s += `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="5.5" fill="none"
+      stroke="${good ? '#019949' : '#c00'}" stroke-width="2.2"/>`;
+    else s += `<path d="M${(x - 4.6).toFixed(1)} ${(y - 4.6).toFixed(1)}l9.2 9.2M${(x + 4.6).toFixed(1)}
+      ${(y - 4.6).toFixed(1)}l-9.2 9.2" stroke="${good ? '#3f3f3f' : '#c00'}" stroke-width="2.2"/>`;
+  });
+  /* ══════════════════════════════════════════════════════════
+     🆕🆕🆕 2026-08-31 01v2【最大の追加】●の中身が ちょうど 0 になる線＝【折り目】
+     ★★山田様「あの絵のを人数分全部やるの？ よくそこの関係性がわからん」
+     ★★この線を境に、その●が【数を通す】か【0 を返す】かが 入れ替わる。
+       ★線を越えると 出口の式が変わるので、★★境目の傾きが そこで変わる ＝ 折れる
+     ★式：a×(勉強/10) ＋ b×(睡眠/11) ＋ d ＝ 0 を 勉強 について解く
+       → 勉強 ＝ −( b×(睡眠/11) ＋ d ) × 10 / a
+     ★★折り曲げが【なし】のときは 0 で切り替わらないので 描かない
+     ══════════════════════════════════════════════════════════ */
+  if (opt.fold && A9 !== 'none' && L9 >= 1 && Ws9[0]) {
+    const COL = ['#7b4fb5', '#c26100', '#0b7d8c'];
+    for (let i = 0; i < WID9; i++) {
+      const a = Ws9[0][i][0], b = Ws9[0][i][1], d = bs9[0][i];
+      if (Math.abs(a) < 1e-9) continue;
+      /* ★睡眠を動かして 勉強を求め、枠の中に入る部分だけ 線を引く */
+      let seg = [], on = false, pts = [];
+      for (let y = YR8[0]; y <= YR8[1] + 1e-9; y += 0.05) {
+        const x = -(b * (y / 11) + d) * 10 / a;
+        if (x >= XR8[0] && x <= XR8[1]) { pts.push([x, y]); on = true; }
+        else if (on) { if (pts.length > 1) seg.push(pts); pts = []; on = false; }
+      }
+      if (pts.length > 1) seg.push(pts);
+      seg.forEach(g => {
+        const dd = g.map((q, k) => (k ? 'L' : 'M') + sx8(q[0], P).toFixed(1) + ' ' + sy8(q[1], P).toFixed(1)).join('');
+        s += `<path d="${dd}" fill="none" stroke="${COL[i]}" stroke-width="1.6"
+          stroke-dasharray="7 4" opacity=".85"/>`;
+        /* ★線の端に ●の番号を出す（★枠の中に収まる側へ）
+           🆕 2026-09-01 01v2：★表記を つまみの絵（net9）・式（eqs9）・表（flow9）と
+             同じ【●①●②●③】にそろえた（★どの図の どの●か 迷わせない） */
+        const NM9 = ['●①', '●②', '●③'];
+        const e = g[g.length - 1], x2 = sx8(e[0], P), y2 = sy8(e[1], P);
+        if (y2 > P.y1 + 14 && y2 < P.y0 - 4)
+          s += T(Math.min(x2 + 5, P.x1 - 26), y2 + 4, NM9[i],
+            { fs: 12, b: 1, c: COL[i], f: "'Noto Serif JP',serif" });
+        else {
+          const b0 = g[0], x1v = sx8(b0[0], P), y1v = sy8(b0[1], P);
+          s += T(Math.min(x1v + 5, P.x1 - 26), Math.max(y1v - 4, P.y1 + 12), NM9[i],
+            { fs: 12, b: 1, c: COL[i], f: "'Noto Serif JP',serif" });
+        }
+      });
+    }
+  }
+  s += `<line x1="${P.x0}" y1="${P.y0}" x2="${P.x1}" y2="${P.y0}" stroke="#000"/>`;
+  s += `<line x1="${P.x0}" y1="${P.y1}" x2="${P.x0}" y2="${P.y0}" stroke="#000"/>`;
+  s += T(P.x1, P.y0 + 52, 'hours studied', { a: 'end', fs: FSb, f: "'Noto Serif JP',serif" });
+  s += T(P.x0 - 6, 116, 'hours slept', { fs: FSb, f: "'Noto Serif JP',serif" });
+  /* 🔴🔴🔴 2026-09-09 図の担当：★★★当たりの数・棒を【HTML に出した】
+     ★数える中身（cnt9・GOAL9・n9）は1つも変えていません。★置く場所だけ変えました */
+  if (opt.headId) {
+    const h = document.getElementById(opt.headId);
+    if (h) {
+      const c = cnt9(), top = c >= GOAL9 && A9 !== 'none';
+      const pc = v => Math.max(0, Math.min(1, v / 40)) * 100;
+      h.innerHTML =
+        '<span class="lb">correct out of 40</span>'
+      + '<span class="big' + (top ? ' ok' : '') + '" id="' + opt.okId + '">' + c + '</span>'
+      + '<span class="tr"><span class="fl' + (top ? ' ok' : '') + '" style="width:'
+      +   pc(c).toFixed(1) + '%"></span>'
+      + (opt.goal ? '<span class="mk" style="left:' + pc(GOAL9).toFixed(1) + '%"></span>' : '')
+      + '</span>'
+      + '<span class="rt">' + (opt.goal ? 'target ' + GOAL9 + '&nbsp;&nbsp;' : '') + n9 + ' steps</span>';
+    }
+  }
+  /* 🆕🆕🆕 2026-09-01 01v2：★★40人 全員に 同じ答えを返している状態を【図の中で言う】。
+     ★実測（3層・飛び越す道なし・3,000歩）：z が 40人 全員 同じ値になり、境目の線が 1本も無い。
+       ★★このとき 当たりの数は「その答えに当たる人の数」と同じになる（★合格 23人）
+     ★数は その場で数える（→規則⑹）。★問10 の図だけに出す */
+  if (opt.note) {
+    const ans = DATA.map(d => say9(d)), one = new Set(ans).size === 1;
+    if (one) {
+      s += T(42, 394, 'There is no boundary line', { fs: FSb, b: 1, c: '#c00', f: "'Noto Serif JP',serif" });
+      /* 🆕 2026-09-01 01v2【自己申告】★fs 12 では 390px で 6.89px（7px未満）だった → 12.5 に上げた */
+      s += T(42, 414, 'It answers &ldquo;' + (ans[0] ? 'pass' : 'fail') + '&rdquo; for all 40',
+        { fs: FSb, c: '#c00', f: "'Noto Serif JP',serif" });
+    }
+  }
+  $(opt.tid).innerHTML = s;
+}
+/* ★問10 の境目のグラフ（★折り目の点線なし・目標の印なし・境目が消えたことを書く） */
+function bd9b() { bdDraw({ tid: 'bd9b', okId: 'ok9tb', headId: 'bdh10', goal: false, fold: false, note: true }); }
+/* 🔴🔴🔴 2026-08-29 A（#25）★★10通り → 3通りに絞った（→山田様の指示【1】）。
+   ★残した3つ：1層 ReLU 切（39人・基準）／3層 ReLU 切（23人・壊れた）／3層 ReLU 入（40人・戻った）
+   ✗ 落としたもの：2層の4通り／1層シグ（1層ReLUと同じ39人で情報が無い）／
+     ★★3層シグ切（実ブラウザ39・Node38 でズレるので使わない） */
+const COMBO9 = [[1, 'relu', false], [3, 'relu', false], [3, 'relu', true]];
+const REC9 = {};
+const key9 = (l, a, s) => l + '|' + a + '|' + (s ? 1 : 0);
+let ok9b = false;
+
+/* 🆕🆕🆕 2026-08-31 01v2【問10 の主役の図】●が生きているか ══════════════
+   ★★山田様「ボタン押しても全然数字とか表に変化が見られにくい。強調とか大きさとか色も
+     全部平坦で小さい文字が少し変わるだけ、しかもたまにしか変わらん」
+     「ニューラルネットワークも一度もでてこなかった」「図解ちゃんと入れてわかりやすくしろ」
+   → ✅ ★★押すたびに【●の色が変わる】。★死んだ●は灰色になり「0」が出る
+   ★★問9 の dive9 で「●が 0 を返すと 出口へ 何も伝わらない」を見せてあるので、そこに繋がる
+   ★数字は その場で数える（→規則⑹。★埋め込まない）
+   ══════════════════════════════════════════════════════════════ */
+/* 🆕🆕🆕 2026-08-31 01v2【新規・静止画】飛び越す道は 何をしているのか ══════════
+   ★★山田様「そのまま足す道って意味不明」「言葉だけで全く伝わらん、図解ちゃんと入れろ」
+   ★上段＝行き（数を渡す）／下段＝帰り（つまみを動かす手がかり）
+   ★★数字は1つも書かない（★仕組みだけを見せる図。→規則㉟） */
+function sk10() {
+  /* 🆕🆕🆕 2026-09-10 図修正担当：★★★スマホだけ 図の文字を【実効 10px 以上】にする倍率。
+     ★★★★門は【画面幅 ≤430px】です（★@media (max-width:430px) と同じ境目）。
+       ⚠️★★問9 では「描画幅から逆算」しましたが、★★★q10 では それが使えません ──
+         ★gr10 は bd9b と同じ figrow に入るので【PC でも描画幅が 298px しかなく】、
+         ★描画幅で判定すると【PC の gr10 まで動いてしまいます】（★PC は1pxも変えない）。
+     ★算数 ── 実効 ＝ base × K × (描画幅 ÷ viewBoxの幅)。★K ＝ 10 × vb幅 ÷ 描画幅 ÷ base
+     ★base は【その図のいちばん小さい font-size】を渡します（★上げすぎないため） */
+  const K10 = (id, base) => {
+    if (!window.matchMedia || !matchMedia('(max-width:430px)').matches) return 1;
+    const e = $(id); if (!e || !e.getBoundingClientRect) return 1;
+    const w = e.getBoundingClientRect().width || 330;
+    const vw = (e.viewBox && e.viewBox.baseVal && e.viewBox.baseVal.width) || 560;
+    return Math.min(2.2, Math.max(1, Math.ceil(10 * vw / w / base * 100) / 100));
+  };
+  const Ks = K10('sk10', 12.5), Fs = v => Math.round(v * Ks * 100) / 100;
+  const BOX = (x0, y0, w, h) =>
+    `<rect x="${x0}" y="${y0}" width="${w}" height="${h}" fill="var(--white)" stroke="#d9d9d9"/>`;
+  /* ★●1個 ── dead=true なら 灰色＋「0」 */
+  const N = (x, y, dead) => NODE(x, y, 13, dead ? '#c9cfd3' : '#2f6fb5')
+    + (dead ? T(x, y + 5, '0', { a: 'middle', fs: Fs(14), b: 1, c: '#fff' })
+            : INMARK9(x, y, 13, 'relu'));
+  /* ★矢印（★on=false なら 薄い） */
+  const AR = (x1, y1, x2, y2, on, col) => {
+    const c = on ? (col || '#019949') : '#c9cfd3';
+    const a = Math.atan2(y2 - y1, x2 - x1), L = 7;
+    return `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${c}" stroke-width="${on ? 2.4 : 1.6}"/>`
+      + `<path d="M${x2} ${y2}L${(x2 - L * Math.cos(a - 0.4)).toFixed(1)} ${(y2 - L * Math.sin(a - 0.4)).toFixed(1)}
+        M${x2} ${y2}L${(x2 - L * Math.cos(a + 0.4)).toFixed(1)} ${(y2 - L * Math.sin(a + 0.4)).toFixed(1)}"
+        stroke="${c}" stroke-width="${on ? 2.4 : 1.6}" fill="none"/>`;
+  };
+  let s = '';
+  const W = 258, XA = 16, XB = 292;
+  /* 🆕🆕🆕 2026-09-10 図修正担当：★★★スマホだけ【たてに伸ばす】（★山田様のご判断＝縦に伸ばしてよい）
+     ★★★★なぜ ── ★文字を1.36倍にしたら【弧の点線が 文字を横切って 潰れました】（★実物を撮って発見）。
+       ★「＋ そのまま足す」と「＋の道を そのまま戻る」の2件。
+       ⚠️★★A160/A162 は【文字と文字・文字と四角】しか見ないので、★線との重なりは出ません。
+     ★手 ── ⒟枠を高くし（96→132単位）、★弧をもっと高く張って、★文字を弧から離した
+     ★viewBox 268 → 340（★スマホだけ。★PC は 268 のまま） */
+  const 縦 = Ks > 1;
+  const BH = 縦 ? 132 : 96;    /* 枠の高さ */
+  const UN = 縦 ? 118 : 92;    /* 上段の●の たて */
+  const AO = 縦 ? 36 : 20;     /* 弧の始まり（●から どれだけ上か） */
+  const AC = 縦 ? 80 : 52;     /* 弧の引っぱり */
+  const AE = 縦 ? 30 : 14;     /* 弧の終わり（★★右端が「足す」に触ったので さらに上げた） */
+  const UL = 縦 ? 96 : 72;     /* 上段の弧の文字 */
+  const UB = 縦 ? 148 : 122;   /* 上段の下の文 */
+  const DT = 縦 ? 192 : 158;   /* 下段の枠の上端 */
+  const DN = 縦 ? 276 : 216;   /* 下段の● */
+  const DL = 縦 ? 228 : 186;   /* 下段の弧の文字（★スマホは弧の上へ出す） */
+  const DB = 縦 ? 306 : 246;   /* 下段の下の文 */
+  const HD = 縦 ? 182 : 152;   /* 「帰り（…）」の見出し */
+  /* 🆕 2026-08-31 01v2：★枠のラベルを 枠の【中】へ入れた。
+     ★もとは y=26 に置いて 上の見出し（y=18）と 13.09px 重なっていた（★実測） */
+  [['skip path off', XA, false], ['skip path on', XB, true]].forEach(([nm, X, sk]) => {
+    /* ══ 上段：行き ══ */
+    s += BOX(X, 34, W, BH);
+    s += T(X + 8, 52, nm, { fs: Fs(13.5), b: 1, c: sk ? '#2f6fb5' : '#3f3f3f', f: "'Noto Serif JP',serif" });
+    const y1 = UN, xL = X + 44, xM = X + 128, xR = X + 214;
+    s += AR(X + 10, y1, xL - 15, y1, true);
+    s += N(xL, y1, false);
+    s += AR(xL + 15, y1, xM - 15, y1, true);
+    s += N(xM, y1, true);                       /* ★ここが死んだ● */
+    s += AR(xM + 15, y1, xR - 6, y1, false);    /* ★先へは 0 しか行かない */
+    if (sk) {
+      /* ★飛び越す道（弧）── ●を飛び越えて そのまま足す */
+      s += `<path d="M${xL} ${y1 - AO}Q${xM} ${y1 - AC} ${xR - 8} ${y1 - AE}"
+        fill="none" stroke="#2f6fb5" stroke-width="2.4" stroke-dasharray="5 3"/>`;
+      /* 🆕 2026-08-31 01v2：★枠のラベル（y=52）と 同じ行で重なっていた → 弧の内側へ下げた */
+      /* 🆕 2026-08-31 01v2：★枠のラベル（y=52）と 8.13px 重なっていた → さらに下げた（★実測） */
+      s += T(xM, UL, '+ added straight on', { a: 'middle', fs: Fs(12.5), c: '#2f6fb5', f: "'Noto Serif JP',serif" });
+    }
+    s += T(X + 8, UB, sk ? 'the number gets past anyway' : 'if ● is 0, only 0 goes on',
+      { fs: Fs(12.5), c: sk ? '#2f6fb5' : '#c00', f: "'Noto Serif JP',serif" });
+    /* ══ 下段：帰り ══ */
+    /* 🆕 2026-08-31 01v2：★下段の枠のラベルは【消した】── 上段と同じ字で、
+       ★しかも 弧の文字（＋の道を そのまま戻る）と 22px 重なっていた（★実測） */
+    s += BOX(X, DT, W, BH);
+    const y2 = DN;
+    s += AR(xR - 6, y2, xM + 15, y2, true, '#c26100');
+    s += N(xM, y2, true);
+    s += AR(xM - 15, y2, xL + 15, y2, false, '#c26100');
+    s += N(xL, y2, false);
+    s += AR(xL - 15, y2, X + 10, y2, false, '#c26100');
+    if (sk) {
+      s += `<path d="M${xR - 8} ${y2 - 14}Q${xM} ${y2 - 52} ${xL} ${y2 - 20}"
+        fill="none" stroke="#c26100" stroke-width="2.4" stroke-dasharray="5 3"/>`;
+      s += T(xM, DL, 'back along the + path', { a: 'middle', fs: Fs(12.5), c: '#c26100', f: "'Noto Serif JP',serif" });
+    }
+    s += T(X + 8, DB, sk ? 'the clue gets through' : 'the clue stops here',
+      { fs: Fs(12.5), c: sk ? '#c26100' : '#c00', f: "'Noto Serif JP',serif" });
+  });
+  s += T(16, HD, 'The trip back (the clue for which way to turn each knob)',
+    { fs: Fs(13), b: 1, c: '#c26100', f: "'Noto Serif JP',serif" });
+  s += T(16, 24, 'The trip out (handing numbers on)', { fs: Fs(13), b: 1, c: '#019949', f: "'Noto Serif JP',serif" });
+  if (縦) $('sk10').setAttribute('viewBox', '0 0 560 340');
+  $('sk10').innerHTML = s;
+  $('sk10c').innerHTML =
+    `<b>The proper name for the skip path is a skip connection (also a residual connection).</b>`
+    + `<span style="color:var(--gray-500)"> It is wiring that skips one layer and <b>adds the incoming number straight into the output</b>.</span><br>`
+    + `<span style="color:var(--gray-500)">Even when a ● returns 0, numbers and clues walk right past along this path. `
+    + `So <b>the knobs upstream keep moving too</b>. `
+    + `&mdash; A Transformer block in Chapter 3 has the shape <span class="mono">x + part(x)</span>, `
+    + `and that &ldquo;+&rdquo; is exactly this skip path.</span>`;
+}
+/* 🆕🆕🆕 2026-09-01 01v2【新規・問10 の山場】●1個の【行き】と【帰り】 ══════════
+   ★★問9 の inner9 は【行き】だけだった。★問10 で足すのは【帰り】
+   ★★あわせて 問9 の予告（「2つの ちがいは 問10 で出ます」）を ここで果たす
+   ★★数は【出荷コードの df9 を走らせて】採る（→規則⑹。★埋め込まない）
+     ReLU      df9(+) ＝ 1 ／ df9(−) ＝ 0
+     シグモイド df9 の いちばん大きい値 ＝ 0.25（★v ＝ 0 のとき）→ 3回で 0.25³
+   ✗✗「だから ReLU の方が良い」は書かない（★1つの設定では 一般化できない）
+   ══════════════════════════════════════════════════════════════ */
+let BK10 = null;
+function backNum10() {
+  if (BK10) return BK10;
+  const sv = A9;
+  A9 = 'relu';
+  const rP = df9(2), rM = df9(-2);
+  A9 = 'sig';
+  let mx = 0, at = 0;
+  for (let v = -8; v <= 8; v += 0.001) { const g = df9(v); if (g > mx) { mx = g; at = v; } }
+  A9 = sv;
+  BK10 = { rP, rM, sg: mx, sgAt: at, sg3: mx * mx * mx };
+  return BK10;
+}
+function back10() {
+  const N = backNum10();
+  const SF = "'Noto Serif JP',serif";
+  /* 🆕🆕🆕 2026-09-10 図修正担当：★★スマホだけ 実効10px以上に（★門は 画面幅≤430px。→ sk10 と同じ型） */
+  const K10 = (id, base) => {
+    if (!window.matchMedia || !matchMedia('(max-width:430px)').matches) return 1;
+    const e = $(id); if (!e || !e.getBoundingClientRect) return 1;
+    const w = e.getBoundingClientRect().width || 330;
+    const vw = (e.viewBox && e.viewBox.baseVal && e.viewBox.baseVal.width) || 560;
+    return Math.min(2.2, Math.max(1, Math.ceil(10 * vw / w / base * 100) / 100));
+  };
+  const Kb = K10('back10', 12), Fb = v => Math.round(v * Kb * 100) / 100, 縦 = Kb > 1;
+  const BOX = (x0, y0, w, h) =>
+    `<rect x="${x0}" y="${y0}" width="${w}" height="${h}" fill="var(--white)" stroke="#d9d9d9"/>`;
+  /* ★●1個（★dead なら 灰色＋「0」／生きていれば ReLU の印） */
+  const N1 = (x, y, dead) => NODE(x, y, 15, dead ? '#c9cfd3' : '#2f6fb5')
+    + (dead ? T(x, y + 6, '0', { a: 'middle', fs: Fb(16), b: 1, c: '#fff' })
+            : INMARK9(x, y, 15, 'relu'));
+  const AR = (x1, y1, x2, y2, on, col) => {
+    const c = on ? (col || '#019949') : '#c9cfd3';
+    const a = Math.atan2(y2 - y1, x2 - x1), L = 7;
+    return `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${c}" stroke-width="${on ? 2.4 : 1.6}"/>`
+      + `<path d="M${x2} ${y2}L${(x2 - L * Math.cos(a - 0.4)).toFixed(1)} ${(y2 - L * Math.sin(a - 0.4)).toFixed(1)}
+        M${x2} ${y2}L${(x2 - L * Math.cos(a + 0.4)).toFixed(1)} ${(y2 - L * Math.sin(a + 0.4)).toFixed(1)}"
+        stroke="${c}" stroke-width="${on ? 2.4 : 1.6}" fill="none"/>`;
+  };
+  const W = 258, XA = 16, XB = 292;
+  let s = '';
+  /* 🆕🆕🆕 2026-09-10 図修正担当：★★スマホだけ たてに伸ばして 収める（★山田様＝縦に伸ばしてよい）
+     ★★★実測（★1.41倍にしたとき）── ★はみ出し3件・重なり2件
+       ⒜ 83字の文「ReLU　中身が…0.016）」が【右へ 535単位】── ★これは文章です → 3行に分ける
+       ⒝「つまみを どっちに どれだけ 回すかの 手がかり」が【右へ 96単位】
+          ★見出しと 同じ行に横並びだったため → ★別の行へ下ろす
+       ⒞「出口から 戻ってきた」が【右へ 39単位】→ 枠の右端に そろえる（anchor=end）
+       ⒟「掛けて 足した数」が ●の中の「0」と 重なる → 上へ上げ、枠を高くした */
+  const UBH = 縦 ? 116 : 98;   /* 上段の枠の高さ */
+  const UY  = 縦 ? 100 : 88;   /* 上段の● */
+  const ULB = 縦 ? 74 : 76;    /* 「掛けて 足した数」 */
+  const UBT = 縦 ? 140 : 122;  /* 上段の下の文 */
+  const HD2 = 縦 ? 176 : 156;  /* 「帰り ＝ 誤差逆伝播…」の見出し */
+  const TIP = 縦 ? 198 : 156;  /* 「つまみを どっちに…」（★スマホは別の行） */
+  const DBT = 縦 ? 208 : 166;  /* 下段の枠の上端 */
+  const DBH = 縦 ? 140 : 98;   /* 下段の枠の高さ */
+  const DY  = 縦 ? 288 : 216;  /* 下段の● */
+  const DRL = 縦 ? 232 : 204;  /* 「出口から 戻ってきた」 */
+  const DML = 縦 ? 258 : 190;  /* 「×1」「×0」 */
+  const DBB = 縦 ? 336 : 256;  /* 下段の下の文 */
+  const SEP = 縦 ? 366 : 278;  /* 区切り線 */
+  const FT1 = 縦 ? 386 : 298;  /* 「帰りに 掛かる数 ──…」 */
+  const FT2 = 縦 ? 410 : 316;  /* ReLU の文 */
+  /* 🆕🆕🆕 2026-09-01 01v2：★★行き・帰りに【正式な用語】を当てた。
+     ★★山田様「これって逆電波なんとか？ それ正しい用語で言って、
+       その上でこういうものだと説明して」「ぎゃくでんぱのはまた違う仕組みでしょ」
+     ★行き ＝ 順伝播 ／ 帰り ＝ 誤差逆伝播（バックプロパゲーション）
+     ★英語のつづりは出さない（★カナで書く。→ dying ReLU を消したのと同じ扱い） */
+  s += T(16, 22, 'The trip out = forward propagation (handing numbers on)', { fs: Fb(13), b: 1, c: '#019949', f: SF });
+  [['● with positive insides', XA, false], ['● with negative insides', XB, true]].forEach(([nm, X, dead]) => {
+    s += BOX(X, 32, W, UBH);
+    s += T(X + 8, 50, nm, { fs: Fb(13), b: 1, c: dead ? '#c00' : '#2f6fb5', f: SF });
+    const y = UY, xc = X + 128;
+    s += AR(X + 12, y, xc - 18, y, true);
+    s += T(X + 12, ULB, 'multiplied and added', { fs: Fb(12), c: '#6e6e6e', f: SF });
+    s += N1(xc, y, dead);
+    s += AR(xc + 18, y, X + 246, y, !dead);
+    s += T(X + 8, UBT, dead ? 'only 0 goes on' : 'the number goes straight on',
+      { fs: Fb(12.5), b: 1, c: dead ? '#c00' : '#019949', f: SF });
+  });
+  s += T(16, HD2, 'The trip back = backpropagation', { fs: Fb(13), b: 1, c: '#c26100', f: SF });
+  s += T(縦 ? 16 : 300, TIP, 'the clue for which way to turn each knob', { fs: Fb(12), c: '#6e6e6e', f: SF });
+  [['×' + N.rP, XA, false], ['×' + N.rM, XB, true]].forEach(([mul, X, dead]) => {
+    s += BOX(X, DBT, W, DBH);
+    const y = DY, xc = X + 128;
+    s += AR(X + 246, y, xc + 18, y, true, '#c26100');
+    s += T(縦 ? X + 246 : X + 150, DRL, 'from the output',
+      縦 ? { a: 'end', fs: Fb(12), c: '#6e6e6e', f: SF } : { fs: Fb(12), c: '#6e6e6e', f: SF });
+    s += N1(xc, y, dead);
+    s += T(xc, DML, mul, { a: 'middle', fs: Fb(14), b: 1, c: dead ? '#c00' : '#c26100', f: SF });
+    s += AR(xc - 18, y, X + 12, y, !dead, '#c26100');
+    s += T(X + 8, DBB, dead ? 'upstream knobs do not move' : 'upstream knobs move',
+      { fs: Fb(12.5), b: 1, c: dead ? '#c00' : '#c26100', f: SF });
+  });
+  s += `<line x1="16" y1="${SEP}" x2="544" y2="${SEP}" stroke="#d9d9d9"/>`;
+  s += T(16, FT1, 'What multiplies the trip back ── the bend decides', { fs: Fb(13), b: 1, f: SF });
+  if (縦) {
+    /* ★★★スマホ ── 83字の文を3行に分ける。
+       ★★★★文字は【1つも減っていません】── ★もとの文には「×0」と「シグモイド」の間に
+         全角スペースが【2つ】あります。★その【あいだで】切ったので、
+         ★1つ目は1行目の末尾に、★2つ目は2行目の先頭に そのまま残っています
+         （★全角スペース U+3000 は XML の空白ではないので 消えません）。
+       ★3行目は「（」の前で切るので ここも 文字は減りません */
+    s += T(16, FT2, 'ReLU&nbsp; positive insides &times;' + N.rP + ' / negative &times;' + N.rM,
+      { fs: Fb(12), f: SF });
+    s += T(16, FT2 + 22, 'Sigmoid&nbsp; at its largest, &times;' + N.sg.toFixed(2),
+      { fs: Fb(12), f: SF });
+    s += T(16, FT2 + 44, '(three passes give ' + N.sg.toFixed(2) + '&times;' + N.sg.toFixed(2) + '&times;' + N.sg.toFixed(2)
+      + ' = ' + N.sg3.toFixed(3) + ')', { fs: Fb(12), f: SF });
+    $('back10').setAttribute('viewBox', '0 0 560 470');
+  } else {
+  /* ★★英語版だけ 1行を詰めました ── ★直訳では viewBox 560 の右へ 115単位 出ました（★1280px 実測） */
+  s += T(16, FT2, 'ReLU&nbsp; positive &times;' + N.rP + ' / negative &times;' + N.rM
+    + '&nbsp;&nbsp;&nbsp; Sigmoid&nbsp; at most &times;' + N.sg.toFixed(2)
+    + '&nbsp; (three passes = ' + N.sg3.toFixed(3) + ')', { fs: Fb(12), f: SF });
+  }
+  $('back10').innerHTML = s;
+  /* 🆕🆕🆕 2026-09-01 01v2：★★用語を【言葉で】説明する（→山田様「正しい用語で言って、
+     その上でこういうものだと説明して」「図解はあるから言葉かいて
+     それはどういうものですって感じでいい」）
+     ★★あわせて「逆伝播と 勾配消失は 別のもの」を明記する（→山田様「ぎゃくでんぱのはまた違う仕組みでしょ」） */
+  $('back10c').innerHTML =
+    `<b>The proper name for the trip back is backpropagation.</b>`
+    + `<span style="color:var(--gray-500)"> It is the calculation that takes the <b>error</b> measured at the output and `
+    + `<b>shares it back, step by step, towards the input</b>. `
+    + `What each knob receives becomes &ldquo;which way, and how far, to turn it&rdquo;. `
+    + `<b>The trip out is called forward propagation.</b><br>`
+    + `<b>This is not the same thing as vanishing gradients</b> &mdash; `
+    + `<b>backpropagation is the name of a way of calculating</b>, while `
+    + `<b>vanishing gradients is the name of the trouble where that calculation hits 0 partway and never reaches upstream</b>. `
+    + `The <b>● that returned 0</b> in the figure above is exactly that 0.<br>`
+    + `<b>The figure just below</b> lays out what one step is made of.<br>`
+    + `When the bend is a <b>sigmoid</b>, instead of stopping at 0, `
+    + `<b>each pass shrinks the trip back to less than ${N.sg.toFixed(2)} times what it was</b> `
+    + `(${N.sg.toFixed(2)} being the value at its largest). `
+    + `Three passes leave <b>${N.sg3.toFixed(3)}</b> times &mdash; near enough 0. `
+    + `<b>Which of the two is better depends on the problem</b> `
+    + `(this screen uses ReLU).</span>`;
+}
+/* 🆕🆕🆕 2026-09-01 01v2【新規・図】「1歩」の中身 ── 何千回 繰り返して 関数を 作る
+   ★★山田様「それこそ何回も重みを調整していって関数作っていくものなんだろうから、
+     ちゃんと図解とかも交えて説明してよね」
+   ★①行き（順伝播）→ ②ずれを測る → ③帰り（誤差逆伝播）→ ④つまみを 少し動かす → ①へ戻る
+   ★繰り返す回数は【この画面のボタンの数字】と そろえる（★［3,000歩まで下る］）
+   ★★back10 と分けた理由：★1枚にすると 1280px で 枠が 863.2px（840超）になった（★実測） */
+function loop10() {
+  const SF = "'Noto Serif JP',serif";
+  /* 🆕🆕🆕 2026-09-10 図修正担当：★★スマホだけ 実効10px以上に（★門は 画面幅≤430px。→ sk10 と同じ型） */
+  const K10 = (id, base) => {
+    if (!window.matchMedia || !matchMedia('(max-width:430px)').matches) return 1;
+    const e = $(id); if (!e || !e.getBoundingClientRect) return 1;
+    const w = e.getBoundingClientRect().width || 330;
+    const vw = (e.viewBox && e.viewBox.baseVal && e.viewBox.baseVal.width) || 560;
+    return Math.min(2.2, Math.max(1, Math.ceil(10 * vw / w / base * 100) / 100));
+  };
+  const Kl = K10('loop10', 12), Fl = v => Math.round(v * Kl * 100) / 100, 縦 = Kl > 1;
+  let s = '';
+  /* ★★スマホ ── 題の1文を「──」の前で改行して2行にする（★文言そのまま。★空白1つを改行に替えただけ）
+     ★実測 ── 1行では 661単位あり、右へ117単位 はみ出します */
+  if (縦) {
+    s += T(16, 22, 'What one step is made of', { fs: Fl(13), b: 1, f: SF });
+    s += T(16, 44, '── repeated thousands of times to shape the function',
+      { fs: Fl(13), b: 1, f: SF });
+  } else {
+    s += T(16, 22, 'What one step is made of ── repeated thousands of times to shape the function',
+      { fs: 13, b: 1, f: SF });
+  }
+  const ST = [['① out', 'make a prediction', '#019949'], ['② error', 'measure at the output', '#111'],
+    ['③ back', 'clues towards the front', '#c26100'], ['④ move', 'the knobs, a little', '#2f6fb5']];
+  /* ★★★スマホ ── 4段の横並び（134単位間隔）を【2列2段】に組み替える。
+     ★実測 ── ③の「手がかりを 手前へ」は 140単位あり、134単位の間隔では ④と重なります。
+     ★2列にすると 1枠 246単位 使えるので 余ります（★山田様「左右に並べてるのは縦並びにする」） */
+  if (縦) {
+    const BW = 246, BH = 62, GX = 268, GY = 78, X0 = 16, Y0 = 62;
+    ST.forEach((p, i) => {
+      const X = X0 + (i % 2) * GX, Y = Y0 + ((i / 2) | 0) * GY;
+      s += `<rect x="${X}" y="${Y}" width="${BW}" height="${BH}" fill="var(--white)" stroke="#d9d9d9"/>`;
+      s += T(X + 10, Y + 26, p[0], { fs: Fl(12.5), b: 1, c: p[2], f: SF });
+      s += T(X + 10, Y + 50, p[1], { fs: Fl(12), c: '#6e6e6e', f: SF });
+      /* ★矢印 ── ①→② は右へ、②→③ は下へ、③→④ は右へ */
+      if (i === 0 || i === 2) {
+        const ax = X + BW, ay = Y + BH / 2;
+        s += `<path d="M${ax} ${ay}L${ax + 16} ${ay}" stroke="#9aa3a9" stroke-width="1.4"/>`;
+        s += `<path d="M${ax + 16} ${ay}L${ax + 10} ${ay - 4}M${ax + 16} ${ay}L${ax + 10} ${ay + 4}"
+          stroke="#9aa3a9" stroke-width="1.4" fill="none"/>`;
+      }
+      if (i === 1) {
+        const ax = X + BW / 2, ay = Y + BH;
+        s += `<path d="M${ax} ${ay}L${ax} ${ay + 12}" stroke="#9aa3a9" stroke-width="1.4"/>`;
+        s += `<path d="M${ax} ${ay + 12}L${ax - 4} ${ay + 6}M${ax} ${ay + 12}L${ax + 4} ${ay + 6}"
+          stroke="#9aa3a9" stroke-width="1.4" fill="none"/>`;
+      }
+    });
+    /* ★④から①へ戻る点線 ── ★★左の外側を回して【①の左】へ返す。
+       🔴 はじめ ④の下から ③の下へ 弧を引いたら、★★★矢印が【③を指していて
+         「①へ戻る」になっていませんでした】（★実物を撮って発見）。★左を回す形に直した */
+    s += `<path d="M407 202L407 226L8 226L8 93L12 93"
+      fill="none" stroke="#9aa3a9" stroke-width="1.4" stroke-dasharray="5 3"/>`;
+    s += `<path d="M16 93L9 89M16 93L9 97" stroke="#9aa3a9" stroke-width="1.4" fill="none"/>`;
+    s += T(280, 250, 'back to ①', { a: 'middle', fs: Fl(12.5), b: 1, c: '#6e6e6e', f: SF });
+    s += T(16, 278, 'the error in ② is the one you walked down in Problems 2 and 7', { fs: Fl(12), c: '#6e6e6e', f: SF });
+    $('loop10').setAttribute('viewBox', '0 0 560 292');
+  } else {
+  ST.forEach((p, i) => {
+    const X = 16 + i * 134;
+    s += `<rect x="${X}" y="36" width="118" height="48" fill="var(--white)" stroke="#d9d9d9"/>`;
+    s += T(X + 10, 56, p[0], { fs: 12.5, b: 1, c: p[2], f: SF });
+    s += T(X + 10, 76, p[1], { fs: 12, c: '#6e6e6e', f: SF });
+    if (i < 3) {
+      s += `<path d="M${X + 118} 60L${X + 130} 60" stroke="#9aa3a9" stroke-width="1.4"/>`;
+      s += `<path d="M${X + 130} 60L${X + 125} 57M${X + 130} 60L${X + 125} 63"
+        stroke="#9aa3a9" stroke-width="1.4" fill="none"/>`;
+    }
+  });
+  s += `<path d="M${16 + 3 * 134 + 59} 84Q280 116 75 84"
+    fill="none" stroke="#9aa3a9" stroke-width="1.4" stroke-dasharray="5 3"/>`;
+  s += `<path d="M75 84L80 89M75 84L82 82" stroke="#9aa3a9" stroke-width="1.4" fill="none"/>`;
+  s += T(280, 122, 'back to ①', { a: 'middle', fs: 12.5, b: 1, c: '#6e6e6e', f: SF });
+  s += T(16, 144, 'the error in ② is the one you walked down in Problems 2 and 7', { fs: 12, c: '#6e6e6e', f: SF });
+  }
+  $('loop10').innerHTML = s;
+  $('loop10c').innerHTML =
+    `<b>One trip back is not the end of it.</b>`
+    + `<span style="color:var(--gray-500)"> ① to ④ makes <b>one step</b>. Repeat that <b>thousands of times</b>, `
+    + `correcting the knobs a little at a time &mdash; <b>and that is what &ldquo;building the function&rdquo; means</b>. `
+    + `<b>[Walk down to 3,000 steps]</b> on this screen does it <b>3,000 times</b> `
+    + `(you pressed it one step at a time in <b>Problem 7</b>, and walked downhill in <b>Problem 2</b>).</span>`;
+}
+function gr10() {
+  const A = alive9(), cols = L9 + 2;
+  /* 🆕🆕🆕 2026-09-10 図修正担当：★★スマホだけ 実効10px以上に（★門は 画面幅≤430px）
+     ⚠️★★★この図は bd9b と同じ figrow に入るので【PC でも描画幅が 298px】しかありません。
+       ★だから【描画幅で門を作ると PC まで動きます】。★★画面幅で門を作るのが正しい。
+       ★実測 ── PC(1280) の gr10 は 6.39px です（★足りていませんが、PC は変えないご指示） */
+  const K10 = (id, base) => {
+    if (!window.matchMedia || !matchMedia('(max-width:430px)').matches) return 1;
+    const e = $(id); if (!e || !e.getBoundingClientRect) return 1;
+    const w = e.getBoundingClientRect().width || 330;
+    const vw = (e.viewBox && e.viewBox.baseVal && e.viewBox.baseVal.width) || 560;
+    return Math.min(2.2, Math.max(1, Math.ceil(10 * vw / w / base * 100) / 100));
+  };
+  const Kg = K10('gr10', 12), Fg = v => Math.round(v * Kg * 100) / 100, 縦 = Kg > 1;
+  const live = A.map(r => r.filter(v => v > 0).length).reduce((a, b) => a + b, 0);
+  const tot = L9 * WID9, c = cnt9();
+  /* 🔴🔴 2026-09-10 図修正担当：★★★スマホで「勉強」「睡眠」が【左へ はみ出して
+       「強」「眠」に 切れていました】（★実物を撮って発見。★★私の道具は 右と下しか見ていなかった）。
+     ★この2つは 入口の●の【左】に anchor=end で置くので、★文字が大きくなると x が負になります。
+     → ★スマホだけ 網ぜんたいを右へずらす（XL 26→62）。★ラベルは x=52 で終わるので 左は 18単位 空きます */
+  /* ★★英語版だけ PC 側も 26 → 58 にしました ── ★'study'（anchor end）は
+     ★fs 12 でも 約31単位 伸びるので、★XL−10＝16 では viewBox の左へ出ます */
+  const XL = 縦 ? 62 : 58, XR = 330;
+  const xs = Array.from({ length: cols }, (_, i) => XL + i * (XR - XL) / (cols - 1));
+  const ny = n => { const gap = 44, top = 122 - (n - 1) * gap / 2;
+    return Array.from({ length: n }, (_, i) => top + i * gap); };
+  const dims = [2].concat(new Array(L9).fill(WID9)).concat([1]);
+  const liveAt = (l, i) => l === 0 || l === cols - 1 ? true : A[l - 1][i] > 0;
+  let s = '';
+  s += T(XL, 26, 'The ● change colour each time you press', { fs: Fg(13), b: 1, f: "'Noto Serif JP',serif" });
+  /* 🆕🆕🆕 2026-09-01 01v2：★★線の太さを【重みに応じて】変えた（★問9 の net9 と同じ EDGE()）。
+     ★★山田様「いいものを消すなよ」── ★問9 の絵の描き方を そのまま持ち込む
+     ★死んだ●につながる線は 灰色の細い線のまま（★何も通っていないので 太さに意味が無い） */
+  for (let l = 0; l < cols - 1; l++) {
+    const ya = ny(dims[l]), yb = ny(dims[l + 1]);
+    const M = (l < L9) ? Ws9[l] : [Wo9];
+    yb.forEach((y2, i2) => ya.forEach((y1, i1) => {
+      const on = liveAt(l, i1) && liveAt(l + 1, i2);
+      if (on) {
+        const w = (M[i2] && M[i2][i1] !== undefined) ? M[i2][i1] : 0;
+        s += EDGE(xs[l].toFixed(1), y1, xs[l + 1].toFixed(1), y2, w, 1.0);
+      } else {
+        s += `<line x1="${xs[l].toFixed(1)}" y1="${y1}" x2="${xs[l + 1].toFixed(1)}" y2="${y2}"
+          stroke="#c9cfd3" stroke-width="1" opacity=".5"/>`;
+      }
+    }));
+    /* ★飛び越す道（弧）── ★2層目以降に付く */
+    if (skOn(l)) {
+      const y0 = ny(dims[l])[0], y1 = ny(dims[l + 1])[0];
+      s += `<path d="M${xs[l].toFixed(1)} ${y0 - 26}Q${((xs[l] + xs[l + 1]) / 2).toFixed(1)} ${y0 - 54}
+        ${xs[l + 1].toFixed(1)} ${y1 - 26}" fill="none" stroke="#2f6fb5" stroke-width="2.4"
+        stroke-dasharray="5 3"/>`;
+    }
+  }
+  /* ★● */
+  const nm = ['in'].concat(Array.from({ length: L9 }, (_, i) => 'layer ' + (i + 1))).concat(['out']);
+  for (let l = 0; l < cols; l++) {
+    ny(dims[l]).forEach((y, i) => {
+      const on = liveAt(l, i), r = l === 0 ? 7 : (l === cols - 1 ? 11 : 13);
+      const col = l === 0 ? '#000' : (l === cols - 1 ? '#019949' : (on ? '#2f6fb5' : '#c9cfd3'));
+      s += NODE(xs[l], y, r, col);
+      /* ★死んだ●には「0」を出す（★40人 全員に 0 を返している） */
+      /* 🆕 2026-08-31 01v2：★14単位は 390px で 6.48px（7px未満）だった → 20 に上げた */
+      if (l > 0 && l < cols - 1 && !on)
+        s += T(xs[l], y + 7, '0', { a: 'middle', fs: Fg(20), b: 1, c: '#fff' });
+      else if (l > 0 && l < cols - 1) s += INMARK9(xs[l], y, r, A9);
+    });
+    s += T(xs[l], 200, nm[l], { a: 'middle', fs: Fg(12.5),
+      c: l === 0 ? '#3f3f3f' : (l === cols - 1 ? '#019949' : '#2f6fb5'), f: "'Noto Serif JP',serif" });
+  }
+  s += T(XL - 10, ny(2)[0] + 4, 'study', { a: 'end', fs: Fg(12), f: "'Noto Serif JP',serif" });
+  s += T(XL - 10, ny(2)[1] + 4, 'sleep', { a: 'end', fs: Fg(12), f: "'Noto Serif JP',serif" });
+  if (SK9 && L9 >= 2) s += T(xs[1], 52, 'skip path', { fs: Fg(12), c: '#2f6fb5', f: "'Noto Serif JP',serif" });
+  /* ★★右側に数字を【大きく】出す（→山田様「平坦で小さい文字が少し変わるだけ」） */
+  const bad = live === 0 || live / tot < 0.25;
+  /* 🆕 2026-08-31 01v2：★下の数字（34単位）と 0.91px 重なっていた → 4単位 上げた（★実測） */
+  /* 🆕 2026-08-31 01v2：★「生きている」をやめた（→山田様）。★事実だけを書く */
+  /* 🆕🆕 2026-09-01 01v2：★★【当たりの数】は 左の境目のグラフ（bd9b）へ移した。
+     ★同じ数を 1つの枠に 2回 出さない（→§2-14 の型3）。
+     ★ここは「数を通している●」だけを 大きく出す ── ★これが 人数の理由そのもの */
+  s += T(400, 96, '● passing on', { fs: Fg(12), c: '#6e6e6e', f: "'Noto Serif JP',serif" });
+  s += `<text x="400" y="${縦 ? 148 : 142}" font-size="${Fg(34)}" font-weight="600" font-family="'Source Serif 4',serif"
+    fill="${bad ? '#c00' : '#2f6fb5'}">${live}<tspan font-size="${Fg(18)}" fill="#6e6e6e"> / ${tot}</tspan></text>`;
+  s += T(400, 縦 ? 178 : 168, n9 + ' steps', { fs: Fg(12.5), c: '#6e6e6e', f: "'Noto Serif JP',serif" });
+  if (縦) {
+    /* ★★スマホ ── 「線の太さ ＝ 重みの大きさ」を2行に分ける（★文言そのまま。★空白1つを改行に）
+       ★実測 ── 1行では 195単位あり、右へ35単位 はみ出します（★右に空いているのは160単位） */
+    s += T(400, 204, 'thickness =', { fs: Fg(12), c: '#6e6e6e', f: "'Noto Serif JP',serif" });
+    s += T(400, 226, 'size of the weight', { fs: Fg(12), c: '#6e6e6e', f: "'Noto Serif JP',serif" });
+    s += T(400, 248, 'green + / red −', { fs: Fg(12), c: '#6e6e6e', f: "'Noto Serif JP',serif" });
+  } else {
+  s += T(400, 194, 'line thickness = weight', { fs: Fg(12), c: '#6e6e6e', f: "'Noto Serif JP',serif" });
+  s += T(400, 212, 'green + / red −', { fs: Fg(12), c: '#6e6e6e', f: "'Noto Serif JP',serif" });
+  }
+  /* ★灰色の●の意味 */
+  /* 🆕 2026-08-31 01v2：★凡例の「0」が 11単位＝390px で 6.48px だった → ●を大きくして 14 に */
+  if (縦) {
+    /* ★★スマホ ── 38字の文を2行に分ける（★★「（」の前で切るので 文字は1つも減りません）
+       ★実測 ── 1行では 556単位あり、右へ40単位 はみ出します */
+    s += NODE(30, 274, 14, '#c9cfd3'); s += T(30, 279, '0', { a: 'middle', fs: Fg(14), b: 1, c: '#fff' });
+    s += T(52, 278, 'grey ● = returning 0 for all 40', { fs: Fg(12.5), f: "'Noto Serif JP',serif" });
+    s += T(52, 302, '(= passing nothing on)', { fs: Fg(12.5), f: "'Noto Serif JP',serif" });
+    $('gr10').setAttribute('viewBox', '0 0 560 320');
+  } else {
+  s += NODE(30, 240, 11, '#c9cfd3'); s += T(30, 245, '0', { a: 'middle', fs: Fg(14), b: 1, c: '#fff' });
+  s += T(44, 244, 'grey ● = returning 0 for all 40 (= passing nothing on)',
+    { fs: Fg(12.5), f: "'Noto Serif JP',serif" });
+  }
+  $('gr10').innerHTML = s;
+  const nb = $('gr10n');
+  if (nb) nb.innerHTML = bad
+    ? `<b style="color:#c00">Only ${live} ● are passing numbers on.</b>`
+      + `<span style="color:var(--gray-500)"> A ● that returns 0 passes nothing on. `
+      + `<b>And from that ● back towards the front, no clue for moving the knobs returns either.</b></span>`
+    : `<b>${live} ● are passing numbers on.</b>`
+      + `<span style="color:var(--gray-500)"> The ● that pass numbers on carry the clues, and so the knobs move.</span>`;
+}
+function tabs9() {
+  /* 🔴🔴 2026-08-29 A（#25）★★「幅」の表（wid9）は【削除】した（★出発点1個の結果なので）。
+     ★記録できた数は この表の見出しの中に出す（★.gauge を消したので）
+     🆕🆕 2026-08-31 01v2：★★列を【5つ → 4つ】に減らした（★折り曲げ方の列を削除）。
+       ★理由：問10 は ReLU だけを見る問なので、列にしても どの行も同じ字が並ぶだけだった
+       ★★山田様「ボタン多すぎ」「変化が見られにくい」→ 当たりの数を【大きく・色付き】にし、
+         ★生きている●の数を列に足した（★これが 23人 と 40人 の理由そのもの） */
+  const done = COMBO9.filter(c => REC9[key9.apply(null, c)] !== undefined).length;
+  let t = `<tr><th class="l">Depth</th><th class="l">Skip path</th><th>● passing on</th>`
+    + `<th>Correct<span style="font-weight:400;color:${done === COMBO9.length ? '#019949' : '#6e6e6e'}">`
+    + `&nbsp;${done}/${COMBO9.length} recorded</span></th></tr>`;
+  COMBO9.forEach(c => {
+    const v = REC9[key9.apply(null, c)];
+    const now = (c[0] === L9 && c[1] === A9 && !!c[2] === SK9);
+    const col = v === undefined ? '#6e6e6e' : (v.c >= 39 ? '#019949' : (v.c <= 30 ? '#c00' : '#111'));
+    t += `<tr${now ? ' class="sum"' : ''}><td class="l">${c[0]} layer${c[0] > 1 ? 's' : ''}</td>`
+      + `<td class="l">${c[0] === 1 ? '─' : (c[2] ? 'on' : 'off')}</td>`
+      + `<td>${v === undefined ? '–' : v.live + ' / ' + v.tot}</td>`
+      + `<td><b id="rc9${c[0]}${c[2] ? 'i' : 'o'}" style="font-size:17px;color:${col}">`
+      + `${v === undefined ? '–' : v.c}</b></td></tr>`;
+  });
+  $('rec9').innerHTML = t;
+}
+
+function up9() {
+  /* 🆕 2026-08-31 01v2：★問9 から［1層］［3層］［折り曲げない］を消したので 参照も外した */
+  ['f9r', 'f9s'].forEach((id, i) => $(id).classList.toggle('on', ['relu', 'sig'][i] === A9));
+  /* 🆕 2026-08-31 01v2：★★問10 のボタンを 10個 → 6個 に減らした（→山田様「ボタン多すぎ」）。
+     ★消したもの：2層（記録表に無い）／折り曲げ方 ReLU・シグモイド（問9 で説明済み・
+       ★★シグモイドを押しても記録されないので、押した人が迷子になっていた）／100歩 */
+  ['L1b', 'L3b'].forEach((id, i) => $(id).classList.toggle('on', [1, 3][i] === L9));
+  ['sk9ob', 'sk9ib'].forEach((id, i) => $(id).classList.toggle('on', (i === 1) === SK9));
+  /* 🔴 FB ⒜：そのまま足す道は【2段目以降】にしか付かない。★1段では選べないようにする */
+  const skNG = L9 <= 1;
+  $('sk9ob').disabled = skNG; $('sk9ib').disabled = skNG;
+  $('np9').textContent = np9(); $('np9b').textContent = np9();
+  $('n9c').textContent = n9; $('n9cb').textContent = n9;
+  /* 🆕 2026-09-01 01v2：★問10 にも 境目のグラフ（bd9b）を置いたので 一緒に描く */
+  net9(); bd9(); bd9b(); gr10();
+  const c = cnt9();
+  /* ★3,000歩まで下らせたときだけ記録する（★表の見出しと一致させる）
+     🆕 2026-08-31 01v2：★生きている●の数も一緒に記録する（★これが人数の理由なので） */
+  if (n9 >= 3000 && L9 >= 1) {
+    const A = alive9();
+    REC9[key9(L9, A9, SK9)] = { c: c,
+      live: A.map(r => r.filter(v => v > 0).length).reduce((a, b) => a + b, 0), tot: L9 * WID9 };
+  }
+  tabs9();
+  /* ── 問9 ── ★★当たりの数は bd9 の中に出す（.gauge は削除した） */
+  const ok = (c >= GOAL9 && L9 >= 1 && A9 !== 'none');
+  $('j9').className = 'verdict' + (ok ? ' ok' : '');
+  /* ★判定文は【1行】。★人数は図の中に出ている */
+  /* 🆕 V2 ★★［3層］を問9 に足したので、判定文を直した。
+     ✗✗【戻さないこと】L9>=2 のときに「いまは問10 で ○層 にしています」を出す ──
+       ★問9 のパネルで 3層 を選べるようになったので、この文だと おかしい */
+  /* 🆕 2026-08-31 01v2：★［折り曲げない］を消したので その分岐も消した。
+     ★L9>=2 は 問10 で層を増やしたときに ここへ戻ってきた場合の案内 */
+  $('j9').innerHTML = ok
+    ? `<b>The boundary folded.</b>`
+    : (L9 >= 2 ? `You are on <b>${L9} layers</b> right now (raised in Problem 10). Take more steps.`
+               : `<b>Take more steps.</b>`);
+  if (ok && !ok9) { ok9 = true; mark(3, 'done'); show('r9'); mark(4, 'open'); }
+  /* ── 問10（深さ）── ★.gauge を消したので ok9b / g9b / m9b / gc9b の参照も消した */
+  const left = COMBO9.filter(x => REC9[key9.apply(null, x)] === undefined).length;
+  $('j9b').className = 'verdict' + (left === 0 ? ' ok' : '');
+  /* ★判定文は【1行】 */
+  /* 🆕 2026-08-31 01v2：★判定文に【生きている●】を出す（★これが人数の理由）。
+     ★★3通りそろったら「飛び越す道で 23人 → 40人」と 差そのものを言う
+     🆕🆕 2026-09-01 01v2：★★●の【個数】を 判定文から 外した。
+       ★★理由：alive9() の個数は 実ブラウザと Node で 1個 ずれることがある（→§5-25 の型）。
+         ★環境で変わる数字を画面に出さない（→§5-22 ⑺）。
+       ★★個数は【図（gr10）と 記録表（rec9）だけ】に出す ── 読者が目で見る現物なので
+         ★環境差があっても 画面の中で 矛盾しない */
+  {
+    const r3o = REC9[key9(3, 'relu', false)], r3i = REC9[key9(3, 'relu', true)];
+    $('j9b').innerHTML = left === 0
+      ? `<b>Add a skip path and it comes back from ${r3o.c} to ${r3i.c}.</b>`
+        + `<span style="font-weight:400"> More ● are passing numbers on (see the figure above and the record table).</span>`
+      : `<b>${L9} layers${L9 >= 2 ? ' / skip path ' + (SK9 ? 'on' : 'off') : ''}</b>`
+        + `&nbsp;${c} correct (${n9} steps)`;
+  }
+  if (left === 0 && !ok9b) { ok9b = true; mark(4, 'done'); show('r9b'); mark(5, 'open'); }
+}
+/* 問10 の操作（★深さ ＋ 飛び越す道 ＋ 3,000歩まで下る ＋ はじめに戻す ＝ 6個）
+   🆕 2026-08-31 01v2：★2層（L2b）は【消した】── 記録表に無く、判断に使われていなかった */
+[['L1b', 1], ['L3b', 3]].forEach(([id, L]) => $(id).onclick = () => {
+  L9 = L; A9 = 'relu'; if (L9 <= 1) SK9 = false; init9(); up9(); });
+/* 🆕🆕 2026-08-31 01v2：★★問10 から 折り曲げ方のボタン（a9rb / a9sb）と 2層（L2b）と
+   100歩（st9d）を外した。★問10 の操作は【ReLU に固定する】── そうしないと
+   ★問9 で「折り曲げない」を選んだまま問10 に来た人が、記録の取れない状態で押し続ける
+   ★A9 は問9 と問10 で同じ1つのネットワークを指しているので、ここで relu に戻す */
+$('sk9ob').onclick = () => { A9 = 'relu'; SK9 = false; init9(); up9(); };
+$('sk9ib').onclick = () => { A9 = 'relu'; SK9 = true; init9(); up9(); };
+$('st9c').onclick = () => { A9 = 'relu'; if (n9 < 3000) step9(3000 - n9); else step9(100); };
+$('rs9b').onclick = () => { A9 = 'relu'; init9(); up9(); };
+
+DATA.forEach((d, i) => d.id = i + 1);
+
+/* ══════ 起動（★この問のぶんだけ。★原本の起動行から他の問の呼び出しを落としました）══════ */
+init9();
+up9();
+sk10(); back10(); loop10();
+BOOT = false;
+
+/* ══════ 会話（★原本の CV の写し。★この問のぶんだけ）══════ */
+var CV = {
+ "e10a": [
+  [
+   "m",
+   "Doc, <b>deeper means more of them right</b>, does it not?"
+  ],
+  [
+   "d",
+   "&hellip; Try it and see."
+  ],
+  [
+   "m",
+   "That look on your face gives me a bad feeling."
+  ],
+  [
+   "d",
+   "Ha ha! Set it to <b>[3 layers]</b> and press <b>[Walk down to 3,000 steps]</b>. &hellip; And keep a close eye on <b>the colour of the ●</b>."
+  ]
+ ],
+ "e10b": [
+  [
+   "m",
+   "Doc! <b>It dropped to 23!</b> One layer gave <b>39</b>!"
+  ],
+  [
+   "d",
+   "Ha ha! <b>That is what I wanted you to see.</b>"
+  ],
+  [
+   "m",
+   "&hellip; <b>Almost all the ● have gone grey.</b>"
+  ],
+  [
+   "d",
+   "A grey ● is <b>returning 0 for all 40</b>. &hellip; We covered it in Problem 9. <b>If the insides are negative, ReLU returns 0.</b>"
+  ],
+  [
+   "m",
+   "0 for <b>every one of the 40</b>?"
+  ],
+  [
+   "d",
+   "Every one. &hellip; <b>That ● is passing nothing on.</b>"
+  ],
+  [
+   "m",
+   "Is that all &mdash; nothing goes forward?"
+  ],
+  [
+   "d",
+   "Not quite all. &hellip; <b>Nothing goes back towards the front either.</b>"
+  ],
+  [
+   "d",
+   "Look at <b>the figure just below</b>. &hellip; The <b>trip out</b> and the <b>trip back</b> for a single ●, one above the other."
+  ]
+ ],
+ "e10b2": [
+  [
+   "m",
+   "Goes back? What does?"
+  ],
+  [
+   "d",
+   "<b>Which way to turn each knob so the error comes down</b> &mdash; that <b>clue</b>. Measured at the output, then carried back towards the front. It is <b>the slope of the hill</b> from Problem 2."
+  ],
+  [
+   "m",
+   "Is that the thing called <b>backprop</b>?"
+  ],
+  [
+   "d",
+   "You knew the name! Properly it is <b>backpropagation</b>. &hellip; <b>The calculation that shares the error at the output back, step by step, towards the input.</b>"
+  ],
+  [
+   "m",
+   "And what does sharing it tell us?"
+  ],
+  [
+   "d",
+   "It gives <b>each knob its own &ldquo;which way, and how far&rdquo;</b>. &hellip; The trip out is <b>forward propagation</b>. <b>The figure just below</b> has both."
+  ],
+  [
+   "m",
+   "And once it has gone back, we are done?"
+  ],
+  [
+   "d",
+   "Far from it. &hellip; <b>Out, measure the error, back, move the knobs a little.</b> Repeat that <b>thousands of times</b> and the <b>function gradually takes shape</b>."
+  ],
+  [
+   "m",
+   "Thousands of times &hellip;"
+  ],
+  [
+   "d",
+   "<b>[Walk down to 3,000 steps]</b> on this screen is exactly that. &hellip; <b>One step is one lap of those four.</b> Pressing [One step] in Problem 7 was the same thing."
+  ],
+  [
+   "m",
+   "So at a ● that returns 0, the clue <b>stops</b>."
+  ],
+  [
+   "d",
+   "It stops. &hellip; <b>The knobs upstream do not move at all.</b> That is called <b>vanishing gradients</b>."
+  ],
+  [
+   "m",
+   "Are <b>backpropagation</b> and <b>vanishing gradients</b> the same thing?"
+  ],
+  [
+   "d",
+   "No. &hellip; <b>Backpropagation is the name of a way of calculating.</b> <b>Vanishing gradients is the name of the trouble where that calculation hits 0 partway and never reaches the front.</b>"
+  ],
+  [
+   "m",
+   "So going deeper was the mistake?"
+  ],
+  [
+   "d",
+   "More layers make <b>a longer route</b>. &hellip; <b>One ● returning 0 partway is enough to stop everything ahead of it.</b>"
+  ],
+  [
+   "m",
+   "In Problem 9 you said there were <b>two bends</b>. Would a <b>sigmoid</b> not avoid hitting 0?"
+  ],
+  [
+   "d",
+   "Good question! &hellip; A sigmoid <b>does not hit 0</b>. Instead <b>the trip back thins out</b>. &hellip; <b>A quarter, even at its largest.</b>"
+  ],
+  [
+   "m",
+   "A quarter &hellip; and after three passes?"
+  ],
+  [
+   "d",
+   "<b>0.25 &times; 0.25 &times; 0.25.</b> &hellip; It is written at <b>the bottom of the figure above</b>. Near enough 0, would you not say."
+  ],
+  [
+   "m",
+   "So <b>ReLU is the better one</b>."
+  ],
+  [
+   "d",
+   "Too early to say that. &hellip; <b>Which is better depends on the problem.</b> This screen uses ReLU, and that is all."
+  ],
+  [
+   "m",
+   "Can it be fixed?"
+  ],
+  [
+   "d",
+   "<b>Skip one layer and add the incoming number straight on</b> &mdash; build the <b>skip path</b> on this screen. &hellip; Press <b>[on]</b>, and take in the figure just below as well."
+  ]
+ ],
+ "e10b3": [
+  [
+   "m",
+   "&hellip; <b>40!</b> More than the 39 from one layer."
+  ],
+  [
+   "d",
+   "That is it!"
+  ],
+  [
+   "m",
+   "What is this path properly called?"
+  ],
+  [
+   "d",
+   "A <b>skip connection</b>. &hellip; Also a <b>residual connection</b>. It is wiring that does nothing but <b>add the incoming number straight into the layer&rsquo;s output</b>."
+  ],
+  [
+   "m",
+   "Have all the ● gone blue as well?"
+  ],
+  [
+   "d",
+   "Take a look. &hellip; <b>Some ● are still grey.</b>"
+  ],
+  [
+   "m",
+   "So it is not fixed after all."
+  ],
+  [
+   "d",
+   "<b>They do not all have to pass numbers on.</b> &hellip; <b>If every one returns 0, nothing happens</b>, but <b>as long as a few are passing numbers on, the knobs move</b>."
+  ]
+ ],
+ "e10z": [
+  [
+   "m",
+   "What are those parts?"
+  ],
+  [
+   "d",
+   "There are two. One is the <b>skip path</b> you just pressed. The other &hellip; Adam, <b>what did we do in Problem 7?</b>"
+  ],
+  [
+   "m",
+   "Put everything on 0 to 1."
+  ],
+  [
+   "d",
+   "That is it! <b>Those two are what hold a deep network steady.</b>"
+  ],
+  [
+   "m",
+   "Was that what Problem 7 was for?"
+  ],
+  [
+   "d",
+   "It was. &hellip; <b>A Transformer block in Chapter 3 has both of them in it, just as they are.</b> Keep hold of that."
+  ]
+ ]
+};
+drawCV(CV);
+})();
+</script>
+</body>
+</html>
