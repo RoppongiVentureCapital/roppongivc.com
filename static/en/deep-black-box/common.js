@@ -582,7 +582,7 @@ function drawNav(prev, next) {
 /* ★★★★2026-09-12 英語版担当：★顔の絵は【日本語版のものを共有】します（★絵に文字が無いため）。
    ★英語版の場所には assets/ を置いていません。★相対で日本語版を指しています（★絶対パスは書きません） */
 var IMG = { m: '../../deep-black-box/assets/av-marky.jpg', d: '../../deep-black-box/assets/av-doc.jpg' };
-var CNM = { m: 'Manabu', d: 'Doc' };
+var CNM = { m: 'Adam', d: 'Doc' };
 /* 🔴 2026-09-02 1問1ページ担当【申告】★★博士の紹介から「口癖は<b>「やってみろ」</b>。」の
    1文（12字）を消しました。★A が承認済み（2026-09-02）
    ★理由：★§5-39 で博士の命令形を【0件】にしたので、★読者は「やってみろ」を一度も聞きません。
@@ -602,7 +602,7 @@ var CAST = [
   + 'He held that it is faster to let people turn the knobs than to make them read explanations, '
   + 'which did not sit well with how the university worked, so he left. '
   + 'These days he runs his experiments alone in a room at home.'],
-  ['m', 'Manabu Fukai', 'high school, 11th grade',
+  ['m', 'Adam Turing', 'high school, 11th grade',
    'Strong at math, a beginner at AI. '
   + 'What got him started: everyone talks about AI, but nobody explains what is going on inside it. '
   + 'He has been dropping in at the professor&rsquo;s place since elementary school, '
