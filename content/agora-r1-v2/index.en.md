@@ -19,7 +19,13 @@ hero_label: "Agora | Session 1"
 headline: "A Record of Thinking with AI: An AI Olympiad Medalist from Japan's Most Selective High School on Growing More AI Builders"
 hero_photo: "img/agora/r1/hero-yamai.jpg"
 hero_photo_alt: "Hayato Yamai"
-og_image: "img/agora/r1/og-r1-article.jpg"
+# 🔴 2026-09-12 記録担当：★★★★英語版の共有カードに差し替えた。
+#   ★これまで日本語版（og-r1-article.jpg）を指していたので、XやLINEに貼ると
+#     ★日本語の見出しのカードが出ていた。
+#   ★作りは日本語版（art-A8）と同じ座標・同じ写真で、文字だけ英語にしたもの。
+#     ラベル Agora | Session 1 ／ 見出し4行（Georgia）／ Roppongi Venture Capital
+#   ★道具は docs/_pending/og-20260910/build7-en.py
+og_image: "img/agora/r1/og-r1-article-en.jpg"
 ---
 
 In April 2026, ChatGPT took the entrance exam for the University of Tokyo — the most competitive university in Japan — and outscored the highest-scoring student who passed it. A year earlier, it had reached gold-medal level at the International Mathematical Olympiad. **Problems with a fixed answer, and a fixed way of grading that answer, now belong to AI**.
