@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<meta name="description" content="Some shapes two knobs cannot reach - Problem 3 of Deep Black Box. A problem built to be unreachable, so you can see why.">
+<meta property="og:title" content="Deep Black Box - Problem 3: some shapes two knobs cannot reach (Chapter 1)">
+<meta property="og:description" content="Some shapes two knobs cannot reach - Problem 3, Two knobs are not enough.">
+<!-- 🔴🔴🔴🔴 2026-09-10 記録担当：★★★★共有したときの画像（★公開準備セッションの指示）。
+     ★★この2行は【23ページとも入っていませんでした】（★実測0件）。
+     ★★★入れる値は先方が確定させたものです ──
+       roppongivc.com/static/img/agora/r1/og-r1-game.jpg（★59KB。★案A＝白地・エンブレム左）。
+     ★★記事用（og-r1-article.jpg）とは【別のファイル】です。★記事側のものは触っていません。
+     ★値は絶対URLです（★OGP の決まり。★href の絶対パス禁止とは別の話です） -->
+<meta property="og:image" content="https://www.roppongivc.com/en/deep-black-box/og-deep-black-box-en.jpg">
+<meta name="twitter:image" content="https://www.roppongivc.com/en/deep-black-box/og-deep-black-box-en.jpg">
+<!-- 🔴🔴🔴🔴 2026-09-10 21:4x 記録担当：★★★★X（Twitter）で大きい絵にする1行（★公開準備セッションの依頼）。
+     ★★★og:image を入れても、★この1行が無いと【小さいカード】になります。
+     ★記事側は全13ページを summary → summary_large_image にしたとのことです（★先方の実測）。
+     ★★ゲーム23ページは【0件】でした -->
+<meta name="twitter:card" content="summary_large_image">
+<!-- 🔴🔴🔴🔴 2026-09-10 22:3x 記録担当：★★★★ブラウザのタブに出る絵（★公開準備セッションの依頼）。
+     ★★実測 ── ★23ページとも【0件】でした（★タブに絵が出ていませんでした）。
+     ★★★実体はサイト側にあり、★本番で全部 引けます（★新しく作っていません）──
+       /favicon.svg 200・53KB ／ /favicon.ico 200 ／ /favicon-192.png 200・8KB
+     ⚠️★★/apple-touch-icon.png は【404】なので使いません。★favicon-192.png を指しています
+       （★サイト側 baseof.html と同じ扱いです）。
+     ⚠️★★★絶対URLです ── ★このゲームは /deep-black-box/ の下にあるので、
+       ★相対だと /deep-black-box/favicon.svg を探して【外します】。
+       ★「絶対パスを書かない」（★同じ場所の中を指すときの決まり）とは別の話です -->
+<link rel="icon" href="https://www.roppongivc.com/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="https://www.roppongivc.com/favicon.ico" sizes="32x32">
+<link rel="icon" href="https://www.roppongivc.com/favicon-192.png" type="image/png" sizes="192x192">
+<link rel="apple-touch-icon" href="https://www.roppongivc.com/favicon-192.png">
+<title>Deep Black Box - Problem 3: some shapes two knobs cannot reach (Chapter 1)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@300;400;600;700&family=Inter:wght@300;400;500;600;700&family=Noto+Serif+JP:wght@300;400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../deep-black-box/common.css">
+<style>
+/* ══════════════════════════════════════════════════════════════════════════
+   🔴 2026-09-02 1問1ページ担当：★この章だけの CSS
+     ★★原本 tsume-00-function-dialog.html の <style> をそのまま写し、★【戻さないこと】のフォント規則だけ落としました
+     ★落としたもの：.cap{font-size:12.5px;color:var(--gray-500);margin-bottom:.5rem;line-height:1.5}／.lead{font-size:16px;line-height:1.9;color:var(--gray-600);margin:0 0 1.1rem}／h2{font-family:var(--serif);font-size:1.45rem;font-weight:300;line-height:1.4;margin:0 0 1rem}／h3{font-size:16px;font-weight:600;margin:1.4rem 0 .6rem}／.dtab{width:100%;border-collapse:collapse;font-size:12.5px;margin:.9rem 0;  font-variant-numeric:tabular-nums}／.cl .bb{position:relative;min-width:0;padding:.65rem .95rem;font-size:15px;line-height:1.9;   border:1px solid var(--gray-200);border-radius:.85rem;background:var(--white);color:var(--gray-600)}／.cl .bb{font-size:14.5px;padding:.55rem .75rem;line-height:1.8}
+   ★.offpage ── ★★この章の【他の問のカード】を DOM に置いたまま隠す枠。
+     ★理由：ゲーム本体の JS（起動・つまみの bind）を1バイトも触らないため。
+       ★$('…') が null にならないので、原本と同じコードがそのまま動きます
+   ══════════════════════════════════════════════════════════════════════════ */
+.offpage{display:none}
+:root{
+ --bg:#fff; --white:#fff; --black:#000;
+ --gray-100:#f9f9f9; --gray-200:#d9d9d9; --gray-500:#444; --gray-600:#2a2a2a;
+ --accent:#019949;
+ --sans:'Inter',system-ui,sans-serif;
+ --serif:'Source Serif 4','Noto Serif JP',Georgia,serif;
+ --content-w:52.625rem;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--black);font-family:var(--sans);
+ -webkit-font-smoothing:antialiased}
+.wrap{max-width:var(--content-w);margin:0 auto;padding:0 1.5rem 5rem}
+.top{border-bottom:1px solid var(--gray-200);margin-bottom:2.4rem}
+/* 🔴🔴🔴 2026-09-09 A：★★★この上書きを外した ── ★★これが【全部大文字】の正体だった
+     ★★★山田様「トップと他でフォント違うし全部大文字かどうかも違うし」（2026-09-09）
+   ★.top .in に text-transform:uppercase と letter-spacing:.14em が入っており、
+     ★★子の製品名とタグラインまで【大文字＋字間広め】に変えていた。
+   ★実測：★これがある18ページは uppercase ／ 無い5ページ（index・q15〜17・end）は none。
+     → ★★★同じ製品名が【大文字のページと そうでないページ】に分かれていた
+   ★common.css の .top .in（★大文字にしない）を効かせる */
+/* 🔴 2026-09-09 A：★★この上書きを外した ── ★common.css の
+     .top .in .tag（15.5px / #555 / 行間1.75 / サンセリフ）を効かせる。
+   ★★★これが後勝ちしていたので、★上のバーだけ 明朝 12.5px のままだった。
+     → ★山田様「トップと他でフォント違うし全部大文字かどうかも違うし」の原因のひとつ */
+.eyebrow{font-size:13px;font-weight:500;letter-spacing:.16em;text-transform:uppercase;
+ color:var(--gray-500);margin-bottom:.9rem}
+h1{font-family:var(--serif);font-size:2.1rem;font-weight:300;line-height:1.35;margin:0 0 .8rem}
+.lead b{color:var(--black)}
+.meta{font-size:13px;letter-spacing:.1em;color:var(--gray-500);padding-bottom:1.2rem;
+ border-bottom:1px solid var(--gray-200);margin-bottom:1.2rem}
+.steps{display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:2.4rem}
+.steps div{flex:1 1 5rem;padding:.55rem .3rem;text-align:center;font-size:12px;
+ border:1px solid var(--gray-200);color:var(--gray-500);background:var(--white)}
+.steps div.open{border-color:var(--black);color:var(--black)}
+.steps div.done{background:var(--black);border-color:var(--black);color:var(--white)}
+.card{border:1px solid var(--gray-200);padding:2rem;margin-bottom:2rem;background:var(--white)}
+.tagline{font-size:13px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;
+ color:var(--gray-500);margin-bottom:.9rem}
+.figbox{background:var(--gray-100);border:1px solid var(--gray-200);padding:1rem;margin:1.3rem 0}
+/* 🔴 2026-08-29 A（#24）：問2 の2枚は【上限幅】を付ける。
+   ★理由：.two（横並び）を解体したので、PC では図が本文の全幅（842px）まで伸び、
+   ★viewBox 300×250 の比で 高さが 701px になって枠が 941.7px に膨らんだ（実測）。
+   ★420px で止めると PC は元の横並び（各 約413px）とほぼ同じ大きさに戻る。
+   ★390px では使える幅が 348px なので この指定は効かない（＝スマホは1px も変わらない） */
+#p2,#p2m{max-width:420px;display:block;margin:0 auto}
+/* ★★図・つまみ・判定を1つの枠にまとめる。★小さい画面でも両方が同時に見えるようにする */
+.panel{background:var(--gray-100);border:1px solid var(--gray-200);padding:1rem;margin:1.3rem 0}
+.panel .ctl{margin:.9rem 0 .2rem}
+.panel .togs{margin-top:.7rem}
+.panel .gauge{margin-top:.9rem}
+.panel .verdict{margin-top:.8rem;background:var(--white)}
+.two{display:flex;gap:1rem;flex-wrap:wrap}
+.two>div{flex:1 1 15rem;min-width:0}
+svg{display:block;width:100%;height:auto}
+
+/* ══════════════════════════════════════════════════════════
+   🔴🔴🔴 2026-08-29 山田様の FB：「スマホは大丈夫なんだけど、PCサイズのが画面大きいとは言え
+     同じように固定しないと同時に見えないものがいっぱいあるんだ。
+     だからPCのほうもスマホと同様の処置をやってくれないか」
+   → ★★.stick と .stickbot を @media の【外】に出した（＝どの幅でも効く）。
+   ★★これまで @media (max-width:430px) の中だけに書いていたので、PC には1px も効いていなかった。
+   ★★実測（1280×900・貼り付けを入れる前）
+     問1  つまみを画面中央 → 図は 74%（上端 105px 切れる）
+     問4  つまみ群を中央   → 図は 65%（上端 144px 切れる）
+     問4  [1歩ずつ] を中央 → ★★図は【完全に画面外】（上に 490px）
+     ★★スマホでは .stick で見えていたので、PC のほうが悪いという逆転が起きていた
+   ★★上限高さ（max-height）が必要な理由 ── ★PC は本文幅 842px なので
+     viewBox 560×330 の図は【496px】になる。★貼り付けると 900px の画面の 55% を占領し、
+     ★下のつまみが押し出される。→ ★42vh（900px なら 378px）で止める。
+     ★svg は width:100%/height:auto なので、max-height が効くと
+       preserveAspectRatio で中身が縮んで【左右に余白】ができる。★横幅も合わせて縮める
+   ★★390px では図が 348×205px しか無く 42vh（353px）に当たらないので、★スマホは1px も変わらない
+   ★背景色は必須 ── ★敷かないと下から来た文字が図に【透けて重なる】
+   ★確認済み：.top は固定ヘッダではない ／ .card・.panel・body に overflow は無い
+     （★祖先に overflow があると sticky は無効になる）
+   ══════════════════════════════════════════════════════════ */
+.stick{position:sticky;top:0;z-index:5;background:var(--gray-100);
+       padding-bottom:.35rem;box-shadow:0 6px 8px -6px rgba(0,0,0,.18)}
+.stick svg{max-height:42vh;width:auto;max-width:100%;margin:0 auto}
+/* 🔴🔴🔴 2026-08-29【訂正・A の自己申告】★★一度 34vh に下げたが【42vh に戻した】。
+   ★下げた理由は「1280px で 01 の問6 の判定文が同時に入らない」という実測だったが、
+     ★★それは【走査の刻みが 40px で粗く、入る位置を飛ばしていた】ための誤判定だった。
+   ★刻みを 12px にして測り直すと、42vh でも 00 の6か所・01 の5か所すべてで
+     ★「図100% ＋ つまみ・結果すべて見えて押せる位置がある」（★両幅）
+   ★★教訓：スクロール位置を刻んで測る検査は、刻みが粗いと【偽の不合格】を出す。
+     ★A はこれで PC の図を不必要に小さくしかけた（→ 規則案㉔ の同型） */
+.stickbot{position:sticky;bottom:0;z-index:5;background:var(--gray-100);
+          padding-top:.4rem;box-shadow:0 -6px 8px -6px rgba(0,0,0,.18)}
+.ctl{margin:1.1rem 0 .2rem}
+.ctl label{display:flex;justify-content:space-between;align-items:baseline;font-size:14px;
+ margin-bottom:.35rem;gap:1rem}
+.ctl label span.n{font-weight:600;font-variant-numeric:tabular-nums;white-space:nowrap}
+input[type=range]{width:100%;accent-color:#000;height:1.4rem}
+.togs{display:flex;gap:.6rem;flex-wrap:wrap;margin-top:1.1rem;align-items:center}
+.btn{background:none;border:1px solid var(--gray-200);padding:.6rem 1.15rem;font-size:14px;
+ font-family:var(--sans);color:var(--black);cursor:pointer;transition:all .15s}
+.btn:hover{border-color:var(--black);background:var(--gray-100)}
+.btn.on{background:var(--black);color:var(--white);border-color:var(--black)}
+.btn.go{background:var(--black);color:var(--white);border-color:var(--black)}
+.btn.sm{font-size:13px;padding:.45rem .85rem;color:var(--gray-500)}
+.btn:disabled{opacity:.35;cursor:default}
+.gauge{margin:1.2rem 0 0}
+.gauge .row{display:flex;align-items:baseline;gap:.7rem;margin-bottom:.5rem}
+.gauge .u{font-size:14px;color:var(--gray-500)}
+.gtrack{height:10px;background:#e9e9e9;position:relative;overflow:hidden}
+.gfill{display:block;height:100%;background:#c00;transition:width .12s linear}
+.gfill.ok{background:var(--accent)}
+.gmark{position:absolute;top:-3px;bottom:-3px;width:2px;background:#000}
+.gcap{display:flex;justify-content:space-between;font-size:12px;color:var(--gray-500);
+ margin-top:.35rem}
+.read{font-size:15px;line-height:1.8;margin:.9rem 0 0;font-variant-numeric:tabular-nums}
+.big{font-family:var(--serif);font-size:2rem;font-weight:400;font-variant-numeric:tabular-nums;
+ line-height:1}
+.calc{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13.5px;line-height:2;
+ background:var(--white);border:1px solid var(--gray-200);padding:.9rem 1.1rem;margin:.9rem 0;
+ overflow-x:auto;white-space:pre}
+.verdict{margin-top:1.2rem;padding:.9rem 1.1rem;border:1px solid var(--gray-200);font-size:14px;
+ line-height:1.75;background:var(--gray-100)}
+.verdict.ok{border-color:var(--accent);background:#f2fbf6}
+.verdict.stuck{border-color:#c00;background:#fdf4f4}
+.next{margin-top:1rem;font-size:13px;color:var(--gray-500)}
+.src{border-left:2px solid var(--black);padding:.9rem 0 .9rem 1.1rem;margin:1.4rem 0;
+ font-size:14px;line-height:1.85;color:var(--gray-600)}
+.src .h{font-size:12px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;
+ color:var(--black);margin-bottom:.4rem}
+.src q{font-style:normal;color:var(--black)}
+.src .ref{font-size:13px;color:var(--gray-500);margin-top:.4rem;display:block}
+.box{border:1px solid var(--gray-200);padding:1.1rem 1.3rem;margin:1.3rem 0;background:var(--gray-100)}
+.box .h{font-size:12px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;
+ margin-bottom:.5rem}
+.mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+.sc-row{display:flex;align-items:center;gap:.75rem;margin-bottom:.6rem}
+.sc-label{width:3.2rem;font-size:14px;text-align:right;flex-shrink:0}
+.sc-track{flex:1;background:#e9e9e9;height:9px;position:relative}
+.sc-fill{display:block;height:100%;background:var(--black);transition:width .1s linear}
+.sc-fill.hit{background:var(--accent)}
+.sc-pct{width:3.4rem;font-size:14px;font-variant-numeric:tabular-nums}
+.sc-track .goal{position:absolute;top:-3px;bottom:-3px;width:1px;background:#c00}
+details{border-top:1px solid var(--gray-200);padding-top:1rem;margin-top:1.5rem}
+summary{font-size:14px;font-weight:500;cursor:pointer}
+.lg{font-size:14px;line-height:1.9;color:var(--gray-600);margin-top:.9rem}
+.lg table{width:100%;border-collapse:collapse;margin:.8rem 0;font-size:13px}
+.lg th,.lg td{padding:.45rem .6rem;border:1px solid var(--gray-200);text-align:left}
+.lg th{background:var(--gray-100);font-weight:600}
+.dtab th,.dtab td{padding:.35rem .5rem;border:1px solid var(--gray-200);text-align:right}
+.dtab th{background:var(--gray-100);font-weight:600;font-size:11.5px}
+.dtab tr.sum td{background:#f2fbf6;border-top:2px solid var(--black)}
+.mnum{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13px;line-height:1.9;
+ background:var(--white);border:1px solid var(--gray-200);padding:.6rem .8rem;margin-top:.5rem;
+ white-space:pre}
+.hide{display:none}
+.foot{border-top:1px solid var(--gray-200);margin-top:3rem;padding-top:1.5rem;font-size:13px;
+ color:var(--gray-500);line-height:1.8}
+.arrow{text-align:center;font-size:22px;color:var(--gray-500);margin:.5rem 0}
+/* ══════ 🔴🔴 小さい画面では【横の余白を削って図に幅を渡す】 ══════
+   ★★実測（390px・iPhone 相当）：横の余白が 左右合計 144px（wrap 24+24／card 32+32／
+     figbox・panel 16+16）で、viewBox 560 の SVG は【242px】しかもらえない。
+   ★★倍率 0.43 → font-size 11 が【4.8px】になって読めない。
+   ★下の指定で余白を 左右合計 52px にすると SVG は 330px（倍率 0.59・font 11 → 6.5px）。
+   ★★縦の余白は削らない（詰まって読みにくくなる）。★横だけ削る */
+@media (max-width:430px){
+  .wrap{padding-left:.5rem;padding-right:.5rem}
+  .card{padding-left:.75rem;padding-right:.75rem}
+  .figbox,.panel{padding-left:.5rem;padding-right:.5rem}
+  .top .in{padding-left:.5rem;padding-right:.5rem}
+  /* ══════════════════════════════════════════════════════════
+     🔴🔴 390px で SVG の文字だけを大きくする（★2026-08-27 #17。→§5-18）
+     ★★根拠（実測）
+       ・390px では SVG の表示幅が 330px（figbox の中）／348px（figbox の外）
+       ・viewBox 560 の図はここで 0.589倍・0.621倍になる
+         → font 13 が【7.66px】／font 14 が【8.25px】＝読めない
+       ・viewBox 300 の図は 1.1倍なので font 10〜13 のままで 11〜14.3px＝読める
+         → ★★だから【560幅の図だけ】を上げる（p2 / p2b / p2m / p2na / p2nb は対象外）
+     ★★なぜ CSS で上げられるのか（実測）
+       SVG の font-size は【プレゼンテーション属性】なので CSS が勝つ。
+       ★属性 13 のまま computed 17px になることを実ブラウザで確認した（!important 不要）
+       → ★viewBox を作り直さずに済む。★PC 側（@media の外）は 1px も変わらない
+     ★★viewBox 400 に作り直す案を採らなかった理由（実測）
+       1280px では表示幅 694px なので viewBox 400 だと 1.735倍。
+       → ★font 13 が【22.6px】になって PC が壊れる。★倍率は1つしか持てない
+     ★17px にした理由：17 × 0.589 ＝ 10.0px（★7px の禁止線の上に 3px 積む）
+     ══════════════════════════════════════════════════════════ */
+  /* 🔴 2026-08-29 A（#24）：#eFig と #logFig は問5 の作り直しで【消えた図】なので指定も外した
+     （★どちらも HTML に該当する id が無い。★死んだ指定を残すと「まだある図」と誤読される） */
+  #p1 text,#p3 text,#p4 text,#p5 text,#p2d text,#mvFig text,#p2b text{font-size:17px}
+  /* ══════ 会話（→ .cv）★スマホは顔を小さくして横幅を吹き出しに回す ══════ */
+  /* 🔴 2026-09-06：★スマホでアイコンを 38px に縮める指定を【消した】（★記事はスマホでも 46px）。
+     ★★この2行は、同じ <style> の後ろにある .cl .ic{46px} / .cl{gap:.75rem;margin:0 0 .85rem} に
+       ★同じ詳細度で【後勝ちされていて、すでに効いていませんでした】（★実測 ic 46px・gap 12px）。
+     → ★消しても見た目は1pxも動きません。★死んだ規則を残すと次の担当が誤読します */
+  /* 🔴 2026-09-02 1問1ページ担当：★A の【戻さないこと】に反するので外した ── .cl .bb{font-size:14.5px;padding:.55rem .75rem;line-height:1.8} */
+  .cast2{padding:.7rem .75rem}
+  .cast2 .ic{width:46px;height:46px}
+  .cast2 .row{gap:.6rem}
+  /* 🔴 2026-09-07 A：★.cast2 .tx2 の 13px/1.8 を外した ── ★これがスマホで
+     ★★登場人物の紹介が 13px のままだった原因（★common.css の 16.6px を後勝ちで潰していた）。
+     → ★山田様「記事と同じサイズって言っただろ」「行間も記事に合わせろよ」（2026-09-07） */
+  /* ══════════════════════════════════════════════════════════
+     🔴🔴 2026-08-28 山田様の FB：「ボタン押すと5点とも全部グラフで動くやつめっちゃいい
+       んだけど、画面で距離がありすぎて、スマホだとその押してグラフが連動する動きが
+       見えないと思うのよ」
+     → ★★図を画面の上に【貼り付ける】（position:sticky）。★スクロールしても図が残る
+     ★★根拠（390px の見積り）問4 は 図の高さ 約205px、その下に並ぶものが約700px
+        ＝ [1歩ずつ] は図の下端から約500px 下。★押せる位置では図が画面外だった
+     🔴🔴🔴 2026-08-29：★★.stick / .stickbot の定義は @media の【外】に移した。
+       ★理由は山田様の FB「PCのほうもスマホと同様の処置をやってくれないか」（→上の svg の下）。
+       ★★ここに残していた同じ定義は【消した】（★2か所にあると片方を直したときに食い違う）
+     ✗ 問2 には .stick を入れていない ── ★★地図は .two（flex）の中の【最後の項目】だったので
+       貼り付く余地が無く、つまみ・ボタンは .two の外にあるため効かなかった。
+       ★★2026-08-29 に .two は解体したが、問2 は .stickbot（下に貼る）で解決しているので変えない
+     ══════════════════════════════════════════════════════════ */
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   🆕 2026-08-30【対話版】会話の見た目
+   ★★方針：★解説文を【物語】に置き換える。★つまみを動かすところ以外は 全部 2人のやり取り
+     ⑴ 各問は  開幕（何を・なぜ）→ 操作 → 解説 → 締め（キーメッセージ） の順
+     ⑵ ★折りたたまない。★会話が本文なので、押させたら読まれない
+     ⑶ 顔は【本物の絵】を使う（assets/av-doc.png / av-marky.png を 150px に縮めて base64 で埋め込み）
+        ★ファイル単体で動く（file:// で開いても顔が出る）
+   ★吹き出し ── 学＝青／博士＝琥珀。★角丸と尻尾を付けた（★コミカルさは ここで出す）
+   ══════════════════════════════════════════════════════════════════════════ */
+/* ── 登場人物の紹介（★冒頭に1回だけ）── */
+.cast2{border:1px solid var(--gray-200);background:var(--gray-100);
+  padding:1rem 1.1rem;margin:0 0 2.4rem}
+.cast2 .row{display:flex;gap:.9rem;align-items:flex-start}
+.cast2 .row+.row{margin-top:.9rem;padding-top:.9rem;border-top:1px solid var(--gray-200)}
+.cast2 .ic{width:54px;height:54px;border-radius:50%;flex-shrink:0;display:block;
+  border:2px solid var(--white);box-shadow:0 0 0 1px var(--gray-200),0 1px 3px rgba(0,0,0,.10)}
+.cast2 .nm2{display:block;font-size:18px;line-height:1.5;font-weight:700;margin-bottom:.2rem}
+.cast2 .rb{font-size:14px;font-weight:400;color:var(--gray-500);margin-left:.45rem}
+.cast2 .tx2{font-size:16.6px;line-height:1.831;color:var(--gray-600)}
+.cast2 .tx2 b{color:var(--black)}
+.cv{margin:1.6rem 0}
+.cl{display:flex;gap:.75rem;align-items:flex-start;margin:0 0 .85rem}
+.cl .ic{width:46px;height:46px;border-radius:50%;flex-shrink:0;display:block;
+  border:2px solid var(--white);box-shadow:0 0 0 1px var(--gray-200),0 1px 3px rgba(0,0,0,.10)}
+.cl .bb b{color:var(--black)}
+.cl .bb:before{content:'';position:absolute;left:-6px;top:15px;width:10px;height:10px;
+  background:inherit;border-left:1px solid;border-bottom:1px solid;border-color:inherit;
+  transform:rotate(45deg)}
+/* 🔴 2026-09-02 A：★★博士＝青／学＝オレンジ に入れ替えた（★アイコンの背景色に合わせた）
+   ★山田様「今フォントとか吹き出しが 博士がオレンジで学が青じゃん。画像はもとの
+     博士青、高校生オレンジでいいから、フォントの方を逆にしてよ」（2026-09-02）
+   ✗✗ 戻さないこと。★★common.css だけ直しても【各ページの style が後勝ちで効かない】 */
+.cl.m .bb{background:#fff7ea;border-color:#efd6a6}
+.cl.d .bb{background:#eef4fa;border-color:#c3d9ee}
+/* 🔴 2026-09-06：★font-size:11.5px を外した ── ★.cl .av .nm と同じ要素に当たり、
+   ★詳細度で負けていて【効いていなかった】（★実測 10.5px）。★話者名の大きさは common.css の
+   ★.cl .av .nm{font-size:14px} が持つ。★この規則は色と margin のためだけに残す */
+.cl .nm{display:block;font-weight:700;letter-spacing:.07em;margin-bottom:.15rem}
+.cl.m .nm{color:#b0700c}   /* 🔴 学 → オレンジ */
+.cl.d .nm{color:#2f6fb5}   /* 🔴 博士 → 青 */
+/* ★キーメッセージの帯（★締めの直前に置く。★「ここが今日の1行」と分かるようにする） */
+.keyh{font-size:11.5px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--gray-500);margin:1.6rem 0 .5rem}
+</style>
+</head>
+<body>
+
+<div class="top"><div class="in">Deep Black Box<span class="tag">Open up the black box of AI one problem at a time, with your own hands. 21 problems in all.</span></div></div>
+<div class="wrap">
+
+<!-- 🔴 2026-09-02 1問1ページ担当：★進み具合の帯（全21問）＋いま何章か -->
+<div class="prog">
+ <div class="steps" id="steps"></div>
+ <div class="cnt" id="prog_cnt"></div>
+</div>
+<div class="chap" id="chap"></div>
+
+<!-- ══════════════════ c3 ══════════════════ -->
+<div class="card" id="c3">
+<div class="tagline">Question 3</div>
+<h2>There are shapes two knobs cannot reach</h2>
+<div id="d10"></div>
+<p class="lead">Using the same two knobs, bring the <b>error to 3.0 or less</b>.</p>
+
+<!-- 🔴🔴 2026-08-28：★★問3 だけ【図とつまみが別の枠】に取り残されていた。
+     ★図は .figbox の中、つまみ b3・a3 はその【外】にあった。
+     ★★これは §2-2 で山田様が「変な説明が間に長く入って離れすぎ」と言われた形そのもの。
+     ★問1・問2 は .panel に統合済みだったので、問3 だけ古い形で残っていた
+     → ✅ .panel に統合し、図を .stick（スマホで上に貼り付け）で包んだ -->
+<div class="panel">
+<div class="stick"><svg id="p3" viewBox="0 0 560 330"></svg></div>
+
+<div class="ctl">
+ <label for="b3"><span>Knob <b>b</b> &nbsp;height of the line</span><span class="n" id="b3v">0</span></label>
+ <input type="range" id="b3" min="-20" max="100" step="1" value="0">
+</div>
+<div class="ctl">
+ <label for="a3"><span>Knob <b>a</b> &nbsp;slope of the line</span><span class="n" id="a3v">0.0</span></label>
+ <input type="range" id="a3" min="-100" max="200" step="1" value="0">
+</div>
+
+<div class="gauge">
+ <div class="row"><span class="big" id="e3">–</span><span class="u">points = error</span></div>
+ <div class="gtrack"><span class="gfill" id="g3" style="width:100%"></span>
+  <span class="gmark" id="m3"></span></div>
+ <div class="gcap"><span>0</span><span>goal 3.0 &uarr;</span><span>40</span></div>
+</div>
+
+<div class="verdict" id="j3">Bring the error to <b>3.0 or less</b>.</div>
+<div class="togs">
+ <button class="btn" id="best3">Set it to the best straight line</button>
+</div>
+</div><!-- /panel（問3。★図とつまみを同じ枠に入れた） -->
+
+<div id="r3" class="hide">
+ <div id="d11"></div>
+ <div class="keyh">What to take away</div>
+ <!-- 🔴🔴🔴 2026-08-29 山田様の FB：「つまみが2個ではできません。にして、最初は。
+      そしてこの問題は解けないみたいなことをちゃんと説明しないとユーザーは何やっていいか
+      わからないだろ、次に進んでいいのかもわからない。そう言う説明をちゃんとかけ同じところに続けて」
+      → ★★⑴ 主語を「つまみが」にした（★§2-4「主語を書く」）
+        ⑵ ★★【この問題は解けない】と はっきり書いた。★「届かないことを確かめる問題」だと言う
+        ⑶ ★★【次に進んでいい】と書いた（→§2-10「行き詰まらせない。逃げ道を用意する」）
+      ★これは §4 の確定値：直線の限界は a=3.8 / b=33 で ずれ 14.28。★目標 3.0 は到達不可能 -->
+ <div class="verdict stuck">
+  <b>Two knobs cannot do it.</b> <span class="mono">y = ax + b</span> only ever draws a
+  <b>straight line</b>, so it <b>cannot make a hill.</b>
+  Even the best straight line leaves an <b>error of 14.28</b>. No setting of the knobs
+  <b>gets you to 3.0.</b><br>
+  <b>Problem 3 exists so that you can confirm it is out of reach.</b> That is the end of it, so
+  <b>go straight on to Problem 4 below.</b>
+  <span style="color:var(--gray-500)">Add more knobs and you get there.</span>
+ </div>
+</div>
+<div class="src">
+ <div class="h">Where this pays off</div>
+ You can tell <b>&ldquo;I am turning them badly&rdquo; apart from &ldquo;the shape is not enough&rdquo;.</b> This one is the shape.
+</div>
+</div>
+
+<!-- 🔴 2026-09-02 1問1ページ担当：★戻る／次へ（★どのページでも常に押せる） -->
+<!-- ══════════════════════════════════════════════════════════════════════════
+     🔴 2026-09-02 1問1ページ担当2代目【新設・受け皿】★★問4 のつまみ数ボタン k2〜k5
+     ★理由 ── 原本の bind 行 [2,3,4,5].forEach(n=>$('k'+n).onclick=()=>setK(n)); が
+       このページでは $('k2') が null になり、★★TypeError でこの行より後ろが全部 止まっていた
+       （★図が空・会話が出ない状態だった）。★q03 は pass3() の setK(2) でも踏む
+     ★★.offpage（display:none）に置くだけ。★ゲーム本体の JS は1バイトも触っていません
+     ══════════════════════════════════════════════════════════════════════════ -->
+<div class="offpage" aria-hidden="true">
+ <button id="k2" type="button">2</button><button id="k3" type="button">3</button>
+ <button id="k4" type="button">4</button><button id="k5" type="button">5</button>
+</div>
+
+<div id="nav"></div>
+
+<div id="foot"></div>
+</div>
+
+
+<script src="common.js"></script>
+<script>
+/* ══════════════════════════════════════════════════════════════════════════
+   🔴 2026-09-02 1問1ページ担当2代目：★★下は原本 tsume-00 の <script> から
+     【この問が使う行だけ】をそのまま写したものです。★1文字も変えていません（★行を落としただけ）
+   ★★IIFE で包んだ理由 ── 原本の const $ / const show / const T が common.js の同名 const と
+     ぶつかって【SyntaxError でページ全体が動かなくなる】ため。★包んだだけで中身は変わりません
+   ★★mark() だけは common.js のものを使います（★帯が5章グループに変わったため。→ 指示⑶）
+   ══════════════════════════════════════════════════════════════════════════ */
+var QBASE = 2;
+drawProg(3); drawChap(3, "");
+drawNav(["q02.html","Problem 2: Walk downhill"], ["q04.html","Problem 4: Add more knobs"]);
+drawFoot()   /* 🔴 2026-09-02 A：★注記を消した（★山田様。★同じ一文が21回出るのは型3／§2-6 の言い訳）*/;
+
+(function(){
+/* 🔴 2026-09-02 1問1ページ担当2代目：★★【受け皿】── この問には無い
+     【他の問の関数】を空にしておきます。★これが無いと ReferenceError になります。
+   ★★呼んでいる側（原本の関数）は1文字も変えていません */
+if (typeof s4clear === 'undefined') var s4clear = function(){};
+if (typeof slid4 === 'undefined') var slid4 = function(){};
+if (typeof up4 === 'undefined') var up4 = function(){};
+
+/* ══════════════════════════════════════════════════════════════
+   共通
+   ★x 軸は 0 から描く。★y=ax+b は x=0 を軸に回るので、軸が画面外にあると
+     ★「a を動かすと上下にも動く」ように見えてしまう
+   ══════════════════════════════════════════════════════════════ */
+const $=id=>document.getElementById(id);
+const show=id=>$(id).classList.remove('hide');
+const rmseOf=(X,Y,f)=>Math.sqrt(X.reduce((s,x,i)=>s+(f(x)-Y[i])**2,0)/X.length);
+function gauge(fillId,markId,val,goal,max){
+  const g=$(fillId); g.style.width=Math.min(100,val/max*100)+'%';
+  g.classList.toggle('ok',val<=goal); $(markId).style.left=(goal/max*100)+'%';
+}
+/* 散布図
+   🔴🔴 2026-08-27 #17：390px で font を 17px に上げた（→@media）ので、
+     ★★軸名と目盛りが重なるようになった（＝§2 の「font を上げると型B が生まれる」）。
+     ★実測（390px・font 17）：x軸目盛りと x軸名が【−0.45px】＝重なっていた／
+       y軸目盛り「100」と y軸名「点数」が横に【0.59px】＝くっついて「100点数」に読めた
+     → ⑴ グラフの上端 y1 を 26 → 48 に下げ、★y軸名を【固定の y=20】に置いた
+          （★軸名を y1 基準にすると y1 を下げたとき軸名も下がって元に戻ってしまう）
+       ⑵ x軸名を y0+40 → y0+52 へ
+       ⑶ 下の余白 y0 を H−50 → H−64 へ
+       ⑷ viewBox の高さを 300 → 330 に増やした（★グラフの縦を元と同じだけ確保するため）
+     ★font 17 の行の高さは実測で約 33 viewBox単位（Noto Serif JP の ascent が大きい）。
+       ★これを見込んで隙間を 8 単位以上（390px で 4.6px 以上）取っている */
+function plot(el,X,Y,xr,yr,f,opt){
+  opt=opt||{}; const W=el.viewBox.baseVal.width||560, H=el.viewBox.baseVal.height||330;
+  const P={x0:opt.narrow?42:52, y0:H-64, x1:W-20, y1:48};
+  const sx=v=>P.x0+(v-xr[0])/(xr[1]-xr[0])*(P.x1-P.x0);
+  const sy=v=>P.y0+(v-yr[0])/(yr[1]-yr[0])*(P.y1-P.y0);
+  let s='';
+  for(let v=yr[0];v<=yr[1];v+=opt.ystep||20){
+    s+=`<line x1="${P.x0}" y1="${sy(v)}" x2="${P.x1}" y2="${sy(v)}" stroke="#ececec"/>`;
+    /* 🔴 2026-08-27 #17：x0−7 だと、原点で y軸の「0」と x軸の「0」が横に 0.96px で並び
+       ★390px で「0 0」が1つの数に読めた（＝04 の A-3 と同じ型）。★x0−12 で 3.9px に */
+    s+=`<text x="${P.x0-12}" y="${sy(v)+4}" text-anchor="end" font-size="13" fill="#6e6e6e"
+         font-family="Inter">${v}</text>`;}
+  for(let v=xr[0];v<=xr[1];v+=opt.xstep||1){
+    s+=`<text x="${sx(v)}" y="${P.y0+17}" text-anchor="middle" font-size="13" fill="#6e6e6e"
+         font-family="Inter">${v}</text>`;}
+  s+=`<line x1="${P.x0}" y1="${P.y0}" x2="${P.x1}" y2="${P.y0}" stroke="#000"/>`;
+  s+=`<line x1="${P.x0}" y1="${P.y0}" x2="${P.x0}" y2="${P.y1}" stroke="#000"/>`;
+  /* ★★軸名は目盛りの行（y0+17）から離す。★font 17（390px）の行の高さは約33単位あるので
+     ★y0+40 では重なった（実測 −0.45px）。★y0+52 で隙間 8単位＝390px で 4.6px */
+  s+=`<text x="${P.x1}" y="${P.y0+52}" text-anchor="end" font-size="13" fill="#3f3f3f"
+       font-family="'Noto Serif JP',serif">${opt.xlab||''}</text>`;
+  /* ★★y軸名は【固定の y=20】に置く。★y1 基準にすると y1 を下げても一緒に下がってしまう。
+     ★目盛りのいちばん上（y1+4＝52）との縦の隙間が 8単位＝390px で 4.6px 取れる
+     ★横だけで逃げようとすると「100」と「点数」が 0.59px で並んで1語に読める（実測） */
+  s+=`<text x="${P.x0-6}" y="20" font-size="13" fill="#3f3f3f"
+       font-family="'Noto Serif JP',serif">${opt.ylab||''}</text>`;
+  if(f){
+    let d='';
+    for(let i=0;i<=140;i++){const v=xr[0]+(xr[1]-xr[0])*i/140;
+      const yy=Math.max(yr[0]-200,Math.min(yr[1]+200,f(v)));
+      d+=(i?'L':'M')+sx(v).toFixed(1)+' '+sy(yy).toFixed(1);}
+    s+=`<clipPath id="cp${el.id}"><rect x="${P.x0}" y="${P.y1}" width="${P.x1-P.x0}"
+         height="${P.y0-P.y1}"/></clipPath>`;
+    s+=`<path d="${d}" fill="none" stroke="#019949" stroke-width="2.2"
+         clip-path="url(#cp${el.id})"/>`;
+    X.forEach((x,i)=>{ s+=`<line x1="${sx(x)}" y1="${sy(Y[i])}" x2="${sx(x)}"
+      y2="${sy(Math.max(yr[0]-20,Math.min(yr[1]+20,f(x))))}" stroke="#c00" stroke-width="1.8"
+      opacity=".85" clip-path="url(#cp${el.id})"/>`;});
+    /* ★★b の白丸を【先に】描く。★理由：下の赤い数字が b のラベルを避けられるようにするため */
+    let USED=[];                                /* ★もう文字を置いた場所（避けるため）*/
+    /* ★★PAD＝5単位。★390px では 5×0.5893＝2.9px。★型H（重ならないが読めない）を防ぐ */
+    const PAD=5;
+    if(opt.pivot!=null && xr[0]<=0){
+      const F=17;
+      s+=`<circle cx="${sx(0)}" cy="${sy(opt.pivot)}" r="5.5" fill="#fff" stroke="#019949"
+           stroke-width="2"/>`;
+      const bx=sx(0)+9, by=sy(opt.pivot)-8;
+      s+=`<text x="${bx}" y="${by}" font-size="13" fill="#019949"
+           font-family="Inter">b</text>`;
+      /* ★★余白 PAD を付けて持つ。★0 だと『重ならないが 0.30px で読めない』が出た（実測）*/
+      USED.push({x0:bx-PAD, x1:bx+0.28*F*2+PAD, y0:by-F*0.8-PAD, y1:by+F*0.2+PAD});
+    }
+    /* 🔴🔴 2026-08-28 山田様の FB：「縦のズレを、点数と勉強時間の2軸のグラフの各点に対して、
+         a と b でいじった直線からどれだけズレがあるか、グラフ上での視覚で表して欲しい」
+       → ★★赤い線の【長さ】をこのグラフに出す（★棒グラフ8本は削除した）
+       🔴🔴 置き場所の作り方（★2度 失敗して作り直した。★実測で捕まえた）
+         ✗ 1度目 x+8 に左揃え → 隣の列に食い込んで文字どうしが重なり、緑の線にも −0.44px
+         ✗ 2度目 点の x に中央揃え → 左端が【y軸の目盛り】に食い込み、【b のラベル】とも重なった
+         ✅ 3度目 ⑴ 緑の線は傾いているので、文字の x 区間の中での線の y の上端 lo・下端 hi を出す
+                  ⑵ 点から見て線の反対側に、em ボックス（font 17 で上 0.8em・下 0.2em）＋ 8単位
+                  ⑶ 枠に当たるなら端で寄せる／反対側へ倒す
+                  ⑷ ★★すでに置いた文字（b のラベル・他の数字）に当たるなら【出さない】 */
+    if(opt.resid) X.forEach((x,i)=>{
+      /* ★M＝線から取る余白。★8 だと 390px で 2.82px しか空かなかった（実測）→ 11 にした */
+      const F=17, ASC=F*0.8, DESC=F*0.2, M=11;  /* ★font は @media で 17px に上がる */
+      const yp=sy(Y[i]);
+      const hx=(xr[1]-xr[0])*0.045;             /* 文字の横幅ぶんの x（データ単位）*/
+      let lo=1e9, hi=-1e9;
+      for(let k=-1;k<=1;k++){ const yy=sy(f(x+hx*k)); if(yy<lo)lo=yy; if(yy>hi)hi=yy; }
+      const d=Math.abs(Y[i]-f(x));
+      let up = yp<=lo;                          /* 点が線より上（画面では y が小さい）*/
+      let ty = up ? Math.min(yp,lo)-M-DESC : Math.max(yp,hi)+M+ASC;
+      if(up && ty-ASC < P.y1+2){ up=false; ty=Math.max(yp,hi)+M+ASC; }
+      if(!up && ty+DESC > P.y0-2){ up=true;  ty=Math.min(yp,lo)-M-DESC; }
+      if(ty-ASC < P.y1+2 || ty+DESC > P.y0-2) return;
+      const txt=d.toFixed(1), half=0.28*F*txt.length;
+      let tx=sx(x), an='middle';
+      if(tx-half < P.x0+3){ tx=P.x0+3; an='start'; }
+      else if(tx+half > P.x1-3){ tx=P.x1-3; an='end'; }
+      const bx0 = an==='start'? tx : an==='end'? tx-half*2 : tx-half;
+      const box={x0:bx0-PAD, x1:bx0+half*2+PAD, y0:ty-ASC-PAD, y1:ty+DESC+PAD};
+      if(USED.some(u=>u.x0<box.x1 && box.x0<u.x1 && u.y0<box.y1 && box.y0<u.y1)) return;
+      USED.push(box);
+      s+=`<text x="${tx.toFixed(1)}" y="${ty.toFixed(1)}" text-anchor="${an}"
+           font-size="13" fill="#c00" font-family="Inter" paint-order="stroke"
+           stroke="#fff" stroke-width="3.5"
+           stroke-linejoin="round">${txt}</text>`;});
+  }
+  X.forEach((x,i)=>{ s+=`<circle cx="${sx(x)}" cy="${sy(Y[i])}" r="4.2" fill="#000"/>`;});
+  /* ★折れ目（動かせる節）を出す */
+  if(opt.anchors) opt.anchors.forEach((p,i)=>{
+    s+=`<circle cx="${sx(p[0]).toFixed(1)}" cy="${sy(p[1]).toFixed(1)}" r="6.5" fill="#ff8a2b"
+         stroke="#fff" stroke-width="2"/>`;
+    s+=`<text x="${sx(p[0]).toFixed(1)}" y="${(sy(p[1])-12).toFixed(1)}" text-anchor="middle"
+         font-size="13" fill="#c26100" font-family="Inter">${i+1}</text>`;});
+  el.innerHTML=s;
+}
+
+/* ★★初期値は a=3, b=20 に固定する。★解説の3箇所（∂L/∂b=−51.50・∂L/∂a=−219.75／
+     表の 739.00／赤枠の 44.98 対 50.03）が全部この位置の値なので、ここを変えると
+     ★★解説が実物と食い違い、しかも赤枠の主張が【逆】になる（a=1,b=52 では
+     同時115.45 対 順番110.49 で、順番のほうが良く見えてしまう）
+   ★★差が全部マイナスになるので「① 差が全部マイナス → b を上げる」も正しく発動する */
+let A2=3, B2=20, st2=0, ok2=false, div2=false, path=[[3,20]];
+/* ══════════════════════════════════════════════════════════════
+   何歩で谷底に着くか（糸永さんの「何手詰め」）★本編に統合した
+   ★★開始位置は【はじめの場所 (a=3, b=20)】に固定する。
+     ★でないと歩数が毎回変わって比べられない
+     ★★(0,0) ではなく (3,20) にする理由 ── 解説の3箇所がこの場所の値だから
+        ∂L/∂b=−51.50 ／ ∂L/∂a=−219.75 ／ 表の初期表示 739.00 ／ 赤枠の 44.98 対 50.03
+   ★★確認済み（目標 ずれ1.5以下・上限600歩・開始(3,20)。★出荷コードで数え直した）
+     0.005 → 600歩でも届かない（ずれ1.688）   0.010 → 359歩
+     0.020 → 179歩   0.030 → 119歩   0.040 → 89歩   0.045 → 79歩   0.050 → 71歩
+     0.052 → 69歩   0.053 → 68歩 ★最速   0.054 → 106歩 ★大きくすると遅くなる
+     0.055 → 600歩でも届かない（発散しかけ）   0.056 → 57歩で発散   0.060 → 13歩で発散
+   ★発散しない上限 0.0549（＝2/36.42。ヘッセ行列の最大固有値の逆数の2倍）
+   ★★「最速＋6歩以内」を満たすのは 0.048〜0.053 の6通りだけ（刻み0.001の76通り中 7.9%）
+   ══════════════════════════════════════════════════════════════ */
+
+/* ══════════════════════════════════════════════════════════════
+   問3 ── 曲がったデータ。直線では届かない
+   ★★2つまみの最良は a=3.8 / b=33 で ずれ 14.28（総当たりで確認）。目標 3.0 は到達不可能
+   ══════════════════════════════════════════════════════════════ */
+const X3=[2,3,4,5,6,7,8,9,10,11], Y3=[25,35,45,58,70,78,80,74,62,48];
+const XR3=[0,12], YR3=[0,100], GOAL3=3.0, OPT3={xlab:'Hours of sleep',ylab:'Focus',xstep:2};
+let mv3=0, ok3=false;
+function up3(){
+  const a=(+$('a3').value)/10, b=+$('b3').value;
+  $('a3v').textContent=a.toFixed(1); $('b3v').textContent=b;
+  const f=x=>a*x+b, e=rmseOf(X3,Y3,f);
+  plot($('p3'),X3,Y3,XR3,YR3,f,Object.assign({pivot:b},OPT3));
+  $('e3').textContent=e.toFixed(2); gauge('g3','m3',e,GOAL3,40);
+  /* 🔴🔴 2026-08-29：★★解説を出したあとも判定文が「目標は 3.0 以下です」のままだと、
+     ★解説（届きません）と判定文（目標は3.0）が【同じ画面で食い違う】（→§2-3・§7-2 の型）。
+     → ★★ok3 が立ったら判定文も「ここが限界」に切り替える */
+  $('j3').className='verdict'+(ok3?' stuck':'');
+  $('j3').innerHTML= ok3
+    ? `The error is <b>${e.toFixed(2)}</b>. <b>With a straight line, this is the limit.</b>`
+      +`<span style="color:var(--gray-500)"> &nbsp;3.0 is out of reach. Go on to Problem 4 below.</span>`
+    : `The error is <b>${e.toFixed(2)}</b> right now. The goal is 3.0 or less.`
+      +(e<16?`<br><span style="color:var(--gray-500)">
+        Fit the left and the right goes off; fit the right and the left goes off.</span>`:'');
+  gate3Label();
+}
+/* ★★ゲートは onchange で数える。★oninput はドラッグ中に何十回も発火するので、
+   ★★1回ぐいっと動かすだけで解除されてしまう（→「無理だと納得させてから進ませる」が壊れる） */
+/* 🔴 2026-08-28 #20：[いちばん良い直線にする] も onchange 6回まで押せないようにした。
+   ★★これが最初から押せると、1回押して「14.28 だ、無理だ」で終わり、
+     ★「左を合わせると右が外れる」を自分で確かめる場面が一度も来ない（→ 手ごたえの残り⑵）
+   ★問1 の sk1（12回）・問4 の kbest（6回）・問5 の sk5（12回）と同じ形にそろえた。
+   ★§2-10 のため、ボタンの文字に「あと◯」を出して【いつ押せるか】を見せる */
+/* 🔴🔴 2026-08-28 山田様の FB：「ここで正解が出ないからか次に進めない。死ね」
+   ★★今日 #20 が best3 に6回ゲートを付け、give3 は12回だったので、
+     ★★不詰の問題で【12回 動かすまで先へ進めない】状態になっていた。★§2-10 違反
+   → ✅ best3 のゲートを外し、give3 を【3回】に緩め、文言も「無理だ（次へ）」に変えた */
+/* 🔴 2026-08-28：give3（答えを入れて次へ）を消した。★best3 は「限界を見せる」ので残す */
+function gate3Label(){ const b=$('best3'); if(b){ b.disabled=false; } }
+/* 🔴🔴🔴 2026-08-29 山田様の FB：「2個ではできません。y = ax + b はまっすぐな線だけ。
+   いちばん良い直線でも ずれ 14.28。これはいちばんよい直線にするボタン押したら
+   もう出るようにしてくれないか」
+   → ★★これまで解説（r3）は【スライダーを3回 動かすまで】出なかった。
+     ★原因：数えているのは a3・b3 の onchange で、[いちばん良い直線にする] は
+       ★value を代入して up3() を呼ぶだけなので onchange が発火せず、mv3 が1つも増えなかった。
+     ★★＝ 答えを見せるボタンを押しても「なぜ2個では届かないか」が出てこない状態だった
+   → ✅ 出す処理を pass3() に切り出し、【ボタンからも呼ぶ】。★スライダー3回の道も残す */
+function pass3(){ if(!ok3){ ok3=true; mark(2,'done'); show('r3'); setK(2); up3(); } }
+function gate3(){ mv3++; gate3Label();
+  /* 🔴 give3 を消したので、3回さわったら「つまみ2個では届かない」の解説を出す */
+  if(mv3>=3) pass3(); }
+['a3','b3'].forEach(i=>{ $(i).oninput=up3; $(i).onchange=gate3; });
+$('best3').onclick=()=>{ $('a3').value=38; $('b3').value=33; up3(); pass3(); };
+
+const ANC={2:{K:[2,11],H:[41,74]}, 3:{K:[2,6.5,11],H:[22,81,55]},
+           4:{K:[2,5,8,11],H:[24,59,84,49]},
+           5:{K:[2,4.25,6.5,8.75,11],H:[25,47,78,79,48]}};
+let K4=2, H4=[50,50], ok4=false;
+function setK(n){
+  const old=ANC[K4].K.slice(), oldH=H4.slice();
+  K4=n;
+  /* ★つまみの数を変えたとき、いまの形をなるべく引き継ぐ */
+  const f=x=>{ if(x<=old[0])return oldH[0];
+    if(x>=old[old.length-1])return oldH[oldH.length-1];
+    for(let i=0;i<old.length-1;i++) if(x<=old[i+1]){
+      const t=(x-old[i])/(old[i+1]-old[i]); return oldH[i]+(oldH[i+1]-oldH[i])*t; }
+    return oldH[oldH.length-1]; };
+  H4=ANC[n].K.map(k=>Math.round(f(k)));
+  [2,3,4,5].forEach(m=>$('k'+m).classList.toggle('on',m===n));
+  slid4(); up4();
+  /* ★つまみの数が変わったら、前の数でとった表は意味を失うので消す（→§5-9 の型D） */
+  /* 🔴 2026-08-28 #20：検証が「2→3→4個 に変えてもずれが 19.36 のままで壊れたと思った」と
+     報告した（→7巡目 詰まった箇所）。★正しい挙動（前の形を引き継ぐ）だが画面に説明が無かった */
+  s4clear(`Now using ${n} knobs. <b>The shape carries over</b>, so`
+   +` the error will not change until you set the heights. Press [One step].`);
+}
+[2,3,4,5].forEach(n=>$('k'+n).onclick=()=>setK(n));
+
+/* ══════ 起動（★この問のぶんだけ。★原本の起動行から他の問の呼び出しを落としました）══════ */
+up3();
+gate3Label();
+
+/* ══════ 会話（★原本の CV の写し。★この問のぶんだけ）══════ */
+var CV = {
+ "d10": [
+  [
+   "d",
+   "Different data this time. In goes <b>hours of sleep</b>, out comes <b>how well you focus the next day</b>. Ten people."
+  ],
+  [
+   "m",
+   "So the more you sleep, the better you focus?"
+  ],
+  [
+   "d",
+   "Have a look. &hellip; <b>Sleep too much and it drops off as well.</b>"
+  ],
+  [
+   "m",
+   "&hellip; You are right. It is <b>shaped like a hill</b>."
+  ],
+  [
+   "d",
+   "That is it. Now get within an error of 3.0 of that hill, using <b>the same two knobs</b> as before."
+  ],
+  [
+   "m",
+   "Same as before, then. Height with b, slope with a. Easy."
+  ],
+  [
+   "d",
+   "&hellip; Go on, Adam. Try it."
+  ]
+ ],
+ "d11": [
+  [
+   "m",
+   "Doc, I cannot get there whatever I do. Am I just bad at this?"
+  ],
+  [
+   "d",
+   "You are not bad at it. <b>It cannot be reached.</b>"
+  ],
+  [
+   "m",
+   "What?"
+  ],
+  [
+   "d",
+   "<span class='mono'>y = ax + b</span> can only draw a <b>straight line</b>. Can a straight line make a <b>hill</b>?"
+  ],
+  [
+   "m",
+   "&hellip; It cannot."
+  ],
+  [
+   "d",
+   "Even the best straight line leaves an error of <b>14.28</b>. 3.0 is never happening. <b>This problem was here for you to confirm that it is out of reach.</b>"
+  ],
+  [
+   "m",
+   "You could have told me first!"
+  ],
+  [
+   "d",
+   "If I had told you, you could not have confirmed it! &hellip; Adam, this part matters. When you get stuck, there are two things to suspect. <b>Are you turning them badly, or is the shape not enough?</b>"
+  ],
+  [
+   "m",
+   "And this time?"
+  ],
+  [
+   "d",
+   "<b>The shape is not enough.</b> So next we <b>add to the shape</b>. On to Problem 4 below!"
+  ]
+ ]
+};
+drawCV(CV);
+})();
+</script>
+</body>
+</html>
