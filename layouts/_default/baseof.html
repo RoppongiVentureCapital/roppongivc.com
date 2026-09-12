@@ -1,5 +1,10 @@
 <!DOCTYPE html>
-<html lang="ja">
+{{/* 🔴🔴🔴🔴 2026-09-12 記録担当：★★★★lang を言語で切り替える形にした。
+     ⚠️★★★これまで【全ページ lang="ja" 固定】だった ── ★英語ページも「日本語のページ」だと
+       宣言していた。★読み上げソフトが英語の文章を日本語の発音規則で読み、
+       ★検索側にも「このページは日本語」と伝わっていた。
+     ★これは英語版を作る前から入っていた不具合で、★私の変更で生じたものではない。 */}}
+<html lang="{{ .Site.Language.Lang }}">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -8,6 +13,26 @@
 <meta property="og:title" content="{{ if not .IsHome }}{{ .Title }} | {{ end }}{{ .Site.Title }}">
 <meta property="og:description" content="{{ with .Description }}{{ . }}{{ else }}{{ .Site.Params.description }}{{ end }}">
 <meta property="og:url" content="{{ .Permalink }}">
+{{/* 🔴🔴🔴🔴 2026-09-12 記録担当：★★★★hreflang を足した（山田様のご指示 2026-09-12）。
+     ★役目 ── ★同じ内容の日本語版と英語版が対になっていることを Google に伝える。
+       ★入れないと、日英が別々の記事として競合したり、★英語圏の人に日本語版が出たりする。
+     ★★★仕上がっていないページは出さない ── ★noindex が付いている翻訳は飛ばす。
+       ★理由：★検索に載せないページを「こちらもあります」と案内すると矛盾した合図になる。
+       ★英語版記事の noindex を外すと、★この行が自動で出るようになる（手で直す必要はない）。
+     ★x-default（どの言語でもない人向け）は日本語版を指す。★日本語が本体であるため。
+     ⚠️★対になっていないページ（英語版が無いページ）には何も出ない ── ★正しい挙動。 */}}
+{{- $alts := slice -}}
+{{- range .AllTranslations -}}
+  {{- if not .Params.noindex -}}{{- $alts = $alts | append . -}}{{- end -}}
+{{- end -}}
+{{- if gt (len $alts) 1 -}}
+{{- range $alts }}
+<link rel="alternate" hreflang="{{ .Language.Lang }}" href="{{ .Permalink }}">
+{{- end }}
+{{- range $alts }}{{ if eq .Language.Lang "ja" }}
+<link rel="alternate" hreflang="x-default" href="{{ .Permalink }}">
+{{- end }}{{ end }}
+{{- end }}
 <meta property="og:site_name" content="{{ .Site.Title }}">
 <meta property="og:type" content="{{ if .IsHome }}website{{ else }}article{{ end }}">
 {{/* ★2026-09-10 summary → summary_large_image（山田様のご承認）。
