@@ -3,20 +3,46 @@
      ★GitHub Pages は、存在しないパスに対して常にサイト直下の /404.html を返す。
      ★英語版が無いページ（記事・Deep Black Box）の English を押したときにここへ来るので、
        日本語と英語の両方を書いてある。
-     ★既存のCSSクラス（.hero / .eyebrow / .col-body）だけを使い、style.css には1行も足していない。 */}}
+     ★既存のCSSクラス（.hero / .eyebrow / .col-body）だけを使い、style.css には1行も足していない。
+
+     🔴🔴🔴🔴 2026-09-12 記録担当：★★★★英語の読者向けに作り直した。
+     ⚠️★★★直した理由 ── ★英語のURLで存在しないページを開くと、
+       ★見出しが日本語だけで、★リンク4本も全部【日本語のページ】を指していた。
+       ★英語圏の人が英語ページからリンク切れを踏むと、日本語の画面に落ちて戻れなくなる。
+     ★★★1枚で両方に応える形にした ── ★GitHub Pages は言語を問わず /404.html しか返さないため、
+       ★英語用の404を別に作っても【使われない】。だから1枚を二か国語にするのが正しい。
+     ★リンクは日本語行と English 行に分けた ── ★English 行は /en/ を指す。
+       ★★ここは意図して relURL を使わず絶対パスで書いている（★1枚で両言語を出すため）。
+     ★Deep Black Box の English 行は /en/deep-black-box/ を指す ── ★2026-09-12 時点で
+       英語版ゲームは作成中（23枚のうち6枚）。★固定パスなので完成すれば完成版を指す。 */}}
 {{ define "main" }}
+{{ $ls := "font-family:var(--sans);font-size:15px;font-weight:500;text-decoration:underline;text-underline-offset:3px" }}
+{{ $rs := "margin-top:1rem;display:flex;flex-wrap:wrap;gap:0 1.75rem;align-items:baseline" }}
+{{ $ts := "font-family:var(--sans);font-size:13px;font-weight:600;color:var(--gray-600);min-width:4.5em" }}
 <section class="hero">
   <p class="eyebrow">404</p>
   <h1>このページはありません。</h1>
+  <p class="eyebrow" style="margin-top:0.75rem">Page not found</p>
   <div class="col-body" style="margin-top:2rem;max-width:34em">
     <p>お探しのページは、移動したか、削除された可能性があります。英語版を用意していないページもあります。</p>
-    <p style="color:var(--gray-600)">The page you are looking for was not found. Some pages are available in Japanese only.</p>
+    <p style="color:var(--gray-600)">The page you are looking for may have moved or been removed. Some pages are available in Japanese only.</p>
   </div>
-  <div class="col-body" style="margin-top:2.5rem;display:flex;flex-wrap:wrap;gap:0 1.75rem">
-    <a href="{{ "" | relURL }}" style="font-family:var(--sans);font-size:15px;font-weight:500;text-decoration:underline;text-underline-offset:3px">トップへ戻る →</a>
-    <a href="{{ "agora/" | relURL }}" style="font-family:var(--sans);font-size:15px;font-weight:500;text-decoration:underline;text-underline-offset:3px">Agora →</a>
-    <a href="{{ "deep-black-box/" | relURL }}" style="font-family:var(--sans);font-size:15px;font-weight:500;text-decoration:underline;text-underline-offset:3px">Deep Black Box →</a>
-    <a href="{{ "jiwa/" | relURL }}" style="font-family:var(--sans);font-size:15px;font-weight:500;text-decoration:underline;text-underline-offset:3px">Media →</a>
+
+  <div class="col-body" style="margin-top:2.5rem">
+    <div style="{{ $rs }}">
+      <span style="{{ $ts }}">日本語</span>
+      <a href="/" style="{{ $ls }}">トップへ戻る →</a>
+      <a href="/agora/" style="{{ $ls }}">Agora →</a>
+      <a href="/deep-black-box/" style="{{ $ls }}">Deep Black Box →</a>
+      <a href="/jiwa/" style="{{ $ls }}">Media →</a>
+    </div>
+    <div style="{{ $rs }}">
+      <span style="{{ $ts }}">English</span>
+      <a href="/en/" style="{{ $ls }}">Home →</a>
+      <a href="/en/agora/" style="{{ $ls }}">Agora →</a>
+      <a href="/en/deep-black-box/" style="{{ $ls }}">Deep Black Box →</a>
+      <a href="/en/jiwa/" style="{{ $ls }}">Media →</a>
+    </div>
   </div>
 </section>
 {{ end }}
