@@ -558,13 +558,13 @@ function drawForm(id) {
   var h = document.getElementById(id || 'form'); if (!h) return;
   h.className = 'formbox';
   if (!SITE.form && !SITE.agora) {
-    h.innerHTML = '<span class="pend">感想フォームは準備中です</span>';
+    h.innerHTML = '<span class="pend">The feedback form is on its way</span>';
     return;
   }
   var b = '';
-  if (SITE.form) b += '<a class="btn go" href="' + SITE.form + '" target="_blank" rel="noopener">感想を書く →</a>';
-  if (SITE.agora) b += '<a class="btn" href="' + SITE.agora + '" target="_blank" rel="noopener">この教材の元になった記事へ →</a>';
-  h.innerHTML = '<div class="h">読んだ感想を聞かせてください</div><div class="togs">' + b + '</div>';
+  if (SITE.form) b += '<a class="btn go" href="' + SITE.form + '" target="_blank" rel="noopener">Send feedback &rarr;</a>';
+  if (SITE.agora) b += '<a class="btn" href="' + SITE.agora + '" target="_blank" rel="noopener">Read the article this course came from (in Japanese) &rarr;</a>';
+  h.innerHTML = '<div class="h">Tell us what you thought</div><div class="togs">' + b + '</div>';
 }
 
 /* ★戻る・次へ ── ★どのページでも常に押せる（★解けなくても進める） */
