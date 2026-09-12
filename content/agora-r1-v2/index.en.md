@@ -34,7 +34,7 @@ Two hours later, the five of them and the AI had arrived at a way of posing prob
 
 A month of development later, it was something anyone could try. **Here is what they built**.
 
-{{< cta href="/deep-black-box/" label="Start" sub="Open up the black box of AI one question at a time, with your own hands. 21 questions in all." >}}
+{{< cta href="/en/deep-black-box/" label="Start" sub="Open up the black box of AI one question at a time, with your own hands. 21 questions in all." >}}
 
 The five people in the Agora session that day
 
@@ -812,7 +812,7 @@ No installation, no environment setup. Just open it in a browser. It works on a 
 
 Open up the black box of AI one question at a time, with your own hands. 21 questions in all.
 
-{{< cta href="/deep-black-box/" label="Start" sub="Open up the black box of AI one question at a time, with your own hands. 21 questions in all." href2="https://docs.google.com/forms/d/e/1FAIpQLScyE3bWc8rh3wcnLLlaxpXOhrwUYjPU-ccS3FfnIZgcoPqkRw/viewform" label2="Send us your thoughts" >}}
+{{< cta href="/en/deep-black-box/" label="Start" sub="Open up the black box of AI one question at a time, with your own hands. 21 questions in all." href2="https://docs.google.com/forms/d/e/1FAIpQLScyE3bWc8rh3wcnLLlaxpXOhrwUYjPU-ccS3FfnIZgcoPqkRw/viewform" label2="Send us your thoughts" >}}
 
 ## About this article
 
