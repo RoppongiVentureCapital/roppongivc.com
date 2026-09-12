@@ -6,6 +6,10 @@
 .hero h1{font-size:clamp(1.8rem,3.5vw,2.6rem)}
 </style>
 
+{{/* 🔴🔴🔴🔴 2026-09-12 記録担当：★★★★節の並びを日本語版トップに合わせた
+     （山田様のご指示 2026-09-12）。★前は Hero→About→Mission→Vision→Programs→
+       Challenge→Members→JIWA で、日本語版とズレていた。
+     ★いま：Hero→About→Programs→Mission→Vision→Members→Challenge→JIWA */}}
 <!-- Hero -->
 <section class="hero" style="position:relative;overflow:hidden">
   <img src="{{ "img/hero/silhouette.png" | relURL }}" alt="" aria-hidden="true" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-45%);width:min(760px,95vw);height:auto;opacity:.12;pointer-events:none;z-index:0">
@@ -25,6 +29,70 @@
     <div class="col-body">
       <p style="font-family:var(--serif);font-size:1.5rem;font-weight:400;color:var(--black);line-height:1.6">Roppongi Venture Capital runs two programs — "Agora" and "Edge" — where exceptionally talented middle school, high school, and university students use AI to create things that do not yet exist in the world.</p>
       <p style="margin-top:1.5rem">We do not engage in financial investment activities. Our focus is on investing in the next generation of talent.</p>
+    </div>
+  </div>
+</section>
+
+<!-- Programs (Agora / Edge) -->
+<section class="two-col">
+  <div class="two-col-left">
+    <h2 class="col-heading">Programs</h2>
+  </div>
+  <div class="two-col-right">
+    <div class="col-body">
+      <div class="persona-card">
+        <h3>Agora</h3>
+        <p>Agora is a program where exceptionally talented young people engage in deep dialogue with AI to create something that does not yet exist.</p>
+        <a href="/en/agora/" style="display:inline-block;margin-top:0.75rem;font-family:var(--sans);font-size:15px;font-weight:500;color:var(--black);text-decoration:underline;text-underline-offset:3px">Learn more →</a>
+
+        {{/* 🔴🔴🔴🔴 2026-09-12 記録担当：★★★★第1回の記録とプロダクトのカードを足した
+             （山田様のご指示 2026-09-12）。★日本語版トップの同じ節に合わせた形。
+             ⚠️★★★ゲームのカードは /en/deep-black-box/ を指している ── ★2026-09-12 時点で
+               英語版ゲームは【23枚のうち6枚】しかできておらず、noindex のままである。
+               ★別セッションが作成中。★本番に出す前に進捗を確認すること。 */}}
+        <div class="articles-grid" style="margin-top:1.75rem;max-width:526px">
+          <div class="article-item">
+            <a href="/en/agora/ai-olympiad-record/">
+              <img class="article-item-img" src="{{ "img/agora/r1/thumb-r1-article.jpg" | relURL }}" alt="">
+              <div class="article-item-body">
+                <div class="article-pillar" style="text-transform:none">Agora ｜ Session 1</div>
+                <h3 style="margin:0.75rem 0">A record of thinking with AI: an AI Olympiad medalist on growing more AI builders</h3>
+                <span class="blog-arrow">Read the record →</span>
+              </div>
+            </a>
+          </div>
+        </div>
+        <p style="margin-top:1.75rem">The theme for the first session, held in July 2026, came from Hayato Yamai — a bronze medalist at the International Olympiad in Artificial Intelligence (IOAI) 2025 and a senior at Japan's most selective high school. He wanted to democratize Kaggle, the world's largest machine learning competition, because growing the number of people who build AI takes an entrance where you can learn the principles.</p>
+        <p>Five people and an AI talked for two hours and arrived at a way of posing problems that Kaggle did not have. A month later that idea became Deep Black Box: 21 questions that let you work the principles of AI with your own hands.</p>
+        <div class="articles-grid" style="margin-top:1.75rem;max-width:526px">
+          <div class="article-item">
+            <a href="/en/deep-black-box/">
+              <img class="article-item-img" src="{{ "img/agora/r1/thumb-r1-game.svg" | relURL }}" alt="">
+              <div class="article-item-body">
+                <div class="article-pillar">Learning material</div>
+                <h3 style="margin:0.75rem 0">Deep Black Box ── open up the black box of AI one question at a time, with your own hands.</h3>
+                <p>21 questions ／ just open it in a browser</p>
+                <span class="blog-arrow">Try it →</span>
+              </div>
+            </a>
+          </div>
+        </div>
+      </div>
+      <div class="persona-card">
+        <h3>Edge</h3>
+        <p>An incubation program where you find a problem to tackle, use AI to build a product that actually works, and ship it to the world.</p>
+        <a href="/en/edge/" style="display:inline-block;margin-top:0.75rem;font-family:var(--sans);font-size:15px;font-weight:500;color:var(--black);text-decoration:underline;text-underline-offset:3px">Learn more →</a>
+        {{/* 🔴🔴🔴🔴 2026-09-12 記録担当（英語版）：★★★★Challenge の節（「あなたの思考と能力を試す」）を
+             トップから外し、★この1行に畳んだ（山田様のご判断 2026-09-12「Bでお願い」）。
+           ★理由 ── ⑴ Deep Black Box がトップに入ったので「試してみる」の入口が2つ競合していた。
+             ⑵ 山田様のご判断「印象に残らないくらい誰もやっていない」。
+             ⑶ 2026-09-12 に Edge ページ側にも入口を作ったので、節ごと残す必要がなくなった。
+           ★★★1行だけ残す理由 ── ★節を丸ごと消すと /challenges/ へのリンクが /edge/ の1本だけに
+             なり、★トップからの内部リンクが0になる。★Google はどこからもリンクされていない
+             ページを重要でないと判断する。★1行なら見た目はほぼ変わらずリンクは残る。
+           ★Edge の説明の中に置いた ── ★もともと「Edgeプログラムの入口」と位置づけていたため。 */}}
+        <a href="/en/challenges/" style="display:block;width:fit-content;margin-top:0.5rem;font-family:var(--sans);font-size:15px;font-weight:500;color:var(--black);text-decoration:underline;text-underline-offset:3px">See if it suits you →</a>
+      </div>
     </div>
   </div>
 </section>
@@ -71,49 +139,6 @@
       <p style="font-family:var(--serif);font-size:2rem;font-weight:500;color:var(--black);line-height:1.4;margin-bottom:2.5rem">"A society where talent chooses its own challenge."</p>
       <p>What we want to see, after years of pursuing our Mission, is a society where talented people — freed from entrance exams, deviation scores, parental expectations, and the weight of others' eyes — move toward challenges they have chosen for themselves.</p>
       <p>The scale or importance of that challenge is not for us to decide. Tackling global issues like climate change or poverty is one valid answer. So is solving a small problem in a local community. So is deepening one's own curiosity. What we set as our Vision is not "what the challenge is" but the act of "choosing it yourself."</p>
-    </div>
-  </div>
-</section>
-
-<!-- Programs (Agora / Edge) -->
-<section class="two-col">
-  <div class="two-col-left">
-    <h2 class="col-heading">Programs</h2>
-  </div>
-  <div class="two-col-right">
-    <div class="col-body">
-      <div class="persona-card">
-        <h3>Agora</h3>
-        <p>A program for engaging in deep dialogue with AI to create something that does not yet exist. Starting from your own question, you bring your thinking process and discoveries into the world as a "work."</p>
-        <a href="/en/agora/" style="display:inline-block;margin-top:0.75rem;font-family:var(--sans);font-size:15px;font-weight:500;color:var(--black);text-decoration:underline;text-underline-offset:3px">Learn more →</a>
-      </div>
-      <div class="persona-card">
-        <h3>Edge</h3>
-        <p>An incubation program where you find a problem to tackle, use AI to build a product that actually works, and ship it to the world.</p>
-        <a href="/en/edge/" style="display:inline-block;margin-top:0.75rem;font-family:var(--sans);font-size:15px;font-weight:500;color:var(--black);text-decoration:underline;text-underline-offset:3px">Learn more →</a>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- Challenge -->
-<section class="two-col">
-  <div class="two-col-left">
-    <h2 class="col-heading">Test your thinking and ability</h2>
-    <p style="font-size:16px;color:var(--black);font-weight:500">Gateway to the Edge program</p>
-  </div>
-  <div class="two-col-right">
-    <div class="col-body">
-      <div class="persona-card">
-        <h3 style="font-size:20px">Thinking Style Diagnosis</h3>
-        <p>Are you the investigative type, the creative type, or the enterprising type? 10 questions to discover your thinking tendencies. You might be surprised to learn which fields suit you.</p>
-        <a href="/en/challenges/" style="display:inline-block;margin-top:0.75rem;font-family:var(--sans);font-size:15px;font-weight:500;color:var(--black);text-decoration:underline;text-underline-offset:3px">Try it →</a>
-      </div>
-      <div class="persona-card">
-        <h3 style="font-size:20px">Cognitive Challenge</h3>
-        <p>Test your raw cognitive ability through pattern reasoning. Find the rules governing a 3×3 grid and identify the missing piece. The number of rules to track at once increases as you progress.</p>
-        <a href="/en/challenges/" style="display:inline-block;margin-top:0.75rem;font-family:var(--sans);font-size:15px;font-weight:500;color:var(--black);text-decoration:underline;text-underline-offset:3px">Try it →</a>
-      </div>
     </div>
   </div>
 </section>

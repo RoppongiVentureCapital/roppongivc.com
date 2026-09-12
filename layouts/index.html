@@ -77,6 +77,16 @@
         <h3>Edge</h3>
         <p>自分が取り組む課題を見つけ、AIを活用して実際に動くプロダクトを作り、世に出すインキュベーションプログラム。</p>
         <a href="{{ "edge/" | relURL }}" style="display:inline-block;margin-top:0.75rem;font-family:var(--sans);font-size:15px;font-weight:500;color:var(--black);text-decoration:underline;text-underline-offset:3px">詳しく見る →</a>
+        {{/* 🔴🔴🔴🔴 2026-09-12 記録担当：★★★★Challenge の節（「あなたの思考と能力を試す」）を
+             トップから外し、★この1行に畳んだ（山田様のご判断 2026-09-12「Bでお願い」）。
+           ★理由 ── ⑴ Deep Black Box がトップに入ったので「試してみる」の入口が2つ競合していた。
+             ⑵ 山田様のご判断「印象に残らないくらい誰もやっていない」。
+             ⑶ 2026-09-12 に Edge ページ側にも入口を作ったので、節ごと残す必要がなくなった。
+           ★★★1行だけ残す理由 ── ★節を丸ごと消すと /challenges/ へのリンクが /edge/ の1本だけに
+             なり、★トップからの内部リンクが0になる。★Google はどこからもリンクされていない
+             ページを重要でないと判断する。★1行なら見た目はほぼ変わらずリンクは残る。
+           ★Edge の説明の中に置いた ── ★もともと「Edgeプログラムの入口」と位置づけていたため。 */}}
+        <a href="{{ "challenges/" | relURL }}" style="display:block;width:fit-content;margin-top:0.5rem;font-family:var(--sans);font-size:15px;font-weight:500;color:var(--black);text-decoration:underline;text-underline-offset:3px">自分に向いているかを試す →</a>
       </div>
     </div>
   </div>
@@ -142,28 +152,6 @@
 
 {{/* Challenge ── ★2026-09-10 に Members の下へ移した（もとは プログラム と Members の間）。
      ★消さずに下げる。消すとトップからの内部リンクが無くなって検索の評価が落ちる。 */}}
-<!-- Challenge -->
-<section class="two-col">
-  <div class="two-col-left">
-    <h2 class="col-heading">あなたの思考と能力を試す</h2>
-    <p style="font-size:16px;color:var(--black);font-weight:500">Edgeプログラムの入口</p>
-  </div>
-  <div class="two-col-right">
-    <div class="col-body">
-      <div class="persona-card">
-        <h3 style="font-size:20px">思考スタイル診断</h3>
-        <p>あなたは探究型か、創造型か、事業型か。10問の質問で、自分の思考の傾向を知る。自分がどんな分野に向いているか、意外な発見があるかもしれません。</p>
-        <a href="{{ "challenges/" | relURL }}" style="display:inline-block;margin-top:0.75rem;font-family:var(--sans);font-size:15px;font-weight:500;color:var(--black);text-decoration:underline;text-underline-offset:3px">やってみる →</a>
-      </div>
-      <div class="persona-card">
-        <h3 style="font-size:20px">認知能力チャレンジ</h3>
-        <p>パターン推理で、あなたの「地頭」を試す。3×3グリッドの法則を見抜き、欠けたピースを推理する。後半になるほど、同時に追跡すべき規則の数が増えます。</p>
-        <a href="{{ "challenges/" | relURL }}" style="display:inline-block;margin-top:0.75rem;font-family:var(--sans);font-size:15px;font-weight:500;color:var(--black);text-decoration:underline;text-underline-offset:3px">やってみる →</a>
-      </div>
-    </div>
-  </div>
-</section>
-
 <!-- JIWA -->
 {{ $articles := where .Site.RegularPages "Section" "jiwa" }}
 {{ if $articles }}
