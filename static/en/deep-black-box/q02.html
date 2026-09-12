@@ -1,0 +1,1646 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<meta name="description" content="Walk down the landscape of the error - Problem 2 of Deep Black Box. Press one step at a time and watch gradient descent happen.">
+<meta property="og:title" content="Deep Black Box - Problem 2: walk down the landscape of the error (Chapter 1)">
+<meta property="og:description" content="Walk down the landscape of the error - Problem 2, Walk downhill.">
+<!-- 🔴🔴🔴🔴 2026-09-10 記録担当：★★★★共有したときの画像（★公開準備セッションの指示）。
+     ★★この2行は【23ページとも入っていませんでした】（★実測0件）。
+     ★★★入れる値は先方が確定させたものです ──
+       roppongivc.com/static/img/agora/r1/og-r1-game.jpg（★59KB。★案A＝白地・エンブレム左）。
+     ★★記事用（og-r1-article.jpg）とは【別のファイル】です。★記事側のものは触っていません。
+     ★値は絶対URLです（★OGP の決まり。★href の絶対パス禁止とは別の話です） -->
+<meta property="og:image" content="https://www.roppongivc.com/en/deep-black-box/og-deep-black-box-en.jpg">
+<meta name="twitter:image" content="https://www.roppongivc.com/en/deep-black-box/og-deep-black-box-en.jpg">
+<!-- 🔴🔴🔴🔴 2026-09-10 21:4x 記録担当：★★★★X（Twitter）で大きい絵にする1行（★公開準備セッションの依頼）。
+     ★★★og:image を入れても、★この1行が無いと【小さいカード】になります。
+     ★記事側は全13ページを summary → summary_large_image にしたとのことです（★先方の実測）。
+     ★★ゲーム23ページは【0件】でした -->
+<meta name="twitter:card" content="summary_large_image">
+<!-- 🔴🔴🔴🔴 2026-09-10 22:3x 記録担当：★★★★ブラウザのタブに出る絵（★公開準備セッションの依頼）。
+     ★★実測 ── ★23ページとも【0件】でした（★タブに絵が出ていませんでした）。
+     ★★★実体はサイト側にあり、★本番で全部 引けます（★新しく作っていません）──
+       /favicon.svg 200・53KB ／ /favicon.ico 200 ／ /favicon-192.png 200・8KB
+     ⚠️★★/apple-touch-icon.png は【404】なので使いません。★favicon-192.png を指しています
+       （★サイト側 baseof.html と同じ扱いです）。
+     ⚠️★★★絶対URLです ── ★このゲームは /deep-black-box/ の下にあるので、
+       ★相対だと /deep-black-box/favicon.svg を探して【外します】。
+       ★「絶対パスを書かない」（★同じ場所の中を指すときの決まり）とは別の話です -->
+<link rel="icon" href="https://www.roppongivc.com/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="https://www.roppongivc.com/favicon.ico" sizes="32x32">
+<link rel="icon" href="https://www.roppongivc.com/favicon-192.png" type="image/png" sizes="192x192">
+<link rel="apple-touch-icon" href="https://www.roppongivc.com/favicon-192.png">
+<title>Deep Black Box - Problem 2: walk down the landscape of the error (Chapter 1)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@300;400;600;700&family=Inter:wght@300;400;500;600;700&family=Noto+Serif+JP:wght@300;400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../deep-black-box/common.css">
+<style>
+/* ══════════════════════════════════════════════════════════════════════════
+   🔴 2026-09-02 1問1ページ担当：★この章だけの CSS
+     ★★原本 tsume-00-function-dialog.html の <style> をそのまま写し、★【戻さないこと】のフォント規則だけ落としました
+     ★落としたもの：.cap{font-size:12.5px;color:var(--gray-500);margin-bottom:.5rem;line-height:1.5}／.lead{font-size:16px;line-height:1.9;color:var(--gray-600);margin:0 0 1.1rem}／h2{font-family:var(--serif);font-size:1.45rem;font-weight:300;line-height:1.4;margin:0 0 1rem}／h3{font-size:16px;font-weight:600;margin:1.4rem 0 .6rem}／.dtab{width:100%;border-collapse:collapse;font-size:12.5px;margin:.9rem 0;  font-variant-numeric:tabular-nums}／.cl .bb{position:relative;min-width:0;padding:.65rem .95rem;font-size:15px;line-height:1.9;   border:1px solid var(--gray-200);border-radius:.85rem;background:var(--white);color:var(--gray-600)}／.cl .bb{font-size:14.5px;padding:.55rem .75rem;line-height:1.8}
+   ★.offpage ── ★★この章の【他の問のカード】を DOM に置いたまま隠す枠。
+     ★理由：ゲーム本体の JS（起動・つまみの bind）を1バイトも触らないため。
+       ★$('…') が null にならないので、原本と同じコードがそのまま動きます
+   ══════════════════════════════════════════════════════════════════════════ */
+.offpage{display:none}
+:root{
+ --bg:#fff; --white:#fff; --black:#000;
+ --gray-100:#f9f9f9; --gray-200:#d9d9d9; --gray-500:#444; --gray-600:#2a2a2a;
+ --accent:#019949;
+ --sans:'Inter',system-ui,sans-serif;
+ --serif:'Source Serif 4','Noto Serif JP',Georgia,serif;
+ --content-w:52.625rem;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--black);font-family:var(--sans);
+ -webkit-font-smoothing:antialiased}
+.wrap{max-width:var(--content-w);margin:0 auto;padding:0 1.5rem 5rem}
+.top{border-bottom:1px solid var(--gray-200);margin-bottom:2.4rem}
+/* 🔴🔴🔴 2026-09-09 A：★★★この上書きを外した ── ★★これが【全部大文字】の正体だった
+     ★★★山田様「トップと他でフォント違うし全部大文字かどうかも違うし」（2026-09-09）
+   ★.top .in に text-transform:uppercase と letter-spacing:.14em が入っており、
+     ★★子の製品名とタグラインまで【大文字＋字間広め】に変えていた。
+   ★実測：★これがある18ページは uppercase ／ 無い5ページ（index・q15〜17・end）は none。
+     → ★★★同じ製品名が【大文字のページと そうでないページ】に分かれていた
+   ★common.css の .top .in（★大文字にしない）を効かせる */
+/* 🔴 2026-09-09 A：★★この上書きを外した ── ★common.css の
+     .top .in .tag（15.5px / #555 / 行間1.75 / サンセリフ）を効かせる。
+   ★★★これが後勝ちしていたので、★上のバーだけ 明朝 12.5px のままだった。
+     → ★山田様「トップと他でフォント違うし全部大文字かどうかも違うし」の原因のひとつ */
+.eyebrow{font-size:13px;font-weight:500;letter-spacing:.16em;text-transform:uppercase;
+ color:var(--gray-500);margin-bottom:.9rem}
+h1{font-family:var(--serif);font-size:2.1rem;font-weight:300;line-height:1.35;margin:0 0 .8rem}
+.lead b{color:var(--black)}
+.meta{font-size:13px;letter-spacing:.1em;color:var(--gray-500);padding-bottom:1.2rem;
+ border-bottom:1px solid var(--gray-200);margin-bottom:1.2rem}
+.steps{display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:2.4rem}
+.steps div{flex:1 1 5rem;padding:.55rem .3rem;text-align:center;font-size:12px;
+ border:1px solid var(--gray-200);color:var(--gray-500);background:var(--white)}
+.steps div.open{border-color:var(--black);color:var(--black)}
+.steps div.done{background:var(--black);border-color:var(--black);color:var(--white)}
+.card{border:1px solid var(--gray-200);padding:2rem;margin-bottom:2rem;background:var(--white)}
+.tagline{font-size:13px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;
+ color:var(--gray-500);margin-bottom:.9rem}
+.figbox{background:var(--gray-100);border:1px solid var(--gray-200);padding:1rem;margin:1.3rem 0}
+/* 🔴 2026-08-29 A（#24）：問2 の2枚は【上限幅】を付ける。
+   ★理由：.two（横並び）を解体したので、PC では図が本文の全幅（842px）まで伸び、
+   ★viewBox 300×250 の比で 高さが 701px になって枠が 941.7px に膨らんだ（実測）。
+   ★420px で止めると PC は元の横並び（各 約413px）とほぼ同じ大きさに戻る。
+   ★390px では使える幅が 348px なので この指定は効かない（＝スマホは1px も変わらない） */
+#p2,#p2m{max-width:420px;display:block;margin:0 auto}
+/* ★★図・つまみ・判定を1つの枠にまとめる。★小さい画面でも両方が同時に見えるようにする */
+.panel{background:var(--gray-100);border:1px solid var(--gray-200);padding:1rem;margin:1.3rem 0}
+.panel .ctl{margin:.9rem 0 .2rem}
+.panel .togs{margin-top:.7rem}
+.panel .gauge{margin-top:.9rem}
+.panel .verdict{margin-top:.8rem;background:var(--white)}
+.two{display:flex;gap:1rem;flex-wrap:wrap}
+.two>div{flex:1 1 15rem;min-width:0}
+svg{display:block;width:100%;height:auto}
+
+/* ══════════════════════════════════════════════════════════
+   🔴🔴🔴 2026-08-29 山田様の FB：「スマホは大丈夫なんだけど、PCサイズのが画面大きいとは言え
+     同じように固定しないと同時に見えないものがいっぱいあるんだ。
+     だからPCのほうもスマホと同様の処置をやってくれないか」
+   → ★★.stick と .stickbot を @media の【外】に出した（＝どの幅でも効く）。
+   ★★これまで @media (max-width:430px) の中だけに書いていたので、PC には1px も効いていなかった。
+   ★★実測（1280×900・貼り付けを入れる前）
+     問1  つまみを画面中央 → 図は 74%（上端 105px 切れる）
+     問4  つまみ群を中央   → 図は 65%（上端 144px 切れる）
+     問4  [1歩ずつ] を中央 → ★★図は【完全に画面外】（上に 490px）
+     ★★スマホでは .stick で見えていたので、PC のほうが悪いという逆転が起きていた
+   ★★上限高さ（max-height）が必要な理由 ── ★PC は本文幅 842px なので
+     viewBox 560×330 の図は【496px】になる。★貼り付けると 900px の画面の 55% を占領し、
+     ★下のつまみが押し出される。→ ★42vh（900px なら 378px）で止める。
+     ★svg は width:100%/height:auto なので、max-height が効くと
+       preserveAspectRatio で中身が縮んで【左右に余白】ができる。★横幅も合わせて縮める
+   ★★390px では図が 348×205px しか無く 42vh（353px）に当たらないので、★スマホは1px も変わらない
+   ★背景色は必須 ── ★敷かないと下から来た文字が図に【透けて重なる】
+   ★確認済み：.top は固定ヘッダではない ／ .card・.panel・body に overflow は無い
+     （★祖先に overflow があると sticky は無効になる）
+   ══════════════════════════════════════════════════════════ */
+.stick{position:sticky;top:0;z-index:5;background:var(--gray-100);
+       padding-bottom:.35rem;box-shadow:0 6px 8px -6px rgba(0,0,0,.18)}
+.stick svg{max-height:42vh;width:auto;max-width:100%;margin:0 auto}
+/* 🔴🔴🔴 2026-08-29【訂正・A の自己申告】★★一度 34vh に下げたが【42vh に戻した】。
+   ★下げた理由は「1280px で 01 の問6 の判定文が同時に入らない」という実測だったが、
+     ★★それは【走査の刻みが 40px で粗く、入る位置を飛ばしていた】ための誤判定だった。
+   ★刻みを 12px にして測り直すと、42vh でも 00 の6か所・01 の5か所すべてで
+     ★「図100% ＋ つまみ・結果すべて見えて押せる位置がある」（★両幅）
+   ★★教訓：スクロール位置を刻んで測る検査は、刻みが粗いと【偽の不合格】を出す。
+     ★A はこれで PC の図を不必要に小さくしかけた（→ 規則案㉔ の同型） */
+.stickbot{position:sticky;bottom:0;z-index:5;background:var(--gray-100);
+          padding-top:.4rem;box-shadow:0 -6px 8px -6px rgba(0,0,0,.18)}
+.ctl{margin:1.1rem 0 .2rem}
+.ctl label{display:flex;justify-content:space-between;align-items:baseline;font-size:14px;
+ margin-bottom:.35rem;gap:1rem}
+.ctl label span.n{font-weight:600;font-variant-numeric:tabular-nums;white-space:nowrap}
+.togs{display:flex;gap:.6rem;flex-wrap:wrap;margin-top:1.1rem;align-items:center}
+.btn{background:none;border:1px solid var(--gray-200);padding:.6rem 1.15rem;font-size:14px;
+ font-family:var(--sans);color:var(--black);cursor:pointer;transition:all .15s}
+.btn:hover{border-color:var(--black);background:var(--gray-100)}
+.btn.on{background:var(--black);color:var(--white);border-color:var(--black)}
+.btn.go{background:var(--black);color:var(--white);border-color:var(--black)}
+.btn.sm{font-size:13px;padding:.45rem .85rem;color:var(--gray-500)}
+.btn:disabled{opacity:.35;cursor:default}
+.gauge{margin:1.2rem 0 0}
+.gauge .row{display:flex;align-items:baseline;gap:.7rem;margin-bottom:.5rem}
+.gauge .u{font-size:14px;color:var(--gray-500)}
+.gtrack{height:10px;background:#e9e9e9;position:relative;overflow:hidden}
+.gfill{display:block;height:100%;background:#c00;transition:width .12s linear}
+.gfill.ok{background:var(--accent)}
+.gmark{position:absolute;top:-3px;bottom:-3px;width:2px;background:#000}
+.gcap{display:flex;justify-content:space-between;font-size:12px;color:var(--gray-500);
+ margin-top:.35rem}
+.read{font-size:15px;line-height:1.8;margin:.9rem 0 0;font-variant-numeric:tabular-nums}
+.big{font-family:var(--serif);font-size:2rem;font-weight:400;font-variant-numeric:tabular-nums;
+ line-height:1}
+.calc{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13.5px;line-height:2;
+ background:var(--white);border:1px solid var(--gray-200);padding:.9rem 1.1rem;margin:.9rem 0;
+ overflow-x:auto;white-space:pre}
+.verdict{margin-top:1.2rem;padding:.9rem 1.1rem;border:1px solid var(--gray-200);font-size:14px;
+ line-height:1.75;background:var(--gray-100)}
+.verdict.ok{border-color:var(--accent);background:#f2fbf6}
+.verdict.stuck{border-color:#c00;background:#fdf4f4}
+.next{margin-top:1rem;font-size:13px;color:var(--gray-500)}
+.src{border-left:2px solid var(--black);padding:.9rem 0 .9rem 1.1rem;margin:1.4rem 0;
+ font-size:14px;line-height:1.85;color:var(--gray-600)}
+.src .h{font-size:12px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;
+ color:var(--black);margin-bottom:.4rem}
+.src q{font-style:normal;color:var(--black)}
+.src .ref{font-size:13px;color:var(--gray-500);margin-top:.4rem;display:block}
+.box{border:1px solid var(--gray-200);padding:1.1rem 1.3rem;margin:1.3rem 0;background:var(--gray-100)}
+.box .h{font-size:12px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;
+ margin-bottom:.5rem}
+.mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+.sc-row{display:flex;align-items:center;gap:.75rem;margin-bottom:.6rem}
+.sc-label{width:3.2rem;font-size:14px;text-align:right;flex-shrink:0}
+.sc-track{flex:1;background:#e9e9e9;height:9px;position:relative}
+.sc-fill{display:block;height:100%;background:var(--black);transition:width .1s linear}
+.sc-fill.hit{background:var(--accent)}
+.sc-pct{width:3.4rem;font-size:14px;font-variant-numeric:tabular-nums}
+.sc-track .goal{position:absolute;top:-3px;bottom:-3px;width:1px;background:#c00}
+details{border-top:1px solid var(--gray-200);padding-top:1rem;margin-top:1.5rem}
+summary{font-size:14px;font-weight:500;cursor:pointer}
+.lg{font-size:14px;line-height:1.9;color:var(--gray-600);margin-top:.9rem}
+.lg table{width:100%;border-collapse:collapse;margin:.8rem 0;font-size:13px}
+.lg th,.lg td{padding:.45rem .6rem;border:1px solid var(--gray-200);text-align:left}
+.lg th{background:var(--gray-100);font-weight:600}
+.dtab th,.dtab td{padding:.35rem .5rem;border:1px solid var(--gray-200);text-align:right}
+.dtab th{background:var(--gray-100);font-weight:600;font-size:11.5px}
+.dtab tr.sum td{background:#f2fbf6;border-top:2px solid var(--black)}
+.mnum{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13px;line-height:1.9;
+ background:var(--white);border:1px solid var(--gray-200);padding:.6rem .8rem;margin-top:.5rem;
+ white-space:pre}
+.hide{display:none}
+.foot{border-top:1px solid var(--gray-200);margin-top:3rem;padding-top:1.5rem;font-size:13px;
+ color:var(--gray-500);line-height:1.8}
+.arrow{text-align:center;font-size:22px;color:var(--gray-500);margin:.5rem 0}
+/* ══════ 🔴🔴 小さい画面では【横の余白を削って図に幅を渡す】 ══════
+   ★★実測（390px・iPhone 相当）：横の余白が 左右合計 144px（wrap 24+24／card 32+32／
+     figbox・panel 16+16）で、viewBox 560 の SVG は【242px】しかもらえない。
+   ★★倍率 0.43 → font-size 11 が【4.8px】になって読めない。
+   ★下の指定で余白を 左右合計 52px にすると SVG は 330px（倍率 0.59・font 11 → 6.5px）。
+   ★★縦の余白は削らない（詰まって読みにくくなる）。★横だけ削る */
+@media (max-width:430px){
+  .wrap{padding-left:.5rem;padding-right:.5rem}
+  .card{padding-left:.75rem;padding-right:.75rem}
+  .figbox,.panel{padding-left:.5rem;padding-right:.5rem}
+  .top .in{padding-left:.5rem;padding-right:.5rem}
+  /* ══════════════════════════════════════════════════════════
+     🔴🔴 390px で SVG の文字だけを大きくする（★2026-08-27 #17。→§5-18）
+     ★★根拠（実測）
+       ・390px では SVG の表示幅が 330px（figbox の中）／348px（figbox の外）
+       ・viewBox 560 の図はここで 0.589倍・0.621倍になる
+         → font 13 が【7.66px】／font 14 が【8.25px】＝読めない
+       ・viewBox 300 の図は 1.1倍なので font 10〜13 のままで 11〜14.3px＝読める
+         → ★★だから【560幅の図だけ】を上げる（p2 / p2b / p2m / p2na / p2nb は対象外）
+     ★★なぜ CSS で上げられるのか（実測）
+       SVG の font-size は【プレゼンテーション属性】なので CSS が勝つ。
+       ★属性 13 のまま computed 17px になることを実ブラウザで確認した（!important 不要）
+       → ★viewBox を作り直さずに済む。★PC 側（@media の外）は 1px も変わらない
+     ★★viewBox 400 に作り直す案を採らなかった理由（実測）
+       1280px では表示幅 694px なので viewBox 400 だと 1.735倍。
+       → ★font 13 が【22.6px】になって PC が壊れる。★倍率は1つしか持てない
+     ★17px にした理由：17 × 0.589 ＝ 10.0px（★7px の禁止線の上に 3px 積む）
+     ══════════════════════════════════════════════════════════ */
+  /* 🔴 2026-08-29 A（#24）：#eFig と #logFig は問5 の作り直しで【消えた図】なので指定も外した
+     （★どちらも HTML に該当する id が無い。★死んだ指定を残すと「まだある図」と誤読される） */
+  #p1 text,#p3 text,#p4 text,#p5 text,#p2d text,#p2b text,#p2bStill text{font-size:21px}
+  /* 🔴 2026-09-09 記録担当：★★#mvFig だけ【17単位に戻しました】──
+     ★21単位に上げたら viewBox から2件はみ出しました（★実測）。
+     ★★A145_raisetest.js の測定で【壊れると予告が出ていた1枚】です。★予告どおりでした。
+     ★★★直すには 中の文（「いまの場所です。[1歩ずつ] を押すと ●が動きます」26字）を
+       HTML に出す必要があります。★これは手作業なので明日に回します。
+     ★公開が明日なので【安全側に倒しました】── ★はみ出したまま出すより小さいまま出す方がまし */
+  /* 🔴 2026-09-10 記録担当：★★#mvFig を【21単位に上げました】──
+     ★昨夜17単位に戻したのは、★21単位でラベルが左へ32単位はみ出したためです。
+     ★★今回は ⑴ 中の文を HTML に出し（mvFigc）★⑵ 描画の左を 150 → 190 に広げた
+       ので収まります。★★★実測で確かめてから上げています */
+  #mvFig text{font-size:21px}
+  /* 🔴 2026-09-10 記録担当：★★地図と内わけ図の文字を【11.5単位に揃えた】──
+     ★実測：★10単位(11px)・10.5単位(11.55px)・11.5単位(12.65px) が混在し、
+       ★★前2つが12pxに届いていませんでした（★倍率1.1）。
+     ★★★11.5に揃えれば【下がるものが無い】ので、これを選びました（★12.65px）。
+     ★★静止画（p2mStill）も同じ大きさにしないと、★同じ絵で文字だけ違って見えます */
+  #p2m text,#p2mStill text,#p2na text,#p2nb text{font-size:11.5px}
+  /* ══════ 会話（→ .cv）★スマホは顔を小さくして横幅を吹き出しに回す ══════ */
+  /* 🔴 2026-09-06：★スマホでアイコンを 38px に縮める指定を【消した】（★記事はスマホでも 46px）。
+     ★★この2行は、同じ <style> の後ろにある .cl .ic{46px} / .cl{gap:.75rem;margin:0 0 .85rem} に
+       ★同じ詳細度で【後勝ちされていて、すでに効いていませんでした】（★実測 ic 46px・gap 12px）。
+     → ★消しても見た目は1pxも動きません。★死んだ規則を残すと次の担当が誤読します */
+  /* 🔴 2026-09-02 1問1ページ担当：★A の【戻さないこと】に反するので外した ── .cl .bb{font-size:14.5px;padding:.55rem .75rem;line-height:1.8} */
+  .cast2{padding:.7rem .75rem}
+  .cast2 .ic{width:46px;height:46px}
+  .cast2 .row{gap:.6rem}
+  /* 🔴 2026-09-07 A：★.cast2 .tx2 の 13px/1.8 を外した ── ★これがスマホで
+     ★★登場人物の紹介が 13px のままだった原因（★common.css の 16.6px を後勝ちで潰していた）。
+     → ★山田様「記事と同じサイズって言っただろ」「行間も記事に合わせろよ」（2026-09-07） */
+  /* ══════════════════════════════════════════════════════════
+     🔴🔴 2026-08-28 山田様の FB：「ボタン押すと5点とも全部グラフで動くやつめっちゃいい
+       んだけど、画面で距離がありすぎて、スマホだとその押してグラフが連動する動きが
+       見えないと思うのよ」
+     → ★★図を画面の上に【貼り付ける】（position:sticky）。★スクロールしても図が残る
+     ★★根拠（390px の見積り）問4 は 図の高さ 約205px、その下に並ぶものが約700px
+        ＝ [1歩ずつ] は図の下端から約500px 下。★押せる位置では図が画面外だった
+     🔴🔴🔴 2026-08-29：★★.stick / .stickbot の定義は @media の【外】に移した。
+       ★理由は山田様の FB「PCのほうもスマホと同様の処置をやってくれないか」（→上の svg の下）。
+       ★★ここに残していた同じ定義は【消した】（★2か所にあると片方を直したときに食い違う）
+     ✗ 問2 には .stick を入れていない ── ★★地図は .two（flex）の中の【最後の項目】だったので
+       貼り付く余地が無く、つまみ・ボタンは .two の外にあるため効かなかった。
+       ★★2026-08-29 に .two は解体したが、問2 は .stickbot（下に貼る）で解決しているので変えない
+     ══════════════════════════════════════════════════════════ */
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   🆕 2026-08-30【対話版】会話の見た目
+   ★★方針：★解説文を【物語】に置き換える。★つまみを動かすところ以外は 全部 2人のやり取り
+     ⑴ 各問は  開幕（何を・なぜ）→ 操作 → 解説 → 締め（キーメッセージ） の順
+     ⑵ ★折りたたまない。★会話が本文なので、押させたら読まれない
+     ⑶ 顔は【本物の絵】を使う（assets/av-doc.png / av-marky.png を 150px に縮めて base64 で埋め込み）
+        ★ファイル単体で動く（file:// で開いても顔が出る）
+   ★吹き出し ── 学＝青／博士＝琥珀。★角丸と尻尾を付けた（★コミカルさは ここで出す）
+   ══════════════════════════════════════════════════════════════════════════ */
+/* ── 登場人物の紹介（★冒頭に1回だけ）── */
+.cast2{border:1px solid var(--gray-200);background:var(--gray-100);
+  padding:1rem 1.1rem;margin:0 0 2.4rem}
+.cast2 .row{display:flex;gap:.9rem;align-items:flex-start}
+.cast2 .row+.row{margin-top:.9rem;padding-top:.9rem;border-top:1px solid var(--gray-200)}
+.cast2 .ic{width:54px;height:54px;border-radius:50%;flex-shrink:0;display:block;
+  border:2px solid var(--white);box-shadow:0 0 0 1px var(--gray-200),0 1px 3px rgba(0,0,0,.10)}
+.cast2 .nm2{display:block;font-size:18px;line-height:1.5;font-weight:700;margin-bottom:.2rem}
+.cast2 .rb{font-size:14px;font-weight:400;color:var(--gray-500);margin-left:.45rem}
+.cast2 .tx2{font-size:16.6px;line-height:1.831;color:var(--gray-600)}
+.cast2 .tx2 b{color:var(--black)}
+.cv{margin:1.6rem 0}
+.cl{display:flex;gap:.75rem;align-items:flex-start;margin:0 0 .85rem}
+.cl .ic{width:46px;height:46px;border-radius:50%;flex-shrink:0;display:block;
+  border:2px solid var(--white);box-shadow:0 0 0 1px var(--gray-200),0 1px 3px rgba(0,0,0,.10)}
+.cl .bb b{color:var(--black)}
+.cl .bb:before{content:'';position:absolute;left:-6px;top:15px;width:10px;height:10px;
+  background:inherit;border-left:1px solid;border-bottom:1px solid;border-color:inherit;
+  transform:rotate(45deg)}
+/* 🔴 2026-09-02 A：★★博士＝青／学＝オレンジ に入れ替えた（★アイコンの背景色に合わせた）
+   ★山田様「今フォントとか吹き出しが 博士がオレンジで学が青じゃん。画像はもとの
+     博士青、高校生オレンジでいいから、フォントの方を逆にしてよ」（2026-09-02）
+   ✗✗ 戻さないこと。★★common.css だけ直しても【各ページの style が後勝ちで効かない】 */
+.cl.m .bb{background:#fff7ea;border-color:#efd6a6}
+.cl.d .bb{background:#eef4fa;border-color:#c3d9ee}
+/* 🔴 2026-09-06：★font-size:11.5px を外した ── ★.cl .av .nm と同じ要素に当たり、
+   ★詳細度で負けていて【効いていなかった】（★実測 10.5px）。★話者名の大きさは common.css の
+   ★.cl .av .nm{font-size:14px} が持つ。★この規則は色と margin のためだけに残す */
+.cl .nm{display:block;font-weight:700;letter-spacing:.07em;margin-bottom:.15rem}
+.cl.m .nm{color:#b0700c}   /* 🔴 学 → オレンジ */
+.cl.d .nm{color:#2f6fb5}   /* 🔴 博士 → 青 */
+/* ★キーメッセージの帯（★締めの直前に置く。★「ここが今日の1行」と分かるようにする） */
+.keyh{font-size:11.5px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--gray-500);margin:1.6rem 0 .5rem}
+</style>
+<!-- 🔴 2026-09-09 記録担当：★★上下2分割の見た目は【common.css に移しました】。
+     ★理由：★A105 の検査⑼ が、出せるものを HTML・common.css・common.js・assets に限っているため。
+     → ★このページに専用の読み込み行は【要りません】 -->
+</head>
+<body data-split="A2" data-top="q2top" data-talk="q2talk"
+      data-figs="p2,p2m" data-verdict="j2"
+      data-figcap="Top: the data and the line &nbsp;/&nbsp; Bottom: the error map (orange is the path you walked)">
+
+<div class="top"><div class="in">Deep Black Box<span class="tag">Open up the black box of AI one problem at a time, with your own hands. 21 problems in all.</span></div></div>
+<div class="wrap">
+
+<!-- 🔴 2026-09-02 1問1ページ担当：★進み具合の帯（全21問）＋いま何章か -->
+<div class="prog">
+ <div class="steps" id="steps"></div>
+ <div class="cnt" id="prog_cnt"></div>
+</div>
+<div class="chap" id="chap"></div>
+
+<!-- ══════════════════ c2 ══════════════════ -->
+<div class="card" id="c2">
+<div class="tagline">Question 2</div>
+<h2>Walk down the landscape of the error</h2>
+<!-- 🔴🔴 2026-08-28 山田様の FB：「ずれを小さくするのが目標と言っているが、それがなんでかの
+     説明がないと何をやっているか分からない」
+     → ★★【なぜ下げたいのか】と【なぜ機械が回すのか】を、地図の話より先に置いた。
+     🔴 ★「ずれが最小の線が一番良い」とは書かない。★8人に合わせすぎた線は9人目を外す
+       （＝01 の問10 の過学習）。★ここで断定すると 01 が 00 を反証する（→§2-5）
+       → ★「そう決めます」と書いて借金を作らない -->
+<!-- 🔴🔴 2026-08-28 山田様の FB：「この小さくってなんだよ意味不明」
+     → ★★私が入れた「（そう決めます）」が意味不明だった。★何を保留したのか読者に分からない。
+     ★★抽象的に逃げるのをやめ、【具体的に】逃げる形にした（→山田様⑶ / §2-5）
+     ★理由：8人にぴったり合わせすぎた線は9人目を外す（＝01 の問10 の過学習）。
+       ★ここで「ずれが最小の線が一番良い」と断定すると、01 が 00 を反証する -->
+<div id="d4"></div>
+
+<!-- 🔴🔴🔴🔴 2026-09-09 記録担当：★★★★上は【静止画】2枚（★山田様の指示 2026-09-09）
+     ★山田様「今上に三次元とその真上からの図があるのはいい、真上のは二つあってもいい。
+       ★★ただし上の方は つまみ押しても反応しない静止画に。」
+     ★★★動く図は【元の位置のまま】です ──
+       ★山田様「これはつまみとかいじったらここで動いていくんだから、
+         これは関数のグラフの下、つまり元の位置にもないとダメなんだよ」
+     ★★★並びは【真上から が先、斜めから が後】── ★山田様の指摘。
+       ★理由：★直前の会話 d4 が【真上から見た地図の説明】で終わるので、
+         ★★その説明の直後に 真上の図が来ないと つながりません。
+     ★★★作り方 ── ★下の【動く図】が描き終わった後に中身をコピーします。
+       ★以後 一度も更新しないので、★つまみを押しても動きません（★初期状態のまま）。
+       ★図を作り直すのではなく写すので、★★見た目が必ず一致します -->
+<div class="figbox">
+ <div class="cap">The same landscape seen from straight above &mdash; <b>darker means less error. The &times; is the bottom of the valley.</b>
+  <span style="color:var(--gray-500)">You will walk on it for real in the figure below</span></div>
+ <svg id="p2mStill" viewBox="0 0 300 250" aria-label="The error map (still picture)"></svg>
+</div>
+<div class="figbox">
+ <div class="cap">The same landscape seen from an angle &mdash; <b>the green ridge is the floor of the valley</b>, and the <b>orange dot</b> is where you are.
+  <span style="color:var(--gray-500)">The height is exaggerated so that it can be seen</span></div>
+ <svg id="p2bStill" viewBox="0 0 560 172" aria-label="The landscape of the error seen from an angle (still picture)"></svg>
+</div>
+
+<!-- 🔴🔴🔴 2026-09-09 記録担当：★★色は【実測して】書いています（→§5-49 ⑶）
+     ★★★地図（p2m）＝ 灰〜青灰のグラデーション【347段階】。★緑は【0件】。
+       → ★だから地図の側は「暗いところがずれの小さいところ」が正しい
+     ★★★3次元（p2b）＝ 緑 #019949 が【1本】ある。
+       → ★だから「緑の筋が谷底」は【3次元の図では正しい】
+     ⚠️★前任は1度 会話を「緑の筋」に揃えて【嘘のほうに揃えました】。★戻してあります -->
+
+<!-- 🔴 2026-09-09 記録担当：★会話 d4b は【2枚の図を見た後、つまみを押す前】に置く
+     ★「地図の上を歩くってこと？」→「そうだ。下の［1歩ずつ］を押してみろ！」の2件 -->
+<div id="d4b"></div>
+<!-- 🆕 対話版：★地図の読み方（暗いほどずれが小さい／× が谷底）は 会話 d4 の最後で言っている -->
+
+<!-- 🔴🔴🔴 2026-08-29 A（#24）── ★★「データと線」（p2）を .panel の【外】に出した（→規則⑴）
+     ★E の指摘 H：問2 の枠が 390px で 1,064.8px（★A も実測して 1,064.8px で一致）
+     ★★ただし A は「同時に見えるか」も実測した（→検証ツール/00/A24_vis390.json）。
+       ボタン（1歩ずつ）を画面中央に置いたとき ── 地図 p2m・つまみ lr・ボタン・
+       ずれの数字 e2・判定文 j2 は【全部 見える】（stickbot が効いている）。
+       ★★同時に見えていなかったのは【p2（データと線）1枚だけ】だった（top −293px＝画面外）
+     → ★★つまり p2 は枠の中にいても §2-2 の効果が出ていない。★枠の外に出しても見え方は変わらず、
+       枠の高さは 1,064.8 → 840以内 に収まる。★規則⑵「複数の枠で使う図は card 直下」の形
+     ✗ 採らなかった案：判定文と地図の注記を外に出す（★135px しか減らず 930px で足りない）
+     ✗ 採らなかった案：p2 を消す（★「線がデータに近づく」を見せる唯一の図。→ なぜ下げるのかに直結）
+     ★.two（flex）は子が p2m 1つだけになるので解体した。★stickbot はそのまま（★実測で効いている） -->
+<!-- 🔴🔴🔴🔴 2026-09-09 A：★★★★上下2分割の試作（案A・2代目）
+     ★★★山田様の指摘（2026-09-09。★1代目の4つの誤り）
+       ⑴「緑の動かすボタンが図とつまみが出た後に最後に出てくる」→ ★図の直前に移した
+       ⑵「押さない場合はもう図固定とかなんもなしでスムーズに」→ ★.stickbot も外した
+       ⑶「つまみとかその文字とかがデカくて」→ ★分割したときだけ小さくする
+       ⑷★★★「その上にある関数のグラフも一歩ずつ押したら変化するやつで、
+            それも同時に見たいのよ。今全くそれ見えない状態」
+          → ★★★私の【考慮不足】。★図は2つある（p2 関数のグラフ ／ p2m ずれの地図）のに
+            ★つまみと同じ枠の中にある p2m だけ固定していた。
+            → ★★2つを【横に並べて】両方 固定する（★390px なら各180px・高さ150px で入る） -->
+<div id="q2wrap">
+<div id="q2top">
+<div class="figbox">
+ <div class="cap">The data and the line &mdash; <b>move a knob and this line moves</b></div>
+ <svg id="p2" viewBox="0 0 300 250"></svg>
+</div>
+
+<!-- ★★図・つまみ・判定を1つの枠に入れる。★小さい画面でも絶対に離れない -->
+<div class="panel">
+   <!-- 🔴🔴 2026-08-28 山田様の FB：「3次元の絵を見ると谷底のほうが急に見えるけどな」
+        → ★★ご指摘のとおりで、この絵が【嘘をついていた】ので削除した。
+        ★★原因：鳥瞰図は高さを【対数】で描いていた（birdT = log(mse) を正規化）。
+          ★実測：谷底から b を 5 ずらすと、絵の高さは全体の 36% 登るが、
+                 本当の高さは 0.7% しか登らない
+                 （絵 −0.011→0.357 ／ 本当 −0.000→0.007）
+          → ★★絵の上では【谷底がいちばん急】に見える。★実物は逆にいちばん平ら
+        ★★これは §2-3（式が正しくても見せ方が間違えば「不良品」）そのものだった。
+        ★あわせて「4倍せまい谷（実測 4.2倍）」の注記も削除した
+          （★ジグザグは下の地図のオレンジの跡に【絵として】もう出ている）
+        ★削除したもの：svg#p2b ／ BP ／ bx_ ／ by_ ／ birdT ／ buildBird ／ drawBird ／
+          BIRDBG ／ BLO ／ BHI ／ up2() の drawBird() 呼び出し -->
+   <div class="cap">The error map (seen from straight above; orange is the path you walked)</div>
+   <svg id="p2m" viewBox="0 0 300 250"></svg>
+   <!-- 🔴🔴 2026-08-28 山田様の FB：「最初のほうの1歩がめっちゃ動いて、
+        そのあと動きが小さいのはなぜなの？」→ ★1行だけ足した（★説明は長くしない）
+        ★★実測（出荷コード）：a=3,b=20 から lr=0.030 で
+          歩いた幅 6.77 → 0.66 → 0.20 → …→ 0.07（60歩）★600歩まで単調に小さくなる
+          坂の急さ 225.7 → 21.9 → 6.7 → …→ 2.4 -->
+   <div class="cap" style="font-size:12px;color:#3f3f3f;text-align:left;margin-top:.3rem">
+    The green ridge is the floor of the valley. <b>Orange is the path you walked.</b></div>
+ <!-- 🔴🔴 2026-08-28 山田様の FB：「2番が全然ついてきてないから見えないままだよ」
+      → ★★つまみ・ボタン・ずれ を【画面の下に貼り付ける】（.stickbot）。
+        ★問2 の地図は .two（flex）の中なので【上に貼れない】。★向きを逆にした -->
+ <div class="stickbot">
+ <div class="ctl">
+  <!-- 🔴 2026-08-28：★★「学習率」という名前を出した（★これまでコメントの中だけで、
+       ★画面には1度も出ていなかった）。★§2-14⑷「つまみ（パラメータ）」と同じ形。
+       ★仕組みの説明は足さない。★名前だけ渡して、外で検索できるようにする -->
+  <label for="lr"><span><b>Step size</b> (learning rate)</span><span class="n" id="lrv">0.030</span></label>
+  <input type="range" id="lr" min="5" max="80" step="1" value="30">
+ </div>
+ <div class="togs">
+  <button class="btn go" id="step1">One step</button>
+  <button class="btn go" id="step10">10 steps</button>
+  <button class="btn" id="rst2">Back to the start</button>
+ </div>
+ <div class="gauge">
+  <div class="row"><span class="big" id="e2">–</span><span class="u">points = error &nbsp;/
+   <span id="st2">0</span> steps</span></div>
+  <div class="gtrack"><span class="gfill" id="g2" style="width:100%"></span>
+   <span class="gmark" id="m2"></span></div>
+  <div class="gcap"><span>0</span><span>goal 1.5 &uarr;</span><span>30</span></div>
+ </div>
+ </div><!-- /stickbot -->
+ <div class="verdict" id="j2">Press [One step] a few times and watch the dot move on the map.</div>
+</div>
+</div><!-- /#q2top -->
+<div id="q2talk">
+
+<!-- 🔴🔴 2026-08-28 山田様の FB：「3次元の谷底に落ちる図は必要だ。ただし3次元も入れて
+     固定すると完全に見えないから、3次元は固定じゃないところに置いてね」
+     → ★★.panel の【外】に出した（★.stick / .stickbot が効かない場所）。
+     🔴🔴 ★★高さの取り方を【対数 → ずれ（√）】に変えた。★これが今回の要点
+       ✗ 対数（前の版）── ★★谷の筋そのものが高さ 0.699 まで登ってしまい、
+         ★谷底から b を 5 ずらすだけで 0.356（全体の36%）登る＝【谷底がいちばん急に見える】
+       ✅ ずれ（√）── ★谷底は平ら（b を 1 ずらして 0.005 / 5 ずらして 0.066）。
+         ★谷の筋は 0.000〜0.303、そこから 15 外すと 0.236 ＝【谷が見える】
+       ✗ そのまま（L）── ★谷の筋 0.000〜0.101、15 外して 0.064 ＝【谷が潰れて見えない】
+       ★★おまけに、これで高さが画面の「ずれ」と同じ量になった（→§5-20【0】の統一） -->
+<!-- 🔴🔴🔴🔴 2026-09-09 記録担当：★★★★この三次元図を【読者から見えない場所へ移しました】
+     ★★★山田様「つまみとかの下にあるこの三次元図って必要？上においたやん」（2026-09-09）
+       → ★★不要です。★上に静止画で同じ絵が出ており、★★同じ絵が2回 出ていました。
+       ★引き継ぎ書も同じ指摘をしています ──「同じ主張に図が3枚ある（データと線・地図・三次元）。
+         §2-14 の型3（同じことをしょぼい版でもう一度）に近い」
+       ★おまけにラベルは「a」「b」の2文字だけで、★その2文字も【10.02px】で読めませんでした。
+     ★★★★消さずに残す理由 ── ★上の静止画は【この図の中身を写して】作っています。
+       ★消すと写す元が無くなり、★★上の静止画が【空になります】。
+     ★★★なぜ display:none にしないか ──
+       ★引き継ぎ書の穴：★「隠れていても大きさの値は返る」ので、★隠したものは
+         【測っても見えているかが分からない】。★真っ白バグの原因がこれでした。
+       → ★★画面の外（左に10,000px）へ置きます。★★縦の場所を取らず、★幅は保たれるので
+         ★図の描画は正しく行われます。★読者には見えません。
+     ⚠️★★写せていることは【毎回 測ってください】── ★静止画の子要素が0なら失敗です -->
+<div style="position:absolute;left:-10000px;top:0;width:390px;height:200px;overflow:hidden"
+     aria-hidden="true">
+<!-- ⚠️ 2026-09-09 記録担当：★★★ここに説明文を書かないこと。
+     ★画面の外に置いても【本文の文字としては残る】ので、
+       ★★1度 書いたら A105 の型F（読者に見える禁止記号）に当たりました（★実測して消しました）。
+     ★★★見出しの div も置かないこと。★写す元に文字は要りません -->
+ <svg id="p2b" viewBox="0 0 560 172"></svg>
+</div>
+
+<div id="d5"></div>
+
+<!-- ══════ ①いまの線のどこがダメか ══════ -->
+<h3>The table shows you what is wrong</h3>
+<div id="d6"></div>
+
+<div class="panel">
+ <div class="cap">Right now &nbsp;a = <b id="d_a">3.00</b> &nbsp;b = <b id="d_b">20.00</b> &nbsp;/&nbsp; error
+  <b id="d_L">27.18</b></div>
+ <div style="overflow-x:auto"><table class="dtab" id="dtab"></table></div>
+ <svg id="p2d" viewBox="0 0 560 212"></svg>
+ <!-- 🔴 2026-08-28 山田様の FB：「ここも動かしていくと変わるんだろ、それを上のボタンと
+      離れすぎて動きが見えないからここにもボタン作るなりしたほうがいい」→ つまみをここに置いた -->
+ <div class="ctl">
+  <label for="d_bs"><span>Knob <b>b</b> &nbsp;height of the line</span><span class="n" id="d_bv">20.0</span></label>
+  <input type="range" id="d_bs" min="0" max="60" step="1" value="20">
+ </div>
+ <div class="ctl">
+  <label for="d_as"><span>Knob <b>a</b> &nbsp;slope of the line</span><span class="n" id="d_av">3.0</span></label>
+  <input type="range" id="d_as" min="0" max="150" step="1" value="30">
+ </div>
+ <div class="cap" style="margin-top:.8rem">What you can read off this table</div>
+ <div class="verdict" id="d_j">–</div>
+</div>
+
+<!-- ══════ ②【測る】 ══════ -->
+<h3>[Measure] &nbsp;Raise one knob by 1 and look at the error</h3>
+<div id="d7"></div>
+
+<div class="panel">
+ <div class="two">
+  <div>
+   <div class="cap"><b>Raise b (height) by 1</b> (a stays where it is)</div>
+   <svg id="p2nb" viewBox="0 0 300 168"></svg>
+   <div class="mnum" id="mb">–</div>
+  </div>
+  <div>
+   <div class="cap"><b>Raise a (slope) by 1</b> (b stays where it is)</div>
+   <svg id="p2na" viewBox="0 0 300 168"></svg>
+   <div class="mnum" id="ma">–</div>
+  </div>
+ </div>
+ <div class="verdict" id="m_j">–</div>
+</div>
+
+<!-- 🔴🔴 2026-08-28 山田様の FB：「偏微分やめるんじゃなかったっけ？ここわかりにくいのよ」
+     → ★★名前は残す（★消すと外の世界と繋がらず「入口」にならない）。
+       ★でも .lead（本文の大きい文字）から【節の最後の小さい1行】に格下げした。
+       ★★ラベルは体験の【後】に小さく貼る。★本文で大きく出すと「説明が始まる」と読まれる
+     ★あわせて「この2つの数が偏微分です」の断定を外した
+       （★上げ幅 1 の差分は平均変化率であって偏微分そのものではない。→§2-5） -->
+<!-- 🆕 対話版：★「偏」＝片方だけ は 会話 d7 で ドクターが言っている -->
+
+<!-- ══════ ③【動かす】 ══════ -->
+<!-- 🔴🔴 2026-08-28 山田様の FB：「動かすのが同時ってなんでなのかとかわからん」
+     → ★★見出しから「同時に」を外した。★★この語が「なぜ同時？」という疑問を作っていた。
+       ★図を足して答えるのではなく、疑問が生まれない言葉にするのが筋（→§2-7）
+     ★正しさは panel の最後の1行で保つ（「測ったのは1点だから、動く前に両方使い切る」） -->
+<div id="d8"></div>
+
+<!-- 🔴🔴🔴🔴 2026-09-10 記録担当：★★★★ここから下を【下の枠の中】へ入れました（★山田様のご指摘）
+     ★★山田様「この問で覚えること…ここで終わる。【動かす】…ここが見えない。
+       ★分割をやめるとそこが見える」
+     ★★★あわせて ──「この動かすってやつはこんな下にくるのかね？
+       ★もともとは『測った分は、動く前に両方まとめて使い切る』の直後にきてたけど、今の位置適切？」
+       → ★★★ご指摘のとおりです。★正しい順序に戻しました。
+
+     🔴🔴🔴🔴 ★★★★記録担当の誤り ── ★これは私が壊しました
+       ★A149_movehide.py で #r2（★まとめ）を下の枠に移したとき、
+         ★★【動かす】の節を【飛び越えて】前に置いてしまいました。
+       ★★★結果 ── ⒜ まとめが「動かす」より前に来た
+         ⒝ 【動かす】と「役に立つところ」が下の枠の外に残り、★分割中は隠れて見えなくなった
+       ★★道具は「枠を下の枠の閉じの前へ入れる」という作りで、
+         ★★★【その間にあるものを一緒に運ぶ】ようになっていませんでした。
+
+     ★★★正しい順序（★元の並び。★これに戻しました）
+       測る → d8「測った分は、動く前に両方まとめて使い切る」→【動かす】→ 役に立つところ → まとめ
+     ★中身は1文字も変えていません。★置き場所だけ直しました -->
+
+<h3>[Move] &nbsp;Once the measuring is done, rewrite a and b by what you measured, <b>in the direction that lowers the error</b></h3>
+
+<div class="panel">
+ <div class="cap">Press it and both move by exactly what was just measured</div>
+ <div class="togs" style="margin-top:.5rem">
+  <button class="btn go" id="mstep">One step</button>
+  <button class="btn go" id="mstep10">10 steps</button>
+  <button class="btn sm" id="mrst">Back to the start</button>
+ </div>
+ <!-- 🔴🔴 2026-08-28 山田様の FB：「ここが表だけで数字色々書かれてても
+      直感的になんのことかわからねえんだよ」→ ★★矢印の図を足した -->
+ <svg id="mvFig" viewBox="0 0 560 152"></svg>
+ <!-- 🔴🔴🔴 2026-09-10 記録担当：★★★図の中にあった【文】をここへ出しました
+      ★元は SVG の中（x=10 y=140・12.5単位）にあり、★実効 7.4px で読めませんでした。
+      ★★上げると図の左へはみ出すので、★規則「文章・数字は SVG の外」に従って出します。
+      ★★★文言は1文字も変えていません。★状態で切り替わるので JS が中身を入れます -->
+ <div class="cap" id="mvFigc" style="margin:.2rem 0 0"></div>
+ <div style="overflow-x:auto"><table class="dtab" id="mvtab" style="max-width:30rem"></table></div>
+ <div class="cap" id="mv_at" style="margin:.2rem 0 0"></div>
+ <div class="verdict" id="mv_j">Press a button.</div>
+
+ <!-- 🔴🔴 2026-08-28：★★経路2本の図（cmpFig）を【削除した】
+      ★山田様の FB「両方ともほぼ一致する線の動きになってるから何が言いたいのかよくわからん」
+        ＋「1歩ずつ押しても、はじめの場所に戻すを押しても図の中の絵が変わらん」
+      ★★私（担当）の測り方が誤っていた（自己申告）── 「経路は最大 131.8px 離れる」と
+        報告したが、あれは【同じ歩数での2点の距離】であって、線と線の距離ではない。
+        ★★2本は【同じ道を違う速さで進むだけ】なので、描かれた線はほぼ重なる。
+        → ★★この図は原理的に成立しない（→§5-20 の⑼ と同じ型の測り間違い）
+      ★★もう1つの誤り：ボタンのある panel の中に【静止画】を入れた（→§2-2 の裏返し）。
+        ★パネルの中のものは「動く」と期待される
+      ✗ 救う案（同じ歩数の位置に点を打って「片方ずつは遅れる」を見せる）は採らない
+        ★★それは「片方ずつは遅い」の話で、「なぜ同時か」の答えではない。
+        ★しかも差は 1.68 対 2.80 しかない。★見出しの語を直せば疑問自体が消える
+      ★消したもの：svg#cmpFig ／ cmpFig() ／ up2() の呼び出し ／ @media の #cmpFig
+      → ★★問2 は【微分まで】でとどめる。★それ以上の仕組みは出さない -->
+ <!-- 🆕 対話版：★この1行は 会話 d8 に移した（★1行では「なぜ同時か」に届いていなかった） -->
+</div>
+
+<div class="src">
+ <div class="h">Where this pays off</div>
+ <b>When training goes nowhere, the first thing to suspect is the step size (learning rate).</b> Too large and it flies off; too small and it never arrives.
+</div>
+
+<!-- ★★まとめは【いちばん後ろ】── ★「動かす」を見た後に読むものです -->
+<div id="r2" class="hide">
+ <div id="d9"></div>
+ <div class="keyh">What to take away</div>
+ <div class="verdict ok">
+  <b>This is gradient descent.</b> Measure the slope, take a small step in that direction, repeat.
+  GPT-3 did it <b>about 100,000 times</b>.
+ </div>
+</div>
+</div><!-- /#q2talk -->
+</div><!-- /#q2wrap -->
+</div>
+
+<!-- 🔴 2026-09-02 1問1ページ担当：★戻る／次へ（★どのページでも常に押せる） -->
+<!-- ══════════════════════════════════════════════════════════════════════════
+     🔴 2026-09-02 1問1ページ担当2代目【新設・受け皿】★★問4 のつまみ数ボタン k2〜k5
+     ★理由 ── 原本の bind 行 [2,3,4,5].forEach(n=>$('k'+n).onclick=()=>setK(n)); が
+       このページでは $('k2') が null になり、★★TypeError でこの行より後ろが全部 止まっていた
+       （★図が空・会話が出ない状態だった）。★q03 は pass3() の setK(2) でも踏む
+     ★★.offpage（display:none）に置くだけ。★ゲーム本体の JS は1バイトも触っていません
+     ══════════════════════════════════════════════════════════════════════════ -->
+<div class="offpage" aria-hidden="true">
+ <button id="k2" type="button">2</button><button id="k3" type="button">3</button>
+ <button id="k4" type="button">4</button><button id="k5" type="button">5</button>
+</div>
+
+<div id="nav"></div>
+
+<div id="foot"></div>
+</div>
+
+<!-- 🔴 2026-09-02 1問1ページ担当2代目：★★【受け皿】── この問の JS が触るのに
+     このページには無い要素です（★他の問のパネル）。★読者には出しません（.offpage）。
+     ★★これを置く理由：原本の $('…') を【1文字も変えない】ため。
+       ★空のタグだけなので中身は 0 バイトです -->
+<div class="offpage" aria-hidden="true">
+
+</div>
+
+<script src="common.js"></script>
+<script>
+/* ══════════════════════════════════════════════════════════════════════════
+   🔴 2026-09-02 1問1ページ担当2代目：★★下は原本 tsume-00 の <script> から
+     【この問が使う行だけ】をそのまま写したものです。★1文字も変えていません（★行を落としただけ）
+   ★★IIFE で包んだ理由 ── 原本の const $ / const show / const T が common.js の同名 const と
+     ぶつかって【SyntaxError でページ全体が動かなくなる】ため。★包んだだけで中身は変わりません
+   ★★mark() だけは common.js のものを使います（★帯が5章グループに変わったため。→ 指示⑶）
+   ══════════════════════════════════════════════════════════════════════════ */
+var QBASE = 1;
+drawProg(2); drawChap(2, "");
+drawNav(["q01.html","Problem 1: Turn the knobs"], ["q03.html","Problem 3: Two knobs are not enough"]);
+drawFoot()   /* 🔴 2026-09-02 A：★注記を消した（★山田様。★同じ一文が21回出るのは型3／§2-6 の言い訳）*/;
+
+(function(){
+/* 🔴 2026-09-02 1問1ページ担当2代目：★★【受け皿】── この問には無い
+     【他の問の関数】を空にしておきます。★これが無いと ReferenceError になります。
+   ★★呼んでいる側（原本の関数）は1文字も変えていません */
+if (typeof s4clear === 'undefined') var s4clear = function(){};
+if (typeof slid4 === 'undefined') var slid4 = function(){};
+if (typeof up3 === 'undefined') var up3 = function(){};
+if (typeof up4 === 'undefined') var up4 = function(){};
+
+/* ══════════════════════════════════════════════════════════════
+   共通
+   ★x 軸は 0 から描く。★y=ax+b は x=0 を軸に回るので、軸が画面外にあると
+     ★「a を動かすと上下にも動く」ように見えてしまう
+   ══════════════════════════════════════════════════════════════ */
+const $=id=>document.getElementById(id);
+const show=id=>$(id).classList.remove('hide');
+/* ★★画面に出す桁に丸めてから判定する。★でないと「表示 3.00 なのに未達」が起きる
+   ★確認済み：丸めずに判定すると 問4で42件・問5で240件 食い違う（→§2-3 と同じ型） */
+const R2=v=>+v.toFixed(2);
+function gauge(fillId,markId,val,goal,max){
+  const g=$(fillId); g.style.width=Math.min(100,val/max*100)+'%';
+  g.classList.toggle('ok',val<=goal); $(markId).style.left=(goal/max*100)+'%';
+}
+/* 散布図
+   🔴🔴 2026-08-27 #17：390px で font を 17px に上げた（→@media）ので、
+     ★★軸名と目盛りが重なるようになった（＝§2 の「font を上げると型B が生まれる」）。
+     ★実測（390px・font 17）：x軸目盛りと x軸名が【−0.45px】＝重なっていた／
+       y軸目盛り「100」と y軸名「点数」が横に【0.59px】＝くっついて「100点数」に読めた
+     → ⑴ グラフの上端 y1 を 26 → 48 に下げ、★y軸名を【固定の y=20】に置いた
+          （★軸名を y1 基準にすると y1 を下げたとき軸名も下がって元に戻ってしまう）
+       ⑵ x軸名を y0+40 → y0+52 へ
+       ⑶ 下の余白 y0 を H−50 → H−64 へ
+       ⑷ viewBox の高さを 300 → 330 に増やした（★グラフの縦を元と同じだけ確保するため）
+     ★font 17 の行の高さは実測で約 33 viewBox単位（Noto Serif JP の ascent が大きい）。
+       ★これを見込んで隙間を 8 単位以上（390px で 4.6px 以上）取っている */
+function plot(el,X,Y,xr,yr,f,opt){
+  opt=opt||{}; const W=el.viewBox.baseVal.width||560, H=el.viewBox.baseVal.height||330;
+  const P={x0:opt.narrow?42:52, y0:H-64, x1:W-20, y1:48};
+  const sx=v=>P.x0+(v-xr[0])/(xr[1]-xr[0])*(P.x1-P.x0);
+  const sy=v=>P.y0+(v-yr[0])/(yr[1]-yr[0])*(P.y1-P.y0);
+  let s='';
+  for(let v=yr[0];v<=yr[1];v+=opt.ystep||20){
+    s+=`<line x1="${P.x0}" y1="${sy(v)}" x2="${P.x1}" y2="${sy(v)}" stroke="#ececec"/>`;
+    /* 🔴 2026-08-27 #17：x0−7 だと、原点で y軸の「0」と x軸の「0」が横に 0.96px で並び
+       ★390px で「0 0」が1つの数に読めた（＝04 の A-3 と同じ型）。★x0−12 で 3.9px に */
+    s+=`<text x="${P.x0-12}" y="${sy(v)+4}" text-anchor="end" font-size="13" fill="#6e6e6e"
+         font-family="Inter">${v}</text>`;}
+  for(let v=xr[0];v<=xr[1];v+=opt.xstep||1){
+    s+=`<text x="${sx(v)}" y="${P.y0+17}" text-anchor="middle" font-size="13" fill="#6e6e6e"
+         font-family="Inter">${v}</text>`;}
+  s+=`<line x1="${P.x0}" y1="${P.y0}" x2="${P.x1}" y2="${P.y0}" stroke="#000"/>`;
+  s+=`<line x1="${P.x0}" y1="${P.y0}" x2="${P.x0}" y2="${P.y1}" stroke="#000"/>`;
+  /* ★★軸名は目盛りの行（y0+17）から離す。★font 17（390px）の行の高さは約33単位あるので
+     ★y0+40 では重なった（実測 −0.45px）。★y0+52 で隙間 8単位＝390px で 4.6px */
+  s+=`<text x="${P.x1}" y="${P.y0+52}" text-anchor="end" font-size="13" fill="#3f3f3f"
+       font-family="'Noto Serif JP',serif">${opt.xlab||''}</text>`;
+  /* ★★y軸名は【固定の y=20】に置く。★y1 基準にすると y1 を下げても一緒に下がってしまう。
+     ★目盛りのいちばん上（y1+4＝52）との縦の隙間が 8単位＝390px で 4.6px 取れる
+     ★横だけで逃げようとすると「100」と「点数」が 0.59px で並んで1語に読める（実測） */
+  s+=`<text x="${P.x0-6}" y="20" font-size="13" fill="#3f3f3f"
+       font-family="'Noto Serif JP',serif">${opt.ylab||''}</text>`;
+  if(f){
+    let d='';
+    for(let i=0;i<=140;i++){const v=xr[0]+(xr[1]-xr[0])*i/140;
+      const yy=Math.max(yr[0]-200,Math.min(yr[1]+200,f(v)));
+      d+=(i?'L':'M')+sx(v).toFixed(1)+' '+sy(yy).toFixed(1);}
+    s+=`<clipPath id="cp${el.id}"><rect x="${P.x0}" y="${P.y1}" width="${P.x1-P.x0}"
+         height="${P.y0-P.y1}"/></clipPath>`;
+    s+=`<path d="${d}" fill="none" stroke="#019949" stroke-width="2.2"
+         clip-path="url(#cp${el.id})"/>`;
+    X.forEach((x,i)=>{ s+=`<line x1="${sx(x)}" y1="${sy(Y[i])}" x2="${sx(x)}"
+      y2="${sy(Math.max(yr[0]-20,Math.min(yr[1]+20,f(x))))}" stroke="#c00" stroke-width="1.8"
+      opacity=".85" clip-path="url(#cp${el.id})"/>`;});
+    /* ★★b の白丸を【先に】描く。★理由：下の赤い数字が b のラベルを避けられるようにするため */
+    let USED=[];                                /* ★もう文字を置いた場所（避けるため）*/
+    /* ★★PAD＝5単位。★390px では 5×0.5893＝2.9px。★型H（重ならないが読めない）を防ぐ */
+    const PAD=5;
+    if(opt.pivot!=null && xr[0]<=0){
+      const F=17;
+      s+=`<circle cx="${sx(0)}" cy="${sy(opt.pivot)}" r="5.5" fill="#fff" stroke="#019949"
+           stroke-width="2"/>`;
+      const bx=sx(0)+9, by=sy(opt.pivot)-8;
+      s+=`<text x="${bx}" y="${by}" font-size="13" fill="#019949"
+           font-family="Inter">b</text>`;
+      /* ★★余白 PAD を付けて持つ。★0 だと『重ならないが 0.30px で読めない』が出た（実測）*/
+      USED.push({x0:bx-PAD, x1:bx+0.28*F*2+PAD, y0:by-F*0.8-PAD, y1:by+F*0.2+PAD});
+    }
+    /* 🔴🔴 2026-08-28 山田様の FB：「縦のズレを、点数と勉強時間の2軸のグラフの各点に対して、
+         a と b でいじった直線からどれだけズレがあるか、グラフ上での視覚で表して欲しい」
+       → ★★赤い線の【長さ】をこのグラフに出す（★棒グラフ8本は削除した）
+       🔴🔴 置き場所の作り方（★2度 失敗して作り直した。★実測で捕まえた）
+         ✗ 1度目 x+8 に左揃え → 隣の列に食い込んで文字どうしが重なり、緑の線にも −0.44px
+         ✗ 2度目 点の x に中央揃え → 左端が【y軸の目盛り】に食い込み、【b のラベル】とも重なった
+         ✅ 3度目 ⑴ 緑の線は傾いているので、文字の x 区間の中での線の y の上端 lo・下端 hi を出す
+                  ⑵ 点から見て線の反対側に、em ボックス（font 17 で上 0.8em・下 0.2em）＋ 8単位
+                  ⑶ 枠に当たるなら端で寄せる／反対側へ倒す
+                  ⑷ ★★すでに置いた文字（b のラベル・他の数字）に当たるなら【出さない】 */
+    if(opt.resid) X.forEach((x,i)=>{
+      /* ★M＝線から取る余白。★8 だと 390px で 2.82px しか空かなかった（実測）→ 11 にした */
+      const F=17, ASC=F*0.8, DESC=F*0.2, M=11;  /* ★font は @media で 17px に上がる */
+      const yp=sy(Y[i]);
+      const hx=(xr[1]-xr[0])*0.045;             /* 文字の横幅ぶんの x（データ単位）*/
+      let lo=1e9, hi=-1e9;
+      for(let k=-1;k<=1;k++){ const yy=sy(f(x+hx*k)); if(yy<lo)lo=yy; if(yy>hi)hi=yy; }
+      const d=Math.abs(Y[i]-f(x));
+      let up = yp<=lo;                          /* 点が線より上（画面では y が小さい）*/
+      let ty = up ? Math.min(yp,lo)-M-DESC : Math.max(yp,hi)+M+ASC;
+      if(up && ty-ASC < P.y1+2){ up=false; ty=Math.max(yp,hi)+M+ASC; }
+      if(!up && ty+DESC > P.y0-2){ up=true;  ty=Math.min(yp,lo)-M-DESC; }
+      if(ty-ASC < P.y1+2 || ty+DESC > P.y0-2) return;
+      const txt=d.toFixed(1), half=0.28*F*txt.length;
+      let tx=sx(x), an='middle';
+      if(tx-half < P.x0+3){ tx=P.x0+3; an='start'; }
+      else if(tx+half > P.x1-3){ tx=P.x1-3; an='end'; }
+      const bx0 = an==='start'? tx : an==='end'? tx-half*2 : tx-half;
+      const box={x0:bx0-PAD, x1:bx0+half*2+PAD, y0:ty-ASC-PAD, y1:ty+DESC+PAD};
+      if(USED.some(u=>u.x0<box.x1 && box.x0<u.x1 && u.y0<box.y1 && box.y0<u.y1)) return;
+      USED.push(box);
+      s+=`<text x="${tx.toFixed(1)}" y="${ty.toFixed(1)}" text-anchor="${an}"
+           font-size="13" fill="#c00" font-family="Inter" paint-order="stroke"
+           stroke="#fff" stroke-width="3.5"
+           stroke-linejoin="round">${txt}</text>`;});
+  }
+  X.forEach((x,i)=>{ s+=`<circle cx="${sx(x)}" cy="${sy(Y[i])}" r="4.2" fill="#000"/>`;});
+  /* ★折れ目（動かせる節）を出す */
+  if(opt.anchors) opt.anchors.forEach((p,i)=>{
+    s+=`<circle cx="${sx(p[0]).toFixed(1)}" cy="${sy(p[1]).toFixed(1)}" r="6.5" fill="#ff8a2b"
+         stroke="#fff" stroke-width="2"/>`;
+    s+=`<text x="${sx(p[0]).toFixed(1)}" y="${(sy(p[1])-12).toFixed(1)}" text-anchor="middle"
+         font-size="13" fill="#c26100" font-family="Inter">${i+1}</text>`;});
+  el.innerHTML=s;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   問1 ── つまみ2個を手で回す（勉強時間 → 点数）
+   ★最良 a=6.762 / b=32.58（ずれ 1.28）。刻みでは 1.30。目標 3.0 は到達可能
+   ══════════════════════════════════════════════════════════════ */
+const X1=[0,1,2,3,4,5,6,7], Y1=[32,40,45,55,58,68,72,80];
+const XR1=[0,8], YR1=[0,100], GOAL1=3.0,
+      /* 🔴 resid＝赤い線の長さをグラフの中に出す（★問1 だけ） */
+      OPT1={xlab:'Hours studied',ylab:'Score',resid:true};
+let ok1=false;
+function pass1(){ ok1=true; mark(0,'done'); show('r1'); show('c2'); buildMap(); up2(); }
+/* ══════════════════════════════════════════════════════════════
+   問2 ── ずれの地形を下る（勾配降下）
+   ★★★地形図を描く。★これが無いと「1歩」に意味が出ない
+   ★★中心化していない素の (a,b) 空間で降下させる。★理由：
+     ★スライダーと同じ座標で地形を描くため／★★谷が細長いので実際のジグザグが見える
+   ★★ヘッセ行列の固有値は 36.42 / 0.577（条件数63）→ 発散しない学習率の上限 = 2/36.42 = 0.0549
+     ★確認済み：lr=0.005 は600歩で3.17／0.03 は175歩／0.05 は105歩／0.06 は発散
+   ══════════════════════════════════════════════════════════════ */
+const AR=[0,15], BR=[0,60], GOAL2=1.5, LRMAX=0.0549;
+const mseOf=(a,b)=>X1.reduce((s,x,i)=>s+(a*x+b-Y1[i])**2,0)/X1.length;
+const rm2=(a,b)=>Math.sqrt(mseOf(a,b));
+const grad2=(a,b)=>{ let ga=0,gb=0;
+  for(let i=0;i<X1.length;i++){ const r=a*X1[i]+b-Y1[i];
+    ga+=2*r*X1[i]/X1.length; gb+=2*r/X1.length; } return [ga,gb]; };
+/* ★★初期値は a=3, b=20 に固定する。★解説の3箇所（∂L/∂b=−51.50・∂L/∂a=−219.75／
+     表の 739.00／赤枠の 44.98 対 50.03）が全部この位置の値なので、ここを変えると
+     ★★解説が実物と食い違い、しかも赤枠の主張が【逆】になる（a=1,b=52 では
+     同時115.45 対 順番110.49 で、順番のほうが良く見えてしまう）
+   ★★差が全部マイナスになるので「① 差が全部マイナス → b を上げる」も正しく発動する */
+let A2=3, B2=20, st2=0, ok2=false, div2=false, path=[[3,20]];
+let MAPBG='';   /* ★地形は変わらないので1回だけ作って使い回す */
+const MP={x0:44,y0:206,x1:288,y1:22};
+const mx_=a=>MP.x0+(a-AR[0])/(AR[1]-AR[0])*(MP.x1-MP.x0);
+const my_=b=>MP.y0-(b-BR[0])/(BR[1]-BR[0])*(MP.y0-MP.y1);
+/* ══════════════════════════════════════════════════════════════
+   🔴🔴 2026-08-28：★★斜めから見た地形（鳥瞰図 p2b）を【削除した】
+   ★山田様の FB「3次元の絵を見ると谷底のほうが急に見えるけどな」
+   ★★ご指摘のとおり、この絵は嘘をついていた。★原因は【高さを対数で描いていた】こと
+     birdT = (log(mseOf) − BLO)/(BHI − BLO)
+     ★実測：谷底から b を 5 ずらしたときの高さ
+       絵（対数） −0.011 → 0.357 ＝ 全体の 36% 登る
+       本当       −0.000 → 0.007 ＝ 全体の 0.7% しか登らない
+     → ★★絵の上では【谷底がいちばん急】に見える。★実物は逆にいちばん平らである
+   ★★§2-3（式が正しくても見せ方が間違えば「不良品」）そのものだった
+   ★消したもの：BP / bx_ / by_ / BIRDBG / BLO / BHI / birdT / buildBird / drawBird
+     ★★up2() の drawBird() 呼び出しも消した（★残すと null.innerHTML で落ちる）
+   🔴🔴 2026-08-28 その後：★山田様「あれは必要だ」→ ★★戻した。
+     ★★ただし高さを【ずれ（√L）】に変えた。★これで谷底が平らになり、谷も見える
+       （★数字は上の HTML 側のコメントに全部書いた）
+     ★★置き場所も .panel の外に移した（★固定される場所に入れないため）
+   ══════════════════════════════════════════════════════════════ */
+const BP={ox:90, oy:178, wa:300, wb:140, hb:60, hz:95};
+const bx_=(a,b)=>BP.ox+(a-AR[0])/(AR[1]-AR[0])*BP.wa+(b-BR[0])/(BR[1]-BR[0])*BP.wb;
+const by_=(a,b,t)=>BP.oy-(b-BR[0])/(BR[1]-BR[0])*BP.hb-t*BP.hz;
+let BIRDBG='', BLO=0, BHI=1;
+/* 🔴🔴 2026-08-28 山田様の FB：「前の方がわかりやすいんだけど」「厳密さとか気にする必要があるか？」
+   → ★★高さを【対数】に戻した。★くぼみが深く見える描き方はこちらである
+   ★★実測した3通り（谷底から b+1 の高さ ／ くぼみの深さ）
+      対数        0.052 ／ 0.638   ← ✅ 採用。くぼみがいちばん深く見える
+      ずれ √L     0.005 ／ 0.236   ← ✗ 谷底は正しく平らだが、くぼみが浅くて分からない
+      L^0.25      0.018 ／ 0.416   ← 中間案。★見やすさを優先して採らなかった
+   ★★代わりに【高さを誇張していることを図に書く】。
+     ★★これは前任者（#5）が自分のコメントに「そのことを図の中に1行書く（黙って対数にすると
+       谷の深さを誤読させる）」と書きながら【書き忘れていた】ものである。
+     ★書き忘れたせいで山田様が「谷底のほうが急に見える」と誤読された（実害が出た）
+   ★★この図の仕事は ⑴谷がある ⑵a方向にせまい ⑶落ちる先が × の3つだけ。
+     ★坂の急さを読ませる図ではない（★それは地図の下の1行とオレンジの点の詰まり方が担う） */
+function birdT(a,b){ return (Math.log(mseOf(a,b))-BLO)/(BHI-BLO); }
+function buildBird(){
+  if(BIRDBG)return;
+  let lo=1e18, hi=0;
+  for(let i=0;i<=40;i++)for(let j=0;j<=40;j++){
+    const v=mseOf(AR[0]+(AR[1]-AR[0])*i/40, BR[0]+(BR[1]-BR[0])*j/40);
+    if(v<lo)lo=v; if(v>hi)hi=v;}
+  BLO=Math.log(lo); BHI=Math.log(hi);
+  let s='';
+  const NA=9, NB=7, M=36;
+  for(let j=0;j<=NB;j++){
+    const b=BR[0]+(BR[1]-BR[0])*j/NB; let d='';
+    for(let i=0;i<=M;i++){ const a=AR[0]+(AR[1]-AR[0])*i/M;
+      d+=(i?'L':'M')+bx_(a,b).toFixed(1)+' '+by_(a,b,birdT(a,b)).toFixed(1);}
+    s+=`<path d="${d}" fill="none" stroke="#8fa3b5" stroke-width="0.9" opacity="0.75"/>`;}
+  for(let i=0;i<=NA;i++){
+    const a=AR[0]+(AR[1]-AR[0])*i/NA; let d='';
+    for(let j=0;j<=M;j++){ const b=BR[0]+(BR[1]-BR[0])*j/M;
+      d+=(j?'L':'M')+bx_(a,b).toFixed(1)+' '+by_(a,b,birdT(a,b)).toFixed(1);}
+    s+=`<path d="${d}" fill="none" stroke="#8fa3b5" stroke-width="0.9" opacity="0.55"/>`;}
+  /* ★谷底の筋（各 a でいちばん低い b）── ★これが「細長い谷」の正体 */
+  let dv='';
+  for(let i=0;i<=M;i++){ const a=AR[0]+(AR[1]-AR[0])*i/M;
+    const b=Math.max(BR[0],Math.min(BR[1],56.25-3.5*a));
+    dv+=(i?'L':'M')+bx_(a,b).toFixed(1)+' '+by_(a,b,birdT(a,b)).toFixed(1);}
+  s+=`<path d="${dv}" fill="none" stroke="#019949" stroke-width="2.6"/>`;
+  /* ★軸名。★viewBox の端から 20単位 以上 内側（→§5-20 の⑷） */
+  s+=`<text x="${bx_(AR[1],BR[0])+6}" y="${by_(AR[1],BR[0],birdT(AR[1],BR[0]))+6}"
+       font-size="13" fill="#3f3f3f" font-family="'Noto Serif JP',serif">a</text>`
+   +`<text x="${bx_(AR[0],BR[1])-8}" y="${by_(AR[0],BR[1],birdT(AR[0],BR[1]))-8}"
+       text-anchor="end" font-size="13" fill="#3f3f3f"
+       font-family="'Noto Serif JP',serif">b</text>`;
+  BIRDBG=s;
+}
+function drawBird(){
+  buildBird();
+  let dot='';
+  if(isFinite(A2)&&A2>=AR[0]&&A2<=AR[1]&&B2>=BR[0]&&B2<=BR[1]){
+    const t=birdT(A2,B2);
+    dot=`<circle cx="${bx_(A2,B2).toFixed(1)}" cy="${by_(A2,B2,t).toFixed(1)}" r="5"
+          fill="#ff8a2b" stroke="#fff" stroke-width="1.6"/>`;
+  }
+  $('p2b').innerHTML=BIRDBG+dot;
+}
+function buildMap(){
+  if(MAPBG)return;
+  const NA=45, NB=30, w=(MP.x1-MP.x0)/NA, h=(MP.y0-MP.y1)/NB;
+  let lo=1e9, hi=0, V=[];
+  for(let i=0;i<NA;i++){V[i]=[];for(let j=0;j<NB;j++){
+    const e=rm2(AR[0]+(AR[1]-AR[0])*(i+0.5)/NA, BR[0]+(BR[1]-BR[0])*(j+0.5)/NB);
+    V[i][j]=e; if(e<lo)lo=e; if(e>hi)hi=e;}}
+  let s='';
+  for(let i=0;i<NA;i++)for(let j=0;j<NB;j++){
+    /* ★対数で色を割る（谷の外が急なので、線形だと谷が潰れて見えない） */
+    const t=(Math.log(V[i][j])-Math.log(lo))/(Math.log(hi)-Math.log(lo));
+    const R=Math.round(27+t*(245-27)), G=Math.round(42+t*(246-42)), B=Math.round(68+t*(250-68));
+    s+=`<rect x="${(MP.x0+i*w).toFixed(1)}" y="${(MP.y1+(NB-1-j)*h).toFixed(1)}"
+         width="${(w+0.7).toFixed(1)}" height="${(h+0.7).toFixed(1)}"
+         fill="rgb(${R},${G},${B})"/>`;}
+  /* 枠と目盛り */
+  s+=`<rect x="${MP.x0}" y="${MP.y1}" width="${MP.x1-MP.x0}" height="${MP.y0-MP.y1}"
+       fill="none" stroke="#000"/>`;
+  [0,5,10,15].forEach(a=>s+=`<text x="${mx_(a)}" y="${MP.y0+16}" text-anchor="middle"
+    font-size="10.5" fill="#6e6e6e" font-family="Inter">${a}</text>`);
+  /* 🔴 #17：x0−6 だと、原点で y軸の「0」と x軸の「0」が横に 2.95px で並ぶ（→plot() と同じ型）*/
+  [0,20,40,60].forEach(b=>s+=`<text x="${MP.x0-11}" y="${my_(b)+4}" text-anchor="end"
+    font-size="10.5" fill="#6e6e6e" font-family="Inter">${b}</text>`);
+  /* 🔴 ★軸名は目盛りの行（MP.y0+16）から離す。★+32 では 390px で 0.4px 触っていた（実測）
+     ★★これで plot / diffFig / arrows / fig5 と合わせて【型B は5か所すべて対処済み】 */
+  s+=`<text x="${MP.x1}" y="${MP.y0+40}" text-anchor="end" font-size="11.5" fill="#3f3f3f"
+       font-family="'Noto Serif JP',serif">knob a</text>`;
+  /* 🔴 2026-08-27 #17：y軸目盛り「60」と横に 2.2px しか離れていなかった（実測）。
+     ★上へ逃がすと viewBox の上へはみ出す（font 11.5 の ascent は 13.3単位、余白は 22単位）
+     → ★横へ 6単位ずらした（x0−4 → x0+2）。★隙間 8単位＝390px で 8.8px
+     ★ヒートマップは y1（22）から下なので、y=14 のこの行は図に乗らない */
+  s+=`<text x="${MP.x0+2}" y="${MP.y1-8}" font-size="11.5" fill="#3f3f3f"
+       font-family="'Noto Serif JP',serif">knob b</text>`;
+  /* 谷底 */
+  const bx=mx_(6.762), by=my_(32.58);
+  s+=`<path d="M${bx-6} ${by-6}L${bx+6} ${by+6}M${bx+6} ${by-6}L${bx-6} ${by+6}"
+       stroke="#fff" stroke-width="2.4"/>`;
+  MAPBG=s;
+}
+function drawMap(){
+  /* ★★地形は重い（rect 千個超）。★1回だけ入れて、毎歩は経路レイヤーだけ差し替える */
+  if(!$('p2m').querySelector('#mppath'))
+    $('p2m').innerHTML=`<g>${MAPBG}</g><g id="mppath"></g>`;
+  let s='';
+  const cl=(a,b)=>[Math.max(AR[0],Math.min(AR[1],a)),Math.max(BR[0],Math.min(BR[1],b))];
+  let d='';
+  path.forEach((p,i)=>{const [a,b]=cl(p[0],p[1]);
+    d+=(i?'L':'M')+mx_(a).toFixed(1)+' '+my_(b).toFixed(1);});
+  s+=`<path d="${d}" fill="none" stroke="#ff8a2b" stroke-width="1.8" opacity=".95"/>`;
+  path.forEach(p=>{const [a,b]=cl(p[0],p[1]);
+    s+=`<circle cx="${mx_(a).toFixed(1)}" cy="${my_(b).toFixed(1)}" r="1.8" fill="#ff8a2b"/>`;});
+  const [ca,cb]=cl(A2,B2);
+  s+=`<circle cx="${mx_(ca).toFixed(1)}" cy="${my_(cb).toFixed(1)}" r="5" fill="#ff8a2b"
+       stroke="#fff" stroke-width="1.6"/>`;
+  if(div2) s+=`<text x="${(MP.x0+MP.x1)/2}" y="${MP.y1+22}" text-anchor="middle" font-size="13"
+    fill="#fff" font-family="'Noto Serif JP',serif">You have flown off the map</text>`;
+  $('mppath').innerHTML=s;
+}
+/* ══════════════════════════════════════════════════════════════
+   ⒟ 逆伝播とミニバッチの図（★AA図解ではなくオブジェクトで作る）
+   ★★逆伝播は【層×ノードの網】にする。1本の鎖にしない
+     ★4 → 4 → 4 → 1。線は 4×4 ＋ 4×4 ＋ 4×1 ＝ 36本（コードで数えて出す）
+     ★行き＝緑、帰り＝赤で【全部の線をたどる】
+   ★★ミニバッチは主語を書く（→§2-4）。「8人」だけでは何の8人か分からない
+   ══════════════════════════════════════════════════════════════ */
+function up2(){
+  const f=x=>A2*x+B2, e=div2?Infinity:rm2(A2,B2);
+  plot($('p2'),X1,Y1,XR1,YR1,f,Object.assign({pivot:B2,narrow:1},OPT1));
+  drawMap(); drawBird(); diffTab(); diffFig(); nudge();
+  $('e2').textContent=div2?'∞':e.toFixed(2); $('st2').textContent=st2;
+  gauge('g2','m2',div2?30:R2(e),GOAL2,30);
+  const lr=(+$('lr').value)/1000; $('lrv').textContent=lr.toFixed(3);
+  const ok=!div2&&R2(e)<=GOAL2;
+  $('j2').className='verdict'+(ok?' ok':(div2?' stuck':''));
+  $('j2').innerHTML = div2
+    ? `<b>You flew over it.</b> If the step is too large you land higher up on the far side of the valley,
+       where the slope is steeper still, so the next jump goes further. <b>It never comes back.</b><br>
+       Set the step to <b>${LRMAX.toFixed(4)} or less</b> and press [Back to the start].`
+    : ok
+    ? `<b>${st2} steps, error ${e.toFixed(2)}. You reached the floor of the valley</b> (the lowest possible is 1.28).<br>
+       Change the step size and watch the number of steps change.
+       <b>Above ${LRMAX.toFixed(4)} it flies off.</b>`
+    : (st2===0 ? `Press [One step] a few times first, and watch the dot move on the map.`
+       : `${st2} steps, error <b>${e.toFixed(2)}</b>. Bring it down to the goal of 1.5.`
+         +(lr<0.012?`<br><span style="color:var(--gray-500)">The step is small, so this will
+            take hundreds of steps. Press [10 steps], or make the step larger.</span>`:''));
+  if(ok&&!ok2){ ok2=true; mark(1,'done'); show('r2'); show('c3'); up3(); }
+}
+/* ══════════════════════════════════════════════════════════════
+   微分の中身を見せる3つ
+   ★★slice2 : a だけ動かしたときの「ずれ」の曲線と、いる場所の接線
+   ★★numd2  : 実際に a を h だけ動かして測った傾き 対 式で出した傾き
+     ★h=0.0001 にしてある。★これより粗いと表示（小数2桁）が一致しない（確認済み）
+   ★★dtab2  : 式が8人ぶんに何をしているかの表
+   ★★ずれは「2乗の平均」（＝L）で微分する。★画面の「ずれ」は √L（平均の距離）
+   ══════════════════════════════════════════════════════════════ */
+/* ══════════════════════════════════════════════════════════════
+   微分を見せる3つ
+   ★★slice2 : a を横に取った「ずれ」の曲線に、横幅 h の三角形を描く
+     ★★h を小さくすると 縦÷横 が1つの値に落ち着く ＝ それが微分
+     ★確認済み：a=3 で h=2→-184.75 / 1→-202.25 / 0.5→-211.00 / 0.1→-218.00 → -219.75
+   ══════════════════════════════════════════════════════════════ */
+/* ══════════════════════════════════════════════════════════════
+   偏微分を見せる3つ
+   ★★diffTab / diffFig : 差（線−実際）の表と棒グラフ
+     ★★差 ＝ 線 − 実際 で通す。★「あとからマイナスを付ける」をやらない
+   ★★nudge : つまみを1本だけ少し上げて、ずれの動きを測る ＝ 偏微分そのもの
+     ★★幅で割る理由：★幅を変えると変化量は変わるが、÷幅 は変わらない（速さと同じ）
+     ★確認済み（a=3,b=20 の b 方向）：幅0.01→-51.49／0.02→-51.48／0.1→-51.40
+   ══════════════════════════════════════════════════════════════ */
+const NH=1;   /* ★上げてみる幅は 1 に固定。★同じ幅なので割らずにそのまま比べられる */
+
+function diffTab(){
+  if(div2){$('dtab').innerHTML='';return}
+  let cells={t:'',y:'',p:'',d:''};
+  X1.forEach((x,i)=>{ const pr=A2*x+B2, d=pr-Y1[i];
+    cells.t+=`<td>${x}</td>`; cells.y+=`<td>${Y1[i]}</td>`;
+    cells.p+=`<td>${pr.toFixed(1)}</td>`;
+    cells.d+=`<td style="color:${d<0?'#c00':'#019949'}"><b>${d>=0?'+':'\u2212'}${Math.abs(d).toFixed(1)}</b></td>`;});
+  $('dtab').innerHTML=
+   `<tr><th>Hours</th>${cells.t}</tr>`
+  +`<tr><th>Actual</th>${cells.y}</tr>`
+  +`<tr><th>Line</th>${cells.p}</tr>`
+  +`<tr><th>Gap (line \u2212 actual)</th>${cells.d}</tr>`;
+  $('d_a').textContent=A2.toFixed(2); $('d_b').textContent=B2.toFixed(2);
+  $('d_L').textContent=Math.sqrt(mseOf(A2,B2)).toFixed(2);
+  /* 🔴 2026-08-28：差の表のところにも つまみを置いたので、値を同期させる */
+  if($('d_as')){ $('d_as').value=Math.round(A2*10); $('d_bs').value=Math.round(B2);
+    $('d_av').textContent=A2.toFixed(1); $('d_bv').textContent=B2.toFixed(1); }
+  /* 表から読み取れる2つのこと */
+  const D=X1.map((x,i)=>A2*x+B2-Y1[i]);
+  const allNeg=D.every(v=>v<0), allPos=D.every(v=>v>0);
+  const grows=Math.abs(D[7])>Math.abs(D[0]);
+  let m=[];
+  if(allNeg) m.push('The gaps are <b>all negative</b> &rarr; the line sits below the data &rarr; <b>raise b (height)</b>');
+  else if(allPos) m.push('The gaps are <b>all positive</b> &rarr; the line sits above the data &rarr; <b>lower b (height)</b>');
+  else m.push('The gaps are a mix of positive and negative &rarr; the height is roughly right');
+  const r0=D[0], r7=D[7];
+  if(r7<r0-1) m.push('The further right you go, the more it misses <b>below</b> &rarr; <b>make a (slope) steeper</b>');
+  else if(r7>r0+1) m.push('The further right you go, the more it misses <b>above</b> &rarr; <b>make a (slope) gentler</b>');
+  else m.push('It misses about the same on the left and the right &rarr; the slope is roughly right');
+  $('d_j').className='verdict';
+  $('d_j').innerHTML='① '+m[0]+'<br>② '+m[1];
+}
+function diffFig(){
+  if(div2){$('p2d').innerHTML='';return}
+  const P={x0:52,y0:150,x1:540,y1:16}, mid=(P.y0+P.y1)/2;
+  const D=X1.map((x,i)=>A2*x+B2-Y1[i]);
+  const mx=Math.max(45,...D.map(Math.abs));
+  const bw=(P.x1-P.x0)/X1.length*0.52;
+  let s=`<line x1="${P.x0}" y1="${mid}" x2="${P.x1}" y2="${mid}" stroke="#000"/>`;
+  s+=`<text x="${P.x0-7}" y="${mid+4}" text-anchor="end" font-size="13" fill="#6e6e6e"
+       font-family="Inter">0</text>`;
+  D.forEach((d,i)=>{
+    const cx=P.x0+(P.x1-P.x0)*(i+0.5)/X1.length;
+    /* 🔴 2026-08-28：棒を短くした。★はじめの場所（差 −39）だと棒が長く、
+       ★下の符号ラベルが時間の目盛りと重なった（実測 390px で 型A 1件） */
+    const h=Math.abs(d)/mx*(mid-P.y1-23);
+    const up=d>0, col=up?'#019949':'#c00';
+    s+=`<rect x="${(cx-bw/2).toFixed(1)}" y="${(up?mid-h:mid).toFixed(1)}"
+         width="${bw.toFixed(1)}" height="${h.toFixed(1)}" fill="${col}" opacity=".85"/>`;
+    s+=`<text x="${cx.toFixed(1)}" y="${(up?mid-h-5:mid+h+13).toFixed(1)}" text-anchor="middle"
+         font-size="13" fill="${col}" font-family="Inter">${d>=0?'+':'\u2212'}${Math.abs(d).toFixed(0)}</text>`;
+    s+=`<text x="${cx.toFixed(1)}" y="${(P.y0+16)}" text-anchor="middle" font-size="13"
+         fill="#6e6e6e" font-family="Inter">${X1[i]}</text>`;});
+  /* 🔴 ★軸名が目盛りと【同じ行 y0+16】にあった。★fig5 とまったく同じ型（→§5-10 の②）
+     ★viewBox の高さを 180 → 196 にして、軸名を1行下へ出す */
+  /* 🔴 #17：390px の font 17 では y0+32 で目盛りと重なる（実測 −4.57px）→ y0+46 へ */
+  s+=`<text x="${P.x1}" y="${P.y0+46}" text-anchor="end" font-size="13" fill="#3f3f3f"
+       font-family="'Noto Serif JP',serif">Hours</text>`;
+  $('p2d').innerHTML=s;
+}
+function nudge(){
+  if(div2){$('mb').textContent='';$('ma').textContent='';return}
+  const L0=mseOf(A2,B2), Lb=mseOf(A2,B2+NH), La=mseOf(A2+NH,B2);
+  /* ★矢印図：★予測がどれだけ動くかを、実際の長さで描く（誇張しない）
+     ★b は全員 +1（同じ長さ）　★a は 時間の分だけ（0, +1, … +7 の扇） */
+  const arrows=(el,amt,lab)=>{
+    const P={x0:34,y0:120,x1:288,y1:18};
+    const mx=7.6;                                  /* 目盛りの上限（a の最大 +7 に合わせる） */
+    let g=`<line x1="${P.x0}" y1="${P.y0}" x2="${P.x1}" y2="${P.y0}" stroke="#000"/>`;
+    g+=`<text x="${P.x0-6}" y="${P.y0+4}" text-anchor="end" font-size="10" fill="#6e6e6e"
+         font-family="Inter">0</text>`;
+    X1.forEach((x,i)=>{
+      const cx=P.x0+(P.x1-P.x0)*(i+0.5)/X1.length;
+      const v=amt(x), h=v/mx*(P.y0-P.y1-14);
+      if(v>0.001){
+        g+=`<line x1="${cx.toFixed(1)}" y1="${P.y0}" x2="${cx.toFixed(1)}"
+             y2="${(P.y0-h).toFixed(1)}" stroke="#ff8a2b" stroke-width="5"/>`;
+        g+=`<path d="M${cx.toFixed(1)} ${(P.y0-h-8).toFixed(1)}l-5 8l10 0Z" fill="#ff8a2b"/>`;
+        g+=`<text x="${cx.toFixed(1)}" y="${(P.y0-h-13).toFixed(1)}" text-anchor="middle"
+             font-size="10.5" fill="#c26100" font-family="Inter">+${v}</text>`;
+      }else{
+        g+=`<circle cx="${cx.toFixed(1)}" cy="${P.y0}" r="3" fill="#9aa"/>`;
+        g+=`<text x="${cx.toFixed(1)}" y="${P.y0-9}" text-anchor="middle" font-size="10.5"
+             fill="#6e6e6e" font-family="Inter">0</text>`;}
+      g+=`<text x="${cx.toFixed(1)}" y="${P.y0+15}" text-anchor="middle" font-size="10"
+           fill="#6e6e6e" font-family="Inter">${x}</text>`;});
+    /* 🔴 ★軸名が viewBox の下へはみ出していた（実測 152.7 > 150）。★高さを 168 にした */
+    /* 🔴 2026-08-27 #17：目盛り（y0+15）との縦の隙間が 390px で 2.7px しかなかった
+       ★§5-16 の C-3 の表に載っていたが p5 だけ直して残っていた分 → y0+40 で 9px に */
+    g+=`<text x="${P.x1}" y="${P.y0+40}" text-anchor="end" font-size="10.5" fill="#3f3f3f"
+         font-family="'Noto Serif JP',serif">Hours</text>`;
+    g+=`<text x="${P.x0-2}" y="${P.y1+2}" font-size="10.5" fill="#3f3f3f"
+         font-family="'Noto Serif JP',serif">${lab}</text>`;
+    $(el).innerHTML=g;
+  };
+  arrows('p2nb',()=>NH,'how the prediction moves: same for all');
+  arrows('p2na',x=>x*NH,'how the prediction moves: scales with hours');
+  /* 🔴 2026-08-28 山田様の FB：「坂の高さ」という2つ目の名前を消し、
+     ★★画面はぜんぶ【ずれ】1つにした（★2乗の平均に √ を取った値）。
+     ★確認：a を1上げると ずれ 27.18 → 23.17（−4.02）／b なら 26.24（−0.95）
+       → ★a のほうが 4.2倍 効く（★2乗の平均で見ても 4.0倍。★結論は変わらない） */
+  const R=v=>Math.sqrt(Math.max(0,v));
+  const fmt=(L1)=>`error  ${R(L0).toFixed(2)} -> ${R(L1).toFixed(2)}\n`
+   +`       ${(L1-L0>=0?'+':'\u2212')}${Math.abs(R(L1)-R(L0)).toFixed(2)}\n`
+   +`-> ${L1<L0?'raise it':(L1>L0?'lower it':'leave it')}`;
+  $('mb').textContent=fmt(Lb); $('ma').textContent=fmt(La);
+  /* ★★倍率と大小比較は出さない。★幅1の差分は a に2次の項が丸ごと乗るので、
+     ★★【動かす】の実際の動き幅と大小が逆になることがある（地図の 4〜5%）
+     ★★代わりに、この節の主題（「偏」＝片方だけ止めて測る）を言う */
+  /* ══════ ③ 図（予測が動く量）と 数字（坂の高さが動く量）の橋渡し ══════
+     ★★上の矢印図は【予測】がどれだけ動くかで、下の数字は【坂の高さ】がどれだけ動くか。
+     ★★別のものなので、繋ぐ1行が無いと図と数字が無関係に見える */
+  $('m_j').className='verdict';
+  /* 🔴 山田様の FB：長い説明は読まれない → 2行に切った */
+  $('m_j').innerHTML=
+    `<b>The arrows are how much the prediction moves. The numbers under them are how much the error moves.</b>`
+   +`<br><b>The knobs have not moved yet.</b>`
+   +`<span style="color:var(--gray-500)"> &nbsp;Both of these get used, as they are, in the next step.</span>`;
+}
+/* ══════ ⒝ なぜ「動く前の1点」で測るのか ── 理由を図で出す ══════
+   ★★坂の断面を描き、いる場所の接線と、1歩先の接線を並べる。
+   ★★傾きが変わることが【絵で】分かれば、文で説明しなくてよい（→§2-1 / §2-14 型4） */
+function step2(n){
+  if(div2){up2();return}
+  const lr=(+$('lr').value)/1000;
+  for(let k=0;k<n;k++){
+    const [ga,gb]=grad2(A2,B2); A2-=lr*ga; B2-=lr*gb; st2++;
+    path.push([A2,B2]);
+    /* ★地図の範囲の4倍を超えたら発散とみなす（lr=0.055 のような緩い発散も拾う） */
+    if(!isFinite(A2)||Math.abs(A2)>60||Math.abs(B2)>240){div2=true;break}
+  }
+  if(path.length>400)path=path.slice(-400);
+  up2();
+}
+/* ══════ ⒠ 3か所のボタンは【同じもの】を操る。★どれを押しても oneStep() ══════
+   ★★2種類あると「別の操作が2つある」と誤解される（→§2-14 型4の隣）
+   ★★1歩ぶんの中身（測る→動かす）を、押した場所に関係なく全部更新する */
+/* 🔴🔴 2026-08-28：【動かす】の矢印の図。★表だけでは直感的に分からない（山田様の FB）
+   ★★つまみ1個を1本の横棒にして、動く前の位置から動いた後の位置へ矢印を引く */
+function mvFig(a0,b0,a1,b1,r0,r1){
+  /* 🔴 2026-08-29 A（#24）：★★まだ1歩も押していない状態でも【描く】（→§5-22 の「戻さないこと」）
+     ★これまで開いた時点では空の svg（約94px の白い箱）が置かれていた。
+     ★同じ値を前後に渡すと 矢印が出ず ○●が同じ場所に重なるので、注記だけ切り替える */
+  const still = (a0===a1 && b0===b1);
+  const rows=[['knob a (slope)',a0,a1,0,15],['knob b (height)',b0,b1,0,60],['error',r0,r1,0,30]];
+  /* 🔴 値のラベルが右へはみ出したので棒を短くした（実測）
+     🔴🔴🔴 2026-09-10 記録担当：★★★左を 150 → 190 に広げました。
+       ★理由：★文字を21単位に上げると「つまみ a（傾き）」（★8文字＝168単位）が
+         ★★右揃えで x=136 に置かれるため、★★★左へ32単位はみ出しました（★実測）。
+       ★190 なら 190−14−168 ＝ 8単位 残るので収まります。★棒は 286 → 246単位に短くなります。 */
+  const P={x0:190,x1:436};
+  let s='';
+  rows.forEach((r,i)=>{
+    const y=26+i*36;
+    const sx=v=>P.x0+(Math.max(r[3],Math.min(r[4],v))-r[3])/(r[4]-r[3])*(P.x1-P.x0);
+    s+=`<text x="${P.x0-14}" y="${y+5}" text-anchor="end" font-size="13" fill="#3f3f3f"
+         font-family="'Noto Serif JP',serif">${r[0]}</text>`;
+    s+=`<line x1="${P.x0}" y1="${y}" x2="${P.x1}" y2="${y}" stroke="#e0e0e0" stroke-width="3"/>`;
+    const x0=sx(r[1]), x1=sx(r[2]), col=(i===2?(r[2]<r[1]?'#019949':'#c00'):'#2f6fb5');
+    /* 動く前（白丸）→ 動いた後（色の丸）。★離れていたら矢印を引く */
+    if(Math.abs(x1-x0)>1.5){
+      s+=`<line x1="${x0.toFixed(1)}" y1="${y}" x2="${x1.toFixed(1)}" y2="${y}"
+           stroke="${col}" stroke-width="4"/>`;
+      const dir=x1>x0?1:-1;
+      s+=`<path d="M${x1.toFixed(1)} ${y}l${-7*dir} -5v10z" fill="${col}"/>`;
+    }
+    s+=`<circle cx="${x0.toFixed(1)}" cy="${y}" r="4.5" fill="#fff" stroke="#6e6e6e" stroke-width="2"/>`;
+    s+=`<circle cx="${x1.toFixed(1)}" cy="${y}" r="5.5" fill="${col}" stroke="#fff" stroke-width="1.6"/>`;
+    const nd=(i===2?4:2);
+    s+=`<text x="${P.x1+8}" y="${y+5}" font-size="13" fill="${col}" font-weight="600"
+         font-family="Inter">${r[2].toFixed(nd)}</text>`;
+  });
+  /* 🔴🔴🔴 2026-09-10 記録担当：★★★この文を【SVG の外へ出しました】。
+     ★元は x=10 y=140・12.5単位で、★実効 7.4px しかありませんでした。
+     ★★文言は1文字も変えていません。★置き場所だけ変えました */
+  const mc=$('mvFigc');
+  if(mc) mc.textContent=(still?`This is where you are. Press [One step] and the filled dots move`
+                              :`Open dot: before. Filled dot: after. All three move at the same time`);
+  $('mvFig').innerHTML=s;
+}
+/* 🔴 2026-08-28：画面はぜんぶ【ずれ】（＝2乗の平均に √ を取った値）で出す */
+const RT=v=>Math.sqrt(Math.max(0,v));
+/* 🔴 はじめの場所。★「走らせる」の一式を削除したときに一緒に消してしまったので戻した
+   （★実ブラウザで ReferenceError: RA0 is not defined が2件 出て気づいた） */
+const RA0=3, RB0=20;
+function oneStep(){
+  const a0=A2,b0=B2,L0=mseOf(A2,B2);
+  step2(1);
+  gate2();
+  const L1=mseOf(A2,B2), da=A2-a0, db=B2-b0;
+  const nd0=Math.abs(L1-L0)<0.05?4:(L0<10?2:1);
+  $('mvtab').innerHTML=
+   `<tr><th></th><th>Before</th><th>After</th><th>Moved by</th></tr>`
+  +`<tr><th>a (slope)</th><td>${a0.toFixed(2)}</td><td>${A2.toFixed(2)}</td>
+     <td><b>${da>=0?'+':'\u2212'}${Math.abs(da).toFixed(2)}</b></td></tr>`
+  +`<tr><th>b (height)</th><td>${b0.toFixed(2)}</td><td>${B2.toFixed(2)}</td>
+     <td><b>${db>=0?'+':'\u2212'}${Math.abs(db).toFixed(2)}</b></td></tr>`
+  +`<tr class="sum"><th>error</th><td>${RT(L0).toFixed(nd0)}</td><td>${RT(L1).toFixed(nd0)}</td>
+     <td><b>${L1-L0>=0?'+':'\u2212'}${Math.abs(RT(L1)-RT(L0)).toFixed(nd0)}</b></td></tr>`;
+  /* 🔴 山田様の FB：長い説明は読まれない → 1行に切った */
+  $('mv_at').innerHTML=`The measurement was taken at <b>a = ${a0.toFixed(2)} / b = ${b0.toFixed(2)}</b> (before moving).`;
+  /* 🔴🔴 矢印の図。★「どっちにどれだけ動いたか」を絵で出す（→ 山田様の FB） */
+  mvFig(a0,b0,A2,B2,RT(L0),RT(L1));
+  const dL=L1-L0, dR=RT(L1)-RT(L0);
+  const nd = Math.abs(dR)<0.05 ? 4 : 2;
+  $('mv_j').className='verdict'+(dL<-1e-9?' ok':(dL>1e-9?' stuck':''));
+  /* 🔴 山田様の FB：長すぎる → 1行に切った */
+  $('mv_j').innerHTML=`<b>a and b moved at the same time.</b> &nbsp;`
+   +(Math.abs(dR)<0.0005
+     ? `<b>The error no longer changes (${RT(L0).toFixed(4)}). This is the floor of the valley.</b>`
+       +`<span style="color:var(--gray-500)"> &nbsp;Press [Back to the start] to see the big moves again.</span>`
+     : `error ${RT(L0).toFixed(nd)} &rarr; <b>${RT(L1).toFixed(nd)}</b>`
+       +` (${dR>=0?'+':'\u2212'}${Math.abs(dR).toFixed(nd)})`);
+}
+/* ★★【動かす】の表を消す。★★でないと、いる場所と表が食い違ったまま残る。
+   ★実例：[はじめの場所に戻す] を押すと 画面上部は a＝3.00 に戻るのに、
+     ★下の表は「動かす前 3.68 → 13.75」「使ったのは 動かす前の a＝3.68」のまま残っていた。
+   ★[走らせる] のあとも、1歩ぶんの表が【走る前の1歩】を指したまま残る（→§5-9 の #8 ④） */
+function mvClear(msg){
+  $('mvtab').innerHTML=''; $('mv_at').innerHTML='';
+  /* 🔴🔴 2026-08-28：★★mvFig を消していなかった（★山田様の画面で発覚）。
+     ★症状：手でつまみを動かすと【測る】は新しい場所（ずれ 40.63）を出すのに、
+       ★★矢印の図だけが【前の1歩】の値（a＝6.94 / b＝31.69 / ずれ 1.3700）を出したままだった。
+     ★★＝ §7-2 と同じ「画面と中身の食い違い」。★この関数の目的（食い違いを残さない）に反していた
+     🔴 2026-08-29 A（#24）：★★空にする代わりに【いまの場所】を描く。
+       ★空にすると 約94px の白い箱が残り、§5-22「図は開いた時点で描く」に反していた。
+       ★いまの場所を描くのは【古い値を残す】ことではないので、この関数の目的は保たれる */
+  mvFig(A2,B2,A2,B2,RT(mseOf(A2,B2)),RT(mseOf(A2,B2)));
+  $('mv_j').className='verdict'; $('mv_j').innerHTML=msg;
+}
+/* ══════ 🔴 問2 の山場（偏微分）を飛ばせないようにする ══════
+   ★★「はじめから谷底まで走らせる」を先に押すと、【測る】【動かす】の節を1回も
+     通らずに問3 が出てしまう（→§5-9 の #8 の違和感⑴）。
+   ★★対処：[1歩ずつ] を3回押すまで「走らせる」を押せないようにする。
+     ★§2-10 のため、あと何回で押せるかは【ボタンの文字に出す】（問3 の give3 と同じ形）
+   ★3回にした理由：【測る】と【動かす】の表が1歩ぶんで完結するので、
+     1回でも通れば説明は読める。★3回なら「押すたびに測り直している」ことも見える */
+/* 🔴 2026-08-28 山田様の FB：「はじめから谷底まで走らせる」ボタンを削除した
+   ★「ボタンいるか？これなんのためにあるの？一発で正解出せるってこと？」
+   → ★一発で答えが出るボタンは要らない。★ゲートも不要になった */
+let mv2=0;
+function gate2Label(){}
+function gate2(){ mv2++; }
+/* ★★3か所のボタンは同じ関数を呼ぶ。★どれを押しても同じことが起きる */
+$('step1').onclick=oneStep;
+$('mstep').onclick=oneStep;
+/* 🔴 2026-08-28 山田様の FB：「1歩ずつだと長すぎてイラつくから10歩は必須」
+   → ★[10歩] を【地図の下】と【動かす】の両方に置いた */
+function tenSteps(){ for(let k=0;k<10;k++) oneStep(); }
+$('step10').onclick=tenSteps;
+$('mstep10').onclick=tenSteps;
+$('mrst').onclick=()=>$('rst2').click();
+/* 🔴 差の表のところに置いたつまみ。★ここを動かすと、上の地図もいっしょに動く */
+['d_as','d_bs'].forEach(id=>{ const e=$(id); if(!e)return;
+  e.oninput=()=>{ A2=(+$('d_as').value)/10; B2=+$('d_bs').value;
+    path=[[A2,B2]]; st2=0; div2=false;
+    mvClear('You moved a knob by hand. Press [One step] and it walks down from here.');
+    up2(); };
+  e.onchange=()=>{ gate2(); }; });
+$('lr').oninput=()=>{ $('lrv').textContent=((+$('lr').value)/1000).toFixed(3); up2();
+  /* 🔴 1歩の大きさを変えたら、表の「動いた量」は前の大きさのものになるので消す
+     （→§5-16 の C-1。★問4 は4経路で消しているのに、問2 はここが抜けていた） */
+  if($('mvtab').innerHTML)
+    mvClear('You changed the step size. Press [One step] and it moves by that much.'); };
+$('rst2').onclick=()=>{ /* ★はじめの場所（a=3, b=20）に戻す。★解説の数字がこの場所のもの */
+  A2=RA0; B2=RB0; st2=0; div2=false; path=[[A2,B2]]; up2();
+  mvClear(`<b>Back to the start (a = 3.00 / b = 20.00).</b>`
+   +`<span style="color:var(--gray-500)"> Press [One step] and it moves from here.</span>`); };
+
+const ANC={2:{K:[2,11],H:[41,74]}, 3:{K:[2,6.5,11],H:[22,81,55]},
+           4:{K:[2,5,8,11],H:[24,59,84,49]},
+           5:{K:[2,4.25,6.5,8.75,11],H:[25,47,78,79,48]}};
+let K4=2, H4=[50,50], ok4=false;
+function setK(n){
+  const old=ANC[K4].K.slice(), oldH=H4.slice();
+  K4=n;
+  /* ★つまみの数を変えたとき、いまの形をなるべく引き継ぐ */
+  const f=x=>{ if(x<=old[0])return oldH[0];
+    if(x>=old[old.length-1])return oldH[oldH.length-1];
+    for(let i=0;i<old.length-1;i++) if(x<=old[i+1]){
+      const t=(x-old[i])/(old[i+1]-old[i]); return oldH[i]+(oldH[i+1]-oldH[i])*t; }
+    return oldH[oldH.length-1]; };
+  H4=ANC[n].K.map(k=>Math.round(f(k)));
+  [2,3,4,5].forEach(m=>$('k'+m).classList.toggle('on',m===n));
+  slid4(); up4();
+  /* ★つまみの数が変わったら、前の数でとった表は意味を失うので消す（→§5-9 の型D） */
+  /* 🔴 2026-08-28 #20：検証が「2→3→4個 に変えてもずれが 19.36 のままで壊れたと思った」と
+     報告した（→7巡目 詰まった箇所）。★正しい挙動（前の形を引き継ぐ）だが画面に説明が無かった */
+  s4clear(`Now using ${n} knobs. <b>The shape carries over</b>, so`
+   +` the error will not change until you set the heights. Press [One step].`);
+}
+[2,3,4,5].forEach(n=>$('k'+n).onclick=()=>setK(n));
+
+/* ══════ 起動（★この問のぶんだけ。★原本の起動行から他の問の呼び出しを落としました）══════ */
+buildMap(); up2();
+mvFig(A2,B2,A2,B2,RT(mseOf(A2,B2)),RT(mseOf(A2,B2)));
+gate2Label();
+
+/* ══════ 会話（★原本の CV の写し。★この問のぶんだけ）══════ */
+var CV = {
+ "d4": [
+  [
+   "m",
+   "175 billion parameters &mdash; the knobs. How do you turn all of those?"
+  ],
+  [
+   "d",
+   "Three things. <b>(1) Measure the slope under your feet. (2) Move by that much, in the direction that lowers the error. (3) Repeat.</b> In this problem we do all three, in order."
+  ],
+  [
+   "m",
+   "A slope? Where is there a slope?"
+  ],
+  [
+   "d",
+   "Let me show you. There are only two knobs, so <b>every combination fits in one picture.</b>"
+  ],
+  [
+   "d",
+   "Across is <b>a</b>, up is <b>b</b>. <b>Darker means less error</b>, and the <b>&times; is the floor of the valley</b>."
+  ]
+ ],
+ "d4b": [
+  [
+   "m",
+   "So I walk around on the map?"
+  ],
+  [
+   "d",
+   "You do. The <b>&times;</b> is where you want to end up. <b>Press [One step] below.</b>"
+  ]
+ ],
+ "d5": [
+  [
+   "m",
+   "It moved! &hellip; But the first step is huge and then they get small."
+  ],
+  [
+   "d",
+   "The size of the step is <b>proportional to how steep the slope is</b>. Big where it is steep, small where it is flat."
+  ],
+  [
+   "m",
+   "So near the bottom it stops on its own?"
+  ],
+  [
+   "d",
+   "<b>It shrinks by itself.</b> Nobody is turning it down. Rather neat, is it not!"
+  ],
+  [
+   "m",
+   "Then if I raise the <b>step size</b>, it should be faster."
+  ],
+  [
+   "d",
+   "Try it. &hellip; But go above <b>0.0549</b> and <b>you jump clean over the valley and never come back.</b>"
+  ],
+  [
+   "m",
+   "Never come back?"
+  ],
+  [
+   "d",
+   "The far bank is steeper. So the next jump is longer. That spot is steeper still. Longer again. &hellip; <b>It never stops!</b>"
+  ],
+  [
+   "m",
+   "I want to see that."
+  ],
+  [
+   "d",
+   "Go on, then! Knowing how a thing breaks is worth a lot. &hellip; And Adam, one more thing. <b>The machine is not looking at this map.</b>"
+  ],
+  [
+   "m",
+   "What? Then how does it get to the bottom?"
+  ],
+  [
+   "d",
+   "All it can see is <b>the slope under its feet</b>. That alone is enough to walk down. <b>Getting that slope is what differentiation does.</b>"
+  ],
+  [
+   "m",
+   "Differentiation &mdash; the thing from school?"
+  ],
+  [
+   "d",
+   "That is the one! But you will not have to compute anything. From here on you see <b>what it actually does</b> with your own eyes."
+  ]
+ ],
+ "d6": [
+  [
+   "d",
+   "First we look at <b>what is wrong</b>. We simply line up the <b>gap</b> for each of the eight students."
+  ],
+  [
+   "m",
+   "The gap?"
+  ],
+  [
+   "d",
+   "<b>Gap = line &minus; actual.</b> Negative means the line sits <b>below</b> that student."
+  ],
+  [
+   "m",
+   "&hellip; They are all negative."
+  ],
+  [
+   "d",
+   "Then the line sits <b>below the lot of them</b>. The table is telling you: <b>raise b</b>."
+  ],
+  [
+   "m",
+   "The table talks?"
+  ],
+  [
+   "d",
+   "It talks! And if it misses by more the further right you go, <b>a is too small</b>. You can read that off as well."
+  ]
+ ],
+ "d7": [
+  [
+   "d",
+   "Next comes <b>measuring</b>. This is the heart of it, Adam."
+  ],
+  [
+   "m",
+   "Measuring what?"
+  ],
+  [
+   "d",
+   "<b>You raise one knob by 1.</b> The other stays where it is. Then you watch what the error does."
+  ],
+  [
+   "m",
+   "Only one? Why not measure both at once?"
+  ],
+  [
+   "d",
+   "Because then <b>you would not know which one did the work</b>! Holding one still is what tells you."
+  ],
+  [
+   "m",
+   "Fair enough."
+  ],
+  [
+   "d",
+   "And Adam, this idea of <b>one at a time</b> has a name. It is called a <b>partial derivative</b>."
+  ],
+  [
+   "m",
+   "There it is. A difficult name."
+  ],
+  [
+   "d",
+   "Only the name is difficult! <b>&ldquo;Partial&rdquo; just means one at a time.</b> What it does is exactly what you have just watched &mdash; nothing more than that."
+  ]
+ ],
+ "d8": [
+  [
+   "m",
+   "Now that we have measured, why not move them <b>one at a time</b>, by what we measured?"
+  ],
+  [
+   "d",
+   "You could. But Adam, what you measured is the effect <b>at the one spot you are standing on</b>."
+  ],
+  [
+   "m",
+   "The one spot?"
+  ],
+  [
+   "d",
+   "<b>Move a and you are standing somewhere else.</b> Somewhere else means <b>b has a different effect</b>. And you have not measured the effect at that new spot."
+  ],
+  [
+   "m",
+   "So measure it again."
+  ],
+  [
+   "d",
+   "That is <b>the next step</b>! You do not measure again inside one step. <b>Measure, move both at once, measure again.</b> That order does not get broken."
+  ],
+  [
+   "m",
+   "Ah &mdash; that is why they move together."
+  ],
+  [
+   "d",
+   "That is it. What you measured gets <b>spent on both of them together</b>, before anything moves."
+  ]
+ ],
+ "d9": [
+  [
+   "m",
+   "I am there! The floor of the valley!"
+  ],
+  [
+   "d",
+   "<b>Well done, Adam. What you just did is called gradient descent.</b>"
+  ],
+  [
+   "m",
+   "&hellip; Doc, why did we want the error small in the first place?"
+  ],
+  [
+   "d",
+   "Good question! These eight are people <b>whose scores we already know</b>. But out in the world there is <b>a ninth student</b>."
+  ],
+  [
+   "m",
+   "A ninth?"
+  ],
+  [
+   "d",
+   "A ninth whose score we do not know yet. <b>A line with a small error tends to get that ninth one right too.</b> That is why we wanted it small."
+  ],
+  [
+   "m",
+   "Then an error of 0 would be perfect, surely?"
+  ],
+  [
+   "d",
+   "That is the frightening part. <b>A line fitted exactly to the eight can miss the ninth.</b> It becomes a line that has memorised the eight."
+  ],
+  [
+   "m",
+   "Wait &mdash; is that not backwards?"
+  ],
+  [
+   "d",
+   "It is backwards. <b>You will check this with your own hands in Chapter 2.</b>"
+  ],
+  [
+   "m",
+   "So it is those three things. Measure, move, repeat."
+  ],
+  [
+   "d",
+   "Exactly! And &mdash; <b>GPT-3 did this about 100,000 times.</b>"
+  ],
+  [
+   "m",
+   "100,000! How many did I just do?"
+  ],
+  [
+   "d",
+   "A few dozen. Different order of magnitude, but <b>what is being done is exactly the same</b>."
+  ],
+  [
+   "m",
+   "&hellip; Doc. AI is kind of unglamorous."
+  ],
+  [
+   "d",
+   "Unglamorous! Thoroughly unglamorous. But <b>this is all of it.</b> From here on it is about <b>shape</b>. Come on!"
+  ]
+ ]
+};
+drawCV(CV);
+
+/* ══════════════════════════════════════════════════════════════════════════
+   🔴🔴🔴🔴 2026-09-09 記録担当：★★★★上の【静止画】に中身をコピーする
+   ★★★山田様の指示「上の方は つまみ押しても反応しない静止画に」（2026-09-09）
+   ★★やり方 ── ★下の【動く図】が描き終わった後に中身を写す。
+     ★★★以後 一度も上書きしないので、★つまみを押しても動きません（★初期状態のまま）。
+     ★図を2つ作り直すのではなく写すので、★★見た目が必ず一致します。
+   ⚠️★下の図が描かれる前に写すと空になります → ★描画のあとに呼ぶこと。
+   ★★★並びは【真上から が先】── ★直前の会話が真上の図の説明で終わるためです。
+
+   ★★★前任の誤り2件を踏まないための作り（★引き継ぎ書 §5-49 ⑺⑺⑻）
+     ⑴ ★1度目は繰り返し呼んでいたので【静止画が毎回 更新されて動いていました】。
+       → ★★写し終えた印を付けて、★★★一度 写した図は【二度と上書きしません】。
+     ⑵ ★写した中の識別名を消さなかったので、★同じ名前が2つになり、
+       ★★ページの処理が【静止画のほうを更新していました】。
+       → ★★写した中の識別名を【全部 消します】。
+   ⚠️★★★「中身の長さが変わらない＝動いていない」という測り方は【誤り】です。
+     ★地図は中の一部だけ書き換わるので、★全体の長さは変わりません（★前任が誤判定しました） */
+function copyStill() {
+  var pairs = [['p2m', 'p2mStill'], ['p2b', 'p2bStill']];
+  var done = 0;
+  for (var i = 0; i < pairs.length; i++) {
+    var src = document.getElementById(pairs[i][0]);
+    var dst = document.getElementById(pairs[i][1]);
+    if (!src || !dst) continue;
+    if (dst.getAttribute('data-copied') === '1') { done++; continue; }
+    if (!src.innerHTML.trim()) continue;              /* ★まだ描かれていない */
+    dst.innerHTML = src.innerHTML;
+    dst.setAttribute('viewBox', src.getAttribute('viewBox') || dst.getAttribute('viewBox'));
+    var withId = dst.querySelectorAll('[id]');
+    for (var k = 0; k < withId.length; k++) withId[k].removeAttribute('id');
+    dst.setAttribute('data-copied', '1');
+    done++;
+  }
+  return done;
+}
+(function () {
+  var tries = 0;
+  var t = setInterval(function () {
+    tries++;
+    if (copyStill() >= 2 || tries >= 40) clearInterval(t);   /* ★約4.8秒で諦める */
+  }, 120);
+})();
+})();
+</script>
+<!-- 🔴 2026-09-09 記録担当：★★上下2分割の部品は【common.js に移しました】。
+     ★common.js は body の途中で読まれるので、★DOM が揃ってから動く形で包んでいます -->
+</body>
+</html>
