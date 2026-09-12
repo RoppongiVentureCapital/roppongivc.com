@@ -36,10 +36,75 @@
   </div>
 </section>
 
-<!-- ============ Agoraの具体例 ============ -->
+<!-- ============ 第1回の記録 ============
+     🔴🔴🔴🔴 2026-09-12 記録担当：★★★★新設（山田様のご指示 2026-09-12
+       「Agoraのページの中に、トップページと同じような第一回Agoraやった記録とかを
+        紹介するのは上の方に必要だよな」）。
+     ★置き場所 ── 「Agoraとはどういうものか」の直後、「Agoraの具体例」の直前。
+       ★理由：先に「Agoraとは何か」を読んだ人が、そのまま実際の記録に入れる並びにした。
+     ★★★文章はトップページの節と【別に書いている】── 同じ文を2ページに置くと
+       重複コンテンツになるため。トップは「何が起きたかの要約」、ここは
+       「Agoraのやり方（疑い・壊し・導かせ・また疑う）を2時間そのままやった記録」という
+       この頁の主題に沿った書き方にしている。
+     ★カードは既存の .articles-grid / .article-item を流用。★style.css への追加はゼロ。 -->
 <section class="two-col">
   <div class="two-col-left">
-    <h2 class="col-heading">Agoraの<br>具体例</h2>
+    <h2 class="col-heading">第1回の記録</h2>
+    <p style="font-size:16px;color:var(--black);font-weight:500">2026年7月・オンライン</p>
+  </div>
+  <div class="two-col-right">
+    <div class="col-body">
+      <p>第1回は、2026年7月にオンラインで開きました。テーマを出したのは、国際人工知能オリンピック（IOAI）2025 銅メダリスト・開成高校3年の山井勇人さんです。「Kaggleを民主化したい」── Kaggle は世界最大の機械学習コンペティションで、AIをつくる人を増やすには、原理を学ぶ入口が要る、という問題意識でした。</p>
+      <div style="height:1.5rem"></div>
+
+      <p>はじめに「Kaggleを民主化する新しいサービスのアイデアを考えて」と雑に投げたAIの答えを、5人で見ました。5案が返ってきましたが、そのうちAI自身が「一番事業性が高い」と推した案は、議論の途中で実践者の判断によって捨てられます。上に書いた「疑い、壊し、ゼロから導かせ、また疑う」を、2時間そのままやった記録です。</p>
+      <div style="height:1.5rem"></div>
+
+      <p>辿り着いたのは、Kaggle には無かった出題の形でした。将棋に詰将棋があるように、実戦を工程に分けて一問にする ── その形が Kaggle には無い、という連結です。方向を出したのは高校3年生、連結を出したのはAI、それが本物かを判定したのも高校3年生でした。</p>
+
+      <div class="articles-grid" style="margin-top:1.75rem;max-width:526px">
+        <div class="article-item">
+          <a href="{{ "agora/ai-olympiad-record/" | relURL }}">
+            <img class="article-item-img" src="{{ "img/agora/r1/thumb-r1-article.jpg" | relURL }}" alt="">
+            <div class="article-item-body">
+              <div class="article-pillar" style="text-transform:none">Agora ｜ 第1回</div>
+              <h3 style="margin:0.75rem 0">AI五輪メダリストの開成高校生が、AI人材拡大のため、AIと議論した思考記録</h3>
+              <span class="blog-arrow">記録を読む →</span>
+            </div>
+          </a>
+        </div>
+      </div>
+
+      <p style="margin-top:1.75rem">その案を1か月で形にしたのが、AIの原理を手で動かす21問「Deep Black Box」です。誰でも、ブラウザを開くだけで触れます。</p>
+
+      <div class="articles-grid" style="margin-top:1.75rem;max-width:526px">
+        <div class="article-item">
+          <a href="{{ "deep-black-box/" | relURL }}">
+            <img class="article-item-img" src="{{ "img/agora/r1/thumb-r1-game.svg" | relURL }}" alt="">
+            <div class="article-item-body">
+              <div class="article-pillar">教材</div>
+              <h3 style="margin:0.75rem 0">Deep Black Box ── AIのブラックボックスを、1問ずつ開けて手で動かす。</h3>
+              <p>全21問 ／ ブラウザで開くだけ</p>
+              <span class="blog-arrow">やってみる →</span>
+            </div>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ Agoraが生まれた対話 ============
+     🔴🔴🔴🔴 2026-09-12 記録担当：★★★★見出しを「Agoraの具体例」から
+       「Agoraが生まれた対話」に変えた（山田様のご判断 2026-09-12）。
+     ★理由 ── ★上に「第1回の記録」節が入ったので「具体例」が二重になる。かつ
+       この節の中身は【Agora自体がAIとの対話から生まれた話】で、「具体例」と合っていない。
+     ★見出しの下の1行は【変えていない】── 山田様のご指示（「山田とか誰もしらん」で、
+       「山田がAIと1対1でやった記録です」という案は却下）。
+     ★★節そのものは残す ── ★/ai-no-sachi/ への唯一の入口であるため。 -->
+<section class="two-col">
+  <div class="two-col-left">
+    <h2 class="col-heading">Agoraが<br>生まれた対話</h2>
     <p style="font-size:16px;color:var(--black);font-weight:500">このプログラムは、AIとのある対話から生まれました</p>
   </div>
   <div class="two-col-right">
