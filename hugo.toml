@@ -44,10 +44,17 @@ paginate = 12
       name = "Agora"
       url = "/en/agora/"
       weight = 1
-    # ★2026-09-10 日本語と同じ構成に揃えた。⚠️ AI Lab の中身は日本語だけ（英語版がない）。
+    # ★2026-09-10 日本語と同じ構成に揃えた。
+    # 🔴🔴🔴🔴 2026-09-12 記録担当：★★★★行き先を /deep-black-box/ から /en/deep-black-box/ に変えた
+    #   （山田様のご判断 2026-09-12「A案」）。
+    #   ★理由 ── ★英語ページの他のリンク（記事のStart・英語トップ・Agoraページ・JIWA・404）を
+    #     すべて /en/ に揃えたので、★ナビだけが日本語のゲームへ飛ぶのは一貫しない。
+    #     ★★「英語圏の人が日本語の画面に落ちる」より「英語で遊べて続きは準備中」のほうが伝わる。
+    #   ⚠️★2026-09-12 時点で英語版ゲームは【23枚のうち6枚】（index・q01〜q06）で noindex。
+    #     ★q07 以降は404。★別セッションが作成中で、★完成すればこの1行は直す必要がない。
     [[languages.en.menus.main]]
       name = "AI Lab"
-      url = "/deep-black-box/"
+      url = "/en/deep-black-box/"
       weight = 2
     [[languages.en.menus.main]]
       name = "Edge"
