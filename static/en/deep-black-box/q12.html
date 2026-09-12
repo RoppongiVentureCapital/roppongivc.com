@@ -1,0 +1,1039 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<meta name="description" content="Temperature - Problem 12 of Deep Black Box. The next word is drawn by probability, and one knob decides how hard it leans on the favourite.">
+<meta property="og:title" content="Deep Black Box - Problem 12: the next word is drawn by probability (Chapter 3)">
+<meta property="og:description" content="Temperature - Problem 12.">
+<!-- 🔴🔴🔴🔴 2026-09-10 記録担当：★★★★共有したときの画像（★公開準備セッションの指示）。
+     ★★この2行は【23ページとも入っていませんでした】（★実測0件）。
+     ★★★入れる値は先方が確定させたものです ──
+       roppongivc.com/static/img/agora/r1/og-r1-game.jpg（★59KB。★案A＝白地・エンブレム左）。
+     ★★記事用（og-r1-article.jpg）とは【別のファイル】です。★記事側のものは触っていません。
+     ★値は絶対URLです（★OGP の決まり。★href の絶対パス禁止とは別の話です） -->
+<meta property="og:image" content="https://www.roppongivc.com/en/deep-black-box/og-deep-black-box-en.jpg">
+<meta name="twitter:image" content="https://www.roppongivc.com/en/deep-black-box/og-deep-black-box-en.jpg">
+<!-- 🔴🔴🔴🔴 2026-09-10 21:4x 記録担当：★★★★X（Twitter）で大きい絵にする1行（★公開準備セッションの依頼）。
+     ★★★og:image を入れても、★この1行が無いと【小さいカード】になります。
+     ★記事側は全13ページを summary → summary_large_image にしたとのことです（★先方の実測）。
+     ★★ゲーム23ページは【0件】でした -->
+<meta name="twitter:card" content="summary_large_image">
+<!-- 🔴🔴🔴🔴 2026-09-10 22:3x 記録担当：★★★★ブラウザのタブに出る絵（★公開準備セッションの依頼）。
+     ★★実測 ── ★23ページとも【0件】でした（★タブに絵が出ていませんでした）。
+     ★★★実体はサイト側にあり、★本番で全部 引けます（★新しく作っていません）──
+       /favicon.svg 200・53KB ／ /favicon.ico 200 ／ /favicon-192.png 200・8KB
+     ⚠️★★/apple-touch-icon.png は【404】なので使いません。★favicon-192.png を指しています
+       （★サイト側 baseof.html と同じ扱いです）。
+     ⚠️★★★絶対URLです ── ★このゲームは /deep-black-box/ の下にあるので、
+       ★相対だと /deep-black-box/favicon.svg を探して【外します】。
+       ★「絶対パスを書かない」（★同じ場所の中を指すときの決まり）とは別の話です -->
+<link rel="icon" href="https://www.roppongivc.com/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="https://www.roppongivc.com/favicon.ico" sizes="32x32">
+<link rel="icon" href="https://www.roppongivc.com/favicon-192.png" type="image/png" sizes="192x192">
+<link rel="apple-touch-icon" href="https://www.roppongivc.com/favicon-192.png">
+<title>Deep Black Box - Problem 12: the next word is drawn by probability (Chapter 3)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@300;400;600;700&family=Inter:wght@300;400;500;600;700&family=Noto+Serif+JP:wght@300;400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../deep-black-box/common.css">
+<style>
+/* ══════════════════════════════════════════════════════════════════════════
+   🔴 2026-09-02 1問1ページ担当：★この章だけの CSS
+     ★★原本 tsume-02-attention-dialog.html の <style> をそのまま写し、★【戻さないこと】のフォント規則だけ落としました
+     ★落としたもの：.cap{font-size:12.5px;color:var(--gray-500);margin-bottom:.5rem;line-height:1.5}／.lead{font-size:16px;line-height:1.9;color:var(--gray-600);margin:0 0 1.1rem}／h2{font-family:var(--serif);font-size:1.45rem;font-weight:300;line-height:1.4;margin:0 0 1rem}／h3{font-size:16px;font-weight:600;margin:1.4rem 0 .6rem}／.fg .ft{font-size:12.5px;font-weight:700;letter-spacing:.04em;color:var(--black);   margin:0 0 .65rem}／.fg .fn{font-size:13px;line-height:1.85;color:var(--gray-600);margin:.65rem 0 0}／.nst .lb{font-size:13.5px;font-weight:700;color:var(--black);margin:0 0 .3rem}／.nst .sb{font-size:12.5px;color:var(--gray-600);margin:0 0 .5rem;line-height:1.75}／.dtab{width:100%;border-collapse:collapse;font-size:12.5px;margin:.9rem 0;  font-variant-numeric:tabular-nums}／.cl .bb{position:relative;min-width:0;padding:.65rem .95rem;font-size:15px;line-height:1.9;   border:1px solid var(--gray-200);border-radius:.85rem;background:var(--white);color:var(--gray-600)}／.lg table,.dtab{font-size:11.5px}／.cl .bb{font-size:14.5px;padding:.55rem .75rem;line-height:1.8}
+   ★.offpage ── ★★この章の【他の問のカード】を DOM に置いたまま隠す枠。
+     ★理由：ゲーム本体の JS（起動・つまみの bind）を1バイトも触らないため。
+       ★$('…') が null にならないので、原本と同じコードがそのまま動きます
+   ══════════════════════════════════════════════════════════════════════════ */
+.offpage{display:none}
+:root{
+ --bg:#fff; --white:#fff; --black:#000;
+ --gray-100:#f9f9f9; --gray-200:#d9d9d9; --gray-500:#444; --gray-600:#2a2a2a;
+ --accent:#019949;
+ --sans:'Inter',system-ui,sans-serif;
+ --serif:'Source Serif 4','Noto Serif JP',Georgia,serif;
+ --content-w:52.625rem;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--black);font-family:var(--sans);
+ -webkit-font-smoothing:antialiased}
+.wrap{max-width:var(--content-w);margin:0 auto;padding:0 1.5rem 5rem}
+.top{border-bottom:1px solid var(--gray-200);margin-bottom:2.4rem}
+/* 🔴🔴🔴 2026-09-09 A：★★★この上書きを外した ── ★★これが【全部大文字】の正体だった
+     ★★★山田様「トップと他でフォント違うし全部大文字かどうかも違うし」（2026-09-09）
+   ★.top .in に text-transform:uppercase と letter-spacing:.14em が入っており、
+     ★★子の製品名とタグラインまで【大文字＋字間広め】に変えていた。
+   ★実測：★これがある18ページは uppercase ／ 無い5ページ（index・q15〜17・end）は none。
+     → ★★★同じ製品名が【大文字のページと そうでないページ】に分かれていた
+   ★common.css の .top .in（★大文字にしない）を効かせる */
+/* 🔴 2026-09-09 A：★★この上書きを外した ── ★common.css の
+     .top .in .tag（15.5px / #555 / 行間1.75 / サンセリフ）を効かせる。
+   ★★★これが後勝ちしていたので、★上のバーだけ 明朝 12.5px のままだった。
+     → ★山田様「トップと他でフォント違うし全部大文字かどうかも違うし」の原因のひとつ */
+.eyebrow{font-size:13px;font-weight:500;letter-spacing:.16em;text-transform:uppercase;
+ color:var(--gray-500);margin-bottom:.9rem}
+h1{font-family:var(--serif);font-size:2.1rem;font-weight:300;line-height:1.35;margin:0 0 .8rem}
+.lead b{color:var(--black)}
+.meta{font-size:13px;letter-spacing:.1em;color:var(--gray-500);padding-bottom:1.2rem;
+ border-bottom:1px solid var(--gray-200);margin-bottom:1.2rem}
+.steps{display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:2.4rem}
+.steps div{flex:1 1 5rem;padding:.55rem .3rem;text-align:center;font-size:12px;
+ border:1px solid var(--gray-200);color:var(--gray-500);background:var(--white)}
+.steps div.open{border-color:var(--black);color:var(--black)}
+.steps div.done{background:var(--black);border-color:var(--black);color:var(--white)}
+.card{border:1px solid var(--gray-200);padding:2rem;margin-bottom:2rem;background:var(--white)}
+.tagline{font-size:13px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;
+ color:var(--gray-500);margin-bottom:.9rem}
+/* ★★図・つまみ・棒・判定を1つの枠に入れる。★絶対に離さない（→00 §2-2） */
+.panel{background:var(--gray-100);border:1px solid var(--gray-200);padding:1rem;margin:1.3rem 0}
+.panel .verdict{background:var(--white)}
+.two{display:flex;gap:1rem;flex-wrap:wrap;align-items:flex-start}
+.two>div{flex:1 1 15rem;min-width:0}
+svg{display:block;width:100%;height:auto}
+.ctl{margin:1.1rem 0 .2rem}
+.ctl label{display:flex;justify-content:space-between;align-items:baseline;font-size:14px;
+ margin-bottom:.35rem;gap:1rem}
+.ctl label span.n{font-weight:600;font-variant-numeric:tabular-nums;white-space:nowrap}
+.togs{display:flex;gap:.6rem;flex-wrap:wrap;margin-top:1.1rem;align-items:center}
+.btn{background:none;border:1px solid var(--gray-200);padding:.6rem 1.15rem;font-size:14px;
+ font-family:var(--sans);color:var(--black);cursor:pointer;transition:all .15s}
+.btn:hover{border-color:var(--black);background:var(--gray-100)}
+.btn.on{background:var(--black);color:var(--white);border-color:var(--black)}
+.btn.go{background:var(--black);color:var(--white);border-color:var(--black)}
+.btn.sm{font-size:13px;padding:.45rem .85rem;color:var(--gray-500)}
+.btn:disabled{opacity:.35;cursor:default}
+/* 🔴 2026-08-29 B（02）：作業D ── ★ゲージの CSS が 02 に1つも無く、
+   ★HTML は class="gauge/gtrack/gfill/gmark/gcap/big" を使っているので
+   ★問12 のゲージが【棒として描かれず文字だけ】になっていた（実測：棒の高さ 0px）。
+   ★tsume-00-function.html の <style> から そのまま写した（→§5-23 の道具の使い回しと同じ扱い）。
+   ★gauge() 関数の向きは 00（小さいほど良い）と 02（大きいほど良い）で逆なので、JS は 02 のまま。★CSS だけ持ってきた */
+.gauge{margin:1.2rem 0 0}
+.gauge .row{display:flex;align-items:baseline;gap:.7rem;margin-bottom:.5rem}
+.gauge .u{font-size:14px;color:var(--gray-500)}
+.gtrack{height:10px;background:#e9e9e9;position:relative;overflow:hidden}
+.gfill{display:block;height:100%;background:#c00;transition:width .12s linear}
+.gfill.ok{background:var(--accent)}
+.gmark{position:absolute;top:-3px;bottom:-3px;width:2px;background:#000}
+.gcap{display:flex;justify-content:space-between;font-size:12px;color:var(--gray-500);
+ margin-top:.35rem}
+.big{font-family:var(--serif);font-size:2rem;font-weight:400;font-variant-numeric:tabular-nums;
+ line-height:1}
+.panel .gauge{margin-top:.9rem}
+.verdict{margin-top:1.2rem;padding:.9rem 1.1rem;border:1px solid var(--gray-200);font-size:14px;
+ line-height:1.75;background:var(--gray-100)}
+.verdict.ok{border-color:var(--accent);background:#f2fbf6}
+.verdict.stuck{border-color:#c00;background:#fdf4f4}
+.next{margin-top:1rem;font-size:13px;color:var(--gray-500)}
+.src{border-left:2px solid var(--black);padding:.9rem 0 .9rem 1.1rem;margin:1.4rem 0;
+ font-size:14px;line-height:1.85;color:var(--gray-600)}
+.src .h{font-size:12px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;
+ color:var(--black);margin-bottom:.4rem}
+.src q{font-style:normal;color:var(--black)}
+.src .ref{font-size:13px;color:var(--gray-500);margin-top:.4rem;display:block}
+.box{border:1px solid var(--gray-200);padding:1.1rem 1.3rem;margin:1.3rem 0;background:var(--gray-100)}
+.box .h{font-size:12px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;
+ margin-bottom:.5rem}
+.mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+.calc{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13.5px;line-height:2;
+ background:var(--white);border:1px solid var(--gray-200);padding:.9rem 1.1rem;margin:.9rem 0;
+ overflow-x:auto;white-space:pre}
+.sc-row{display:flex;align-items:center;gap:.75rem;margin-bottom:.5rem}
+.sc-label{width:3.4rem;font-size:14px;text-align:right;flex-shrink:0;font-family:var(--serif)}
+.sc-label.wide{width:6.4rem;font-size:13px}
+.sc-track{flex:1;background:#e9e9e9;height:14px;position:relative}
+.sc-fill{display:block;height:100%;background:var(--black);transition:width .1s linear}
+.sc-fill.hit{background:var(--accent)}
+.sc-track .goal{position:absolute;top:-3px;bottom:-3px;width:1px;background:#c00}
+.sc-pct{width:3.6rem;font-size:14px;font-variant-numeric:tabular-nums;text-align:right}
+details{border-top:1px solid var(--gray-200);padding-top:1rem;margin-top:1.5rem}
+summary{font-size:14px;font-weight:500;cursor:pointer}
+.lg{font-size:14px;line-height:1.9;color:var(--gray-600);margin-top:.9rem}
+.lg table{width:100%;border-collapse:collapse;margin:.8rem 0;font-size:13px}
+.lg th,.lg td{padding:.45rem .6rem;border:1px solid var(--gray-200);text-align:left}
+.lg th{background:var(--gray-100);font-weight:600}
+.dtab th,.dtab td{padding:.35rem .5rem;border:1px solid var(--gray-200);text-align:right}
+.dtab th{background:var(--gray-100);font-weight:600;font-size:11.5px}
+.dtab td.l,.dtab th.l{text-align:left}
+/* 🔴 2026-08-29 B（02）：作業D ── ★温度の表の最終行に class="sum" が付いているのに CSS が無く効いていなかった。★00 から写した */
+.dtab tr.sum td{background:#f2fbf6;border-top:2px solid var(--black)}
+.hide{display:none}
+.foot{border-top:1px solid var(--gray-200);margin-top:3rem;padding-top:1.5rem;font-size:13px;
+ color:var(--gray-500);line-height:1.8}
+/* ── 語の列 ─────────────────────────────── */
+.sent{display:flex;flex-wrap:wrap;gap:.35rem;align-items:center;margin:.6rem 0}
+.sent span{border:1px solid var(--gray-200);background:var(--white);padding:.3rem .55rem;
+ font-size:15px;font-family:var(--serif)}
+.sent span.now{border-color:#c00;color:#c00;font-weight:600}
+.sent span.tgt{border-color:var(--accent);color:var(--accent);font-weight:600}
+.sent span.prompt{background:var(--gray-100);color:var(--gray-500)}
+.sent span.new{border-color:var(--black);font-weight:600}
+.caret{display:inline-block;width:2px;height:1.2rem;background:#c00;animation:bl 1s step-end infinite}
+@keyframes bl{50%{opacity:0}}
+.out{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12.5px;line-height:1.75;
+ background:var(--white);border:1px solid var(--gray-200);padding:.7rem .9rem;margin:.7rem 0;
+ white-space:pre;overflow-x:auto}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   🔴🔴🔴🔴 2026-09-10 記録担当（3代目）：★★★★分割中だけ 詰める
+     （★［10回 やらせてみる］の結果を 上の枠に入れるための場所づくり）
+   ★★★山田様のご指示（2026-09-10 16:1x）──
+     「ここは上半分の画面に見えるようにしてほしいな。他は下半分に表示でいいから。
+       ★とにかく押したときにちゃんとでてくることがわかるようなポジションにおいて」
+   ★★実測した内わけ（★390×664・分割中。★直す前）──
+     上の枠 465px に対して 中身が【506px】── ★★もう 41px 溢れていました。
+     ★内わけ ── 引いた文 34 ／ 確率のバー6本 253 ／ ボタン4つ 77 ／ ゲージ2つ 114
+     ★★★ここに 10行の結果（243px）は入りません。
+   ★★★どこを削ったか（★全部 分割中だけ。★公開版の見た目は変わりません）──
+     ⒜ 確率のバーの行間と文字を詰める
+     ⒝ ゲージ2つの数字を小さくし、説明を1行に詰める
+     ⒞ ボタンの余白を詰める
+     ⒟ ★結果に【上限】を付けて 中でスクロールさせる（★5〜6行 見えます）
+   ⚠️★★上限は【分割中だけ】です。★分割していないときは 10行 全部 出ます
+   ══════════════════════════════════════════════════════════════════════════ */
+.split-on .splittop .out{font-size:11.5px;line-height:1.55;padding:.4rem .55rem;margin:.35rem 0 0;
+  max-height:132px;overflow-y:auto}
+.split-on .splittop .two .cap{font-size:11px;margin:0 0 .1rem}
+.split-on .splittop .sc-row{margin:0}
+.split-on .splittop .sc-label,.split-on .splittop .sc-pct{font-size:11.5px}
+.split-on .splittop .gauge{margin-top:.3rem}
+.split-on .splittop .gauge .big{font-size:18px}
+.split-on .splittop .gauge .u{font-size:10.5px}
+.split-on .splittop .gauge .gcap{font-size:10px;margin-top:0}
+.split-on .splittop .gauge .gtrack{margin:.1rem 0}
+.split-on .splittop .togs{margin-top:.3rem;gap:.3rem}
+.split-on .splittop .togs .btn{padding:.3rem .6rem;font-size:11.5px}
+.split-on .splittop .panel{padding:.45rem .5rem}
+.split-on .splittop .sent{font-size:13px;margin:0 0 .2rem}
+/* ── q/k/v がどこから来るかの図（★SVG にしない。HTML の枠で組む） ────── */
+.wf{display:flex;gap:.8rem;align-items:center;flex-wrap:wrap;margin:.6rem 0 .2rem}
+.wbox{border:1px solid var(--black);background:var(--white);padding:.6rem .9rem;text-align:center;
+ font-size:16px;font-family:var(--serif);line-height:1.5}
+.wbox span{font-size:12px;color:var(--gray-500);font-family:var(--sans)}
+.warr div{font-size:13.5px;line-height:2.1;font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+/* ── 4段の図（★SVG にしない。0 をまん中に置いた横棒） ────────────── */
+.st{font-size:13.5px;line-height:1.7;margin:.9rem 0 .35rem}
+.br{display:flex;align-items:center;gap:.5rem;margin:.3rem 0}
+.br .n{width:2.8rem;font-family:var(--serif);font-size:14px;flex-shrink:0}
+.br .v{width:3.4rem;text-align:right;font-size:13px;flex-shrink:0;
+ font-variant-numeric:tabular-nums;color:var(--gray-500)}
+.br .ax{flex:1;position:relative;height:14px;background:#e9e9e9;min-width:0}
+.br .ax:after{content:'';position:absolute;left:50%;top:-3px;bottom:-3px;width:1px;background:#6e6e6e}
+.br .ax i{position:absolute;top:0;height:100%;background:#000}
+.br.g .ax i{background:var(--accent)}
+.bd{display:flex;height:30px;margin:.5rem 0 0}
+.bd span{display:flex;align-items:center;justify-content:center;font-size:13px;color:#fff;
+ font-family:var(--serif);overflow:hidden;white-space:nowrap}
+/* ── Transformer のブロック（★SVG にしない。HTML の枠で組む） ───────── */
+.blk{border:1px solid var(--black);padding:.8rem .6rem;margin:1rem 0;background:var(--white)}
+.blk .r{display:flex;gap:.3rem}
+.blk .r>span{flex:1 1 0;min-width:0;text-align:center;font-size:13px;padding:.4rem .1rem;
+ border:1px solid var(--gray-200);font-family:var(--serif)}
+.blk .u{border:1px solid var(--black);padding:.5rem .4rem;margin:.35rem 0;text-align:center;
+ font-size:13.5px;line-height:1.6}
+.blk .u.n{border-style:dashed}
+.blk .op{text-align:center;font-size:13px;color:var(--gray-500);margin:.15rem 0}
+.blk .rep{text-align:center;font-size:13px;margin-top:.5rem}
+.blk .hl{border-color:#c00;color:#c00}
+@media (max-width:430px){
+  .wrap{padding-left:.5rem;padding-right:.5rem}
+  .card{padding-left:.75rem;padding-right:.75rem}
+  .box,.panel{padding-left:.5rem;padding-right:.5rem}
+  .top .in{padding-left:.5rem;padding-right:.5rem}
+  /* ★★viewBox の広い SVG は 390px で倍率 0.54 になる。
+     ★font 14 では 7.5px しか出ないので、ここだけ 17 に上げる（→01 と同じ手） */
+  #hd text{font-size:17px}
+  /* ★★枠を 390×840 の1画面に収めるため、円の図の幅を抑える（→ 枠の上限） */
+  #v13,#v14a,#v14b{max-width:15rem;margin:0 auto}
+  .panel .ctl{margin:.55rem 0 .1rem}
+  .panel .ctl label{margin-bottom:.15rem}
+  /* ★★表は 390px で溝がなくなる。★実測：7列で 405px（15px はみ出し）→ 文字を落とす */
+  /* 🔴 2026-09-02 1問1ページ担当：★A の【戻さないこと】に反するので外した ── .lg table,.dtab{font-size:11.5px} */
+  .lg th,.lg td{padding:.35rem .3rem}
+  /* 🔴 2026-08-29 B（02）：★★棒を縦積みにするのを【やめた】。
+     ★理由：1本が2行になると 38.2px 使い、問13 の枠が 999.6px（390px 実測）まで伸びて
+       ★つまみが画面の外に出ていた（→山田様⑹「つまみと結果が離れていたら意味がない」）。
+     ★ラベルの幅を 4.6rem に広げれば1行に収まる（★語は コーヒー／机／新聞／手 と
+       東京／大阪／京都／名古屋／札幌／そこ ── いちばん長いのは4文字）。
+     ★実測：b13 176.8px → 88px ／ b12 277px → 132px。★溝の幅は 150px 以上 残る */
+  .sc-row{flex-wrap:nowrap;row-gap:0;margin-bottom:.3rem}
+  .sc-label{width:4.6rem;font-size:13px;text-align:left;flex:0 0 auto}
+  .sc-label.wide{width:6.2rem;font-size:12px;text-align:left;flex:0 0 auto}
+  .sc-pct{width:3.2rem;font-size:13px;flex:0 0 auto}
+  .sc-track{flex:1 1 auto;order:0;min-width:0}
+  /* ★「向きの揃い具合」の語の欄。★2.8rem では「コーヒー」が2行になり 42px 使っていた */
+  .br .n{width:4.4rem;font-size:13px}
+  .br .v{width:3.4rem;font-size:12.5px}
+  .br{margin:.2rem 0}
+  /* ★★390px で【つまみ・円の図・揃い具合・取り分・次の1語・判定】を1画面（840px）に収めるための詰め。
+     ★目的は山田様⑹（つまみと結果が離れていたら意味がない）。★実測でこの3行が効いている */
+  .panel .two{gap:.6rem}
+  .panel .verdict{margin-top:.7rem}
+  #v13{max-width:14rem}
+  /* 🆕 2026-08-30 F：会話（→ .cv）★スマホは顔を小さくして横幅を吹き出しに回す */
+  /* 🔴 2026-09-06：★スマホでアイコンを 38px に縮める指定を【消した】（★記事はスマホでも 46px）。
+     ★★この2行は、同じ <style> の後ろにある .cl .ic{46px} / .cl{gap:.75rem;margin:0 0 .85rem} に
+       ★同じ詳細度で【後勝ちされていて、すでに効いていませんでした】（★実測 ic 46px・gap 12px）。
+     → ★消しても見た目は1pxも動きません。★死んだ規則を残すと次の担当が誤読します */
+  /* 🔴 2026-09-02 1問1ページ担当：★A の【戻さないこと】に反するので外した ── .cl .bb{font-size:14.5px;padding:.55rem .75rem;line-height:1.8} */
+  .cast2{padding:.7rem .75rem}
+  .cast2 .ic{width:46px;height:46px}
+  .cast2 .row{gap:.6rem}
+  /* 🔴 2026-09-07 A：★.cast2 .tx2 の 13px/1.8 を外した ── ★これがスマホで
+     ★★登場人物の紹介が 13px のままだった原因（★common.css の 16.6px を後勝ちで潰していた）。
+     → ★山田様「記事と同じサイズって言っただろ」「行間も記事に合わせろよ」（2026-09-07） */
+  /* 🔴 2026-08-31 02担当：図解も 390px で詰める */
+  .fg{padding:.7rem .75rem}
+  .rw .nmx{flex:0 0 4.6rem;font-size:12px}
+  .rw .pc2{flex:0 0 3rem;font-size:12px}
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   🆕 2026-08-30 F【対話版】会話の見た目 ── ★00/01-dialog と同じ CSS（写し）
+   ★★ゲーム本体（つまみ・図・ゲージ・判定・数値・disp3）は1行も触っていない。
+     ★この CSS と末尾の IIFE を消せば、原本とまったく同じ挙動に戻る
+   ★会話は .panel / .figbox の【外】にだけ置く（★position:sticky を壊さないため）
+   ★色は図のデータ色と衝突しないもの ── 学 #2f6fb5 ／ 博士 #b0700c
+   ══════════════════════════════════════════════════════════════════════════ */
+.cast2{border:1px solid var(--gray-200);background:var(--gray-100);
+  padding:1rem 1.1rem;margin:0 0 2.4rem}
+.cast2 .row{display:flex;gap:.9rem;align-items:flex-start}
+.cast2 .row+.row{margin-top:.9rem;padding-top:.9rem;border-top:1px solid var(--gray-200)}
+.cast2 .ic{width:54px;height:54px;border-radius:50%;flex-shrink:0;display:block;
+  border:2px solid var(--white);box-shadow:0 0 0 1px var(--gray-200),0 1px 3px rgba(0,0,0,.10)}
+.cast2 .nm2{display:block;font-size:18px;line-height:1.5;font-weight:700;margin-bottom:.2rem}
+.cast2 .rb{font-size:14px;font-weight:400;color:var(--gray-500);margin-left:.45rem}
+.cast2 .tx2{font-size:16.6px;line-height:1.831;color:var(--gray-600)}
+.cast2 .tx2 b{color:var(--black)}
+.cv{margin:1.6rem 0}
+.cl{display:flex;gap:.75rem;align-items:flex-start;margin:0 0 .85rem}
+.cl .ic{width:46px;height:46px;border-radius:50%;flex-shrink:0;display:block;
+  border:2px solid var(--white);box-shadow:0 0 0 1px var(--gray-200),0 1px 3px rgba(0,0,0,.10)}
+.cl .bb b{color:var(--black)}
+.cl .bb:before{content:'';position:absolute;left:-6px;top:15px;width:10px;height:10px;
+  background:inherit;border-left:1px solid;border-bottom:1px solid;border-color:inherit;
+  transform:rotate(45deg)}
+/* 🔴 2026-09-02 A：★★博士＝青／学＝オレンジ に入れ替えた（★アイコンの背景色に合わせた）
+   ★山田様「今フォントとか吹き出しが 博士がオレンジで学が青じゃん。画像はもとの
+     博士青、高校生オレンジでいいから、フォントの方を逆にしてよ」（2026-09-02）
+   ✗✗ 戻さないこと。★★common.css だけ直しても【各ページの style が後勝ちで効かない】 */
+.cl.m .bb{background:#fff7ea;border-color:#efd6a6}
+.cl.d .bb{background:#eef4fa;border-color:#c3d9ee}
+/* 🔴 2026-09-06：★font-size:11.5px を外した ── ★.cl .av .nm と同じ要素に当たり、
+   ★詳細度で負けていて【効いていなかった】（★実測 10.5px）。★話者名の大きさは common.css の
+   ★.cl .av .nm{font-size:14px} が持つ。★この規則は色と margin のためだけに残す */
+.cl .nm{display:block;font-weight:700;letter-spacing:.07em;margin-bottom:.15rem}
+.cl.m .nm{color:#b0700c}   /* 🔴 学 → オレンジ */
+.cl.d .nm{color:#2f6fb5}   /* 🔴 博士 → 青 */
+.keyh{font-size:11.5px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--gray-500);margin:1.6rem 0 .5rem}
+
+/* 🔴 2026-08-31 02担当：★★図を .stick で貼り付ける案は【実測して取り下げた】。
+   ★動機：00 は .figbox stick が9個・01v2 は20個・02 は0個で、
+     ★02 だけ「説明を読むと図が画面の外へ消える」状態だったので直そうとした
+   ★★実測の結果（390px）── ★悪化した
+       枠の最大高      803.7px → 818.0px（＋14.3px。★.stick の余白のぶん）
+       A_scan 問13 窓  110px  →  95px（★−15px）
+     ★原因：貼り付いた図が画面の上を占めるので、
+       ★つまみと結果が同時に見える位置が【減る】。★02 の .panel は図とつまみが同じ枠なので、
+       ★00・01 のように「図を .figbox stick、つまみを .stickbot」に分けないと効かない
+   → ★★やるなら問13 の .panel を2つに割る【構造の変更】が必要。★今回は戻した
+   ★★次の担当へ：★この案を試すなら、上の2つの数字を必ず測り直すこと（→ 規則㉓） */
+
+/* ══════════════════════════════════════════════════════════════════════════
+   🔴 2026-08-31 02担当【図解】── ★山田様「数式多くて難しい。別に出してもいいけど
+     それだけで伝わると思うな。中学生にもわかるようにわかりやすい言葉と図解を
+     とにかく使って説明するようにしろよ」（2026-08-31）
+   ──────────────────────────────────────────────────────────────────────────
+   ★★図も【CV（台詞データ）の中】に入れて IIFE が流し込む。★HTML 本体には足していない
+     → 「この IIFE と .cv の CSS を消せば原本に戻る」を保つため
+   ★★文字は全部 HTML の箱に置いた。★SVG は【曲線が要る1枚だけ】
+     → 理由：SVG の font-size は viewBox の単位なので 390px で 9px 程度に潰れる（→規則㉛）
+     → その1枚も max-width で表示幅を viewBox に合わせ、文字は入れていない
+   ★箱は flex-wrap ＋ min-width:0 なので 390px で縦に積む（★横あふれを作らない）
+   ══════════════════════════════════════════════════════════════════════════ */
+.fg{border:1px solid var(--gray-200);border-radius:.6rem;background:var(--white);
+  padding:.9rem 1rem;margin:0 0 .85rem}
+.fg .fn b{color:var(--black)}
+.fg .fn+.fn{margin-top:.4rem}
+/* 入れ子の箱 */
+.nst{border:2px solid var(--gray-200);border-radius:.5rem;padding:.55rem .6rem}
+.nst.a{border-color:#c3d9ee;background:#f6fafd}
+.nst.b{border-color:#bcdfc9;background:#f5fbf7}
+.nst.c{border-color:#efd6a6;background:#fffaf0}
+/* 段を並べる（390px では縦に積む） */
+.flw{display:flex;flex-wrap:wrap;align-items:stretch;gap:.45rem}
+.flw>.st{flex:1 1 9rem;min-width:0;border:1px solid var(--gray-200);border-radius:.45rem;
+  background:var(--gray-100);padding:.55rem .6rem}
+.flw>.st.on{background:#fffaf0;border-color:#efd6a6}
+.flw .hd2{font-size:11.5px;font-weight:700;color:var(--gray-500);margin:0 0 .3rem}
+.flw .bg2{font-size:15px;font-weight:700;color:var(--black)}
+.flw .sm2{font-size:12.5px;color:var(--gray-600);line-height:1.75}
+/* 割合の帯 */
+.rw{display:flex;align-items:center;gap:.5rem;margin:.32rem 0}
+.rw .nmx{flex:0 0 5.6rem;font-size:12.5px;color:var(--gray-600)}
+.rw .tk{position:relative;flex:1 1 auto;height:15px;background:var(--gray-100);
+  border-radius:8px;overflow:hidden;min-width:0}
+.rw .fl2{position:absolute;left:0;top:0;bottom:0;background:#9aa2a8;border-radius:8px}
+.rw .fl2.k{background:#000}
+.rw .fl2.g{background:#019949}
+.rw .pc2{flex:0 0 3.4rem;text-align:right;font-size:12.5px;color:var(--black)}
+/* 図の中の表 */
+.fg table{width:100%;border-collapse:collapse;margin:.5rem 0 0;font-size:12.5px}
+.fg th,.fg td{padding:.4rem .5rem;border:1px solid var(--gray-200);text-align:left}
+.fg th{background:var(--gray-100);font-weight:600}
+/* 数字の個数を四角で見せる */
+.dots{display:flex;flex-wrap:wrap;gap:2px;margin:.3rem 0 0}
+.dots i{display:block;width:9px;height:9px;background:#c3d9ee;border-radius:2px}
+.dots.many i{background:#efd6a6}
+/* 曲線の図（★文字は入れない。★表示幅を viewBox にそろえる） */
+/* 🔴 2026-08-31 02担当：★表示幅の上限を 340 → 520px に広げた。
+   ★山田様「スペースに余裕があるのにこんな小さいの？」（2026-08-31）
+   ★SVG の文字は viewBox の単位なので、表示幅を広げると文字も一緒に大きくなる。
+     ★実測：viewBox 340 のとき 390px で 約12px ／ 520px 上限だと PC で 約19px
+   ★★上限を外すと PC で 25px を超えて不自然になるので 520px で止めている */
+.fg svg.dg{display:block;width:100%;max-width:520px;height:auto;margin:.5rem auto .2rem}
+
+/* 🔴 2026-08-31 02担当：★Transformer の2本立ての図。★SVG をやめて【HTML の箱】にした。
+   ★理由：★★幅いっぱいを使えて、文字が常に実寸（12〜13px）になる。
+     ★SVG だと viewBox に縛られて、PC で小さいまま余白が空いていた */
+.tf{display:flex;gap:.5rem;align-items:flex-end;margin:.6rem 0 .2rem}
+.tf>.col{flex:1 1 0;min-width:0}
+.tf .cap2{font-size:11.5px;color:var(--gray-500);text-align:center;margin:.15rem 0}
+.tf .arw{text-align:center;font-size:15px;color:var(--gray-500);line-height:1.1}
+.tf .stk2{border:1.6px solid;border-radius:.55rem;padding:.4rem .35rem}
+.tf .ttl{font-size:12.5px;font-weight:700;text-align:center;margin:0 0 .3rem}
+.tf .pc{border:1.2px solid;border-radius:.4rem;background:var(--white);
+  font-size:12.5px;line-height:1.5;text-align:center;padding:.35rem .25rem;margin:0}
+.tf .pc.gy{border-style:dashed;border-color:var(--gray-200);background:#f2f2f2;color:var(--gray-500)}
+.tf .pl{font-size:11.5px;color:var(--gray-500);text-align:center;margin:.16rem 0}
+.tf .io{border:1.2px solid #2f6fb5;border-radius:.4rem;background:#eef4fa;color:#2f6fb5;
+  font-size:12px;line-height:1.5;text-align:center;padding:.35rem .25rem}
+.tf .gpt{border:2px dashed #c00;border-radius:.6rem;padding:.35rem;background:#fffdf7}
+.tf .gptl{font-size:11.5px;font-weight:700;color:#c00;text-align:center;margin:0 0 .25rem}
+@media (max-width:430px){.tf{gap:.35rem}.tf .pc{font-size:11.5px;padding:.3rem .15rem}
+  .tf .io{font-size:11px;padding:.3rem .15rem}.tf .ttl{font-size:11.5px}}
+/* 🔴 2026-08-31 02担当：★帯（合計1を4語で分け合った1本の帯）。
+   ★山田様「帯を二つにする棒グラフはわかりやすかった。ああいうグラフと合わせて説明して欲しい」
+   ★r14 にある帯の図（id="hd"）と同じ見せ方に揃えた（→ 表の重複を落とすため） */
+.stkw{margin:.35rem 0 .1rem}
+.stkl{font-size:12px;color:var(--gray-600);margin:0 0 .15rem}
+.stk{position:relative;display:flex;height:26px;border-radius:4px;overflow:hidden;
+  border:1px solid var(--gray-200)}
+.stk span{display:block;height:100%}
+.stk i{position:absolute;top:-3px;bottom:-3px;width:2px;background:#c00;left:50%}
+.stkn{display:flex;font-size:11.5px;color:var(--gray-600);margin:.15rem 0 0}
+.stkn span{display:block;text-align:center;overflow:hidden;white-space:nowrap}
+/* 🔴 2026-08-31 02担当：W を機械に決めさせる実演の表 */
+table.wtb{width:100%;border-collapse:collapse;font-size:13px;margin:0}
+table.wtb td{padding:.35rem .3rem;border:1px solid var(--gray-200);text-align:center;background:var(--white);font-feature-settings:'tnum'}
+</style>
+</head>
+<body data-split="A2" data-top="q12top" data-talk="q12talk"
+      data-verdict="j12,j10" data-ratio="0.70">
+
+<div class="top"><div class="in">Deep Black Box<span class="tag">Open up the black box of AI one problem at a time, with your own hands. 21 problems in all.</span></div></div>
+<div class="wrap">
+
+<!-- 🔴 2026-09-02 1問1ページ担当：★進み具合の帯（全21問）＋いま何章か -->
+<div class="prog">
+ <div class="steps" id="steps"></div>
+ <div class="cnt" id="prog_cnt"></div>
+</div>
+<div class="chap" id="chap"></div>
+<div id="nest"></div>
+
+<!-- 🔴🔴🔴 2026-09-09 A：★★★章の表と、この章の折りたたみ（★山田様の指示 2026-09-09）
+     ★「これの 章／章題／中身 を入れた方がいいんじゃないん。入れ子図の下に。
+       そして折りたたみの詳細を、その折りたたみのまま各章 該当するところに一つずつだけ入れたら」
+     ★★中身は common.js の CHTAB / CHDET（★トップページから機械で写したもの）
+       → ★文言を直すときは index.html を直して A121_chapdesc.py を流し直す -->
+<div id="chaptab"></div>
+<div id="chapdet"></div>
+
+<!-- ══════════════════ c12 ══════════════════ -->
+<div class="card" id="c12">
+<div class="tagline">Question 12</div>
+<h2>The next word is drawn by probability</h2>
+<!-- 🔴 2026-08-29 B（02）：作業G ── 目標を2本にした。
+     ★理由：目標1本では「温度を下げる」だけで判断が実質0回、しかも 49通り中12通りで
+       クリアできてバナー「答えは1つに決まります」と食い違っていた。
+     ★2本（正しさ8.0以上 かつ ばらけ2.5以上）にすると 0.65 の1通りだけになる。
+     ★狙いは【下げれば良いはずが、下げきると10回とも同じ文になる】を体験させること。
+     ★ばらけは全経路を列挙した計算値（Σ 1−(1−p)^10）。サンプリングではないので毎回同じ値が出る。
+     ★確認済み（出荷コードを駆動。→検証ツール/01-02/B26_pre.mjs）：
+       0.20→10.00/1.00　0.50→9.40/1.57　0.60→8.73/2.17
+       0.65→8.32/2.53 ★答え　0.70→7.86/2.91　1.00→5.07/5.29
+     ★49通りを全部走らせて、両方 達成は T=0.65 の1通りだけ（表示1桁で判定） -->
+<!-- 🆕 F：この lead の前半（5万個・くじ）は会話 e12a に移した。★目標の2行は残す -->
+<div id="e12a"></div>
+<p class="lead">
+<b>Your targets: out of 10 runs, the sentence &ldquo;The largest ocean on Earth is the Pacific Ocean.&rdquo; comes out 8.0 times or more.<br>
+And on top of that, get 2.5 or more different sentences.</b><br>
+<span style="color:var(--gray-500)">Both are set by <b>temperature</b>.
+These two targets are values this problem chose.</span></p>
+
+<!-- 🔴🔴🔴 2026-09-09 展開担当：★★★上下2分割の【上の枠】（★図＋つまみ＋ボタン＋ずれ）
+     ★★出所：段A の表（検証ツール/split_2026-09-09/段A_2分割の4つの値.md）
+     ★★★決定1 ── 上に置く図は【1枚】。
+     ★common.css / common.js が持つ部品で動きます（★このページに link も script も足しません） -->
+<div id="q12top">
+<div class="panel">
+ <div class="sent" id="sent"></div>
+ <div class="two">
+  <div><div class="cap">Probability of the next word (cut down to 6 candidates)</div><div id="b12"></div></div>
+  <div><div class="ctl" style="margin-top:0">
+   <!-- 🔴 2026-08-29 B（02）：作業E ── ★初出なので「温度（temperature）」にした（→00 の「つまみ（パラメータ）」と同じ形） -->
+   <label for="t12"><span><b>Temperature</b></span><span class="n" id="t12v">1.00</span></label>
+   <input type="range" id="t12" min="10" max="250" step="5" value="100">
+  </div>
+  <div class="cap">Turn it down and it gathers on the favourites; turn it up and the tail starts showing</div></div>
+ </div>
+ <div class="togs">
+  <!-- 🔴 2026-08-29 B（02）：★数える単位を「回」に統一した（目標が「10回のうち8回」なので、
+       ★「文」と「回」が混じると読者が数え直す）。★文そのものを指す言い方は「文」のまま -->
+  <button class="btn go" id="r10">Run it 10 times</button>
+  <button class="btn sm" id="d1">Draw one word</button>
+  <button class="btn sm" id="dA">Draw to the end</button>
+  <button class="btn sm" id="rs">Start over</button>
+ </div>
+ <!-- 🔴 2026-08-29 B（02）：作業G-4 ── ★ゲージを2本にして【縦に隣り合わせ】に置いた。
+      ★物差しは両方 0〜10 に揃えてある（gauge() の max）。★離すと引っぱり合いが見えないので、
+      ★間に説明や図を挟まないこと -->
+ <div class="gauge">
+  <div class="row"><span class="big" id="e12">–</span><span class="u">times &nbsp;/&nbsp; how often the target sentence comes out of 10 runs (calculated)</span></div>
+  <div class="gtrack"><span class="gfill" id="g12"></span><span class="gmark" id="m12"></span></div>
+  <div class="gcap"><span>0</span><span>target 8.0</span><span>10</span></div>
+ </div>
+ <div class="gauge">
+  <div class="row"><span class="big" id="e12k">–</span><span class="u">kinds &nbsp;/&nbsp; how many different sentences come out of 10 runs (calculated)</span></div>
+  <div class="gtrack"><span class="gfill" id="g12k"></span><span class="gmark" id="m12k"></span></div>
+  <div class="gcap"><span>0</span><span>target 2.5</span><span>10</span></div>
+ </div>
+ <div class="verdict" id="j12"></div>
+ <!-- 🔴🔴🔴🔴 2026-09-10 記録担当（3代目）：★★★★［10回 やらせてみる］の結果を
+      【上の枠の中・つまみの枠のいちばん下】へ移しました。
+      ★★★山田様のご指示（2026-09-10 16:1x）──
+        「ここは上半分の画面に見えるようにしてほしいな。他は下半分に表示でいいから。
+          ★一語だけ引くとかは上の方にでるから、十回もそのあたりがいいかな。
+          ★★とにかく押したときにちゃんとでてくることがわかるようなポジションにおいて」
+      ★★実測（★直す前）── ★この2つは 上の枠と下の枠の【どちらにも属していなかった】ので、
+        ★★★分割中は【丸ごと隠れていました】。★山田様「これがごっそり消えてる」の正体です。
+      ★★分割中は 場所が足りないので【上限を付けて中でスクロールさせます】──
+        ★実測 ── 結果は10行で 243px あり、★分割中の上の枠は 465px しかありません。
+        ★分割していないときは【全部 出ます】（★上限は分割中だけ効きます） -->
+ <div class="out hide" id="o10"></div>
+ <div class="verdict hide" id="j10"></div>
+</div>
+</div><!-- /#q12top -->
+<!-- 🔴 2026-08-29 B（02）：作業A ── ★「2.5通り」が【平均】だと書いていなかった。
+     ★根拠（出荷コードを駆動して 20万回 くり返した実測。→検証ツール/01-02/B27_pre.mjs）
+       温度0.65 で「10回やる」をくり返したとき
+       1種類 15.9% ／ 2種類 36.4% ／ 3種類 31.0% ／ 4種類 13.2% ／ 5種類以上 3.5%
+       ★2種類＋3種類 ＝ 67.5%（＝約7割）／ 平均 2.52種類（★出荷の kinds12(0.65) は 2.53）
+     ★目標の値（8.0回・2.5通り）は変えていない
+     ★★2026-08-29（案B）：この1行を .panel の【外】に出した。
+       ★理由⒜ これは「読み方の説明」で、操作するものでも結果でもない。
+         ★規則⑴（.panel に入れてよいのは つまみ と その結果1つ）の対象外である
+       ★理由⒝ 00 の問2 で同じ直しをしている（★データと線を .panel の外に出して
+         1,064.8px → 840以内 に収めた。→§5-23）。★先例のある形
+       ★理由⒞ 枠に入れていると 390px で c12 が 871.0px（解いた後 895.5px）になり 840 を超えた。
+         ★外に出すと 784.8px（解いた後 809.3px）で収まる。★文言は1文字も削っていない
+       ★★840 を1回 超えて放置すると、次の人が「超えてもいい」と読む根拠になる（→⒂-2） -->
+<!-- ★★下の枠 ── ★会話。★独立してスクロールします
+     🔴🔴🔴🔴 2026-09-10 記録担当（3代目）：★★★★下の枠の【始まりを ここまで上げました】。
+       ★山田様「他は下半分に表示でいいから」（2026-09-10 16:1x）。
+       ★★これで 説明2つと 温度の表が【下の枠の中】に入り、★分割中も読めます。
+       ★★★直す前は 上の枠と下の枠の どちらにも属していなかったので 隠れていました。
+       ★順序は元のまま／★中身は1文字も変えていません -->
+<div id="q12talk">
+<div class="cap" style="margin:.7rem 0 0;color:var(--black)">
+Both are averages over many repeats of the 10 runs, which is why they come out as decimals.<br>
+At temperature 0.65 what you actually get is nearly always <b>two kinds or three</b> (about 70% of the time between them).</div>
+<!-- 🔴🔴🔴🔴 2026-09-10 記録担当（3代目）：★★★★ここにあった［10回 やらせてみる］の結果は
+     【上の枠の中・つまみの枠のいちばん下】へ移しました。★山田様のご指示（2026-09-10 16:1x）。
+     ★★ここに置いたままだと 上の枠と下の枠の どちらにも属さないので、★分割中に隠れていました -->
+
+<!-- ⑩ 温度の表を本文へ（★式だけ折りたたみに残す） -->
+<!-- 🔴 2026-08-29 B（02）：作業G-6 ── ★「出てくる文の種類」の行を足した。
+     ★値は出荷コードを駆動して出した（0.20→1.0 / 1.00→5.3 / 2.50→9.2。→検証ツール/01-02/B26_pre.mjs）。
+     ★この表から答え（0.65）は読めないので残す。★引っぱり合いになっていることを示す役に立つ -->
+<table class="dtab" style="margin-top:1.2rem">
+<tr><th class="l">Next word</th><th>Temperature 0.20</th><th>Temp. 1.00</th><th>Temp. 2.50</th></tr>
+<tr><td class="l">Pacific</td><td>1.000</td><td>0.736</td><td>0.372</td></tr>
+<tr><td class="l">Atlantic</td><td>0.000</td><td>0.100</td><td>0.167</td></tr>
+<tr><td class="l">Indian</td><td>0.000</td><td>0.060</td><td>0.137</td></tr>
+<tr><td class="l">Arctic</td><td>0.000</td><td>0.045</td><td>0.121</td></tr>
+<tr><td class="l">Southern</td><td>0.000</td><td>0.037</td><td>0.112</td></tr>
+<tr><td class="l">one</td><td>0.000</td><td>0.022</td><td>0.092</td></tr>
+<tr class="sum"><td class="l"><b>Target sentence, out of 10 runs</b></td><td><b>10.0</b></td><td><b>5.1</b></td><td><b>0.7</b></td></tr>
+<tr class="sum"><td class="l"><b>Different sentences, out of 10 runs</b></td><td><b>1.0</b></td><td><b>5.3</b></td><td><b>9.2</b></td></tr>
+</table>
+<div class="cap" style="margin:.2rem 0 0">The bottom two rows are calculated by following these 6 candidates all the way through.
+<b>Leave the temperature at 1.00 and it answers correctly only 5 times out of 10. Take it down to 0.20 and all
+10 runs give the very same sentence.</b></div>
+
+<div id="e12b"></div>
+<!-- 🔴🔴🔴 2026-09-10 記録担当（A149_movehide.py）：★★★この枠を【下の枠の中】へ移しました。
+     ★理由：★分割の規則で【上の枠と下の枠のどちらにも属さないものは隠されます】。
+       ★★この枠は「解いたら出てくる枠」なので、外にあると
+         ★★★解いて hide が外れても【分割中は永久に出てきません】。
+     ★山田様「ここで止まる」の正体がこれでした（★2026-09-10。★分割18問中15問で起きていた）。
+     ★中身は1文字も変えていません。★置き場所だけ変えました -->
+<div id="r12" class="hide">
+ <div id="e12z"></div>
+ <div class="keyh">What to take away</div>
+ <!-- 🆕 F：★元の verdict の中身は会話 e12z に寄せた。★用語だけ残す（→ 型3） -->
+ <div class="verdict ok">
+  This single knob is called <b>temperature</b>.
+  <span style="color:var(--gray-500)">It sits on the using side, and never appears in the building process.</span>
+ </div>
+</div>
+<!-- 🔴🔴🔴🔴 2026-09-10 記録担当（A150_pullin.py）：★★★★ここから下を【下の枠の中】へ取り込みました。
+     ★理由：★私が A149 で「解いたら出てくる枠」を移したとき、
+       ★★【その前にあったもの】を一緒に運ばなかったため、
+       ★★★見出し・パネル・表・役に立つところ が下の枠の外に置き去りになり、
+         ★分割の規則（どちらの枠にも属さないものは隠す）で【分割中は見えなくなっていました】。
+     ★山田様「【動かす】…ここが見えない。分割をやめるとそこが見える」（2026-09-10）
+     ★★順序は元のまま保っています。★中身は1文字も変えていません -->
+
+
+<!-- 🔴 2026-08-31 02担当：★山田様の指示で【温度の式の折りたたみを丸ごと削除】した。
+     ★山田様「ここいらない。消して。問12 は問題がわかりやすいから」（2026-08-31）
+     ★消したもの（★戻すときはこれを書き戻す。★退避 81514b7c… にも原形がある）
+       <details><summary>温度（temperature）の式（読まなくても進めます）</summary>
+       <div class="lg"><div class="calc">p_i ＝ e^(z_i / T) ／ Σ_j e^(z_j / T)</div>
+       <p>z が各語の点数、T が温度。00 の問5 の式に ÷T が入っただけです。
+       小さくすると差が拡大され、大きくすると差がつぶれます。
+       温度は使い方の側のつまみで、作る工程には出てきません。</p></div></details>
+     ★「使い方の側のつまみで、作る工程には出てきません」は下の r12 の【覚えること】に
+       同じ文が残っているので、内容は画面から消えていない -->
+
+
+<!-- 🔴 2026-08-29 B（02）：作業F ── ★「役に立つところ」を足した（00 と同じ形式）。
+     ★文言は山田様の確認を取ったもの。★02 には0個だった -->
+<div class="src">
+ <div class="h">Where this pays off</div>
+ Turn the temperature down when you want one single fact back, and up when you want several ways of putting it.
+ <b>The <span class="mono">temperature</span> in ChatGPT and in the APIs is this knob.</b>
+</div>
+
+</div><!-- /#q12talk --></div>
+
+<!-- 🔴 2026-09-02 1問1ページ担当：★戻る／次へ（★どのページでも常に押せる） -->
+<div id="nav"></div>
+
+<div id="foot"></div>
+</div>
+
+
+<script src="common.js"></script>
+<script>
+/* ══════════════════════════════════════════════════════════════════════════
+   🔴 2026-09-02 1問1ページ担当2代目：★★下は原本 tsume-02 の <script> から
+     【この問が使う行だけ】をそのまま写したものです。★1文字も変えていません（★行を落としただけ）
+   ★★IIFE で包んだ理由 ── 原本の const $ / const show / const T が common.js の同名 const と
+     ぶつかって【SyntaxError でページ全体が動かなくなる】ため。★包んだだけで中身は変わりません
+   ★★mark() だけは common.js のものを使います（★帯が5章グループに変わったため。→ 指示⑶）
+   ══════════════════════════════════════════════════════════════════════════ */
+var QBASE = 11;
+drawProg(12); drawChap(12, "");
+drawNav(["q11.html","Problem 11: Just memorized"], ["q13.html","Problem 13: Which words to look at"]);
+drawNest("nest", 3);
+drawChapTab(3); drawChapDet(3);
+drawFoot()   /* 🔴 2026-09-02 A：★注記を消した（★山田様。★同じ一文が21回出るのは型3／§2-6 の言い訳）*/;
+
+(function(){
+/* ══════════════════════════════════════════════════════════════
+   詰めKaggle 02 ── LLM は何を見ているか
+   ★★数値は全部コードで出す（→00 §2-9）。手計算や記憶で書かない
+   ★確定した値（/tmp/tk02/calc1.mjs・calc2.mjs で総当たり確認）
+     問12  「東京」T=0.20→0.9999 / 0.50→0.9689 / 1.00→0.7363 / 2.50→0.3716
+           文「日本の首都は東京です。」T=0.50→0.9401 / 1.00→0.5071
+           ★z=[3.0,1.0,0.5] を入れると T=1.0→0.82/0.11/0.07（資料 第1部§3-3 と一致）
+           ★★2026-08-29 B（02）：目標を2本にした（→作業G）。★出荷コードを駆動して確認
+             正しさ（Σ を 10倍）／ばらけ（Σ 1−(1−p)^10・全経路 101本）
+               T=0.20 → 10.00 / 1.00      T=0.50 → 9.40 / 1.57
+               T=0.60 →  8.73 / 2.17      T=0.65 → 8.32 / 2.53 ★答え
+               T=0.70 →  7.86 / 2.91      T=1.00 → 5.07 / 5.29   T=2.50 → 0.74 / 9.21
+             ★49通り 全部を走らせて、両方 達成は T=0.65 の【1通りだけ】（表示1桁で判定）
+     問13  ★★2026-08-29 B（02）：例文と語を差し替えた（→作業A）
+           札 コーヒー0°/机90°/新聞180°/手270°・|q|=強さ・d_k=2
+           向き0°・強さ1.0 → 0.4486 / 0.2212 / 0.1091 / 0.2212（合計 1.000000）★未達
+           向き0°・強さ1.3 → 0.5110 / 0.2043 / 0.0805 / 0.2043 ★達成
+             ★表示のまま足して 0.511+0.204+0.081+0.204 ＝ 1.000
+           向きの揃い具合（cos。強さを掛けない）向き0° → ＋1.000 / 0.000 / −1.000 / 0.000
+             ★★手（札270°）は −1.8e−16 なので、素の toFixed では「−0.000」になる → クランプ必須
+           目標 半分より上（>0.500）→ 到達 2,154 / 14,801 組
+             ★>=0.500 なら 2,164 組（旧の値）。★向き −44°〜44° で届く
+           ★向き0° では強さ 1.3 以上（強さ1.0 は 0.4486 で未達）。最大 0.8915（0°・4.0）
+           ★丸めあり／なしで判定が食い違うのは 6 件 → R3 で丸めてから判定する（→§7-2）
+           次の1語 z=[3α_コーヒー, 3α_新聞]  ★中身を 2.0 → 3.0 に上げた
+             強さ1.3 → こぼれた 0.784 / やぶれた 0.216（和 1.000）
+             ★参考 中身2.0 → 0.703/0.297 ／ 中身4.0 → 0.848/0.152
+             ★★取り分（weights() の出力）は中身の値に影響されないので、目標の難易度は変わらない
+     問14  ★★2026-08-29 B（02）：hide にした（→c14 のコメント）。★以下は作り直すときに使う値
+           ★★1本での min(法,適用) の上限 = 0.250000（14,801組 総当たり。向き任意・強さ0）
+           ★目標 0.35 に届いた組は 0 件 ＝ 1本では不詰
+           2本（0°/1.0 と 180°/1.0）→ 法 0.449 / 適用 0.449
+           ★「低いほう≥0.35」と「両方≥0.35」は 1,640,961組で食い違い 0 件
+           ★★ただし これは札を ちょうど正反対に置いたから成立する話で、attention の性質ではない
+     ÷√d_k  d_k=2 内積0.9 →あり0.564/なし0.627 ／ 512 内積18.2 →0.597/0.985
+   ══════════════════════════════════════════════════════════════ */
+const $=id=>document.getElementById(id);
+const show=id=>$(id).classList.remove('hide');
+const hide=id=>$(id).classList.add('hide');
+/* ★★画面に出す桁に丸めてから判定する（→§7-2）。★でないと「表示 0.500 なのに未達」が出る */
+const R3=v=>+v.toFixed(3);
+/* ★大きいほど良いゲージ。★ゲージの目標とクリア条件は必ず同じ値にする */
+function gauge(fillId,markId,v,goal,max){
+  const g=$(fillId); g.style.width=Math.min(100,v/max*100).toFixed(1)+'%';
+  g.className='gfill'+(v>=goal?' ok':''); $(markId).style.left=(goal/max*100).toFixed(1)+'%'; }
+/* 横棒（sc-row）。goal を渡すと目標線と緑の当たりが出る
+   🔴 2026-08-29 B（02）：★★引数を2つ足した。
+     ★sum1 ── 表示の3桁を足して ちょうど 1.000 になるように端数を吸収する（→規則⒃-2）。
+       ★実測：向き361×強さ41＝14,801組のうち【4,918組（33.2%）】で
+         素の丸めだと 0.999 や 1.001 になっていた。★吸収後は 0組（→検証ツール/01-02/B26_sum.mjs）
+       ★端数は【いちばん大きい項】で吸収する。★最大剰余法は使わない（→§5-23）
+     ★gt   ── 目標を「より上（>）」で見る。★問13 の文言が「半分より上」なので、
+       ★ちょうど 0.500 のとき棒が緑になって判定が未達になる食い違いを防ぐ（→§7-2）。
+       ★実測：ちょうど 0.500 になる組は【端数の吸収前で】10組（★吸収後は 8組） */
+function disp3(vals){
+  const d=vals.map(v=>R3(v));
+  const gap=+(1-d.reduce((a,b)=>a+b,0)).toFixed(3);
+  if(gap!==0){ let mi=0; d.forEach((v,i)=>{ if(v>d[mi])mi=i; }); d[mi]=R3(d[mi]+gap); }
+  return d;
+}
+function bars(el,names,vals,goal,idx,cols,sum1,gt){
+  const v=sum1?disp3(vals):vals;
+  $(el).innerHTML=names.map((n,i)=>{
+    const on=(!idx||idx.indexOf(i)>=0);
+    const hit=(goal&&on&&(gt?R3(v[i])>goal:R3(v[i])>=goal));
+    const g=(goal&&on)?`<span class="goal" style="left:${goal*100}%"></span>`:'';
+    const c=cols?cols[i]:(hit?'':'#000');
+    return `<div class="sc-row"><span class="sc-label">${n}</span>`
+     +`<span class="sc-track"><span class="sc-fill${hit?' hit':''}"`
+     +` style="width:${(v[i]*100).toFixed(1)}%${c?';background:'+c:''}"></span>${g}</span>`
+     +`<span class="sc-pct">${v[i].toFixed(3)}</span></div>`;}).join('');
+}
+
+/* ══════════════════════════════════════════════════════════════
+   問12 ── 次の1語を確率で引いて、つないで文にする
+   ★語と点数は全部この問題が置いた作例。実測ではない
+   ══════════════════════════════════════════════════════════════ */
+const P='The largest ocean on Earth is the';
+/* ★★★英語版だけ 例文を作り直しました（★山田様のご了承 2026-09-12）──
+   ★日本語版は 東京／です／。の【3語】で目標の文になりますが、
+     ★★英語の事実文は「Tokyo.」の【2語】で終わってしまい、3段を保てません。
+   ★★★3段が崩れると 8.0回・2.5通りの目標、答えの温度 0.65、本文の表の8行が すべて変わります。
+   → ★答えが自然に2語になる例文（Pacific ＋ Ocean ＋ .）に差し替え、
+     ★★★木の形（20キー・101経路）と点数は【1つも変えていません】。
+     ★★検算：0.20→10.00/1.00 ／ 0.50→9.40/1.57 ／ 0.60→8.73/2.17 ／ 0.65→8.32/2.53 ／
+       0.70→7.86/2.91 ／ 1.00→5.07/5.29 ／ 2.50→0.71/9.21 ── 日本語版と完全一致（★node で確認）
+     ★49通り 全部を走らせて 両方 達成は 0.65 の1通りだけ ── これも一致
+   ★間違いの候補が Atlantic・Indian・Arctic なので、
+     ★★「もっともらしく間違える」仕掛け（★日本語版の 大阪・京都）が そのまま生きています */
+const S6=[['.',3.5],[' though',0.3],[' I think',-0.2],[' because',-0.7],[' but',-1.2],[',',-1.7]];
+const TREE={
+ [P]:[[' Pacific',3.0],[' Atlantic',1.0],[' Indian',0.5],[' Arctic',0.2],[' Southern',0.0],[' one',-0.5]],
+ [P+' Pacific']:[[' Ocean',3.0],[' Ocean basin',1.0],[',',0.3],[' for sure',0.0],[' Rim',-0.5],[' and',-1.0]],
+ [P+' Pacific Ocean']:[['.',3.5],[' though',0.5],[' I think',0.0],[' because',-0.5],[' but',-1.0],[',',-1.5]],
+ [P+' Pacific Ocean basin']:[[' itself',3.0],[' of course',0.5],[' really',0.0],[' though',-0.5],[',',-1.0],[' and',-1.5]],
+ [P+' Pacific Ocean basin itself']:S6,
+ [P+' Atlantic']:[[' Ocean',3.0],[',',0.5],[' for sure',0.0],[' Coast',-0.3],[' Basin',-0.6],[' and',-1.0]],
+ [P+' Atlantic Ocean']:S6,
+ [P+' Indian']:[[' Ocean',3.0],[',',0.5],[' for sure',0.0],[' subcontinent',-0.3],[' Basin',-0.6],[' and',-1.0]],
+ [P+' Indian Ocean']:S6,
+ [P+' Arctic']:[[' Ocean',3.0],[',',0.5],[' for sure',0.0],[' Circle',-0.3],[' Basin',-0.6],[' and',-1.0]],
+ [P+' Arctic Ocean']:S6,
+ [P+' Southern']:[[' Ocean',3.0],[' waters',0.5],[' for sure',0.0],[' Hemisphere',-0.3],[',',-0.6],[' to',-1.0]],
+ [P+' Southern Ocean']:S6,
+ [P+' one']:[[' everyone knows',3.0],[' we all know',0.5],[' you mean',0.0],[' because',-0.5],[',',-1.0],[' but',-1.5]],
+ [P+' one everyone knows']:S6,
+ [P+' Pacific,']:[[' obviously',3.0],[' clearly',0.5],[' I think',0.0],[' surely',-0.5],[' and',-1.0],[' or',-1.5]],
+ [P+' Pacific, obviously']:S6,
+ [P+' Pacific for sure']:[['.',3.5],[' really',0.5],[' honestly',0.0],[' because',-0.5],[' though',-1.0],[',',-1.5]],
+ [P+' Pacific Rim']:[[' region',2.5],[' of',1.0],[' is',0.5],[' in',0.0],[',',-0.5],[' to',-1.0]],
+ [P+' Pacific Rim region']:S6
+};
+/* ★用意していない道は必ず「。」で閉じる。★行き止まりを作らない（→00 §2-10） */
+const CLOSE=[['.',3.0]];
+function nextOf(s){ if(TREE[s])return TREE[s]; if(s.slice(-1)==='.')return null; return CLOSE; }
+function soft(z,T){ const m=Math.max.apply(null,z);
+  const e=z.map(v=>Math.exp((v-m)/T)), s=e.reduce((a,b)=>a+b,0); return e.map(v=>v/s); }
+function pick(pairs,T){ const pr=soft(pairs.map(x=>x[1]),T); let r=Math.random(), a=0;
+  for(let i=0;i<pr.length;i++){ a+=pr[i]; if(r<=a)return pairs[i][0]; }
+  return pairs[pairs.length-1][0]; }
+/* 🔴 FB：1回ずつだと運で決まる（温度1.00 で 50.7%）。★10回の成績にした
+   ★実測（1回で文が完成する確率から二項分布で計算。/tmp/tk02/c12.mjs）
+     T=1.00 → 1回 0.5071 ／ 10回中8回以上になるのは  6.0%
+     T=0.80 → 0.6902 ／ 35.7%      T=0.60 → 0.8731 ／ 87.6%
+     T=0.50 → 0.9401 ／ 98.1%      T=0.20 → 0.9999 ／ 100%
+   → ★目標 8回。★初期の 1.00 では ほぼ届かず、0.5 まで下げるとほぼ確実 */
+/* ★★1回で文が完成する確率 × 10 ＝ 期待値。★サンプリングではないので【毎回同じ値】が出る
+   ★実測（刻み0.05）T=1.00→5.07回 ／ 0.80→6.90 ／ 0.70→7.86 ／ 0.65→8.32 ／ 0.50→9.40 */
+/* 🔴 2026-08-29 B（02）：作業G ── 目標を2本にした。
+   ★理由：目標1本では「温度を下げる」だけで判断が実質0回、しかも 49通り中12通りで
+     クリアできてバナー「答えは1つに決まります」と食い違っていた。
+   ★2本（正しさ8.0以上 かつ ばらけ2.5以上）にすると 0.65 の1通りだけになる。
+   ★狙いは【下げれば良いはずが、下げきると10回とも同じ文になる】を体験させること。
+   ★ばらけは全経路を列挙した計算値（Σ 1−(1−p)^10）。サンプリングではないので毎回同じ値が出る。
+   ★確認済み（出荷コードを駆動。→検証ツール/01-02/B26_pre.mjs）：
+     0.20→10.00/1.00　0.50→9.40/1.57　0.60→8.73/2.17
+     0.65→8.32/2.53 ★答え　0.70→7.86/2.91　1.00→5.07/5.29
+   ★49通り 全部を走らせて、両方 達成は T=0.65 の【1通りだけ】（表示1桁に丸めて判定） */
+const GOAL12=8.0, GOAL12K=2.5, SEQ12=[' Pacific',' Ocean','.'];
+function seqProb12(T){ let s=P, p=1;
+  for(const w of SEQ12){ const nx=nextOf(s); if(!nx)return 0;
+    const pr=soft(nx.map(x=>x[1]),T); const i=nx.findIndex(x=>x[0]===w); if(i<0)return 0;
+    p*=pr[i]; s+=w; }
+  return p; }
+/* ★★ばらけ ── TREE と CLOSE をたどって全経路を列挙し、文ごとの確率 p_s を出す。
+   ★期待種類数 ＝ Σ_s ( 1 − (1 − p_s)^10 )。★乱数は使わない（→判定は計算値で行う方針）
+   ★経路は 101本（実測）なので、つまみを動かすたびに計算しても軽い */
+function paths12(T,maxDepth){ const out=[], lim=maxDepth||14;
+  (function walk(s,p,d){ const nx=nextOf(s);
+    if(!nx||d>=lim){ out.push(p); return; }
+    const pr=soft(nx.map(x=>x[1]),T);
+    nx.forEach((pair,i)=>{ if(pr[i]>0)walk(s+pair[0],p*pr[i],d+1); });
+  })(P,1,0);
+  return out; }
+function kinds12(T){ return paths12(T).reduce((a,p)=>a+(1-Math.pow(1-p,10)),0); }
+let W12=[], ok12=false, mv12=0;
+/* ★★型D の対処：10回の結果は【押したときの温度】のもの。★温度を動かしたら必ず消す */
+function clr10(){ hide('o10'); hide('j10'); $('o10').textContent=''; $('j10').innerHTML=''; }
+function up12(){
+  clr10();
+  const T=(+$('t12').value)/100; $('t12v').textContent=T.toFixed(2);
+  const cur=P+W12.join('');
+  let s=`<span class="prompt">${P}</span>`;
+  W12.forEach((w,i)=>{ s+=`<span${i===W12.length-1?' class="new"':''}>${w}</span>`; });
+  const nx=nextOf(cur);
+  if(nx)s+=`<span class="caret"></span>`;
+  $('sent').innerHTML=s;
+  if(nx){ const pr=soft(nx.map(x=>x[1]),T);
+    bars('b12',nx.map(x=>x[0]),pr,null,null,nx.map((x,i)=>i===0?'#000':'#9aa2a8'));
+    if(nx===CLOSE)$('b12').innerHTML+=`<div class="cap" style="margin:.3rem 0 0">`
+      +`Nothing is laid out beyond this point, so it closes with a full stop.</div>`;
+    $('d1').disabled=false; $('dA').disabled=false; }
+  else { $('b12').innerHTML=`<div class="cap" style="margin:0">The sentence is finished.</div>`;
+         $('d1').disabled=true; $('dA').disabled=true; }
+  /* 🔴 2026-08-29 B（02）：作業G ── ★正しさ と ばらけ の2本を出し、両方 揃って初めてクリア。
+     ★★判定は【画面に出す桁（小数1桁）に丸めてから】行う（→§7-2）。
+       ★でないと「表示 2.5 なのに未達」が出る */
+  const ex=seqProb12(T)*10, kn=kinds12(T);
+  const exD=+ex.toFixed(1), knD=+kn.toFixed(1);
+  $('e12').textContent=exD.toFixed(1);
+  $('e12k').textContent=knD.toFixed(1);
+  gauge('g12','m12',exD,GOAL12,10);
+  gauge('g12k','m12k',knD,GOAL12K,10);
+  const okE=exD>=GOAL12, okK=knD>=GOAL12K, okNow=okE&&okK;
+  if(okNow&&!ok12){ ok12=true; mark(0,'done'); show('r12'); }
+  $('j12').className='verdict'+(okNow?' ok':'');
+  /* ★★4つの状態を書き分ける。★どちらが足りないかを必ず名指しする */
+  const hint12=(mv12>=6&&!okNow)
+   ? `<br><span style="color:var(--gray-500)"><b>Turning it down raises how often it is right, but
+      you end up with a single sentence.</b> Look for the place where both hold.</span>` : '';
+  $('j12').innerHTML = okNow
+   ? `At temperature <b>${T.toFixed(2)}</b>, 10 runs give the right answer <b>${exD.toFixed(1)} times</b>
+      and <b>${knD.toFixed(1)} different</b> ways of putting it. <b>Both targets are met.</b>
+      <span style="color:var(--gray-500)">Check it with [Run it 10 times].</span>`
+   : okE
+   ? `Being right is covered, but only <b>${knD.toFixed(1)} different</b> sentences come out
+      (target 2.5). <span style="color:var(--gray-500)">The temperature is too low.</span>${hint12}`
+   : okK
+   ? `The wording varies nicely, but it only answers correctly <b>${exD.toFixed(1)} times</b>
+      (target 8.0). <span style="color:var(--gray-500)">The temperature is too high.</span>${hint12}`
+   : `At temperature <b>${T.toFixed(2)}</b> it answers correctly <b>${exD.toFixed(1)} times</b>
+      and gives <b>${knD.toFixed(1)} different</b> sentences. <b>Neither target is met yet.</b>${hint12}`;
+}
+function drawN(n){ const T=(+$('t12').value)/100;
+  for(let k=0;k<n;k++){ const nx=nextOf(P+W12.join('')); if(!nx)break;
+    W12.push(pick(nx,T)); if(W12[W12.length-1]==='.')break; }
+  up12(); }
+$('d1').onclick=()=>drawN(1);
+$('dA').onclick=()=>drawN(12);
+$('rs').onclick=()=>{ W12=[]; up12(); };
+$('t12').oninput=up12;
+/* 🔴 2026-08-29 B（02）：作業G-5 ── ★ヒントの回数は onchange で数える
+   （★oninput はドラッグ中に何十回も発火する）。★数えたあとに up12() を呼ぶ（→00 §5-14 A-4） */
+$('t12').onchange=()=>{ mv12++; up12(); };
+$('r10').onclick=()=>{
+  const T=(+$('t12').value)/100, outs=[], cnt={};
+  for(let i=0;i<10;i++){ let s=P;
+    for(let k=0;k<12;k++){ const nx=nextOf(s); if(!nx)break; const g=pick(nx,T); s+=g; if(g==='.')break; }
+    outs.push(s); cnt[s]=(cnt[s]||0)+1; }
+  show('o10'); show('j10');
+  /* 🔴🔴🔴🔴 2026-09-10 記録担当（3代目）：★★★★押したら【結果の場所まで運ぶ】。
+     ★★★山田様のご指示（2026-09-10 16:1x）──
+       「とにかく押したときにちゃんとでてくることがわかるようなポジションにおいて」
+     ★★分割中の上の枠は【中でスクロールできます】（★common.css の overflow-y:auto）。
+       ★★★結果は上の枠のいちばん下にあるので、★押しただけでは見えないことがあります。
+       → ★押したら そこまで運びます。★★分割していないときも同じように運びます。
+     ★描き終わってから運ぶ必要があるので、★★次の描画を2回 待ちます。 */
+  requestAnimationFrame(()=>{ requestAnimationFrame(()=>{
+    const box=$('o10');
+    const top_=document.querySelector('.split-on .splittop');
+    if(top_ && top_.contains(box)){
+      /* ★分割中 ── ★上の枠の中でスクロールする（★ページ全体は動かさない） */
+      top_.scrollTop = box.offsetTop - top_.offsetTop - 8;
+    } else {
+      box.scrollIntoView({block:'center', behavior:'smooth'});
+    }
+  }); });
+  $('o10').textContent=outs.map((o,i)=>`${String(i+1).padStart(2)}  ${o}`).join('\n');
+  const kinds=Object.keys(cnt).length;
+  /* ★「東京」と答えたか。★「東京タワー」は除く */
+  const good=outs.filter(o=>/^The largest ocean on Earth is the Pacific(?! Rim)/.test(o)).length;
+  /* ★目標は【目標の文がいくつ完成したか】。★「東京と答えた数」とは別に数える */
+  /* ★★ここは【実際に引いた結果】。★判定は上の期待値で行う（運で決まらないようにするため） */
+  const win10=outs.filter(o=>o==='The largest ocean on Earth is the Pacific Ocean.').length;
+  /* 🔴 2026-08-29 B（02）：作業G-7 ── ★実測と【2本ぶんの計算値】を並べて出す */
+  const ex=seqProb12(T)*10, kn=kinds12(T);
+  $('j10').className='verdict';
+  $('j10').innerHTML=`Running it 10 times for real at temperature <b>${T.toFixed(2)}</b>: `
+   +`<b>&ldquo;the Pacific Ocean.&rdquo; came out ${win10} times</b> (calculated: ${ex.toFixed(1)}).`
+   +`<br>There were <b>${kinds} different</b> sentences (calculated: ${kn.toFixed(1)}), and `
+   +`it named the Pacific ${good} times out of 10.`
+   +`<br><span style="color:var(--gray-500)">Every draw wobbles, which is why the verdict goes by the calculated value.</span>`;
+};
+
+
+/* ══════ 起動（★この問のぶんだけ。★原本の起動行から他の問の呼び出しを落としました）══════ */
+up12();
+
+/* ══════ 会話（★原本の CV の写し。★この問のぶんだけ）══════ */
+var CV = {
+ "e12a": [
+  [
+   "d",
+   "Adam, how many exits did I say ChatGPT has, back in <b>Problem 5</b>?"
+  ],
+  [
+   "m",
+   "Fifty thousand. One line per word. &hellip; Although what I built had <b>three</b>."
+  ],
+  [
+   "d",
+   "Quite so. Yours had three. <b>The fifty thousand is what we are about to look at.</b>"
+  ],
+  [
+   "m",
+   "&hellip; But Doc, what are those <b>50,000</b>? Every word in the dictionary?"
+  ],
+  [
+   "d",
+   "No. Not a dictionary. An LLM reads text by cutting it against a <b>list of pieces</b> settled in advance. That list runs to 50,000. Take a look."
+  ],
+  [
+   "f",
+   "<div class='ft'>What &ldquo;50,000 words&rdquo; means &mdash; not a dictionary, but a fixed list of pieces</div><div class='fn'>An LLM reads text by <b>cutting it into pieces</b>. How large that list of pieces is depends on the model.</div><table><tr><th>Model</th><th>Size of the list of pieces</th></tr><tr><td>The &ldquo;50,000&rdquo; this course refers to</td><td><b>50,000</b> (the GPT-2 figure)</td></tr><tr><td>ChatGPT today (GPT-4)</td><td><b>about 100,000</b></td></tr></table><div class='fn' style='margin-top:.6rem'><b>Cutting into pieces makes it shorter</b> (where the cuts fall differs by model, so this is a worked example of the idea)</div><div class='sm2' style='margin-top:.4rem'>The largest ocean on Earth is the Pacific Ocean.&nbsp; <span style='color:var(--gray-500)'>48 characters</span><br>&darr;<br>The / largest / ocean / on / Earth / is / the / <b>Pacific</b> / Ocean / .&nbsp; <span style='color:var(--gray-500)'>10 pieces</span><br><span style='color:var(--gray-500)'>&ldquo;Pacific&rdquo; is seven letters, but it turns up often enough to be <b>one piece</b>. Frequent chunks are gathered into single pieces, which is how 48 characters come down to 10.</span></div><div class='fn' style='margin-top:.6rem'>Every letter, digit and punctuation mark is in the list <b>on its own</b>. <span style='color:var(--gray-500)'>So even a chunk that is not in the list can always be written, one letter at a time.</span></div><div class='fn' style='margin-top:.6rem'><b>Is 50,000 a lot? Set against the size of English</b></div><div class='rw'><span class='nmx'>Words on a school list</span><span class='tk'><span class='fl2' style='width:1.7%'></span></span><span class='pc2'>3,000</span></div><div class='rw'><span class='nmx'>Words an adult knows</span><span class='tk'><span class='fl2' style='width:17.5%'></span></span><span class='pc2'>about 30,000</span></div><div class='rw'><span class='nmx'>Pieces in an LLM</span><span class='tk'><span class='fl2 k' style='width:29.2%'></span></span><span class='pc2'>50,000</span></div><div class='rw'><span class='nmx'>Oxford English Dictionary</span><span class='tk'><span class='fl2 g' style='width:100%'></span></span><span class='pc2'>171,476 in use</span></div><div class='fn'>So 50,000 is fewer than the dictionary &mdash; under a third of it. Which means registering words as they are was never going to work: people&rsquo;s names are not in the dictionary, nor are new words, nor typos.</div><div class='fn'>So instead of registering words, they registered pieces. It is the same relation as <b>learning 26 letters and being able to read all 171,476 words</b>. The 50,000 do not cover every word in the world; they combine to express them.</div><div class='fn'>And what an LLM sees is <b>a run of pieces</b>, not letters. Which is why asking it to spell a word backwards is hard for it. <span style='color:var(--gray-500)'>Products today call out to a calculator or a program to cover for this, so in normal use it does not slip. This is about the mechanism inside.</span></div>"
+  ],
+  [
+   "m",
+   "So &ldquo;choosing the next word&rdquo; means <b>picking one out of 50,000 pieces</b>."
+  ],
+  [
+   "d",
+   "Precisely! &hellip; And Adam, that same function, blown up enormously, is an <b>LLM</b>, a large language model. Tools that write text back to you, ChatGPT among them, get called <b>generative AI</b>, and this is the thing doing the writing inside them."
+  ],
+  [
+   "m",
+   "Is it a different technology from Chapters 1 and 2?"
+  ],
+  [
+   "d",
+   "Not different at all. It is the same function. Take a look."
+  ],
+  [
+   "d",
+   "Now then. Out of those 50,000 exits, <b>how does it choose the next word</b>?"
+  ],
+  [
+   "m",
+   "&hellip; The one with the highest probability?"
+  ],
+  [
+   "d",
+   "That is one way. But an LLM <b>draws a lottery weighted by probability</b>. It tacks the word it drew onto the end and draws again. That is all."
+  ],
+  [
+   "m",
+   "A lottery? So the answer differs every time?"
+  ],
+  [
+   "d",
+   "It does. &hellip; Which is <b>where the odd behaviour comes from</b>. Turn the knob below. It goes by the name of <b>temperature</b>."
+  ]
+ ],
+ "e12b": [
+  [
+   "m",
+   "I turned the temperature down and all 10 runs came out right. So why not just turn it down?"
+  ],
+  [
+   "d",
+   "Go on, turn it down. &hellip; What happened at <b>0.20</b>?"
+  ],
+  [
+   "m",
+   "Being right is <b>10.0</b>. &hellip; Oh. <b>Variety is 1.0.</b>"
+  ],
+  [
+   "d",
+   "That is it! Only one way of putting it comes out. Turn it up to <b>1.00</b> instead and variety reaches <b>5.3</b>, but being right drops to <b>5.1</b>."
+  ],
+  [
+   "m",
+   "Why can they not both improve at once?"
+  ],
+  [
+   "d",
+   "Temperature does <b>one thing only</b>. <b>Gather on the favourite, or spread it around.</b> Take a look."
+  ],
+  [
+   "f",
+   "<div class='ft'>What temperature does &mdash; gather on the favourite, or spread it around</div><div class='fn'>This lines up <b>how often &ldquo;Pacific&rdquo; comes out as the first word</b> at three temperatures (the same numbers as the top row of the table above).</div><div class='fn' style='margin-top:.6rem'><b>Temperature 0.20</b>&nbsp; turned right down</div><div class='rw'><span class='nmx'>Pacific</span><span class='tk'><span class='fl2 k' style='width:100%'></span></span><span class='pc2'>1.000</span></div><div class='rw'><span class='nmx'>the other 5</span><span class='tk'><span class='fl2' style='width:0%'></span></span><span class='pc2'>0.000</span></div><div class='fn' style='margin-top:.6rem'><b>Temperature 0.65</b>&nbsp; in the middle</div><div class='rw'><span class='nmx'>Pacific</span><span class='tk'><span class='fl2 k' style='width:91.3%'></span></span><span class='pc2'>0.913</span></div><div class='rw'><span class='nmx'>the other 5</span><span class='tk'><span class='fl2' style='width:8.7%'></span></span><span class='pc2'>0.087</span></div><div class='fn' style='margin-top:.6rem'><b>Temperature 1.00</b>&nbsp; turned up</div><div class='rw'><span class='nmx'>Pacific</span><span class='tk'><span class='fl2 k' style='width:73.6%'></span></span><span class='pc2'>0.736</span></div><div class='rw'><span class='nmx'>the other 5</span><span class='tk'><span class='fl2' style='width:26.4%'></span></span><span class='pc2'>0.264</span></div><div class='fn'>At every temperature the <b>two bars add up to 1.000</b>. All temperature moves is how hard to gather on the favourite.</div><div class='fn'>So <b>being right</b> (how often the target sentence comes out) rises as you turn it down, and <b>variety</b> (how many different sentences) rises as you turn it up &mdash; <b>they always move in opposite directions.</b> There is no temperature that improves one alone.</div>"
+  ],
+  [
+   "m",
+   "So they <b>pull against each other</b>. &hellip; Do I put both in the middle?"
+  ],
+  [
+   "d",
+   "<b>Every value has been tried.</b> There is <b>exactly one</b> temperature that meets both targets. Go and find it."
+  ]
+ ],
+ "e12z": [
+  [
+   "m",
+   "<b>0.65.</b> &hellip; Both of them!"
+  ],
+  [
+   "d",
+   "You found it! <b>Draw one word by probability, tack it on the end, draw again. That is all there is to it.</b>"
+  ],
+  [
+   "m",
+   "Turn it down and you get the same sentence; turn it up and it scatters."
+  ],
+  [
+   "d",
+   "Just so. &hellip; Now then, Adam. <b>When it settled on that word, which of the earlier words was it looking at?</b>"
+  ],
+  [
+   "m",
+   "Oh."
+  ],
+  [
+   "d",
+   "And that is the next problem."
+  ]
+ ]
+};
+drawCV(CV);
+})();
+</script>
+</body>
+</html>
