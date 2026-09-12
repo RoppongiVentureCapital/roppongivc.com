@@ -399,17 +399,17 @@ var SITE = { ver: 'v1.0', date: '2026-09-10',
    ══════════════════════════════════════════════════════════════════════════ */
 var REF = {
   vaswani2017: { a: 'Vaswani et al.', y: 2017, t: 'Attention Is All You Need',
-                 alias: 'Transformer の原論文', ax: '1706.03762' },
+                 alias: 'the original Transformer paper', ax: '1706.03762' },
   brown2020:   { a: 'Brown et al.',   y: 2020, t: 'Language Models are Few-Shot Learners',
-                 alias: 'GPT-3 の論文',        ax: '2005.14165' },
+                 alias: 'the GPT-3 paper',            ax: '2005.14165' },
   kaplan2020:  { a: 'Kaplan et al.',  y: 2020, t: 'Scaling Laws for Neural Language Models',
-                 alias: '規模と性能の関係',    ax: '2001.08361' },
+                 alias: 'the scaling laws paper',     ax: '2001.08361' },
   ouyang2022:  { a: 'Ouyang et al.',  y: 2022, t: 'Training Language Models to Follow Instructions with Human Feedback',
-                 alias: 'InstructGPT の論文',  ax: '2203.02155' },
+                 alias: 'the InstructGPT paper',      ax: '2203.02155' },
   openai2023:  { a: 'OpenAI',         y: 2023, t: 'GPT-4 Technical Report',
-                 alias: 'GPT-4 の技術報告',    ax: '2303.08774' },
+                 alias: 'the GPT-4 technical report', ax: '2303.08774' },
   deepseek2025:{ a: 'DeepSeek-AI',    y: 2025, t: 'DeepSeek-R1: Incentivizing Reasoning Capability in LLMs via Reinforcement Learning',
-                 alias: 'DeepSeek-R1 の論文',  ax: '2501.12948', extra: 'Nature 645:633-638' }
+                 alias: 'the DeepSeek-R1 paper',      ax: '2501.12948', extra: 'Nature 645:633-638' }
 };
 
 /* ★出典を1つ書く（★loc ＝ 該当箇所。★「Table 2.1」「§3.2 Eq.1」など）
@@ -418,17 +418,17 @@ var REF = {
 function ref(key, loc) {
   var r = REF[key];
   if (!r) return '';
-  return r.a + ' ' + r.y + '「' + r.t + '」'
-       + (r.alias ? '（' + r.alias + '）' : '')
+  return r.a + ' ' + r.y + ', &ldquo;' + r.t + '&rdquo;'
+       + (r.alias ? ' (' + r.alias + ')' : '')
        + ' <a href="https://arxiv.org/abs/' + r.ax + '" target="_blank" rel="noopener">arXiv:' + r.ax + '</a>'
-       + (r.extra ? '（' + r.extra + '）' : '')
+       + (r.extra ? ' (' + r.extra + ')' : '')
        + (loc ? ' ' + loc : '');
 }
 /* ★★複数の出典を並べる（★／で区切る） */
 function refs() {
   var out = [];
   for (var i = 0; i < arguments.length; i += 2) out.push(ref(arguments[i], arguments[i + 1]));
-  return out.join(' ／ ');
+  return out.join(' / ');
 }
 
 /* ★★出典を HTML から呼ぶ ── <span class="ref" data-ref="brown2020" data-loc="Table 2.1"></span>
@@ -445,7 +445,7 @@ function drawRefs() {
     for (var j = 0; j < keys.length; j++) {
       var r = ref(keys[j], locs[j] || '');
       if (r) out.push(r);
-      else out.push('★未登録の出典: ' + keys[j]);   /* ★★間違いを黙って隠さない */
+      else out.push('Unregistered source: ' + keys[j]);   /* ★★間違いを黙って隠さない */
     }
     var head = e.getAttribute('data-head');
     e.innerHTML = (head ? head + ' ' : '') + out.join(' ／ ');

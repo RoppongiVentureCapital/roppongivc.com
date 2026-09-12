@@ -1,0 +1,1155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<meta name="description" content="Which words to look at - Problem 13 of Deep Black Box. What &ldquo;it&rdquo; points to decides the next word, and that is all attention is.">
+<meta property="og:title" content="Deep Black Box - Problem 13: which words to look at (Chapter 3)">
+<meta property="og:description" content="Which words to look at - Problem 13.">
+<!-- 🔴🔴🔴🔴 2026-09-10 記録担当：★★★★共有したときの画像（★公開準備セッションの指示）。
+     ★★この2行は【23ページとも入っていませんでした】（★実測0件）。
+     ★★★入れる値は先方が確定させたものです ──
+       roppongivc.com/static/img/agora/r1/og-r1-game.jpg（★59KB。★案A＝白地・エンブレム左）。
+     ★★記事用（og-r1-article.jpg）とは【別のファイル】です。★記事側のものは触っていません。
+     ★値は絶対URLです（★OGP の決まり。★href の絶対パス禁止とは別の話です） -->
+<meta property="og:image" content="https://www.roppongivc.com/en/deep-black-box/og-deep-black-box-en.jpg">
+<meta name="twitter:image" content="https://www.roppongivc.com/en/deep-black-box/og-deep-black-box-en.jpg">
+<!-- 🔴🔴🔴🔴 2026-09-10 21:4x 記録担当：★★★★X（Twitter）で大きい絵にする1行（★公開準備セッションの依頼）。
+     ★★★og:image を入れても、★この1行が無いと【小さいカード】になります。
+     ★記事側は全13ページを summary → summary_large_image にしたとのことです（★先方の実測）。
+     ★★ゲーム23ページは【0件】でした -->
+<meta name="twitter:card" content="summary_large_image">
+<!-- 🔴🔴🔴🔴 2026-09-10 22:3x 記録担当：★★★★ブラウザのタブに出る絵（★公開準備セッションの依頼）。
+     ★★実測 ── ★23ページとも【0件】でした（★タブに絵が出ていませんでした）。
+     ★★★実体はサイト側にあり、★本番で全部 引けます（★新しく作っていません）──
+       /favicon.svg 200・53KB ／ /favicon.ico 200 ／ /favicon-192.png 200・8KB
+     ⚠️★★/apple-touch-icon.png は【404】なので使いません。★favicon-192.png を指しています
+       （★サイト側 baseof.html と同じ扱いです）。
+     ⚠️★★★絶対URLです ── ★このゲームは /deep-black-box/ の下にあるので、
+       ★相対だと /deep-black-box/favicon.svg を探して【外します】。
+       ★「絶対パスを書かない」（★同じ場所の中を指すときの決まり）とは別の話です -->
+<link rel="icon" href="https://www.roppongivc.com/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="https://www.roppongivc.com/favicon.ico" sizes="32x32">
+<link rel="icon" href="https://www.roppongivc.com/favicon-192.png" type="image/png" sizes="192x192">
+<link rel="apple-touch-icon" href="https://www.roppongivc.com/favicon-192.png">
+<title>Deep Black Box - Problem 13: which words to look at (Chapter 3)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@300;400;600;700&family=Inter:wght@300;400;500;600;700&family=Noto+Serif+JP:wght@300;400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../deep-black-box/common.css">
+<style>
+/* ══════════════════════════════════════════════════════════════════════════
+   🔴 2026-09-02 1問1ページ担当：★この章だけの CSS
+     ★★原本 tsume-02-attention-dialog.html の <style> をそのまま写し、★【戻さないこと】のフォント規則だけ落としました
+     ★落としたもの：.cap{font-size:12.5px;color:var(--gray-500);margin-bottom:.5rem;line-height:1.5}／.lead{font-size:16px;line-height:1.9;color:var(--gray-600);margin:0 0 1.1rem}／h2{font-family:var(--serif);font-size:1.45rem;font-weight:300;line-height:1.4;margin:0 0 1rem}／h3{font-size:16px;font-weight:600;margin:1.4rem 0 .6rem}／.fg .ft{font-size:12.5px;font-weight:700;letter-spacing:.04em;color:var(--black);   margin:0 0 .65rem}／.fg .fn{font-size:13px;line-height:1.85;color:var(--gray-600);margin:.65rem 0 0}／.nst .lb{font-size:13.5px;font-weight:700;color:var(--black);margin:0 0 .3rem}／.nst .sb{font-size:12.5px;color:var(--gray-600);margin:0 0 .5rem;line-height:1.75}／.dtab{width:100%;border-collapse:collapse;font-size:12.5px;margin:.9rem 0;  font-variant-numeric:tabular-nums}／.cl .bb{position:relative;min-width:0;padding:.65rem .95rem;font-size:15px;line-height:1.9;   border:1px solid var(--gray-200);border-radius:.85rem;background:var(--white);color:var(--gray-600)}／.lg table,.dtab{font-size:11.5px}／.cl .bb{font-size:14.5px;padding:.55rem .75rem;line-height:1.8}
+   ★.offpage ── ★★この章の【他の問のカード】を DOM に置いたまま隠す枠。
+     ★理由：ゲーム本体の JS（起動・つまみの bind）を1バイトも触らないため。
+       ★$('…') が null にならないので、原本と同じコードがそのまま動きます
+   ══════════════════════════════════════════════════════════════════════════ */
+.offpage{display:none}
+:root{
+ --bg:#fff; --white:#fff; --black:#000;
+ --gray-100:#f9f9f9; --gray-200:#d9d9d9; --gray-500:#444; --gray-600:#2a2a2a;
+ --accent:#019949;
+ --sans:'Inter',system-ui,sans-serif;
+ --serif:'Source Serif 4','Noto Serif JP',Georgia,serif;
+ --content-w:52.625rem;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--black);font-family:var(--sans);
+ -webkit-font-smoothing:antialiased}
+.wrap{max-width:var(--content-w);margin:0 auto;padding:0 1.5rem 5rem}
+.top{border-bottom:1px solid var(--gray-200);margin-bottom:2.4rem}
+/* 🔴🔴🔴 2026-09-09 A：★★★この上書きを外した ── ★★これが【全部大文字】の正体だった
+     ★★★山田様「トップと他でフォント違うし全部大文字かどうかも違うし」（2026-09-09）
+   ★.top .in に text-transform:uppercase と letter-spacing:.14em が入っており、
+     ★★子の製品名とタグラインまで【大文字＋字間広め】に変えていた。
+   ★実測：★これがある18ページは uppercase ／ 無い5ページ（index・q15〜17・end）は none。
+     → ★★★同じ製品名が【大文字のページと そうでないページ】に分かれていた
+   ★common.css の .top .in（★大文字にしない）を効かせる */
+/* 🔴 2026-09-09 A：★★この上書きを外した ── ★common.css の
+     .top .in .tag（15.5px / #555 / 行間1.75 / サンセリフ）を効かせる。
+   ★★★これが後勝ちしていたので、★上のバーだけ 明朝 12.5px のままだった。
+     → ★山田様「トップと他でフォント違うし全部大文字かどうかも違うし」の原因のひとつ */
+.eyebrow{font-size:13px;font-weight:500;letter-spacing:.16em;text-transform:uppercase;
+ color:var(--gray-500);margin-bottom:.9rem}
+h1{font-family:var(--serif);font-size:2.1rem;font-weight:300;line-height:1.35;margin:0 0 .8rem}
+.lead b{color:var(--black)}
+.meta{font-size:13px;letter-spacing:.1em;color:var(--gray-500);padding-bottom:1.2rem;
+ border-bottom:1px solid var(--gray-200);margin-bottom:1.2rem}
+.steps{display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:2.4rem}
+.steps div{flex:1 1 5rem;padding:.55rem .3rem;text-align:center;font-size:12px;
+ border:1px solid var(--gray-200);color:var(--gray-500);background:var(--white)}
+.steps div.open{border-color:var(--black);color:var(--black)}
+.steps div.done{background:var(--black);border-color:var(--black);color:var(--white)}
+.card{border:1px solid var(--gray-200);padding:2rem;margin-bottom:2rem;background:var(--white)}
+.tagline{font-size:13px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;
+ color:var(--gray-500);margin-bottom:.9rem}
+/* ★★図・つまみ・棒・判定を1つの枠に入れる。★絶対に離さない（→00 §2-2） */
+.panel{background:var(--gray-100);border:1px solid var(--gray-200);padding:1rem;margin:1.3rem 0}
+.panel .verdict{background:var(--white)}
+.two{display:flex;gap:1rem;flex-wrap:wrap;align-items:flex-start}
+.two>div{flex:1 1 15rem;min-width:0}
+svg{display:block;width:100%;height:auto}
+.ctl{margin:1.1rem 0 .2rem}
+.ctl label{display:flex;justify-content:space-between;align-items:baseline;font-size:14px;
+ margin-bottom:.35rem;gap:1rem}
+.ctl label span.n{font-weight:600;font-variant-numeric:tabular-nums;white-space:nowrap}
+.togs{display:flex;gap:.6rem;flex-wrap:wrap;margin-top:1.1rem;align-items:center}
+.btn{background:none;border:1px solid var(--gray-200);padding:.6rem 1.15rem;font-size:14px;
+ font-family:var(--sans);color:var(--black);cursor:pointer;transition:all .15s}
+.btn:hover{border-color:var(--black);background:var(--gray-100)}
+.btn.on{background:var(--black);color:var(--white);border-color:var(--black)}
+.btn.go{background:var(--black);color:var(--white);border-color:var(--black)}
+.btn.sm{font-size:13px;padding:.45rem .85rem;color:var(--gray-500)}
+.btn:disabled{opacity:.35;cursor:default}
+/* 🔴 2026-08-29 B（02）：作業D ── ★ゲージの CSS が 02 に1つも無く、
+   ★HTML は class="gauge/gtrack/gfill/gmark/gcap/big" を使っているので
+   ★問12 のゲージが【棒として描かれず文字だけ】になっていた（実測：棒の高さ 0px）。
+   ★tsume-00-function.html の <style> から そのまま写した（→§5-23 の道具の使い回しと同じ扱い）。
+   ★gauge() 関数の向きは 00（小さいほど良い）と 02（大きいほど良い）で逆なので、JS は 02 のまま。★CSS だけ持ってきた */
+.gauge{margin:1.2rem 0 0}
+.gauge .row{display:flex;align-items:baseline;gap:.7rem;margin-bottom:.5rem}
+.gauge .u{font-size:14px;color:var(--gray-500)}
+.gtrack{height:10px;background:#e9e9e9;position:relative;overflow:hidden}
+.gfill{display:block;height:100%;background:#c00;transition:width .12s linear}
+.gfill.ok{background:var(--accent)}
+.gmark{position:absolute;top:-3px;bottom:-3px;width:2px;background:#000}
+.gcap{display:flex;justify-content:space-between;font-size:12px;color:var(--gray-500);
+ margin-top:.35rem}
+.big{font-family:var(--serif);font-size:2rem;font-weight:400;font-variant-numeric:tabular-nums;
+ line-height:1}
+.panel .gauge{margin-top:.9rem}
+.verdict{margin-top:1.2rem;padding:.9rem 1.1rem;border:1px solid var(--gray-200);font-size:14px;
+ line-height:1.75;background:var(--gray-100)}
+.verdict.ok{border-color:var(--accent);background:#f2fbf6}
+.verdict.stuck{border-color:#c00;background:#fdf4f4}
+.next{margin-top:1rem;font-size:13px;color:var(--gray-500)}
+.src{border-left:2px solid var(--black);padding:.9rem 0 .9rem 1.1rem;margin:1.4rem 0;
+ font-size:14px;line-height:1.85;color:var(--gray-600)}
+.src .h{font-size:12px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;
+ color:var(--black);margin-bottom:.4rem}
+.src q{font-style:normal;color:var(--black)}
+.src .ref{font-size:13px;color:var(--gray-500);margin-top:.4rem;display:block}
+.box{border:1px solid var(--gray-200);padding:1.1rem 1.3rem;margin:1.3rem 0;background:var(--gray-100)}
+.box .h{font-size:12px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;
+ margin-bottom:.5rem}
+.mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+.calc{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13.5px;line-height:2;
+ background:var(--white);border:1px solid var(--gray-200);padding:.9rem 1.1rem;margin:.9rem 0;
+ overflow-x:auto;white-space:pre}
+.sc-row{display:flex;align-items:center;gap:.75rem;margin-bottom:.5rem}
+.sc-label{width:3.4rem;font-size:14px;text-align:right;flex-shrink:0;font-family:var(--serif)}
+.sc-label.wide{width:6.4rem;font-size:13px}
+.sc-track{flex:1;background:#e9e9e9;height:14px;position:relative}
+.sc-fill{display:block;height:100%;background:var(--black);transition:width .1s linear}
+.sc-fill.hit{background:var(--accent)}
+.sc-track .goal{position:absolute;top:-3px;bottom:-3px;width:1px;background:#c00}
+.sc-pct{width:3.6rem;font-size:14px;font-variant-numeric:tabular-nums;text-align:right}
+details{border-top:1px solid var(--gray-200);padding-top:1rem;margin-top:1.5rem}
+summary{font-size:14px;font-weight:500;cursor:pointer}
+.lg{font-size:14px;line-height:1.9;color:var(--gray-600);margin-top:.9rem}
+.lg table{width:100%;border-collapse:collapse;margin:.8rem 0;font-size:13px}
+.lg th,.lg td{padding:.45rem .6rem;border:1px solid var(--gray-200);text-align:left}
+.lg th{background:var(--gray-100);font-weight:600}
+.dtab th,.dtab td{padding:.35rem .5rem;border:1px solid var(--gray-200);text-align:right}
+.dtab th{background:var(--gray-100);font-weight:600;font-size:11.5px}
+.dtab td.l,.dtab th.l{text-align:left}
+/* 🔴 2026-08-29 B（02）：作業D ── ★温度の表の最終行に class="sum" が付いているのに CSS が無く効いていなかった。★00 から写した */
+.dtab tr.sum td{background:#f2fbf6;border-top:2px solid var(--black)}
+.hide{display:none}
+.foot{border-top:1px solid var(--gray-200);margin-top:3rem;padding-top:1.5rem;font-size:13px;
+ color:var(--gray-500);line-height:1.8}
+/* ── 語の列 ─────────────────────────────── */
+.sent{display:flex;flex-wrap:wrap;gap:.35rem;align-items:center;margin:.6rem 0}
+.sent span{border:1px solid var(--gray-200);background:var(--white);padding:.3rem .55rem;
+ font-size:15px;font-family:var(--serif)}
+.sent span.now{border-color:#c00;color:#c00;font-weight:600}
+.sent span.tgt{border-color:var(--accent);color:var(--accent);font-weight:600}
+.sent span.prompt{background:var(--gray-100);color:var(--gray-500)}
+.sent span.new{border-color:var(--black);font-weight:600}
+.caret{display:inline-block;width:2px;height:1.2rem;background:#c00;animation:bl 1s step-end infinite}
+@keyframes bl{50%{opacity:0}}
+.out{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12.5px;line-height:1.75;
+ background:var(--white);border:1px solid var(--gray-200);padding:.7rem .9rem;margin:.7rem 0;
+ white-space:pre;overflow-x:auto}
+/* ── q/k/v がどこから来るかの図（★SVG にしない。HTML の枠で組む） ────── */
+.wf{display:flex;gap:.8rem;align-items:center;flex-wrap:wrap;margin:.6rem 0 .2rem}
+.wbox{border:1px solid var(--black);background:var(--white);padding:.6rem .9rem;text-align:center;
+ font-size:16px;font-family:var(--serif);line-height:1.5}
+.wbox span{font-size:12px;color:var(--gray-500);font-family:var(--sans)}
+.warr div{font-size:13.5px;line-height:2.1;font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+/* ── 4段の図（★SVG にしない。0 をまん中に置いた横棒） ────────────── */
+.st{font-size:13.5px;line-height:1.7;margin:.9rem 0 .35rem}
+.br{display:flex;align-items:center;gap:.5rem;margin:.3rem 0}
+.br .n{width:2.8rem;font-family:var(--serif);font-size:14px;flex-shrink:0}
+.br .v{width:3.4rem;text-align:right;font-size:13px;flex-shrink:0;
+ font-variant-numeric:tabular-nums;color:var(--gray-500)}
+.br .ax{flex:1;position:relative;height:14px;background:#e9e9e9;min-width:0}
+.br .ax:after{content:'';position:absolute;left:50%;top:-3px;bottom:-3px;width:1px;background:#6e6e6e}
+.br .ax i{position:absolute;top:0;height:100%;background:#000}
+.br.g .ax i{background:var(--accent)}
+.bd{display:flex;height:30px;margin:.5rem 0 0}
+.bd span{display:flex;align-items:center;justify-content:center;font-size:13px;color:#fff;
+ font-family:var(--serif);overflow:hidden;white-space:nowrap}
+/* ── Transformer のブロック（★SVG にしない。HTML の枠で組む） ───────── */
+.blk{border:1px solid var(--black);padding:.8rem .6rem;margin:1rem 0;background:var(--white)}
+.blk .r{display:flex;gap:.3rem}
+.blk .r>span{flex:1 1 0;min-width:0;text-align:center;font-size:13px;padding:.4rem .1rem;
+ border:1px solid var(--gray-200);font-family:var(--serif)}
+.blk .u{border:1px solid var(--black);padding:.5rem .4rem;margin:.35rem 0;text-align:center;
+ font-size:13.5px;line-height:1.6}
+.blk .u.n{border-style:dashed}
+.blk .op{text-align:center;font-size:13px;color:var(--gray-500);margin:.15rem 0}
+.blk .rep{text-align:center;font-size:13px;margin-top:.5rem}
+.blk .hl{border-color:#c00;color:#c00}
+@media (max-width:430px){
+  .wrap{padding-left:.5rem;padding-right:.5rem}
+  .card{padding-left:.75rem;padding-right:.75rem}
+  .box,.panel{padding-left:.5rem;padding-right:.5rem}
+  .top .in{padding-left:.5rem;padding-right:.5rem}
+  /* ★★viewBox の広い SVG は 390px で倍率 0.54 になる。
+     ★font 14 では 7.5px しか出ないので、ここだけ 17 に上げる（→01 と同じ手） */
+  #hd text{font-size:21px}
+  /* 🔴 2026-09-10 記録担当：★★折りたたみの中の図（.fg svg.dg）を 12.5 → 13.5単位に
+     （★11.5px → 12.42px。★倍率0.92）。★4枚あります。
+     ★★この図は JS の文字列に埋め込まれた SVG なので、★属性ではなく CSS で上げます。
+     ⚠️★.dg は共通の入れ子図でも使う名前ですが、★★.fg の中に限っているので
+       ★このページの折りたたみの中だけに効きます（★他ページには影響しません） */
+  .fg svg.dg text{font-size:13.5px}
+  /* 🔴 2026-09-10 記録担当：★#v13 を 13 → 16単位（★9.71px → 12.0px。★倍率0.75） */
+  /* 🔴 2026-09-10 記録担当：★16単位では 11.95px で【0.05px 足りませんでした】（★倍率0.75）。
+     ★17単位で 12.75px。★実測で確かめてから決めています */
+  #v13 text{font-size:17px}
+  /* ★★枠を 390×840 の1画面に収めるため、円の図の幅を抑える（→ 枠の上限） */
+  #v13,#v14a,#v14b{max-width:15rem;margin:0 auto}
+  .panel .ctl{margin:.55rem 0 .1rem}
+  .panel .ctl label{margin-bottom:.15rem}
+  /* ★★表は 390px で溝がなくなる。★実測：7列で 405px（15px はみ出し）→ 文字を落とす */
+  /* 🔴 2026-09-02 1問1ページ担当：★A の【戻さないこと】に反するので外した ── .lg table,.dtab{font-size:11.5px} */
+  .lg th,.lg td{padding:.35rem .3rem}
+  /* 🔴 2026-08-29 B（02）：★★棒を縦積みにするのを【やめた】。
+     ★理由：1本が2行になると 38.2px 使い、問13 の枠が 999.6px（390px 実測）まで伸びて
+       ★つまみが画面の外に出ていた（→山田様⑹「つまみと結果が離れていたら意味がない」）。
+     ★ラベルの幅を 4.6rem に広げれば1行に収まる（★語は コーヒー／机／新聞／手 と
+       東京／大阪／京都／名古屋／札幌／そこ ── いちばん長いのは4文字）。
+     ★実測：b13 176.8px → 88px ／ b12 277px → 132px。★溝の幅は 150px 以上 残る */
+  .sc-row{flex-wrap:nowrap;row-gap:0;margin-bottom:.3rem}
+  .sc-label{width:4.6rem;font-size:13px;text-align:left;flex:0 0 auto}
+  .sc-label.wide{width:6.2rem;font-size:12px;text-align:left;flex:0 0 auto}
+  .sc-pct{width:3.2rem;font-size:13px;flex:0 0 auto}
+  .sc-track{flex:1 1 auto;order:0;min-width:0}
+  /* ★「向きの揃い具合」の語の欄。★2.8rem では「コーヒー」が2行になり 42px 使っていた */
+  .br .n{width:4.4rem;font-size:13px}
+  .br .v{width:3.4rem;font-size:12.5px}
+  .br{margin:.2rem 0}
+  /* ★★390px で【つまみ・円の図・揃い具合・取り分・次の1語・判定】を1画面（840px）に収めるための詰め。
+     ★目的は山田様⑹（つまみと結果が離れていたら意味がない）。★実測でこの3行が効いている */
+  .panel .two{gap:.6rem}
+  .panel .verdict{margin-top:.7rem}
+  #v13{max-width:14rem}
+  /* 🆕 2026-08-30 F：会話（→ .cv）★スマホは顔を小さくして横幅を吹き出しに回す */
+  /* 🔴 2026-09-06：★スマホでアイコンを 38px に縮める指定を【消した】（★記事はスマホでも 46px）。
+     ★★この2行は、同じ <style> の後ろにある .cl .ic{46px} / .cl{gap:.75rem;margin:0 0 .85rem} に
+       ★同じ詳細度で【後勝ちされていて、すでに効いていませんでした】（★実測 ic 46px・gap 12px）。
+     → ★消しても見た目は1pxも動きません。★死んだ規則を残すと次の担当が誤読します */
+  /* 🔴 2026-09-02 1問1ページ担当：★A の【戻さないこと】に反するので外した ── .cl .bb{font-size:14.5px;padding:.55rem .75rem;line-height:1.8} */
+  .cast2{padding:.7rem .75rem}
+  .cast2 .ic{width:46px;height:46px}
+  .cast2 .row{gap:.6rem}
+  /* 🔴 2026-09-07 A：★.cast2 .tx2 の 13px/1.8 を外した ── ★これがスマホで
+     ★★登場人物の紹介が 13px のままだった原因（★common.css の 16.6px を後勝ちで潰していた）。
+     → ★山田様「記事と同じサイズって言っただろ」「行間も記事に合わせろよ」（2026-09-07） */
+  /* 🔴 2026-08-31 02担当：図解も 390px で詰める */
+  .fg{padding:.7rem .75rem}
+  .rw .nmx{flex:0 0 4.6rem;font-size:12px}
+  .rw .pc2{flex:0 0 3rem;font-size:12px}
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   🆕 2026-08-30 F【対話版】会話の見た目 ── ★00/01-dialog と同じ CSS（写し）
+   ★★ゲーム本体（つまみ・図・ゲージ・判定・数値・disp3）は1行も触っていない。
+     ★この CSS と末尾の IIFE を消せば、原本とまったく同じ挙動に戻る
+   ★会話は .panel / .figbox の【外】にだけ置く（★position:sticky を壊さないため）
+   ★色は図のデータ色と衝突しないもの ── 学 #2f6fb5 ／ 博士 #b0700c
+   ══════════════════════════════════════════════════════════════════════════ */
+.cast2{border:1px solid var(--gray-200);background:var(--gray-100);
+  padding:1rem 1.1rem;margin:0 0 2.4rem}
+.cast2 .row{display:flex;gap:.9rem;align-items:flex-start}
+.cast2 .row+.row{margin-top:.9rem;padding-top:.9rem;border-top:1px solid var(--gray-200)}
+.cast2 .ic{width:54px;height:54px;border-radius:50%;flex-shrink:0;display:block;
+  border:2px solid var(--white);box-shadow:0 0 0 1px var(--gray-200),0 1px 3px rgba(0,0,0,.10)}
+.cast2 .nm2{display:block;font-size:18px;line-height:1.5;font-weight:700;margin-bottom:.2rem}
+.cast2 .rb{font-size:14px;font-weight:400;color:var(--gray-500);margin-left:.45rem}
+.cast2 .tx2{font-size:16.6px;line-height:1.831;color:var(--gray-600)}
+.cast2 .tx2 b{color:var(--black)}
+.cv{margin:1.6rem 0}
+.cl{display:flex;gap:.75rem;align-items:flex-start;margin:0 0 .85rem}
+.cl .ic{width:46px;height:46px;border-radius:50%;flex-shrink:0;display:block;
+  border:2px solid var(--white);box-shadow:0 0 0 1px var(--gray-200),0 1px 3px rgba(0,0,0,.10)}
+.cl .bb b{color:var(--black)}
+.cl .bb:before{content:'';position:absolute;left:-6px;top:15px;width:10px;height:10px;
+  background:inherit;border-left:1px solid;border-bottom:1px solid;border-color:inherit;
+  transform:rotate(45deg)}
+/* 🔴 2026-09-02 A：★★博士＝青／学＝オレンジ に入れ替えた（★アイコンの背景色に合わせた）
+   ★山田様「今フォントとか吹き出しが 博士がオレンジで学が青じゃん。画像はもとの
+     博士青、高校生オレンジでいいから、フォントの方を逆にしてよ」（2026-09-02）
+   ✗✗ 戻さないこと。★★common.css だけ直しても【各ページの style が後勝ちで効かない】 */
+.cl.m .bb{background:#fff7ea;border-color:#efd6a6}
+.cl.d .bb{background:#eef4fa;border-color:#c3d9ee}
+/* 🔴 2026-09-06：★font-size:11.5px を外した ── ★.cl .av .nm と同じ要素に当たり、
+   ★詳細度で負けていて【効いていなかった】（★実測 10.5px）。★話者名の大きさは common.css の
+   ★.cl .av .nm{font-size:14px} が持つ。★この規則は色と margin のためだけに残す */
+.cl .nm{display:block;font-weight:700;letter-spacing:.07em;margin-bottom:.15rem}
+.cl.m .nm{color:#b0700c}   /* 🔴 学 → オレンジ */
+.cl.d .nm{color:#2f6fb5}   /* 🔴 博士 → 青 */
+.keyh{font-size:11.5px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--gray-500);margin:1.6rem 0 .5rem}
+
+/* 🔴 2026-08-31 02担当：★★図を .stick で貼り付ける案は【実測して取り下げた】。
+   ★動機：00 は .figbox stick が9個・01v2 は20個・02 は0個で、
+     ★02 だけ「説明を読むと図が画面の外へ消える」状態だったので直そうとした
+   ★★実測の結果（390px）── ★悪化した
+       枠の最大高      803.7px → 818.0px（＋14.3px。★.stick の余白のぶん）
+       A_scan 問13 窓  110px  →  95px（★−15px）
+     ★原因：貼り付いた図が画面の上を占めるので、
+       ★つまみと結果が同時に見える位置が【減る】。★02 の .panel は図とつまみが同じ枠なので、
+       ★00・01 のように「図を .figbox stick、つまみを .stickbot」に分けないと効かない
+   → ★★やるなら問13 の .panel を2つに割る【構造の変更】が必要。★今回は戻した
+   ★★次の担当へ：★この案を試すなら、上の2つの数字を必ず測り直すこと（→ 規則㉓） */
+
+/* ══════════════════════════════════════════════════════════════════════════
+   🔴 2026-08-31 02担当【図解】── ★山田様「数式多くて難しい。別に出してもいいけど
+     それだけで伝わると思うな。中学生にもわかるようにわかりやすい言葉と図解を
+     とにかく使って説明するようにしろよ」（2026-08-31）
+   ──────────────────────────────────────────────────────────────────────────
+   ★★図も【CV（台詞データ）の中】に入れて IIFE が流し込む。★HTML 本体には足していない
+     → 「この IIFE と .cv の CSS を消せば原本に戻る」を保つため
+   ★★文字は全部 HTML の箱に置いた。★SVG は【曲線が要る1枚だけ】
+     → 理由：SVG の font-size は viewBox の単位なので 390px で 9px 程度に潰れる（→規則㉛）
+     → その1枚も max-width で表示幅を viewBox に合わせ、文字は入れていない
+   ★箱は flex-wrap ＋ min-width:0 なので 390px で縦に積む（★横あふれを作らない）
+   ══════════════════════════════════════════════════════════════════════════ */
+.fg{border:1px solid var(--gray-200);border-radius:.6rem;background:var(--white);
+  padding:.9rem 1rem;margin:0 0 .85rem}
+.fg .fn b{color:var(--black)}
+.fg .fn+.fn{margin-top:.4rem}
+/* 入れ子の箱 */
+.nst{border:2px solid var(--gray-200);border-radius:.5rem;padding:.55rem .6rem}
+.nst.a{border-color:#c3d9ee;background:#f6fafd}
+.nst.b{border-color:#bcdfc9;background:#f5fbf7}
+.nst.c{border-color:#efd6a6;background:#fffaf0}
+/* 段を並べる（390px では縦に積む） */
+.flw{display:flex;flex-wrap:wrap;align-items:stretch;gap:.45rem}
+.flw>.st{flex:1 1 9rem;min-width:0;border:1px solid var(--gray-200);border-radius:.45rem;
+  background:var(--gray-100);padding:.55rem .6rem}
+.flw>.st.on{background:#fffaf0;border-color:#efd6a6}
+.flw .hd2{font-size:11.5px;font-weight:700;color:var(--gray-500);margin:0 0 .3rem}
+.flw .bg2{font-size:15px;font-weight:700;color:var(--black)}
+.flw .sm2{font-size:12.5px;color:var(--gray-600);line-height:1.75}
+/* 割合の帯 */
+.rw{display:flex;align-items:center;gap:.5rem;margin:.32rem 0}
+.rw .nmx{flex:0 0 5.6rem;font-size:12.5px;color:var(--gray-600)}
+.rw .tk{position:relative;flex:1 1 auto;height:15px;background:var(--gray-100);
+  border-radius:8px;overflow:hidden;min-width:0}
+.rw .fl2{position:absolute;left:0;top:0;bottom:0;background:#9aa2a8;border-radius:8px}
+.rw .fl2.k{background:#000}
+.rw .fl2.g{background:#019949}
+.rw .pc2{flex:0 0 3.4rem;text-align:right;font-size:12.5px;color:var(--black)}
+/* 図の中の表 */
+.fg table{width:100%;border-collapse:collapse;margin:.5rem 0 0;font-size:12.5px}
+.fg th,.fg td{padding:.4rem .5rem;border:1px solid var(--gray-200);text-align:left}
+.fg th{background:var(--gray-100);font-weight:600}
+/* 数字の個数を四角で見せる */
+.dots{display:flex;flex-wrap:wrap;gap:2px;margin:.3rem 0 0}
+.dots i{display:block;width:9px;height:9px;background:#c3d9ee;border-radius:2px}
+.dots.many i{background:#efd6a6}
+/* 曲線の図（★文字は入れない。★表示幅を viewBox にそろえる） */
+/* 🔴 2026-08-31 02担当：★表示幅の上限を 340 → 520px に広げた。
+   ★山田様「スペースに余裕があるのにこんな小さいの？」（2026-08-31）
+   ★SVG の文字は viewBox の単位なので、表示幅を広げると文字も一緒に大きくなる。
+     ★実測：viewBox 340 のとき 390px で 約12px ／ 520px 上限だと PC で 約19px
+   ★★上限を外すと PC で 25px を超えて不自然になるので 520px で止めている */
+.fg svg.dg{display:block;width:100%;max-width:520px;height:auto;margin:.5rem auto .2rem}
+
+/* 🔴 2026-08-31 02担当：★Transformer の2本立ての図。★SVG をやめて【HTML の箱】にした。
+   ★理由：★★幅いっぱいを使えて、文字が常に実寸（12〜13px）になる。
+     ★SVG だと viewBox に縛られて、PC で小さいまま余白が空いていた */
+.tf{display:flex;gap:.5rem;align-items:flex-end;margin:.6rem 0 .2rem}
+.tf>.col{flex:1 1 0;min-width:0}
+.tf .cap2{font-size:11.5px;color:var(--gray-500);text-align:center;margin:.15rem 0}
+.tf .arw{text-align:center;font-size:15px;color:var(--gray-500);line-height:1.1}
+.tf .stk2{border:1.6px solid;border-radius:.55rem;padding:.4rem .35rem}
+.tf .ttl{font-size:12.5px;font-weight:700;text-align:center;margin:0 0 .3rem}
+.tf .pc{border:1.2px solid;border-radius:.4rem;background:var(--white);
+  font-size:12.5px;line-height:1.5;text-align:center;padding:.35rem .25rem;margin:0}
+.tf .pc.gy{border-style:dashed;border-color:var(--gray-200);background:#f2f2f2;color:var(--gray-500)}
+.tf .pl{font-size:11.5px;color:var(--gray-500);text-align:center;margin:.16rem 0}
+.tf .io{border:1.2px solid #2f6fb5;border-radius:.4rem;background:#eef4fa;color:#2f6fb5;
+  font-size:12px;line-height:1.5;text-align:center;padding:.35rem .25rem}
+.tf .gpt{border:2px dashed #c00;border-radius:.6rem;padding:.35rem;background:#fffdf7}
+.tf .gptl{font-size:11.5px;font-weight:700;color:#c00;text-align:center;margin:0 0 .25rem}
+@media (max-width:430px){.tf{gap:.35rem}.tf .pc{font-size:11.5px;padding:.3rem .15rem}
+  .tf .io{font-size:11px;padding:.3rem .15rem}.tf .ttl{font-size:11.5px}}
+/* 🔴 2026-08-31 02担当：★帯（合計1を4語で分け合った1本の帯）。
+   ★山田様「帯を二つにする棒グラフはわかりやすかった。ああいうグラフと合わせて説明して欲しい」
+   ★r14 にある帯の図（id="hd"）と同じ見せ方に揃えた（→ 表の重複を落とすため） */
+.stkw{margin:.35rem 0 .1rem}
+.stkl{font-size:12px;color:var(--gray-600);margin:0 0 .15rem}
+.stk{position:relative;display:flex;height:26px;border-radius:4px;overflow:hidden;
+  border:1px solid var(--gray-200)}
+.stk span{display:block;height:100%}
+.stk i{position:absolute;top:-3px;bottom:-3px;width:2px;background:#c00;left:50%}
+.stkn{display:flex;font-size:11.5px;color:var(--gray-600);margin:.15rem 0 0}
+.stkn span{display:block;text-align:center;overflow:hidden;white-space:nowrap}
+/* 🔴 2026-08-31 02担当：W を機械に決めさせる実演の表 */
+table.wtb{width:100%;border-collapse:collapse;font-size:13px;margin:0}
+table.wtb td{padding:.35rem .3rem;border:1px solid var(--gray-200);text-align:center;background:var(--white);font-feature-settings:'tnum'}
+</style>
+</head>
+<body data-split="A2" data-top="q13top" data-talk="q13talk"
+      data-verdict="j13" data-ratio="0.70"
+      data-figs="v13">
+
+<div class="top"><div class="in">Deep Black Box<span class="tag">Open up the black box of AI one problem at a time, with your own hands. 21 problems in all.</span></div></div>
+<div class="wrap">
+
+<!-- 🔴 2026-09-02 1問1ページ担当：★進み具合の帯（全21問）＋いま何章か -->
+<div class="prog">
+ <div class="steps" id="steps"></div>
+ <div class="cnt" id="prog_cnt"></div>
+</div>
+<div class="chap" id="chap"></div>
+
+<!-- ══════════════════ c13 ══════════════════ -->
+<div class="card" id="c13">
+<div class="tagline">Question 13</div>
+<h2>Which words to look at</h2>
+<!-- 🔴 2026-08-29 B（02）：作業A-3 ── ★例文を差し替えたので出題文も差し替えた -->
+<!-- 🆕 F：この lead は会話 e13a に移した -->
+<div id="e13a"></div>
+<div class="sent" id="s13"></div>
+<div class="cap">The four words in green carry a <b>tag</b> (in the real thing, every word does).
+<b>&ldquo;It&rdquo; puts out a query, and the query is compared against the tags.</b></div>
+
+<!-- 🔴 2026-08-29 B（02）：作業C-1 ── ★目標を「半分より上」にした。
+     ★★書いてはいけないこと：「半分を超えないと正しく動かない」「原理的に半分が必要」。
+       ★原論文に 0.5 という基準は無い。★これはこの問題の合格点であって attention の性質ではない -->
+<div class="box">
+ <div class="h">Your target</div>
+ <p style="margin:0;font-size:16px;line-height:1.8">
+ <b>Get the share going to <em>coffee</em> above one half</b></p>
+ <div class="cap" style="margin:.4rem 0 0">This is a value the problem chose.
+ The shares add up to 1, so once one is over a half,
+ <b>that word is being looked at more than all the others put together</b>.</div>
+</div>
+
+<div id="e13b"></div>
+
+<div class="box">
+ <div class="h">Where the tag and the query come from</div>
+ <div class="wf">
+  <div class="wbox"><b>x</b><br><span>the word&rsquo;s vector</span></div>
+  <div class="warr">
+   <div>&mdash; &times;<b>W_q</b> &rarr; <b>q</b>&nbsp; the query</div>
+   <div>&mdash; &times;<b>W_k</b> &rarr; <b>k</b>&nbsp; the tag</div>
+   <div>&mdash; &times;<b>W_v</b> &rarr; <b>v</b>&nbsp; the contents</div>
+  </div>
+ </div>
+ <!-- 🔴 2026-08-29 B（02）：390px で 73px 横に溢れていた（中身401px / 枠328px）。
+      ★1行を短くして3段に割った（→§5-23 で A が 00 の resEq に使った直し方）。★式そのものは変えていない -->
+ <div class="calc">q ＝ W_q · x
+k ＝ W_k · x
+v ＝ W_v · x</div>
+ <div class="cap" style="margin:0;color:var(--black)">
+ The real thing <b>learns W_q, W_k and W_v from data</b>, and the directions are the result of that.
+ <b style="color:#c00">There is no W in this course.</b> The directions are numbers placed by hand.<br>
+ <!-- 🔴🔴 2026-08-30 A：★★「W を実際に学習させるところは 03 でやります」を消した。
+      ★理由：★★03 に W_q は【0件】で、系列のどこにも W を学習させる問が無い（★A が5本を grep）。
+        ★果たせない約束を画面に書いていた（→§2-5 の型。★読者が 03 で探して見つからない）
+      → ★前（00・01）を指す形にした。★00・01 で「機械が坂を下ってつまみを決める」体験は済んでいる
+      ★★対話版 02 の e13b も同じ約束をしていたので F が直した（★A の指示） -->
+ <!-- 🆕 2026-08-30 F：★A の原本修正（b759cf17… → 1890a9c6…）をそのまま写した。
+      ★中身の判断はしていない（→ 引き継ぎ §10⒑ の同期手順⑶） -->
+ <!-- 🔴 2026-08-31 02担当：★★画面の中で矛盾していたので直した。
+      ★もとの文「このページでは坂を下らせません（00・01 でやった「1歩ずつ」は出てきません）。
+        W も、00・01 と同じやり方で機械が決めます。」
+      ★★すぐ下に【機械に W を決めさせる実演】を足したので、この文は嘘になっていた
+        （→ §2-3・§7-2 の「画面の中で矛盾する」型。★山田様の指摘 2026-08-31）
+      ★これは原本02 から引き継いだ文なので、原本との差が1件 増える。★統括に報告する -->
+ <b>No hill gets walked down to solve this one (you turn the directions by hand).
+ The panel just below does show you the machine settling on a W, though.</b></div>
+</div>
+
+<!-- 🔴 2026-08-31 02担当：★★置き場所を1つ足した（HTML への追加は この1行だけ）。
+     ★山田様「小さな学習の体験を1つ足す ── 大変じゃなければ入れていいけど」（2026-08-31）
+     ★中身（枠・ボタン・棒・判定）は【対話版の IIFE がすべて作る】。
+       ★IIFE を消せば この div は空になるだけ ＝ 原本に戻る
+     ★★問13・問14 の つまみ・図・判定・数値には1行も触っていない（別の変数で完結） -->
+<div id="wdemo"></div>
+
+<!-- 🔴🔴🔴 2026-09-09 展開担当：★★★上下2分割の【上の枠】（★図＋つまみ＋ボタン） -->
+<div id="q13top">
+<div class="panel">
+ <!-- ★★つまみを先に置く。★390px で .two が縦に積むと、つまみが結果より下に落ちるため -->
+ <div class="ctl" style="margin-top:0">
+  <label for="t13"><span><b>Direction of the query</b></span><span class="n" id="t13v">150°</span></label>
+  <input type="range" id="t13" min="-180" max="180" step="1" value="150">
+ </div>
+ <div class="ctl">
+  <label for="m13"><span><b>Strength of the query</b></span><span class="n" id="m13v">1.0</span></label>
+  <input type="range" id="m13" min="0" max="40" step="1" value="10">
+ </div>
+ <div class="two">
+  <div><div class="cap">Tags (black) and the query (red)</div><svg id="v13" viewBox="0 0 300 250"></svg></div>
+  <!-- 🔴 2026-08-29 B（02）：作業B-2 ── ★「向きの揃い具合」を b13 の【すぐ上】に足した。
+       ★削除した4段のブロックの数字は つまみを動かしても1つも変わらず、しかも
+         0.449 ＝ 目標未達の設定で固定されていた。★自分がクリアした値の計算が出てこないので検算できなかった。
+       ★ここは up13() が毎回描き直すので、つまみを動かすと 3段が同時に動く -->
+  <div><div class="cap">How well the directions line up (multiply and add = the dot product. The middle line is 0)</div>
+   <div id="a13"></div>
+   <div class="cap" style="margin:.7rem 0 .3rem">&darr;&nbsp; <b>the better a word lines up, the larger its share</b></div>
+   <div class="cap" style="margin:0 0 .5rem">Attention weights (the four add up to 1. The red line is 0.50)</div>
+   <div id="b13"></div>
+   <div class="cap" style="margin:.7rem 0 .3rem">&darr;&nbsp; <b>mix the contents by those weights, and you get the next word</b></div>
+   <div id="n13"></div></div>
+ </div>
+ <div class="verdict" id="j13"></div>
+</div>
+</div><!-- /#q13top -->
+
+<!-- 🔴🔴🔴 2026-09-09 展開担当：★★★下の枠 ── ★会話。★独立してスクロールします
+     ★★★#e13b2 は【新しい入れ物】です ── ★#e13b の【後ろ 1件】の吹き出しを
+       ★つまみの枠より【下】へ動かすために作りました。
+     ★★★台詞の文言は【1文字も変えていません】。★動かしたのは【位置だけ】です。 -->
+<div id="q13talk">
+<div id="e13b2"></div>
+
+<!-- 🔴 2026-08-31 02担当：★★置き場所を1つ足した（HTML への追加は この1行だけ）。
+     ★中身は CV の中の図（IIFE が入れる）なので、IIFE を消せば この div は空になるだけ
+     ★ここに置く理由：★つまみを回して「次の1語」の棒を見た【直後】に説明が要る。
+       ★これより上（e13b）に置くと、まだ見ていないものの説明になる -->
+<div id="e13d"></div>
+<!-- 🔴🔴🔴 2026-09-10 記録担当（A149_movehide.py）：★★★この枠を【下の枠の中】へ移しました。
+     ★理由：★分割の規則で【上の枠と下の枠のどちらにも属さないものは隠されます】。
+       ★★この枠は「解いたら出てくる枠」なので、外にあると
+         ★★★解いて hide が外れても【分割中は永久に出てきません】。
+     ★山田様「ここで止まる」の正体がこれでした（★2026-09-10。★分割18問中15問で起きていた）。
+     ★中身は1文字も変えていません。★置き場所だけ変えました -->
+<div id="r13" class="hide">
+ <!-- 🔴 2026-08-29 B（02）：作業A-3 ── ★語を差し替えた。
+      ★★作業A-4：「やぶれた は日本語としておかしい」とは書かない。
+        ★手があたって新聞がやぶれることは実際にありえる。★差は 可か不可かではなく【起こりやすさ】 -->
+ <div id="e13z"></div>
+ <div class="keyh">What to take away</div>
+ <!-- 🆕 F：★元の verdict の中身は会話 e13z に寄せた。★1行だけ残す（→ 型3） -->
+ <!-- 🔴 2026-08-31 02担当：★正式名称を足した（山田様「ここでは機械学習用語でいう何を
+      学ばせたかったの？ ちゃんと言葉かいて これはこういうことですと説明入れて欲しい」）。
+      ★実測：02 の画面に「自己注意」「マルチヘッド」は【0件】だった -->
+ <div class="verdict ok">
+  What you just did is <b>self-attention</b>.
+  <span style="color:var(--gray-500)">Build a query, a tag and some contents for each word, compare the directions, and
+  mix the contents by weights that add up to 1 &mdash; that is the whole mechanism.</span><br>
+  <b>Where &ldquo;it&rdquo; looks changes the next word.</b> The four shares add up to <b>1</b>.
+ </div>
+
+ <!-- 🔴 2026-08-29 B（02）：作業B-1 ── ★「重みが決まるまで 4段（0°・強さ 1.0）」の
+      ブロックを【まるごと削除した】（.st / .br / .bd / .cap / #ex0 のボタンを含む）。
+      ★理由：8個の数字（① 1.00 → ② 0.707 → ③ 2.028 → ④ 0.449）は つまみを動かしても
+        1つも変わらず、しかも 0.449 ＝【目標未達】の設定で固定されていた。
+        ★自分がクリアした値の計算がどこにも出てこないので、読者が検算できなかった。
+      ★代わりに、上の枠の中に「向きの揃い具合」の棒を つまみ連動で置いた（→作業B-2）。
+      ★CSS（.st / .br / .br .n / .br .v / .br .ax / .br .ax i / .br.g / .bd）は
+        新しい棒が使うので【消していない】。
+      ★②③（÷√d_k と e の何乗）が どこへ行ったかは、下の折りたたみに1行 書いた（→作業B-3） -->
+
+<!-- 🆕 F：★÷√d_k と「原典が内積を最適だと考えていない」を会話で出す（→ 素材 第2部§2-3） -->
+<div id="e13c"></div>
+
+ <!-- 🔴 2026-08-31 02担当：★★この折りたたみ（本当の名前と式）を【丸ごと削除】した。
+      ★山田様「ここは折り畳まずにちゃんと説明しろ」（2026-08-31）
+      ★中身は【会話 e13d の図】に移し、①〜④ に実際の数字を入れて検算できる形にした。
+        ★あわせて q/k/v の対応表も e13d に置いた（★折りたたみではなく本編）
+      ★消したもの（★退避 91782c6f… に原形がある）
+        <details><summary>本当の名前と式（読まなくても進めます）</summary>
+        <div class="lg"><div class="calc">α ＝ softmax( q · k ÷ √d_k ) ／ z ＝ Σ α × v</div>
+        <table>この問題での呼び方／本当の名前 の7行</table>
+        <p>札の長さを 1 にそろえているので…</p>
+        <p>②（÷√d_k）と ③（e の何乗）の2段は、00 の問5 でやったものと同じです…</p>
+        <p>出どころ：Vaswani et al. 2017 … §3.2 Eq.1。</p></div></details>
+      ★出どころ（arXiv:1706.03762 §3.2 Eq.1）は e13d の図の中に残した -->
+
+ <!-- 🔴 2026-08-31 02担当：★★÷√d_k の実演を【枠ごと削除】した。
+      ★山田様「dk のくだりはこんな長い説明が必要か。これは大事な教えるべきことなのか。
+        そうじゃなかったら長いから消したい」「おまけとして必要なのか。いらないんじゃないのか」
+        →「構わない、俺がいいと言った」（2026-08-31）
+      ★★これは 引き継ぎ書 §5-22【戻さないこと】の「÷√d_k のつまみは本編 → 折りたたみに
+        戻さない」を【覆すもの】。★山田様が新しく指示したので違反ではない。★統括に報告する
+      ★消した理由（★私の判断。★山田様に述べたもの）
+        ⒜ d_k の説明を消すと「次元 d_k」というラベルの意味が分からないつまみが残る
+        ⒝ 問13 に判断が2つ入っていた（注目の仕組み／割り算の工夫）→ §2 の1問1判断に反する
+        ⒞ 「内積が最適とは考えていない」は 本編の表 と 締めの出どころ表 にも在るので消えない
+      ★消したもの（★戻すときはこれ。★退避 fc60df17… に原形がある）
+        <div class="box"><div class="h">なぜ ÷√d_k で割るのか ── 次元を上げてみてください</div>
+          ＋ .cap（上で見た d_k ── 1語を表す数字の個数を、ここで動かせます）
+          ＋ <div class="panel"> つまみ dk（min2 max512 value2・dkv）／内積の大きさ dot
+              ／sc-row 「÷√d_k あり」fA・pA ／sc-row 「÷√d_k なし」fB・pB
+              ／.cap（いちばん大きい重み・64回の平均）／<div class="verdict" id="jdk">
+          ＋ .cap（重みが 1 と 0 に張り付くと そこから先は学習が進みません。00 の問2 …／
+              ただし原典は、内積が最適だとは考えていません「内積よりも高度な互換性関数が
+              有益かもしれない」§3.2.1 脚注4 ／ Table 3 行B）
+        ★実測値（消す前に測ったもの）d_k=2 → あり0.564/なし0.627 ／ 512 → あり0.597/なし0.985 -->
+<!-- 🔴 2026-08-29 B（02）：作業F ── ★「役に立つところ」を足した（00 と同じ形式）。
+     ★★前に預けた案「関係ない語が増えるほど取り分が減る」は【破棄】した。
+       ★算数としては正しいが、読者が「長いプロンプトで指示が無視される」という因果に飛ぶ。
+       ★その因果は原論文にも このページの実測にも無い。
+     ★下の文言は、この問題で【実際に見せたこと】だけから言える -->
+<div class="src">
+ <div class="h">Where this pays off</div>
+ <b>What &ldquo;it&rdquo; refers to is not settled inside an AI.</b>
+ Which earlier word it looks at changes the word that comes out. So rather than leaving it at &ldquo;it&rdquo; or &ldquo;this&rdquo;,
+ <b>naming the thing gives you steadier answers.</b>
+</div>
+</div>
+<!-- 🔴 2026-09-02 1問1ページ担当2代目：★★原本の閉じ忘れ（</div> が1個 足りない）を補いました。★中身は1文字も触っていません -->
+</div>
+
+<!-- 🔴 2026-09-02 1問1ページ担当：★戻る／次へ（★どのページでも常に押せる） -->
+<div id="nav"></div>
+
+<div id="foot"></div>
+</div>
+</div><!-- /#q13talk -->
+
+
+
+
+<script src="common.js"></script>
+<script>
+/* ══════════════════════════════════════════════════════════════════════════
+   🔴 2026-09-02 1問1ページ担当2代目：★★下は原本 tsume-02 の <script> から
+     【この問が使う行だけ】をそのまま写したものです。★1文字も変えていません（★行を落としただけ）
+   ★★IIFE で包んだ理由 ── 原本の const $ / const show / const T が common.js の同名 const と
+     ぶつかって【SyntaxError でページ全体が動かなくなる】ため。★包んだだけで中身は変わりません
+   ★★mark() だけは common.js のものを使います（★帯が5章グループに変わったため。→ 指示⑶）
+   ══════════════════════════════════════════════════════════════════════════ */
+var QBASE = 12;
+drawProg(13); drawChap(13, "");
+drawNav(["q12.html","Problem 12: Temperature"], ["q14.html","Problem 14: Looking at two words at once"]);
+drawFoot()   /* 🔴 2026-09-02 A：★注記を消した（★山田様。★同じ一文が21回出るのは型3／§2-6 の言い訳）*/;
+
+(function(){
+/* ══════════════════════════════════════════════════════════════
+   詰めKaggle 02 ── LLM は何を見ているか
+   ★★数値は全部コードで出す（→00 §2-9）。手計算や記憶で書かない
+   ★確定した値（/tmp/tk02/calc1.mjs・calc2.mjs で総当たり確認）
+     問12  「東京」T=0.20→0.9999 / 0.50→0.9689 / 1.00→0.7363 / 2.50→0.3716
+           文「日本の首都は東京です。」T=0.50→0.9401 / 1.00→0.5071
+           ★z=[3.0,1.0,0.5] を入れると T=1.0→0.82/0.11/0.07（資料 第1部§3-3 と一致）
+           ★★2026-08-29 B（02）：目標を2本にした（→作業G）。★出荷コードを駆動して確認
+             正しさ（Σ を 10倍）／ばらけ（Σ 1−(1−p)^10・全経路 101本）
+               T=0.20 → 10.00 / 1.00      T=0.50 → 9.40 / 1.57
+               T=0.60 →  8.73 / 2.17      T=0.65 → 8.32 / 2.53 ★答え
+               T=0.70 →  7.86 / 2.91      T=1.00 → 5.07 / 5.29   T=2.50 → 0.74 / 9.21
+             ★49通り 全部を走らせて、両方 達成は T=0.65 の【1通りだけ】（表示1桁で判定）
+     問13  ★★2026-08-29 B（02）：例文と語を差し替えた（→作業A）
+           札 コーヒー0°/机90°/新聞180°/手270°・|q|=強さ・d_k=2
+           向き0°・強さ1.0 → 0.4486 / 0.2212 / 0.1091 / 0.2212（合計 1.000000）★未達
+           向き0°・強さ1.3 → 0.5110 / 0.2043 / 0.0805 / 0.2043 ★達成
+             ★表示のまま足して 0.511+0.204+0.081+0.204 ＝ 1.000
+           向きの揃い具合（cos。強さを掛けない）向き0° → ＋1.000 / 0.000 / −1.000 / 0.000
+             ★★手（札270°）は −1.8e−16 なので、素の toFixed では「−0.000」になる → クランプ必須
+           目標 半分より上（>0.500）→ 到達 2,154 / 14,801 組
+             ★>=0.500 なら 2,164 組（旧の値）。★向き −44°〜44° で届く
+           ★向き0° では強さ 1.3 以上（強さ1.0 は 0.4486 で未達）。最大 0.8915（0°・4.0）
+           ★丸めあり／なしで判定が食い違うのは 6 件 → R3 で丸めてから判定する（→§7-2）
+           次の1語 z=[3α_コーヒー, 3α_新聞]  ★中身を 2.0 → 3.0 に上げた
+             強さ1.3 → こぼれた 0.784 / やぶれた 0.216（和 1.000）
+             ★参考 中身2.0 → 0.703/0.297 ／ 中身4.0 → 0.848/0.152
+             ★★取り分（weights() の出力）は中身の値に影響されないので、目標の難易度は変わらない
+     問14  ★★2026-08-29 B（02）：hide にした（→c14 のコメント）。★以下は作り直すときに使う値
+           ★★1本での min(法,適用) の上限 = 0.250000（14,801組 総当たり。向き任意・強さ0）
+           ★目標 0.35 に届いた組は 0 件 ＝ 1本では不詰
+           2本（0°/1.0 と 180°/1.0）→ 法 0.449 / 適用 0.449
+           ★「低いほう≥0.35」と「両方≥0.35」は 1,640,961組で食い違い 0 件
+           ★★ただし これは札を ちょうど正反対に置いたから成立する話で、attention の性質ではない
+     ÷√d_k  d_k=2 内積0.9 →あり0.564/なし0.627 ／ 512 内積18.2 →0.597/0.985
+   ══════════════════════════════════════════════════════════════ */
+const $=id=>document.getElementById(id);
+const show=id=>$(id).classList.remove('hide');
+const hide=id=>$(id).classList.add('hide');
+/* ★★画面に出す桁に丸めてから判定する（→§7-2）。★でないと「表示 0.500 なのに未達」が出る */
+const R3=v=>+v.toFixed(3);
+function softmax(a){ const m=Math.max.apply(null,a);
+  const e=a.map(x=>Math.exp(x-m)), s=e.reduce((p,c)=>p+c,0); return e.map(x=>x/s); }
+/* 横棒（sc-row）。goal を渡すと目標線と緑の当たりが出る
+   🔴 2026-08-29 B（02）：★★引数を2つ足した。
+     ★sum1 ── 表示の3桁を足して ちょうど 1.000 になるように端数を吸収する（→規則⒃-2）。
+       ★実測：向き361×強さ41＝14,801組のうち【4,918組（33.2%）】で
+         素の丸めだと 0.999 や 1.001 になっていた。★吸収後は 0組（→検証ツール/01-02/B26_sum.mjs）
+       ★端数は【いちばん大きい項】で吸収する。★最大剰余法は使わない（→§5-23）
+     ★gt   ── 目標を「より上（>）」で見る。★問13 の文言が「半分より上」なので、
+       ★ちょうど 0.500 のとき棒が緑になって判定が未達になる食い違いを防ぐ（→§7-2）。
+       ★実測：ちょうど 0.500 になる組は【端数の吸収前で】10組（★吸収後は 8組） */
+function disp3(vals){
+  const d=vals.map(v=>R3(v));
+  const gap=+(1-d.reduce((a,b)=>a+b,0)).toFixed(3);
+  if(gap!==0){ let mi=0; d.forEach((v,i)=>{ if(v>d[mi])mi=i; }); d[mi]=R3(d[mi]+gap); }
+  return d;
+}
+function bars(el,names,vals,goal,idx,cols,sum1,gt){
+  const v=sum1?disp3(vals):vals;
+  $(el).innerHTML=names.map((n,i)=>{
+    const on=(!idx||idx.indexOf(i)>=0);
+    const hit=(goal&&on&&(gt?R3(v[i])>goal:R3(v[i])>=goal));
+    const g=(goal&&on)?`<span class="goal" style="left:${goal*100}%"></span>`:'';
+    const c=cols?cols[i]:(hit?'':'#000');
+    return `<div class="sc-row"><span class="sc-label">${n}</span>`
+     +`<span class="sc-track"><span class="sc-fill${hit?' hit':''}"`
+     +` style="width:${(v[i]*100).toFixed(1)}%${c?';background:'+c:''}"></span>${g}</span>`
+     +`<span class="sc-pct">${v[i].toFixed(3)}</span></div>`;}).join('');
+}
+
+/* ══════════════════════════════════════════════════════════════
+   問13・問14 の共通 ── score = |q| cos(θ_q − θ_k) / √d_k、α = softmax(score)
+   ★2次元・単位長の札にしているので、内積が cos の形で書ける
+   ══════════════════════════════════════════════════════════════ */
+const D_K=2, SQ=Math.sqrt(D_K), RAD=Math.PI/180;
+/* 🔴 2026-08-29 B（02）：作業A ── 例文と語を差し替えた。
+   ★理由：旧例文「去年、国会を通った法は、現場での適用がまだ決まっていない。その」は
+     読者に伝わらず、何をすればいいのか分からない状態になっていた。
+   ★新例文は「机の上に コーヒー と 新聞 が ある。ねぼけて 手 が あたって、それが ◯◯」で、
+     ◯◯ が「こぼれた」だと読んだ瞬間に分かる。
+   ★I_LAW / I_APP → I_COF / I_NEWS に名前も変えた（★置換もれが無いことを grep で確認） */
+const K=[{n:'coffee',a:0},{n:'desk',a:90},{n:'newspaper',a:180},{n:'hand',a:270}];
+const NM=K.map(k=>k.n);
+const I_COF=0, I_NEWS=2;
+const weights=(deg,mag)=>softmax(K.map(k=>mag*Math.cos((deg-k.a)*RAD)/SQ));
+/* 中身 v（★この問題が置いた数字）。コーヒー→こぼれた・新聞→やぶれた
+   🔴 2026-08-29 B（02）：★2.0 → 3.0 に上げた。
+     ★強さ1.3 のとき こぼれた 0.703→0.784 ／ やぶれた 0.297→0.216（出荷コードで確認）。
+     ★「こぼれた のほうがはっきり自然だが、やぶれた もありえる」に一番近いのが 3.0 だった
+       （2.0→0.703 / 3.0→0.784 / 4.0→0.848）。
+     ★★取り分（weights() の出力）は中身の値に影響されないので、目標の難易度は変わらない */
+const V=[[3,0],[0,0],[0,3],[0,0]];
+function nextWord(a){ const z=[0,1].map(c=>a.reduce((s,ai,i)=>s+ai*V[i][c],0)); return softmax(z); }
+/* 円の図（札を黒、探しものを赤で描く） */
+function draw(el,deg,mag,hi){
+  const cx=150, cy=125, r=82;
+  /* ★★赤の先端を QR=58 で止める。★円周(82)まで届くと「探しもの」のラベルが
+     ★円の外(102)の札のラベンルと重なる（実測 107件）。★すき間が約29単位できる
+     ★Math.min(mag,4) は上限4.0 のいまは恒等だが、上限を戻したときの保険として残す */
+  const QR=58;
+  const Pt=(ang,rad)=>[cx+rad*Math.cos(ang*RAD), cy-rad*Math.sin(ang*RAD)];
+  let s=`<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="#d9d9d9"/>`;
+  s+=`<line x1="${cx-r-14}" y1="${cy}" x2="${cx+r+14}" y2="${cy}" stroke="#ececec"/>`;
+  s+=`<line x1="${cx}" y1="${cy-r-14}" x2="${cx}" y2="${cy+r+14}" stroke="#ececec"/>`;
+  K.forEach((k,i)=>{
+    const p=Pt(k.a,r), l=Pt(k.a,r+20), on=(hi&&hi.indexOf(i)>=0);
+    s+=`<line x1="${cx}" y1="${cy}" x2="${p[0].toFixed(1)}" y2="${p[1].toFixed(1)}"
+         stroke="${on?'#019949':'#000'}" stroke-width="${on?2.4:1.6}"/>`;
+    s+=`<circle cx="${p[0].toFixed(1)}" cy="${p[1].toFixed(1)}" r="3.2"
+         fill="${on?'#019949':'#000'}"/>`;
+    /* ★白フチ＝線や丸の上に乗っても読めるようにする */
+    s+=`<text x="${l[0].toFixed(1)}" y="${(l[1]+4).toFixed(1)}" text-anchor="middle"
+         font-size="13" font-family="'Noto Serif JP',serif"
+         stroke="#fff" stroke-width="3" paint-order="stroke"
+         fill="${on?'#019949':'#000'}">${k.n}</text>`;
+  });
+  const qr=14+Math.min(mag,4)/4*(QR-14), q=Pt(deg,qr);
+  s+=`<line x1="${cx}" y1="${cy}" x2="${q[0].toFixed(1)}" y2="${q[1].toFixed(1)}"
+       stroke="#c00" stroke-width="2.6"/>`;
+  s+=`<circle cx="${q[0].toFixed(1)}" cy="${q[1].toFixed(1)}" r="4" fill="#c00"/>`;
+  s+=`<text x="${q[0].toFixed(1)}" y="${(q[1]-10).toFixed(1)}" text-anchor="middle"
+       font-size="13" font-family="Inter,sans-serif"
+       stroke="#fff" stroke-width="3" paint-order="stroke" fill="#c00">query</text>`;
+  s+=`<circle cx="${cx}" cy="${cy}" r="2" fill="#6e6e6e"/>`;
+  $(el).innerHTML=s;
+}
+/* 語の列（問13 で使う。★札があるのは4語だけ）
+   🔴 2026-08-29 B（02）：作業A-1 ── ★例文を差し替えた。★最後の語は「それが」 */
+/* ★★英語版の例文 ── ★日本語版と同じ形（★4語に札／最後が「それ」）。
+   ★英語の it も指す先が決まらないので、★★仕掛けはそのまま成立します */
+const SENT=['On the ','desk',' there is a ','coffee',' and a ',
+            'newspaper','. Half asleep, a ','hand',' knocks them, and ','it'];
+const TGT={'coffee':1,'desk':1,'newspaper':1,'hand':1};
+$('s13').innerHTML=SENT.map(w=>{
+  const c = (w==='it')?' class="now"' : (TGT[w]?' class="tgt"':'');
+  return `<span${c}>${w}</span>`;}).join('')+`<span class="caret"></span>`;
+/* ══════════════════════════════════════════════════════════════
+   問13 ── 「コーヒー」の取り分を 半分より上にする
+   🔴 2026-08-29 B（02）：作業C ── ★目標を「半分より上（>0.500）」に変えた。
+     ★確認済み（出荷コードで総当たり。→検証ツール/01-02/B26_pre.mjs）：
+       目標 半分より上（>0.500）→ 到達 2,154 / 14,801 組
+       ★向き −44°〜44°　★向き0° では強さ 1.3 以上
+       ★最大 0.8915（向き0°・強さ4.0）　★>=0.500 なら 2,164 組（旧の値）
+     ★★文言が「半分より上」なので、ちょうど 0.500 は不合格にする。
+       ★でないと画面と判定が食い違う（→§7-2 で禁じている型）
+   ══════════════════════════════════════════════════════════════ */
+const GOAL13=0.50; let ok13=false, mv13=0;
+/* 🔴 2026-08-29 B（02）：作業B ── ★「向きの揃い具合」を つまみ連動で描く。
+   ★値は cos(向き − 札の角度)。★強さは掛けない。範囲は −1.000 〜 ＋1.000
+   ★削除した4段のブロックの CSS（.st / .br / .br .n / .br .v / .br .ax / .br .ax i）を使う
+   ★★−0.000 を出さないためにクランプする（→00 §5-14 で同じ型を直した）。
+     ★実測：向き0° のとき 手（札270°）の cos は −1.8e−16 で、素の toFixed では「−0.000」になる */
+function sign3(v){ const r=+v.toFixed(3);
+  if(Math.abs(r)<0.0005)return '0.000';
+  return (r>0?'+':'−')+Math.abs(r).toFixed(3); }
+function align13(deg){
+  $('a13').innerHTML=K.map(k=>{
+    const c=Math.cos((deg-k.a)*RAD), r=+c.toFixed(3);
+    const w=(Math.abs(r)*50).toFixed(1);
+    const bar=(Math.abs(r)<0.0005)?''
+      :`<i style="${r>0?'left':'right'}:50%;width:${w}%"></i>`;
+    return `<div class="br"><span class="n">${k.n}</span>`
+      +`<span class="v">${sign3(c)}</span>`
+      +`<span class="ax">${bar}</span></div>`;}).join('');
+}
+function up13(){
+  const deg=+$('t13').value, mag=(+$('m13').value)/10;
+  $('t13v').textContent=deg+'°'; $('m13v').textContent=mag.toFixed(1);
+  const a=weights(deg,mag);
+  align13(deg);
+  draw('v13',deg,mag,[I_COF]);
+  /* ★★表示の3桁で足して 1.000 になるようにしてから出す（→規則⒃-2）。
+     ★「4つを足すと 1」と画面に書いてあるので、読者が足しても必ず 1.000 になる */
+  const d=disp3(a);
+  bars('b13',NM,d,GOAL13,[I_COF],null,false,true);
+  const nw=nextWord(a);
+  bars('n13',['spilled','tore'],nw,null,null,['#000','#9aa2a8'],true);
+  /* ★★「半分より上」なので > で判定する。★★判定は【画面に出した値】で見る（→§7-2） */
+  const ok=d[I_COF]>0.500;
+  $('j13').className='verdict'+(ok?' ok':'');
+  $('j13').innerHTML = ok
+   ? `The share going to <b>coffee</b> is <b>${d[I_COF].toFixed(3)}</b>. That is above a half.`
+   : `The share going to <b>coffee</b> is <b>${d[I_COF].toFixed(3)}</b> right now. Get it above a half.`
+     +(mv13>=6?`<br><span style="color:var(--gray-500)">Lay the red arrow over the tag you are aiming at,
+       and then turn the <b>strength</b> up. Direction alone will not do it.</span>`:'');
+  if(ok&&!ok13){ ok13=true; mark(1,'done'); show('r13'); }
+}
+/* ★ヒントは onchange で数える（oninput はドラッグ中に何十回も発火する）
+   🔴 数えたあとに up13() を呼ぶ。★でないとヒントが7回目に出る（→00 §5-14 A-4） */
+function cnt13(){ mv13++; up13(); }
+['t13','m13'].forEach(i=>{ $(i).oninput=up13; $(i).onchange=cnt13; });
+
+
+/* ══════ 起動（★この問のぶんだけ。★原本の起動行から他の問の呼び出しを落としました）══════ */
+up13();
+
+
+  /* 🔴 2026-08-31 02担当：★e12b を【12往復 306字 → 6往復】に縮めた。
+       ★山田様「ここ以降の対話をくどくどこんな長くやらなくてもいいかもね、もっと簡潔に」（2026-08-31）
+       ★落とした4往復（「じゃあ上げれば？」「1.00 にしてみろ」「ばらけは 5.3 に…」
+         「引っぱり合っている…どちらも温度で決まるからな」）は 博士の1行にまとめた
+       ★落とした最後の2往復（「1つだけ……。」／「ちなみに温度は使い方の側のつまみだ…」）は
+         r12 の【覚えること】に同じ文があるので落とした（→ 型3 同じことを2回言わない）
+       ★★数字は画面の表示の桁のまま（ゲージは1桁 ── 10.0 / 1.0 / 5.3 / 5.1）→ 規則㊲
+       ★★学の【間違った案】は2件 残した ──「下げればいいじゃん」「両方まんなかにすればいいの？」→ §7⑶ */
+
+  /* ══════════════════════════════════════════════════════════════════════════
+     🔴 2026-08-31 02担当【W を機械に決めさせる実演】
+     ──────────────────────────────────────────────────────────────────────────
+     ★★問13・問14 とは【完全に別物】。★K / weights() / draw() / disp3 を1つも使わない
+       （★disp3 と同じ端数の吸収は wD3() として この中に持たせた）
+     ★やること：語ベクトル 4本 と 探しもの を固定し、W_k（2行2列＝4つの数）だけを
+       勾配降下で下らせる。★ずれ ＝ −log（コーヒーの取り分）＝ 01 でやった分類のずれ
+     ★学習率 0.08。★出荷前に回して確定させた値（表示3桁）
+         0歩 0.289 / 10歩 0.402 / 20歩 0.490 / 30歩 0.558 / 100歩 0.782
+         ★0.500 を初めて超えるのは 22歩
+     ★答えを入れるボタンは置かない（→ 山田様⑸）。★10歩まとめて進むボタンは置く
+     ══════════════════════════════════════════════════════════════════════════ */
+  (function(){
+    var host = document.getElementById('wdemo');
+    if (!host) return;
+    var WNM = ['coffee','desk','newspaper','hand'];
+    var WX  = [[1.0,0.2],[0.3,1.0],[-0.9,0.4],[0.1,-1.0]];   /* 語ベクトル（作者が置いた） */
+    var WQ  = [1.2,0.5];                                     /* 探しもの（作者が置いた） */
+    var WSQ = Math.SQRT2, WLR = 0.08;
+    var W = [0.2,0,0,0.2], step = 0;
+    function wSm(a){ var m=Math.max.apply(null,a);
+      var e=a.map(function(x){return Math.exp(x-m);});
+      var t=e.reduce(function(p,c){return p+c;},0);
+      return e.map(function(x){return x/t;}); }
+    /* ★表示3桁の和を 1.000 にそろえる（★問13 の disp3 と同じ考え方。★端数は最大の項へ） */
+    function wD3(v){ var d=v.map(function(x){return +x.toFixed(3);});
+      var g=+(1-d.reduce(function(a,b){return a+b;},0)).toFixed(3);
+      if(g!==0){ var mi=0; d.forEach(function(x,i){ if(x>d[mi])mi=i; });
+        d[mi]=+(d[mi]+g).toFixed(3); }
+      return d; }
+    function wFwd(){ return wSm(WX.map(function(x){
+      var k0=W[0]*x[0]+W[1]*x[1], k1=W[2]*x[0]+W[3]*x[1];
+      return (WQ[0]*k0+WQ[1]*k1)/WSQ; })); }
+    function wStep(){ var a=wFwd(), g=[0,0,0,0];
+      for(var j=0;j<4;j++){ var c=(a[j]-(j===0?1:0))/WSQ;
+        g[0]+=c*WQ[0]*WX[j][0]; g[1]+=c*WQ[0]*WX[j][1];
+        g[2]+=c*WQ[1]*WX[j][0]; g[3]+=c*WQ[1]*WX[j][1]; }
+      for(var i=0;i<4;i++) W[i]-=WLR*g[i];
+      step++; }
+    function wDraw(){
+      var d = wD3(wFwd()), ok = d[0] > 0.500;
+      var bars = WNM.map(function(n,i){
+        return '<div class="rw"><span class="nmx">'+n+'</span>'
+             + '<span class="tk"><span class="fl2'+(i===0&&ok?' g':(i===0?' k':''))
+             + '" style="width:'+(d[i]*100).toFixed(1)+'%"></span></span>'
+             + '<span class="pc2">'+d[i].toFixed(3)+'</span></div>'; }).join('');
+      document.getElementById('wbars').innerHTML = bars;
+      document.getElementById('wstep').textContent = step;
+      document.getElementById('wsum').textContent  =
+        d.reduce(function(a,b){return a+b;},0).toFixed(3);
+      document.getElementById('wtab').innerHTML =
+        W.map(function(v){return '<td>'+v.toFixed(2)+'</td>';}).join('');
+      var j = document.getElementById('wj');
+      j.className = 'verdict' + (ok ? ' ok' : '');
+      j.innerHTML = (step===0)
+        ? 'Right now the four numbers have simply been set to <b>0.20 / 0.00 / 0.00 / 0.20</b>. '
+        + 'The share going to coffee is <b>'+d[0].toFixed(3)+'</b> &mdash; it is not picking out any word much.'
+        : ok
+        ? 'After <b>'+step+' steps</b>, the share going to coffee is <b>'+d[0].toFixed(3)+'</b>. '
+        + '<b>That is above a half.</b> '
+        + '<span style="color:var(--gray-500)">The direction was settled by the machine, not by you.</span>'
+        : '<b>'+step+' steps.</b> The share going to coffee is <b>'+d[0].toFixed(3)+'</b>. '
+        + 'Not half yet. Walk it down a little further.'; }
+    host.innerHTML =
+      '<div class="box">'
+    + '<div class="h">Let the machine settle on a W (watch only &mdash; no answers get filled in)</div>'
+    + '<div class="cap" style="margin:0 0 .2rem;color:var(--black)">'
+    + 'The four word vectors and the query are held fixed, and <b>only the four numbers in W_k</b> get '
+    + '<b>walked downhill</b>, the same way as in Chapters 1 and 2. The error is <b>&minus;log(the share going to coffee)</b> '
+    + '&mdash; the classification error from Chapter 2.</div>'
+    + '<div class="panel" style="margin:.7rem 0">'
+    +   '<div class="togs" style="margin-top:0">'
+    +     '<button class="btn go" id="wb10">Walk 10 steps</button>'
+    +     '<button class="btn sm" id="wb100">100 steps at once</button>'
+    +     '<button class="btn sm" id="wbr">Back to the start</button></div>'
+    +   '<div class="cap" style="margin:.7rem 0 .2rem">Steps walked '
+    +     '<b class="mono" id="wstep">0</b>&nbsp; /&nbsp; shares add up to <b class="mono" id="wsum">1.000</b></div>'
+    +   '<div id="wbars"></div>'
+    +   '<div class="cap" style="margin:.6rem 0 .2rem">The <b>four numbers in W_k</b> that the machine is moving'
+    +     ' (a 2-by-2 table)</div>'
+    +   '<table class="wtb"><tr id="wtab"></tr></table>'
+    +   '<div class="verdict" id="wj"></div>'
+    + '</div>'
+    + '<div class="cap" style="margin:0;color:var(--black)">'
+    + '<b>Not one direction was set by a person.</b> Four numbers walk downhill, and out comes a tag direction that '
+    + '&ldquo;looks at coffee&rdquo;. <b>This is what &ldquo;settled by learning&rdquo; means.</b><br>'
+    + '<span style="color:var(--gray-500)">In the real thing this table is 512 rows by 64 columns, and there are tens of thousands of them. '
+    + 'The contents are the same &ldquo;numbers to multiply and add&rdquo;.</span></div>'
+    + '</div>';
+    document.getElementById('wb10').onclick  = function(){ for(var i=0;i<10;i++)  wStep(); wDraw(); };
+    document.getElementById('wb100').onclick = function(){ for(var i=0;i<100;i++) wStep(); wDraw(); };
+    document.getElementById('wbr').onclick   = function(){ W=[0.2,0,0,0.2]; step=0; wDraw(); };
+    wDraw();
+  })();
+
+/* ══════ 会話（★原本の CV の写し。★この問のぶんだけ）══════ */
+var CV = {
+ "e13a": [
+  [
+   "d",
+   "Here is a sentence. <b>&ldquo;On the desk there is a coffee and a newspaper. Half asleep, a hand knocks them, and it ___&rdquo;</b>"
+  ],
+  [
+   "m",
+   "The blank is &hellip; &ldquo;spilled&rdquo;?"
+  ],
+  [
+   "d",
+   "Why?"
+  ],
+  [
+   "m",
+   "Because &ldquo;it&rdquo; is the coffee."
+  ],
+  [
+   "d",
+   "<b>That is it!</b> And if &ldquo;it&rdquo; pointed to the <b>newspaper</b>?"
+  ],
+  [
+   "m",
+   "&ldquo;Tore&rdquo; &hellip; oh. <b>What &ldquo;it&rdquo; points to changes the next word.</b>"
+  ],
+  [
+   "d",
+   "Just so. <b>This is attention.</b> It is a mechanism the functions up to Chapter 2 did not have, and <b>it is the one thing an LLM adds</b>."
+  ],
+  [
+   "m",
+   "Only one thing?"
+  ],
+  [
+   "d",
+   "One thing. &hellip; <b>Look at the sentence below.</b> The four words in green carry a <b>tag</b>. &ldquo;It&rdquo; puts out a <b>query</b>, and the query gets compared against the tags for direction."
+  ]
+ ],
+ "e13b": [
+  [
+   "m",
+   "Doc, where do the <b>tag</b> and the <b>query</b> come from?"
+  ],
+  [
+   "d",
+   "Good question! &hellip; Think of a library. What do you look at to find a book?"
+  ],
+  [
+   "m",
+   "The spine."
+  ],
+  [
+   "d",
+   "That is the <b>tag</b>. And the &ldquo;this is the sort of book I want&rdquo; in your head is the <b>query</b>. The third is what is <b>inside the book</b> you pull off the shelf &mdash; the <b>contents</b>."
+  ],
+  [
+   "m",
+   "So there are three."
+  ],
+  [
+   "d",
+   "In the real thing <b>all three are made by multiplication</b>, out of the numbers that represent the word. Those multipliers are <span class='mono'>W_q</span>, <span class='mono'>W_k</span> and <span class='mono'>W_v</span>."
+  ],
+  [
+   "m",
+   "And what is this <b>W</b>? It turned up out of nowhere."
+  ],
+  [
+   "d",
+   "<b>It is the very knobs you were turning by hand in Chapters 1 and 2.</b> There are simply more of them, laid out as a table. &hellip; Before that, get hold of the <b>vector</b>. Take a look."
+  ],
+  [
+   "f",
+   "<div class='ft'>First, the vector &mdash; a set of numbers in a row, drawable as an arrow</div><div class='fn'>Words, and the values used inside attention, are all held as <b>a set of numbers in a row</b>. That is a <b>vector</b>, and <b>how many numbers are in the row</b> is its <b>dimension</b>. With two, you can draw it as an arrow on paper.</div><svg class='dg' viewBox='0 0 340 170' role='img' aria-label='the four tags drawn as two-dimensional vectors on axes'><defs><marker id='ah1' viewBox='0 0 10 10' refX='9' refY='5' markerWidth='5' markerHeight='5' orient='auto-start-reverse'><path d='M0 0 L10 5 L0 10 z' fill='#000'></path></marker></defs><rect x='0' y='0' width='340' height='170' fill='#f9f9f9'></rect><line x1='48' y1='80' x2='172' y2='80' stroke='#d9d9d9' stroke-width='1'></line><line x1='110' y1='18' x2='110' y2='142' stroke='#d9d9d9' stroke-width='1'></line><circle cx='110' cy='80' r='48' fill='none' stroke='#d9d9d9' stroke-width='1' stroke-dasharray='3 3'></circle><line x1='110' y1='80' x2='158' y2='80' stroke='#000' stroke-width='2.5' marker-end='url(#ah1)'></line><line x1='110' y1='80' x2='110' y2='32' stroke='#000' stroke-width='2.5' marker-end='url(#ah1)'></line><line x1='110' y1='80' x2='62' y2='80' stroke='#000' stroke-width='2.5' marker-end='url(#ah1)'></line><line x1='110' y1='80' x2='110' y2='128' stroke='#000' stroke-width='2.5' marker-end='url(#ah1)'></line><text x='164' y='84' font-size='12.5' fill='#000'>coffee</text><text x='116' y='26' font-size='12.5' fill='#000'>desk</text><text x='6' y='70' font-size='12.5' fill='#000'>newspaper</text><text x='116' y='146' font-size='12.5' fill='#000'>hand</text><text x='190' y='40' font-size='12.5' fill='#6e6e6e'>across = 1st number</text><text x='190' y='58' font-size='12.5' fill='#6e6e6e'>up = 2nd number</text><text x='190' y='84' font-size='12.5' fill='#6e6e6e'>all four have length 1</text></svg><div class='fn'>These four are the <b>tags</b> shown in the circle above. Written as two numbers, they come out like this.</div><table><tr><th>Tag</th><th>Vector</th></tr><tr><td>coffee</td><td>( <b>1</b> , <b>0</b> )</td></tr><tr><td>desk</td><td>( <b>0</b> , <b>1</b> )</td></tr><tr><td>newspaper</td><td>( <b>&minus;1</b> , <b>0</b> )</td></tr><tr><td>hand</td><td>( <b>0</b> , <b>&minus;1</b> )</td></tr></table><div class='fn'>Once the dimension is <b>512</b> or <b>12,288</b>, <b>it cannot be drawn</b>. But <b>the arithmetic is the same as with two</b>. Which is why this course cuts it down to two.</div>"
+  ],
+  [
+   "d",
+   "While we are here, let me show you <b>how large the real thing is</b> &mdash; how far this chapter has been cut down."
+  ],
+  [
+   "f",
+   "<div class='ft'>A comparison of sizes &mdash; how far this course has been cut down</div><table><tr><th></th><th>Dimension of<br>a word vector</th><th>Per single<br>query</th><th>Layers</th><th>Number of<br>queries</th></tr><tr><td><b>This course</b></td><td><b>2</b></td><td><b>2</b></td><td><b>1</b></td><td><b>1&ndash;2</b></td></tr><tr><td>The paper attention came from<br><span style='color:var(--gray-500)'>2017</span></td><td>512</td><td>64</td><td>6</td><td>8</td></tr><tr><td>GPT-3<br><span style='color:var(--gray-500)'>2020, 175 billion knobs</span></td><td>12,288</td><td>128</td><td>96</td><td>96</td></tr></table><div class='fn'>The division works out. <b>512 &divide; 8 = 64</b> and <b>12,288 &divide; 96 = 128</b>. That &ldquo;dimension per single query&rdquo; is the <span class='mono'>d_k</span> that turns up later.</div><div class='fn'>That <b>2017 paper</b> is where the attention mechanism first appeared. <b>Wherever &ldquo;the original paper&rdquo; is written from here on, it means that paper</b><span style='color:var(--gray-500)'> (Attention Is All You Need / arXiv:1706.03762)</span>.</div><div class='fn'><span style='color:var(--gray-500)'>The figures inside ChatGPT today are not published. Of the models whose insides are published in a paper, GPT-3 is the largest.</span></div>"
+  ],
+  [
+   "d",
+   "Now, <b>W</b>. &hellip; W is <b>a device that turns a vector and stretches it</b>."
+  ],
+  [
+   "f",
+   "<div class='ft'>What W is &mdash; a device that turns a vector and stretches it</div><div class='fn'>Multiply a word&rsquo;s vector by W and out comes <b>a different vector, turned to a new direction and a new length</b>. Multiply by W_q and you get the <b>query</b>; by W_k, the <b>tag</b>; by W_v, the <b>contents</b>.</div><svg class='dg' viewBox='0 0 340 150' role='img' aria-label='multiplying a word vector by W_q turns it and changes its length'><defs><marker id='ah2' viewBox='0 0 10 10' refX='9' refY='5' markerWidth='5' markerHeight='5' orient='auto-start-reverse'><path d='M0 0 L10 5 L0 10 z' fill='#000'></path></marker></defs><rect x='0' y='0' width='340' height='150' fill='#f9f9f9'></rect><line x1='36' y1='108' x2='114' y2='108' stroke='#d9d9d9'></line><line x1='52' y1='122' x2='52' y2='46' stroke='#d9d9d9'></line><line x1='52' y1='108' x2='73' y2='69' stroke='#2f6fb5' stroke-width='2.5' marker-end='url(#ah2)'></line><text x='77' y='67' font-size='12.5' fill='#2f6fb5'>x</text><text x='6' y='134' font-size='12.5' fill='#6e6e6e'>word vector</text><rect x='120' y='58' width='62' height='30' rx='5' fill='#fffaf0' stroke='#efd6a6' stroke-width='1.5'></rect><text x='134' y='78' font-size='12' fill='#000'>&times;W_q</text><line x1='108' y1='73' x2='118' y2='73' stroke='#6e6e6e' stroke-width='2' marker-end='url(#ah2)'></line><line x1='184' y1='73' x2='196' y2='73' stroke='#6e6e6e' stroke-width='2' marker-end='url(#ah2)'></line><line x1='190' y1='108' x2='324' y2='108' stroke='#d9d9d9'></line><line x1='206' y1='122' x2='206' y2='46' stroke='#d9d9d9'></line><line x1='206' y1='108' x2='227' y2='69' stroke='#9aa2a8' stroke-width='1.5' stroke-dasharray='4 3'></line><line x1='206' y1='108' x2='299' y2='85' stroke='#c00' stroke-width='2.5' marker-end='url(#ah2)'></line><text x='302' y='82' font-size='12.5' fill='#c00'>q</text><text x='230' y='67' font-size='12.5' fill='#9aa2a8'>x</text><text x='140' y='134' font-size='12.5' fill='#6e6e6e'>turned and stretched = query</text></svg><div class='fn'>From one word, <b>three W give you three vectors.</b></div><table><tr><th>Multiply by</th><th>What comes out</th><th>Its job</th></tr><tr><td>&times;W_q</td><td><b>the query</b> (red arrow)</td><td>what it is looking for</td></tr><tr><td>&times;W_k</td><td><b>the tag</b> (black arrow)</td><td>what it has to offer</td></tr><tr><td>&times;W_v</td><td><b>the contents</b></td><td>the information it hands over</td></tr></table><div class='fn'>The proper name for W is a <b>weight matrix</b>. Its contents are <b>numbers to multiply and add</b>, <b>the same kind of thing as a and b in Problem 1</b>. <b>They are not written by a person; the machine walks downhill and settles on them.</b></div>"
+  ],
+  [
+   "m",
+   "So where is the W in this course?"
+  ],
+  [
+   "d",
+   "<b>There is none.</b> This chapter skips W. &hellip; Take a look."
+  ],
+  [
+   "f",
+   "<div class='ft'>There is no W in this course &mdash; the knobs stand in for it</div><div class='fn'>&ldquo;There is no W&rdquo; means that <b>the step where W is multiplied to make the directions is skipped in this chapter</b>. That goes for <b>both Problem 13 and Problem 14</b>, which is to say this whole page.</div><svg class='dg' viewBox='0 0 340 180' role='img' aria-label='tag directions are placed by the author while the query direction comes from the knobs'><defs><marker id='ah3' viewBox='0 0 10 10' refX='9' refY='5' markerWidth='5' markerHeight='5' orient='auto-start-reverse'><path d='M0 0 L10 5 L0 10 z' fill='#000'></path></marker></defs><rect x='0' y='0' width='340' height='180' fill='#f9f9f9'></rect><circle cx='86' cy='92' r='46' fill='none' stroke='#d9d9d9' stroke-dasharray='3 3'></circle><line x1='86' y1='92' x2='132' y2='92' stroke='#000' stroke-width='2.5' marker-end='url(#ah3)'></line><line x1='86' y1='92' x2='86' y2='46' stroke='#000' stroke-width='2.5' marker-end='url(#ah3)'></line><line x1='86' y1='92' x2='40' y2='92' stroke='#000' stroke-width='2.5' marker-end='url(#ah3)'></line><line x1='86' y1='92' x2='86' y2='138' stroke='#000' stroke-width='2.5' marker-end='url(#ah3)'></line><line x1='86' y1='92' x2='149' y2='74' stroke='#c00' stroke-width='2.5' marker-end='url(#ah3)'></line><text x='152' y='44' font-size='12.5' fill='#000'>4 black tags</text><text x='152' y='62' font-size='12.5' fill='#6e6e6e'>real thing = made by W_k</text><text x='152' y='78' font-size='12.5' fill='#6e6e6e'>here = placed by the author</text><text x='152' y='108' font-size='12.5' fill='#c00'>1 red query</text><text x='152' y='126' font-size='12.5' fill='#6e6e6e'>real thing = made by W_q</text><text x='152' y='142' font-size='12.5' fill='#6e6e6e'>here = your knob</text><text x='12' y='168' font-size='12.5' fill='#6e6e6e'>fixed at 0&deg; / 90&deg; / 180&deg; / 270&deg;</text></svg><div class='fn'><b>In the real thing W decides the directions. In this course you turn them by hand.</b> So <b>the knobs stand in for W</b>. They are deliberately left directly adjustable so you can see <b>how the shares change as the direction changes</b>.</div>"
+  ],
+  [
+   "m",
+   "So in the real thing, the machine decides these directions too?"
+  ],
+  [
+   "m",
+   "You say the machine decides, but I have not seen it, so it does not land."
+  ],
+  [
+   "d",
+   "Ha ha! Then let me show you. <b>In the panel below, the machine settles on a W.</b> It is the <b>walking downhill</b> from Chapters 1 and 2. All you do is press."
+  ],
+  [
+   "d",
+   "&hellip; You saw it? <b>Not one direction was set by a person.</b> Now then, <b>go and turn the knobs!</b> This time you decide the direction."
+  ]
+ ],
+ "e13d": [
+  [
+   "m",
+   "Doc. Once the <b>shares</b> are out, how does <b>&ldquo;spilled&rdquo;</b> get settled? And why <b>only the two words spilled and tore</b> in the first place?"
+  ],
+  [
+   "d",
+   "You put your finger on it! That is where the screen has been keeping quiet. &hellip; <b>The exit has been cut down to two words.</b> Let us start there."
+  ],
+  [
+   "f",
+   "<div class='ft'>Why only the two words &ldquo;spilled&rdquo; and &ldquo;tore&rdquo;</div><div class='fn'><b>The real exit has 50,000</b> (the one from Problem 12). All 50,000 get a score, and one is drawn from among them. <b>This course cuts that exit down to two words.</b> With two, they can be made into <b>two axes</b> and drawn.</div><div class='fn' style='margin-top:.6rem'><b>Why those two</b> &mdash; because they are the words that <b>swap over</b> depending on what &ldquo;it&rdquo; points to.</div><div class='flw' style='margin-top:.4rem'><div class='st on'><div class='hd2'>when &ldquo;it&rdquo; = coffee</div><div class='sm2'>a hand knocks them, and it<br>&rarr; <b>spilled</b></div></div><div class='st on'><div class='hd2'>when &ldquo;it&rdquo; = newspaper</div><div class='sm2'>a hand knocks them, and it<br>&rarr; <b>tore</b></div></div></div><div class='fn'>These are the <b>only two</b> that swap over, so they were made the axes. <b>The 3 in &ldquo;coffee pushes spilled by 3&rdquo; is also a number this problem chose</b> (in the real thing W_v settles it by learning).</div><div class='ft'>What &ldquo;mixing the contents&rdquo; means &mdash; adding vectors</div><div class='fn'><b>The contents are vectors too.</b> In this problem they sit on <b>two axes</b>, one for spilled and one for tore.</div><table><tr><th>Word</th><th>Contents vector</th><th>Direction</th></tr><tr><td>coffee</td><td>( <b>3</b> , <b>0</b> )</td><td>length 3 towards spilled</td></tr><tr><td>newspaper</td><td>( <b>0</b> , <b>3</b> )</td><td>length 3 towards tore</td></tr><tr><td>desk, hand</td><td>( <b>0</b> , <b>0</b> )</td><td>pointing nowhere</td></tr></table><div class='fn' style='margin-top:.6rem'><b>Mixing = shrink each by its share, then add.</b> At direction 0&deg; and strength 1.3, the shares were coffee <b>0.511</b> and newspaper <b>0.081</b>.</div><svg class='dg' viewBox='0 0 340 190' role='img' aria-label='the contents of coffee and newspaper shrunk by their shares and added'><defs><marker id='ah6' viewBox='0 0 10 10' refX='9' refY='5' markerWidth='5' markerHeight='5' orient='auto-start-reverse'><path d='M0 0 L10 5 L0 10 z' fill='context-stroke'></path></marker></defs><rect x='0' y='0' width='340' height='190' fill='#f9f9f9'></rect><line x1='48' y1='158' x2='192' y2='158' stroke='#d9d9d9'></line><line x1='62' y1='170' x2='62' y2='26' stroke='#d9d9d9'></line><line x1='62' y1='47.6' x2='79.5' y2='47.6' stroke='#9aa2a8' stroke-width='1' stroke-dasharray='3 3'></line><line x1='79.5' y1='158' x2='79.5' y2='47.6' stroke='#9aa2a8' stroke-width='1' stroke-dasharray='3 3'></line><line x1='62' y1='158' x2='62' y2='47.6' stroke='#019949' stroke-width='3' marker-end='url(#ah6)'></line><line x1='62' y1='158' x2='79.5' y2='158' stroke='#9aa2a8' stroke-width='3' marker-end='url(#ah6)'></line><line x1='62' y1='158' x2='79.5' y2='47.6' stroke='#000' stroke-width='3' marker-end='url(#ah6)'></line><text x='10' y='38' font-size='12.5' fill='#019949'>spilled side</text><text x='92' y='184' font-size='12.5' fill='#9aa2a8'>tore side</text><text x='10' y='62' font-size='12.5' fill='#019949'>1.533</text><text x='83' y='170' font-size='12.5' fill='#9aa2a8'>0.243</text><text x='89' y='46' font-size='12.5' fill='#000'>the sum</text><text x='190' y='62' font-size='12.5' fill='#6e6e6e'>0.511 &times; coffee</text><text x='190' y='80' font-size='12.5' fill='#6e6e6e'>+ 0.081 &times; newspaper</text><text x='190' y='104' font-size='12.5' fill='#000'>= ( 0.243 , 1.533 )</text><text x='190' y='128' font-size='12.5' fill='#6e6e6e'>tips to spilled</text></svg><div class='fn'><b>Which side the summed arrow tips towards is what decides the next word.</b> Spilled side <b>1.533</b>, tore side <b>0.243</b> &mdash; as proportions, <b>0.784</b> and <b>0.216</b> (adding to 1.000). <b>Turning them into proportions is the same processing as in Problem 5.</b></div><div class='fn'>So: <b>it looked hard at coffee &rarr; coffee&rsquo;s contents get added at length &rarr; the arrow tips to the spilled side.</b> That is the whole reason the word changes with what &ldquo;it&rdquo; points to.</div><div class='fn'><span style='color:var(--gray-500)'>In the real thing these two axes are not words. The sum is handed to the next layer first, and only at the end does it pass through the multiply-and-add over 50,000 to become word scores. This course takes <b>a shortcut, making the axes two words directly</b>.</span></div>"
+  ],
+  [
+   "m",
+   "Does a real LLM do this same thing?"
+  ],
+  [
+   "d",
+   "<b>It does.</b> Work out the shares, mix the contents &mdash; that part is the real formula. &hellip; But <b>this course leaves out what comes after</b>. Let me put that down honestly."
+  ],
+  [
+   "f",
+   "<div class='ft'>What matches the real thing / what this course leaves out</div><div class='fn'><b>Same as the real thing</b> (the very formula in <span data-ref='vaswani2017' data-loc='&sect;3.2 Eq.1'></span>)</div><table><tr><th>Step</th><th>What it does</th><th>Its proper name</th></tr><tr><td>1</td><td>compare the directions of the query and the tag (multiply and add)</td><td><span class='mono'>q &middot; k</span> (dot product)</td></tr><tr><td>2</td><td>divide by the square root of the dimension to even it out</td><td><span class='mono'>q &middot; k &divide; &radic;d_k</span></td></tr><tr><td>3</td><td>widen the gaps (e to the power of)</td><td>exponential</td></tr><tr><td>4</td><td>turn into proportions adding to 1 = the <b>shares</b></td><td><span class='mono'>&alpha;</span> (softmax)</td></tr><tr><td>5</td><td>mix the contents by those shares</td><td><span class='mono'>z = &Sigma; &alpha; &times; v</span></td></tr></table><div class='fn'>Written as formulas it is these two: <span class='mono'>&alpha; = softmax( q &middot; k &divide; &radic;d_k )</span> and <span class='mono'>z = &Sigma; &alpha; &times; v</span>. <b>You need not read them; they say the same thing as the table above.</b></div><div class='fn' style='margin-top:.6rem'><b>What this course leaves out (three things)</b></div><table><tr><th>The real thing</th><th>This course</th></tr><tr><td>the mixed result is <b>handed to the next layer</b> first. It becomes the next word only at the final layer, after a multiply-and-add over 50,000 words (the exit from Problem 12)</td><td>skips everything in between and makes the contents <b>the score of the next word</b> directly</td></tr><tr><td>a word is held as <b>512</b> numbers, and <b>6</b> or more layers are stacked</td><td><b>2</b> numbers, <b>1</b> layer</td></tr><tr><td>after attention comes a layer that multiplies and adds within each word alone</td><td>not included</td></tr></table><div class='fn'>So: <b>the mechanism is the real one, only the size and the number of layers are small.</b></div>"
+  ]
+ ],
+ "e13z": [
+  [
+   "m",
+   "Over <b>0.50</b>! Coffee has the largest share."
+  ],
+  [
+   "d",
+   "Good. <b>The next word has settled on &ldquo;spilled&rdquo;.</b> The four shares add up to <b>1</b>."
+  ],
+  [
+   "m",
+   "There is still a little left on &ldquo;tore&rdquo; though."
+  ],
+  [
+   "d",
+   "<b>And that is as it should be.</b> If a half-asleep hand knocked them, the newspaper tearing is <b>possible</b> too. It does not go to 0."
+  ],
+  [
+   "m",
+   "So it is a difference in how likely they are."
+  ],
+  [
+   "d",
+   "Just so. &hellip; And Adam, <b>what &ldquo;it&rdquo; refers to is not settled inside an AI</b>."
+  ],
+  [
+   "m",
+   "Oh."
+  ],
+  [
+   "d",
+   "Change where it looks and the word that comes out changes with it. <b>So rather than leaving it at &ldquo;it&rdquo; or &ldquo;this&rdquo;, naming the thing gives you steadier answers.</b>"
+  ]
+ ]
+};
+drawCV(CV);
+/* 🔴🔴🔴 2026-09-09 展開担当：★★★#e13b の【後ろ 1件】の吹き出しを #e13b2 へ動かす
+   ★★★台詞の文言は1文字も変えていません。★動かすのは【位置だけ】です。
+   ★★理由：★つまみの枠より上にある「操作を指示する吹き出し」は、
+     ★上下2分割の下の枠に入りません（★上の枠は下の枠より前にある必要があるため）。
+   ★★★件数を数えて確かめます */
+(function () {
+  var a = document.getElementById('e13b'), b = document.getElementById('e13b2');
+  if (!a || !b) return;
+  /* 🔴🔴🔴 2026-09-10 記録担当：★★★★山田様のご指示で【元の並びに戻しました】。
+     ★山田様「ここの次に図がくるのに、直したものでは（はっはっはの）次に図がくる。
+       上にずらしてもとのにあわせてくれ」
+     ★★もとの並び ──「はっはっは！…押すだけでいい」→「……見たな？…つまみを回してごらん！」→ 図
+     ★★★K を 1 → 0 にして【動かさない】ようにしただけです。★台詞は1文字も触っていません。
+       ★仕組みは下に残してあります（★K を 1 に戻せば また動きます） */
+  var cl = a.querySelectorAll('.cl'), K = 0, n0 = cl.length;
+  if (K < 1) return;
+  if (n0 <= K) return;
+  b.className = 'cv';
+  for (var i = n0 - K; i < n0; i++) b.appendChild(cl[i]);
+  var n1 = a.querySelectorAll('.cl').length, n2 = b.querySelectorAll('.cl').length;
+  if (n1 + n2 !== n0 || n2 !== K) console.error('bubble count mismatch', n0, n1, n2);
+})();
+
+})();
+</script>
+</body>
+</html>
