@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 392" role="img"
+     aria-label="Two probability distributions. With a careless question, a peak rises on the commonplace answer and new things stay buried in the tail. After conditions are stacked on, the distribution itself is remade and a new peak rises where the tail used to be. Lowering the temperature only favors peaks within the same distribution; adding conditions deforms the distribution itself.">
+<style>
+text{font-family:'Helvetica Neue',Arial,'Hiragino Kaku Gothic ProN','Hiragino Sans','Yu Gothic','Meiryo',sans-serif;fill:#111}
+.tt{font-size:22px;font-weight:600}
+.ax{font-size:17px;fill:#9a9a9a}
+.cp{font-size:18px;fill:#6e6e6e}
+.b1{fill:#c9c9c9}
+.b2{fill:#019949}
+</style>
+
+<text class="tt" x="40"  y="30">A careless question</text>
+<text class="tt" x="410" y="30">After stacking on conditions</text>
+<text class="ax" x="40"  y="58">Probability</text>
+<text class="ax" x="410" y="58">Probability</text>
+
+<line x1="384" y1="20" x2="384" y2="256" stroke="#e6e6e6" stroke-width="1"/>
+
+<!-- 左：ありふれた答えに山が立つ -->
+<rect class="b1" x="48"  y="240" width="28" height="10"/>
+<rect class="b1" x="80"  y="224" width="28" height="26"/>
+<rect class="b1" x="112" y="200" width="28" height="50"/>
+<rect class="b1" x="144" y="164" width="28" height="86"/>
+<rect class="b1" x="176" y="132" width="28" height="118"/>
+<rect class="b1" x="208" y="164" width="28" height="86"/>
+<rect class="b1" x="240" y="200" width="28" height="50"/>
+<rect class="b1" x="272" y="224" width="28" height="26"/>
+<rect class="b1" x="304" y="240" width="28" height="10"/>
+<line x1="40" y1="250" x2="348" y2="250" stroke="#333" stroke-width="1.5"/>
+<text class="cp" x="40" y="286">A peak rises on the commonplace answer.</text>
+<text class="cp" x="40" y="310">New things stay buried in the tail</text>
+
+<!-- 右：分布そのものが作り替えられる -->
+<rect class="b1" x="408" y="238" width="28" height="12"/>
+<rect class="b1" x="440" y="238" width="28" height="12"/>
+<rect class="b1" x="472" y="236" width="28" height="14"/>
+<rect class="b1" x="504" y="238" width="28" height="12"/>
+<rect class="b1" x="536" y="240" width="28" height="10"/>
+<rect class="b1" x="568" y="238" width="28" height="12"/>
+<rect class="b2" x="600" y="132" width="28" height="118"/>
+<rect class="b1" x="632" y="238" width="28" height="12"/>
+<rect class="b1" x="664" y="240" width="28" height="10"/>
+<line x1="400" y1="250" x2="708" y2="250" stroke="#333" stroke-width="1.5"/>
+
+<text class="cp" x="470" y="104" fill="#019949" font-weight="600">Where the tail used to be</text>
+<line x1="608" y1="112" x2="612" y2="126" stroke="#019949" stroke-width="2"/>
+<polygon points="614,132 604,124 618,120" fill="#019949"/>
+
+<text class="cp" x="400" y="286">The distribution itself is remade,</text>
+<text class="cp" x="400" y="310">a new peak rises where it was buried</text>
+
+<line x1="40" y1="330" x2="720" y2="330" stroke="#e6e6e6" stroke-width="1"/>
+<text class="cp" x="40" y="354" font-size="17">Lowering the temperature only favors peaks within the same distribution</text>
+<text class="cp" x="40" y="378" font-size="17">Adding conditions is an operation that deforms the distribution itself</text>
+</svg>

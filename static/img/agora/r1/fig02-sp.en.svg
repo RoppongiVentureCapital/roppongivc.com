@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 306 610" role="img"
+     aria-label="Two triangles. The upper layer is AI researchers, the people who build AI; the lower layer is people who use AI. In the second triangle the boundary between the two layers has dropped, and the share of AI researchers has grown.">
+<!--
+  ★スマホ用の縦版（図2 fig02）。パソコン用は fig02.svg（700×580）をそのまま使う
+  ★viewBox 306 ＝ 画面375pxで図が出る実寸。最小14px
+  ★★横長版では三角形の右に引き出し線でラベルを付けていたが、306幅では
+    ラベルの場所（約115px必要）を取ると三角形が170pxまで縮んでしまう。
+    → ラベルを三角形の下の凡例に移し、三角形は240px幅を確保した。
+      どの層がどれかは、色（緑の面＝AI研究人材／白い面＝AIを使う人）で示す
+  ★境界線の高さの比は横長版と同じ ── 1枚目は上から1/3、2枚目は上から2/3
+    （横長版：三角形の高さ180に対し境界60と120。ここでは高さ150に対し50と100）
+  ★足元の註は3行に折った（1行だと420pxで入らない）
+-->
+<style>
+text{font-family:'Helvetica Neue',Arial,'Hiragino Kaku Gothic ProN','Hiragino Sans','Yu Gothic','Meiryo',sans-serif;fill:#111}
+.hd{font-size:17px;font-weight:600;fill:#019949}
+.lb{font-size:14px}
+.sm{font-size:14px;fill:#555}
+.tri{fill:none;stroke:#333;stroke-width:2}
+.up{fill:#019949;fill-opacity:.10}
+.bd{stroke:#019949;stroke-width:2.5}
+.old{stroke:#b9b9b9;stroke-width:2;stroke-dasharray:5 5}
+</style>
+
+<rect width="306" height="610" fill="#fff"/>
+
+<!-- ============ 1枚目：いま ============ -->
+<text class="hd" x="14" y="24">Today</text>
+<polygon class="up" points="153,44 193,94 113,94"/>
+<polygon class="tri" points="153,44 273,194 33,194"/>
+<line class="bd" x1="113" y1="94" x2="193" y2="94"/>
+
+<!-- 凡例 -->
+<rect x="14" y="212" width="13" height="13" fill="#019949" fill-opacity=".10" stroke="#019949" stroke-width="1.5"/>
+<text class="lb" x="34" y="223">AI researchers (who build AI)</text>
+<rect x="14" y="234" width="13" height="13" fill="#fff" stroke="#333" stroke-width="1.5"/>
+<text class="lb" x="34" y="245">People who use AI</text>
+
+<!-- ============ 2枚目：増やしたいのは、この形 ============ -->
+<text class="hd" x="14" y="290">The shape we want more of</text>
+<polygon class="up" points="153,310 233,410 73,410"/>
+<polygon class="tri" points="153,310 273,460 33,460"/>
+
+<line class="old" x1="113" y1="360" x2="193" y2="360"/>
+<line class="bd" x1="73" y1="410" x2="233" y2="410"/>
+
+<!-- 境界線が下がることを示す矢印 -->
+<line x1="153" y1="366" x2="153" y2="396" stroke="#019949" stroke-width="2.5"/>
+<polygon points="153,406 147,392 159,392" fill="#019949"/>
+
+<!-- 凡例 -->
+<rect x="14" y="478" width="13" height="13" fill="#019949" fill-opacity=".10" stroke="#019949" stroke-width="1.5"/>
+<text class="lb" x="34" y="489">AI researchers (who build AI)</text>
+<rect x="14" y="500" width="13" height="13" fill="#fff" stroke="#333" stroke-width="1.5"/>
+<text class="lb" x="34" y="511">People who use AI</text>
+
+<!-- 足元 -->
+<text class="sm" x="14" y="552">Dashed = the original</text>
+<text class="sm" x="14" y="574">boundary. Lower the entry</text>
+<text class="sm" x="14" y="596">barrier and it drops</text>
+</svg>

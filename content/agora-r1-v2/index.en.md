@@ -69,7 +69,7 @@ By their own estimate, fewer than one in ten of their classmates has heard of Ka
 
 **When it comes down to luck, the problem is not on the side of the talent. It is on the side of the design**. That is what he meant by democratizing it.
 
-{{< fig n="1" src="img/agora/r1/fig-kaggle.svg" src-sp="img/agora/r1/fig-kaggle-sp.svg" >}}How Kaggle works. The table and rankings are examples.{{< /fig >}}
+{{< fig n="1" src="img/agora/r1/fig-kaggle.en.svg" src-sp="img/agora/r1/fig-kaggle-sp.en.svg" >}}How Kaggle works. The table and rankings are examples.{{< /fig >}}
 
 ### "They could just teach the principles in school," he said
 
@@ -95,7 +95,7 @@ I often hear that researchers in China are extraordinarily motivated. There are 
 I do think that. No, that makes sense to me.
 {{< /say >}}
 
-{{< fig n="2" src="img/agora/r1/fig02.svg" src-sp="img/agora/r1/fig02-sp.svg" >}}When the boundary between the upper and lower layers drops, the share of people who build increases.{{< /fig >}}
+{{< fig n="2" src="img/agora/r1/fig02.en.svg" src-sp="img/agora/r1/fig02-sp.en.svg" >}}When the boundary between the upper and lower layers drops, the share of people who build increases.{{< /fig >}}
 
 Kitamura went on about the principles themselves.
 
@@ -212,7 +212,7 @@ The question "is it acceptable to have AI do Kaggle for you without understandin
 
 There is a record of this actually happening. Andrey Lukyanenko, a Kaggle Competition Master and a machine learning engineer at Meta, published a [record](https://andlukyane.com/blog/kaggle-antigravity-s6e7) of it in July 2026. **He had an AI agent run an entire Kaggle competition**. The moderator looked this up after the session.
 
-{{< fig n="3" src="img/agora/r1/fig-agent.svg" src-sp="img/agora/r1/fig-agent-sp.svg" >}}All the human handed over was one instruction document and three decisions.{{< /fig >}}
+{{< fig n="3" src="img/agora/r1/fig-agent.en.svg" src-sp="img/agora/r1/fig-agent-sp.en.svg" >}}All the human handed over was one instruction document and three decisions.{{< /fig >}}
 
 **① What is inside the tools ── the AI did all of this layer.** The task was to look at health checkup records for 630,000 people and sort each one into "needs attention" or "no problem." The AI explored the data, built about 140 columns of its own as predictive signals, trained three kinds of models in parallel, tuned how to blend them, and made the submission entirely on its own. The human wrote almost no code. Nobody looked at what was in the columns, or at what was being computed inside the models. And it worked.
 
@@ -382,7 +382,7 @@ There are three things AI training aims at. They are added in order. **① Trace
 
 **There is a common misunderstanding about ①**. AI is not taught to "prefer words you see often." It is trained to assign correct probabilities to rare words too. The blandness of what comes out is not caused by this exercise. **It happens because when the conditions in your question are thin, probability piles up on the phrasings you see most often — and because the generation step is biased toward picking the tall peaks** (→ Column 4).
 
-{{< fig n="4" src="img/agora/r1/fig-reward.svg" src-sp="img/agora/r1/fig-reward-sp.svg" >}}The top row shows the three aims of training. The bar lengths in the bottom row are schematic, not measured population figures.{{< /fig >}}
+{{< fig n="4" src="img/agora/r1/fig-reward.en.svg" src-sp="img/agora/r1/fig-reward-sp.en.svg" >}}The top row shows the three aims of training. The bar lengths in the bottom row are schematic, not measured population figures.{{< /fig >}}
 
 **None of these three contains a measure for "is this a valuable kind of new?"** ① has "does it match what I saw," ② has "did people think it was good," ③ has "does it match the answer key." The only thing missing anywhere is a measure of newness.
 
@@ -413,7 +413,7 @@ That said, "AI cannot create" goes too far. More precisely: **it cannot aim at a
 
 9:18 p.m. The moderator gathered up the record of the discussion so far and handed it to the AI. The instruction was one line.
 
-{{< fig n="5" src="img/agora/r1/fig-howto.svg" src-sp="img/agora/r1/fig-howto-sp.svg" >}}How the AI was used that day. Transcription is automatic; the AI is handed the record as a file.{{< /fig >}}
+{{< fig n="5" src="img/agora/r1/fig-howto.en.svg" src-sp="img/agora/r1/fig-howto-sp.en.svg" >}}How the AI was used that day. Transcription is automatic; the AI is handed the record as a file.{{< /fig >}}
 
 {{< say who="yamada" >}}
 Analogy, abstraction, and insight, please
@@ -574,7 +574,7 @@ Two conditions were added at 9:34 p.m.: Yamai's direction to "break the stages d
 
 **But while conditions can move you off the commonplace answer, they do not decide which low-probability region holds the value**. That has to come from outside.
 
-{{< fig n="6" src="img/agora/r1/fig05.svg" src-sp="img/agora/r1/fig05-sp.svg" >}}The bar heights are schematic, not measured. Vocabulary size differs by model and runs into the tens of thousands of words.{{< /fig >}}
+{{< fig n="6" src="img/agora/r1/fig05.en.svg" src-sp="img/agora/r1/fig05-sp.en.svg" >}}The bar heights are schematic, not measured. Vocabulary size differs by model and runs into the tens of thousands of words.{{< /fig >}}
 
 **There is one thing to take away. When you are not satisfied with an answer, suspect your own last set of conditions before you blame the AI**.
 
@@ -659,12 +659,12 @@ Data would be needed in some form. Generating data with AI does happen lately, b
 
 The mathematics advisor was the one who asked again who this was for. The one who gave the direction was a high school senior. The one who converted it into conditions for the AI was the moderator. The one who produced the link to tsume-shogi was the AI. The one who judged whether it was genuine was the high school senior. The one who added the carving of a move count was the entrepreneur. The one who checked the constraint on data was the high school senior. Take any one of them away and this move does not arrive.
 
-{{< fig n="7" src="img/agora/r1/fig07.svg" src-sp="img/agora/r1/fig07-sp.svg" >}}In these two hours, the direction came from the high school senior, the link came from the AI, and the judgment of whether it was genuine also came from the high school senior.{{< /fig >}}
+{{< fig n="7" src="img/agora/r1/fig07.en.svg" src-sp="img/agora/r1/fig07-sp.en.svg" >}}In these two hours, the direction came from the high school senior, the link came from the AI, and the judgment of whether it was genuine also came from the high school senior.{{< /fig >}}
 
 {{< column n="5" title="The newness AI can produce, and the newness it cannot" >}}
 Being "a combination of things that already exist" **does not mean it has no value**. The reason is the number of combinations.
 
-{{< fig n="8" src="img/agora/r1/fig-dots.svg" src-sp="img/agora/r1/fig-dots-sp.svg" >}}There are 28 dots. Choosing two gives 378 combinations. The number of dots is schematic; the number of elements a real AI has learned is far larger.{{< /fig >}}
+{{< fig n="8" src="img/agora/r1/fig-dots.en.svg" src-sp="img/agora/r1/fig-dots-sp.en.svg" >}}There are 28 dots. Choosing two gives 378 combinations. The number of dots is schematic; the number of elements a real AI has learned is far larger.{{< /fig >}}
 
 **So newness is not decided on the side of the materials. It is decided by whether anyone had found that link yet**.
 

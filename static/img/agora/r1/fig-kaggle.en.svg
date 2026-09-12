@@ -1,0 +1,134 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 520" role="img"
+     aria-label="How Kaggle works, in three steps. One, everyone is given the same table; the example theme is passengers on the Titanic, and in the bottom rows whether the passenger survived is hidden, which is what you predict. Two, you train a model and produce predictions from the passengers' features, turning the knobs until it fits, and you can resubmit many times a day. Three, you are ranked by accuracy: the share you got right is your score. Accuracy rises as you submit more, but there is no perfect score and it approaches a ceiling. The table and rankings are examples.">
+<!--
+  ★余白のルール（fig01〜08 と同じ。デジタル庁デザインシステムの考え方）
+    基準単位 8px。使う段階は 16 / 24 / 28 / 64。外周 32
+  ★書体は1つだけ。差は大きさ・太さ・色だけ
+  ★Kaggleの実画面は模写していない。仕組みだけを図にしたもの
+  ★数字の出所 ── 登録2,900万人超は2026年2月時点、2025年のコンペ68本（ML Contests 2026年レポート）
+-->
+<style>
+text{
+  font-family:'Helvetica Neue',Arial,'Hiragino Kaku Gothic ProN','Hiragino Sans','Yu Gothic','Meiryo',sans-serif;
+  font-weight:400; fill:#333;
+}
+.eyebrow{font-size:13.5px;font-weight:600;fill:#8a8a8a;letter-spacing:.02em}
+.deck{font-size:27px;font-weight:600;fill:#111}
+.label{font-size:16px;font-weight:600;fill:#111}
+.theme{font-size:13px;font-weight:600;fill:#555}
+.cell{font-size:13.5px}
+.head{font-size:12.5px;font-weight:600;fill:#666}
+.micro{font-size:13px;fill:#8a8a8a}
+.hide{font-size:15px;font-weight:700;fill:#c0392b}
+.rank{font-size:13.5px}
+.rankme{font-size:13.5px;font-weight:700;fill:#111}
+.up{font-size:11.5px;fill:#019949}
+.dn{font-size:11.5px;fill:#c0392b}
+.eq{font-size:11.5px;fill:#b8b8b8}
+.arrow{stroke:#c4c4c4;stroke-width:1.5;fill:none}
+.box{fill:#fff;stroke:#dcdcdc;stroke-width:1}
+.thr{stroke:#ececec;stroke-width:1}
+.axis{stroke:#d4d4d4;stroke-width:1}
+</style>
+
+<text class="eyebrow" x="32" y="30">How Kaggle works</text>
+<text class="deck" x="32" y="62">The world&#39;s largest machine learning competition</text>
+
+<!-- ============ ① 表が配られる（32〜228）============ -->
+<text class="label" x="32" y="112">1 Everyone gets one table</text>
+<text class="theme" x="32" y="134">Example ── passengers on the Titanic</text>
+<rect class="box" x="32" y="146" width="196" height="180" rx="3"/>
+<line class="thr" x1="32" y1="170" x2="228" y2="170"/>
+<text class="head" x="42"  y="164">Who</text>
+<text class="head" x="86"  y="164">Age</text>
+<text class="head" x="128" y="164">Class</text>
+<text class="head" x="176" y="164">Survived</text>
+<g class="cell">
+  <text x="42" y="192">889</text><text x="86" y="192">28</text><text x="128" y="192">3rd</text><text x="186" y="192">yes</text>
+  <text x="42" y="216">890</text><text x="86" y="216">26</text><text x="128" y="216">1st</text><text x="186" y="216">yes</text>
+  <text x="42" y="240">891</text><text x="86" y="240">32</text><text x="128" y="240">3rd</text><text x="186" y="240">no</text>
+</g>
+<line class="thr" x1="32" y1="252" x2="228" y2="252"/>
+<rect x="170" y="256" width="58" height="66" fill="#fdf0ee"/>
+<g class="cell">
+  <text x="42" y="276">892</text><text x="86" y="276">34</text><text x="128" y="276">3rd</text>
+  <text x="42" y="300">893</text><text x="86" y="300">47</text><text x="128" y="300">3rd</text>
+</g>
+<text class="hide" x="195" y="277">?</text>
+<text class="hide" x="195" y="301">?</text>
+<text class="micro" x="32" y="350">In the bottom rows, survival is hidden</text>
+<text class="micro" x="32" y="370">You predict it</text>
+
+<line class="arrow" x1="240" y1="232" x2="262" y2="232"/>
+<path class="arrow" d="M256 227l6 5-6 5"/>
+
+<!-- ============ ② 学習させて予測を出す（274〜488）============ -->
+<text class="label" x="274" y="112">2 Train it and predict</text>
+<text class="theme" x="274" y="134">Predict life or death from features</text>
+<rect class="box" x="274" y="146" width="214" height="180" rx="3"/>
+<g stroke="#e2e2e2" stroke-width="1">
+  <line x1="325" y1="186" x2="372" y2="202"/><line x1="325" y1="186" x2="372" y2="232"/><line x1="325" y1="186" x2="372" y2="262"/>
+  <line x1="325" y1="216" x2="372" y2="202"/><line x1="325" y1="216" x2="372" y2="232"/><line x1="325" y1="216" x2="372" y2="262"/>
+  <line x1="325" y1="246" x2="372" y2="202"/><line x1="325" y1="246" x2="372" y2="232"/><line x1="325" y1="246" x2="372" y2="262"/>
+  <line x1="325" y1="276" x2="372" y2="202"/><line x1="325" y1="276" x2="372" y2="232"/><line x1="325" y1="276" x2="372" y2="262"/>
+  <line x1="390" y1="202" x2="437" y2="217"/><line x1="390" y1="202" x2="437" y2="247"/>
+  <line x1="390" y1="232" x2="437" y2="217"/><line x1="390" y1="232" x2="437" y2="247"/>
+  <line x1="390" y1="262" x2="437" y2="217"/><line x1="390" y1="262" x2="437" y2="247"/>
+</g>
+<g fill="#fff" stroke="#9a9a9a" stroke-width="1.2">
+  <circle cx="316" cy="186" r="9"/><circle cx="316" cy="216" r="9"/>
+  <circle cx="316" cy="246" r="9"/><circle cx="316" cy="276" r="9"/>
+</g>
+<g fill="#fff" stroke="#9a9a9a" stroke-width="1.2">
+  <circle cx="381" cy="202" r="9"/><circle cx="381" cy="232" r="9"/><circle cx="381" cy="262" r="9"/>
+</g>
+<g fill="#f2faf5" stroke="#019949" stroke-width="1.4">
+  <circle cx="446" cy="217" r="9"/><circle cx="446" cy="247" r="9"/>
+</g>
+<text class="micro" x="316" y="304" text-anchor="middle">age·class</text>
+<text class="micro" x="381" y="304" text-anchor="middle">hidden</text>
+<text class="micro" x="446" y="304" text-anchor="middle">lived / died</text>
+<text class="micro" x="274" y="350">Turn the knobs until it fits</text>
+<text class="micro" x="274" y="370">You can resubmit many times a day</text>
+
+<line class="arrow" x1="500" y1="232" x2="522" y2="232"/>
+<path class="arrow" d="M516 227l6 5-6 5"/>
+
+<!-- ============ 3　正解率で順位がつく（534〜728）============ -->
+<text class="label" x="534" y="112">3 Ranked by accuracy</text>
+<text class="theme" x="534" y="134">Share correct = your score</text>
+<rect class="box" x="534" y="146" width="194" height="180" rx="3"/>
+<line class="thr" x1="534" y1="170" x2="728" y2="170"/>
+<text class="head" x="544" y="164">Rank</text>
+<text class="head" x="646" y="164">Accuracy</text>
+<g class="rank">
+  <text x="546" y="192">1</text><text x="562" y="192">user_ka3</text><text x="646" y="192">0.842</text><text class="up" x="694" y="192">▲2</text>
+  <text x="546" y="216">2</text><text x="562" y="216">user_mz7</text><text x="646" y="216">0.839</text><text class="eq" x="694" y="216">—</text>
+</g>
+<rect x="534" y="226" width="194" height="26" fill="#f2faf5"/>
+<text class="rankme" x="546" y="244">3</text><text class="rankme" x="562" y="244">You</text><text class="rankme" x="646" y="244">0.836</text><text class="dn" x="694" y="244">▼1</text>
+<g class="rank">
+  <text x="546" y="270">4</text><text x="562" y="270">user_tt1</text><text x="646" y="270">0.835</text><text class="up" x="694" y="270">▲5</text>
+  <text x="546" y="294">5</text><text x="562" y="294">user_yq9</text><text x="646" y="294">0.831</text><text class="dn" x="694" y="294">▼2</text>
+</g>
+<text class="micro" x="534" y="346">over 29 million registered</text>
+<text class="micro" x="534" y="364">68 competitions in 2025</text>
+<text class="micro" x="534" y="382">rankings shift daily</text>
+
+<!-- ============ 正解率の推移 ============ -->
+<line class="thr" x1="32" y1="400" x2="728" y2="400"/>
+<text class="eyebrow" x="32" y="426">Accuracy rises as you submit more. But there is no perfect score, and it nears a ceiling</text>
+
+<line class="axis" x1="120" y1="448" x2="120" y2="498"/>
+<line class="axis" x1="120" y1="498" x2="560" y2="498"/>
+<text class="micro" x="112" y="454" text-anchor="end">Accuracy</text>
+<text class="micro" x="120" y="513">Number of submissions →</text>
+<g fill="none" stroke-width="2">
+  <path stroke="#c4c4c4" stroke-dasharray="4 3" d="M128 488 L182 478 L236 471 L290 466 L344 463 L398 461 L452 460 L506 459 L556 459"/>
+  <path stroke="#019949" d="M128 492 L182 480 L236 469 L290 462 L344 457 L398 454 L452 452 L506 451 L556 451"/>
+</g>
+<circle cx="556" cy="451" r="3.5" fill="#019949"/>
+<circle cx="556" cy="459" r="3" fill="#c4c4c4"/>
+<text class="micro" x="572" y="455">You</text>
+<text class="micro" x="572" y="471">Top competitors</text>
+</svg>

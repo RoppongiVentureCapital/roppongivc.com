@@ -1,0 +1,93 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 306 1056" role="img"
+     aria-label="The three things AI training aims at, none of which is newness. One, trace what it has seen: data is text from the internet, the task is predicting the next word. Two, lean toward human preference: data is records of human choices, the task is making the chosen one score higher. Three, things a machine can mark: data is mathematics and code, the task is having a machine check against the key. None of the three contains a measure of whether something is a valuable kind of new. Below, a commonplace answer is picked as good by most people, while genuine newness is legible to only a few, gets no points, and is erased in training. The bar lengths are schematic, not measured.">
+<!--
+  ★スマホ用の縦版（図4 fig-reward）。パソコン用は fig-reward.svg（横長 760×556）をそのまま使う
+  ★viewBox 306 ＝ 画面375pxで図が出る実寸。書いた数字がそのまま見える大きさになる
+  ★最小14px（図5で確定した基準）
+  ★横に並んでいた上段3列を縦に積んだ。中間の赤い帯と下段の棒グラフは、横のまま段を分けた
+  ★下段の棒の比は元の図と同じ（300 : 17 → 230 : 13。どちらも約17.7 : 1）
+  ★★元の横長版から落としたもの ──
+    足元の註「棒の長さは説明のための模式で、実測値ではない。」
+    → 記事のキャプションが同じことを言っているため（「下段の棒の長さは説明のための
+      模式で、人数の実測ではない。」）。二重に書く意味がない
+  ★★元の横長版から直したもの ──
+    下段の肩の小見出しにあった「②」を「2」にした。
+    丸数字はコラム1の①道具の中身／②手続き／③結論とぶつかるため使わない（→ 105 §8-8 ⑪）。
+    ★横長版のほうには「②」が残っている。★山田様の判断を待つ
+  ★折り返したもの ── 大見出し／赤い帯（3行）／下段の肩の小見出し／1つめのカードの補足
+-->
+<style>
+text{
+  font-family:'Helvetica Neue',Arial,'Hiragino Kaku Gothic ProN','Hiragino Sans','Yu Gothic','Meiryo',sans-serif;
+  font-weight:400; fill:#333;
+}
+.eyebrow{font-size:14px;font-weight:600;fill:#7d7d7d;letter-spacing:.02em}
+.deck{font-size:22px;font-weight:600;fill:#111}
+.no{font-size:14px;font-weight:600;fill:#fff}
+.label{font-size:17px;font-weight:600;fill:#111}
+.key{font-size:14px;fill:#7d7d7d}
+.val{font-size:14px;fill:#333}
+.sub{font-size:14px;fill:#7d7d7d}
+.mid{font-size:16px;font-weight:600;fill:#111}
+.bar{font-size:14px;font-weight:600;fill:#333}
+</style>
+
+<rect width="306" height="1056" fill="#fff"/>
+
+<text class="eyebrow" x="14" y="22">What AI training aims at</text>
+<text class="deck" x="14" y="58">There are three.</text>
+<text class="deck" x="14" y="86">None of them is newness</text>
+
+<!-- ============ 1 見たものをなぞる（110〜278） ============ -->
+<rect x="14" y="110" width="278" height="168" rx="6" fill="#fff" stroke="#c4c4c4" stroke-width="1"/>
+<circle cx="42" cy="136" r="11" fill="#9a9a9a"/><text class="no" x="42" y="141" text-anchor="middle">1</text>
+<text class="label" x="62" y="142">Trace what it has seen</text>
+<path d="M30 158 L276 158" stroke="#ececec" stroke-width="1"/>
+<text class="key" x="30" y="184">Data</text><text class="val" x="68" y="184">text from the internet</text>
+<text class="key" x="30" y="210">Task</text><text class="val" x="68" y="210">predict the next word</text>
+<text class="sub" x="30" y="240">It is trained to give correct</text>
+<text class="sub" x="30" y="260">probabilities to rare words too</text>
+
+<path d="M147 282 L153 288 L159 282" stroke="#9a9a9a" stroke-width="1.5" fill="none"/>
+
+<!-- ============ 2 人が好む方へ寄せる（296〜464） ============ -->
+<rect x="14" y="296" width="278" height="168" rx="6" fill="#fff" stroke="#c4c4c4" stroke-width="1"/>
+<circle cx="42" cy="322" r="11" fill="#9a9a9a"/><text class="no" x="42" y="327" text-anchor="middle">2</text>
+<text class="label" x="62" y="328">Lean toward human preference</text>
+<path d="M30 344 L276 344" stroke="#ececec" stroke-width="1"/>
+<text class="key" x="30" y="370">Data</text><text class="val" x="68" y="370">records of human choices</text>
+<text class="key" x="30" y="396">Task</text><text class="val" x="68" y="396">the chosen one scores higher</text>
+<text class="sub" x="30" y="426">scored by majority vote</text>
+
+<path d="M147 468 L153 474 L159 468" stroke="#9a9a9a" stroke-width="1.5" fill="none"/>
+
+<!-- ============ 3 機械で正誤が付くもの（482〜650） ============ -->
+<rect x="14" y="482" width="278" height="168" rx="6" fill="#fff" stroke="#c4c4c4" stroke-width="1"/>
+<circle cx="42" cy="508" r="11" fill="#9a9a9a"/><text class="no" x="42" y="513" text-anchor="middle">3</text>
+<text class="label" x="62" y="514">Things a machine can mark</text>
+<path d="M30 530 L276 530" stroke="#ececec" stroke-width="1"/>
+<text class="key" x="30" y="556">Data</text><text class="val" x="68" y="556">mathematics, code</text>
+<text class="key" x="30" y="582">Task</text><text class="val" x="68" y="582">a machine checks the key</text>
+<text class="sub" x="30" y="612">only where an answer key exists</text>
+
+<!-- ============ 中間の一行（678〜778） ============ -->
+<rect x="14" y="678" width="278" height="100" rx="6" fill="#fdf0ee" stroke="#c0392b" stroke-width="1"/>
+<text class="mid" x="32" y="710">None of these three contains</text>
+<text class="mid" x="32" y="734">a measure of whether something</text>
+<text class="mid" x="32" y="758">is a valuable kind of new</text>
+
+<!-- ============ 下段 多数決では拾えない ============ -->
+<text class="eyebrow" x="14" y="814">So should we just have people</text>
+<text class="eyebrow" x="14" y="836">choose which is newer in 2?</text>
+
+<rect x="14" y="852" width="278" height="186" rx="6" fill="#f7f7f7" stroke="#c4c4c4" stroke-width="1"/>
+
+<text class="bar" x="30" y="882">Commonplace answer</text>
+<rect x="30" y="892" width="230" height="13" rx="2" fill="#9a9a9a"/>
+<text class="sub" x="30" y="928" fill="#333">most people pick it as good</text>
+
+<text class="bar" x="30" y="964">Genuine newness</text>
+<rect x="30" y="974" width="13" height="13" rx="2" fill="#c0392b"/>
+<text class="sub" x="30" y="1010" fill="#333">only a few can see the value</text>
+<text class="sub" x="30" y="1030" fill="#c0392b">→ no points, so training erases it</text>
+</svg>

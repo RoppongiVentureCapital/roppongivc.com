@@ -1,0 +1,71 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 372" role="img"
+     aria-label="A record of having an AI agent run an entire Kaggle competition. The human handed over one instruction document and three decisions: how to split the data for scoring, the output format, and keeping an experiment log. The AI agent explored the data and built about 140 signal columns, trained three models and tuned how to blend them, and submitted. It ran the improvement loop itself. Kaggle did the scoring. Code written by the human: almost none.">
+<!--
+  ★余白のルール（fig-kaggle・fig01〜08 と同じ。デジタル庁デザインシステムの考え方）
+    基準単位 8px。使う段階は 16 / 24 / 28 / 64。外周 32
+  ★書体は1つだけ。差は大きさ・太さ・色だけ
+  ★色は記事の約束に合わせた ── AI＝灰（濃い枠）／Kaggle＝緑
+  ★★番号（①②③）は使わない。コラム1の①道具の中身／②手続き／③結論とぶつかるため
+  ★出所 ── Andrey Lukyanenko 氏（Kaggle Competition Master・Meta）2026年7月公開の記録
+    https://andlukyane.com/blog/kaggle-antigravity-s6e7
+-->
+<style>
+text{
+  font-family:'Helvetica Neue',Arial,'Hiragino Kaku Gothic ProN','Hiragino Sans','Yu Gothic','Meiryo',sans-serif;
+  font-weight:400; fill:#333;
+}
+.eyebrow{font-size:13.5px;font-weight:600;fill:#8a8a8a;letter-spacing:.02em}
+.deck{font-size:27px;font-weight:600;fill:#111}
+.label{font-size:16px;font-weight:600;fill:#111}
+.cell{font-size:13.5px;fill:#333}
+.sub{font-size:12.5px;fill:#8a8a8a}
+.tick{font-size:13.5px;fill:#9a9a9a}
+.foot{font-size:15px;font-weight:600;fill:#111}
+</style>
+
+<rect width="760" height="372" fill="#fff"/>
+
+<text class="eyebrow" x="32" y="34">A record of having an AI agent run an entire Kaggle competition</text>
+<text class="deck" x="32" y="72">The human handed over only the first instruction</text>
+
+<!-- 人間 -->
+<rect x="32" y="104" width="176" height="180" rx="6" fill="#fff" stroke="#c4c4c4" stroke-width="1"/>
+<text class="label" x="52" y="134">Human</text>
+<text class="cell" x="52" y="172">1 instruction doc</text>
+<text class="cell" x="52" y="204">3 decisions</text>
+<text class="sub"  x="60" y="228">how to split for scoring</text>
+<text class="sub"  x="60" y="248">output format</text>
+<text class="sub"  x="60" y="268">experiment log</text>
+
+<!-- 矢印 人間→AI -->
+<path d="M212 194 L230 194" stroke="#9a9a9a" stroke-width="1.5" fill="none"/>
+<path d="M230 190 L236 194 L230 198 Z" fill="#9a9a9a"/>
+
+<!-- AIエージェント -->
+<rect x="236" y="104" width="390" height="180" rx="6" fill="#f7f7f7" stroke="#9a9a9a" stroke-width="1.5"/>
+<text class="label" x="256" y="134">AI agent</text>
+
+<text class="tick" x="256" y="175">▸</text>
+<text class="cell" x="274" y="175">Explore the data. Build ~140 signal columns</text>
+
+<text class="tick" x="256" y="207">▸</text>
+<text class="cell" x="274" y="207">Train three models, tune how to blend them</text>
+
+<text class="tick" x="256" y="239">▸</text>
+<text class="cell" x="274" y="239">Submit</text>
+
+<text class="sub" x="256" y="268">It ran the improvement loop itself too</text>
+
+<!-- 矢印 AI→Kaggle -->
+<path d="M630 194 L648 194" stroke="#019949" stroke-width="1.5" fill="none"/>
+<path d="M648 190 L654 194 L648 198 Z" fill="#019949"/>
+
+<!-- Kaggle -->
+<rect x="654" y="104" width="74" height="180" rx="6" fill="#f2faf5" stroke="#019949" stroke-width="1"/>
+<text class="label" x="668" y="134" style="font-size:14px">Kaggle</text>
+<text class="cell" x="668" y="196">Scoring</text>
+
+<!-- 足元 -->
+<path d="M32 316 L728 316" stroke="#ececec" stroke-width="1"/>
+<text class="foot" x="32" y="346">Code written by the human ── almost none</text>
+</svg>
