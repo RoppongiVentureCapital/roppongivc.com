@@ -1,6 +1,14 @@
 {{ define "head" }}
 {{/* ★2026-09-10 一般公開。ここにあった noindex,nofollow の1行を削除した。
      ★戻すときは <meta name="robots" content="noindex,nofollow"> をこの位置に入れる。 */}}
+{{/* 🔴🔴🔴🔴 2026-09-12 記録担当：★★★★front matter の noindex: true で1ページだけ検索から外せる形にした。
+     ★★★用途 ── ★英語版（index.en.md）を仕上げるまで検索に載せないため（山田様のご承認 2026-09-12）。
+     ★★日本語版 index.md には noindex を書いていないので、★日本語版の出力は1バイトも変わらない
+       （★with は値が無ければ何も出さない）。★実際に全ページビルドの差分で確認済み。
+     ★英語版が仕上がったら index.en.md の noindex の行を消すだけでよい */}}
+{{ with .Params.noindex }}
+<meta name="robots" content="noindex,nofollow">
+{{ end }}
 {{ with .Params.og_image }}
 <meta property="og:image" content="{{ . | absURL }}">
 <meta property="twitter:image" content="{{ . | absURL }}">
@@ -24,7 +32,7 @@
         {{/* ★2026-09-09 発行元の行は削除した（山田様の指示）。
              理由 ── スマホで右の文字が写真より高くなってバランスが崩れる。
              かつサイト共通ナビに六本木ベンチャーキャピタルが常に出ている */}}
-        <p class="a-hero-meta">{{ .Date.Format "2006年1月2日" }}</p>
+        <p class="a-hero-meta">{{ if eq .Page.Language.Lang "en" }}{{ .Date.Format "January 2, 2006" }}{{ else }}{{ .Date.Format "2006年1月2日" }}{{ end }}</p>
       </div>
     </div>
   </header>

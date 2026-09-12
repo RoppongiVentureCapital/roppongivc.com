@@ -6,7 +6,7 @@
        ★HTMLの行頭に空白を入れないこと（markdownify が字下げをコードブロックと解釈する） */ -}}
 <details class="a-col a-out">
 <summary class="a-col-sum">
-<span class="a-col-tag">コラム {{ .Get "n" }}</span>
+<span class="a-col-tag">{{ if eq .Page.Language.Lang "en" }}Column{{ else }}コラム{{ end }} {{ .Get "n" }}</span>
 <span class="a-col-title">{{ .Get "title" }}</span>
 </summary>
 <div class="a-col-inner">{{ .Page.RenderString (dict "display" "block") .Inner }}</div>

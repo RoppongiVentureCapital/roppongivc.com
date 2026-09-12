@@ -9,18 +9,19 @@
            @media の中から書き換えられない。だから別ファイルにして picture で切り替える
          ★境目の768pxは agora-article.css のメディアクエリと同じ値。図と本文が同時に切り替わる
          ★picture は読み込むのは片方だけなので、通信量は増えない */ -}}
+{{- $figNo := cond (eq .Page.Language.Lang "en") "Fig." "図" -}}
 <figure class="a-fig{{ if .Get "wide" }} a-fig-wide{{ end }}">
 <div class="a-fig-frame{{ if .Get "src" }} has-img{{ end }}">
 {{- if .Get "src" }}
 {{- $sp := .Get "src-sp" }}
 {{- if $sp }}
-<picture><source media="(max-width:768px)" srcset="{{ $sp | relURL }}"><img src="{{ .Get "src" | relURL }}" alt="図{{ .Get "n" }}"{{ with .Get "w" }} style="max-width:{{ . }}px"{{ end }}></picture>
+<picture><source media="(max-width:768px)" srcset="{{ $sp | relURL }}"><img src="{{ .Get "src" | relURL }}" alt="{{ $figNo }}{{ if eq .Page.Language.Lang "en" }} {{ end }}{{ .Get "n" }}"{{ with .Get "w" }} style="max-width:{{ . }}px"{{ end }}></picture>
 {{- else }}
-<img src="{{ .Get "src" | relURL }}" alt="図{{ .Get "n" }}"{{ with .Get "w" }} style="max-width:{{ . }}px"{{ end }}>
+<img src="{{ .Get "src" | relURL }}" alt="{{ $figNo }}{{ if eq .Page.Language.Lang "en" }} {{ end }}{{ .Get "n" }}"{{ with .Get "w" }} style="max-width:{{ . }}px"{{ end }}>
 {{- end }}
 {{- else }}
-<span class="a-fig-todo"><span class="a-fig-no">図 {{ .Get "n" }}</span><br>画像は未作成</span>
+<span class="a-fig-todo"><span class="a-fig-no">{{ $figNo }} {{ .Get "n" }}</span><br>{{ if eq .Page.Language.Lang "en" }}Image not created{{ else }}画像は未作成{{ end }}</span>
 {{- end }}
 </div>
-<figcaption class="a-fig-cap"><span class="a-fig-no">図 {{ .Get "n" }}</span>　{{ .Inner | markdownify }}</figcaption>
+<figcaption class="a-fig-cap"><span class="a-fig-no">{{ $figNo }} {{ .Get "n" }}</span>{{ if eq .Page.Language.Lang "en" }} {{ else }}　{{ end }}{{ .Inner | markdownify }}</figcaption>
 </figure>

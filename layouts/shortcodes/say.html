@@ -39,7 +39,16 @@
            ★★ただし単純に替えると1行だけの吹き出しが <p> で包まれて余白が変わる（61件全部）。
              替えるなら見た目を実機で確認すること */ -}}
 {{- $dir := "img/agora/r1/avatars" -}}
-{{- $who := dict
+{{- /* 🔴🔴🔴🔴 2026-09-12 記録担当：★★★★英語版の表を足した（山田様のご承認 2026-09-12）。
+       ★★★日本語版（$whoJA）は【1文字も変えていない】── 触ると本番の記事61か所が変わる。
+       ★英語の名前の出どころ（★推測ではない）──
+         Hayato Yamai   IOAI 2025 公式の個人成績表（ioai-official.org）
+         Koji Yamada / Tokio Itonaga / Kenichi Kitamura
+                        当サイトの layouts/members/list.html の構造化データ
+         Kiichiro Iizuka 山田様のご確認（2026-09-12）
+       ★肩書きは日本語版と同じ「短い1行」に収める ── 幅が約227pxしかないため。
+         ★詳しい肩書きは記事冒頭の people ショートコードの側に full で入っている */ -}}
+{{- $whoJA := dict
   "yamai"    (dict "n" "山井" "r" "AI五輪メダリスト" "f" "yamai.jpg")
   "iizuka"   (dict "n" "飯塚" "r" "探究型AIアプリで英語スピーチ全国3位" "f" "iizuka.jpg")
   "kitamura" (dict "n" "北村" "r" "六本木VC運営・数学アドバイザー" "f" "kitamura.jpg")
@@ -47,6 +56,15 @@
   "yamada"   (dict "n" "山田" "r" "六本木VC運営・進行役"          "f" "yamada.jpg")
   "ai"       (dict "n" "AI"   "r" "Claude Fable 5"  "f" "ai.svg")
 -}}
+{{- $whoEN := dict
+  "yamai"    (dict "n" "Yamai"    "r" "AI Olympiad medalist"          "f" "yamai.jpg")
+  "iizuka"   (dict "n" "Iizuka"   "r" "3rd nationally, speech contest" "f" "iizuka.jpg")
+  "kitamura" (dict "n" "Kitamura" "r" "Roppongi VC, math advisor"     "f" "kitamura.jpg")
+  "itonaga"  (dict "n" "Itonaga"  "r" "Roppongi VC, entrepreneur"     "f" "itonaga.jpg")
+  "yamada"   (dict "n" "Yamada"   "r" "Roppongi VC, moderator"        "f" "yamada.jpg")
+  "ai"       (dict "n" "AI"       "r" "Claude Fable 5"                "f" "ai.svg")
+-}}
+{{- $who := cond (eq .Page.Language.Lang "en") $whoEN $whoJA -}}
 {{- $k := .Get "who" -}}
 {{- $p := index $who $k -}}
 {{- if not $p }}{{ errorf "say: 知らない話者です → %q" $k }}{{ end -}}
