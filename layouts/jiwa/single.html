@@ -26,6 +26,42 @@
   {{ end }}
   <div class="content">{{ .Content }}</div>
   <script>document.querySelectorAll('.blog-single .content a[href^="http"]').forEach(a=>{a.target='_blank';a.rel='noopener'})</script>
+
+  {{/* 🔴🔴🔴🔴 2026-09-12 記録担当：★★★★記事の一番下に「あわせて読む」を新設した
+       （山田様のご指示 2026-09-12「JIWAの三記事に対して、他にも読まれてる記事だとか、
+        そういう感じのリンク付を1番下とかに入れて、流入させる」「DBBゲームのリンクも
+        JIWAにも入れたい」）。
+       ★★★向きは【JIWA → Agora の一方通行】── ★Agora記事からJIWAへは足さない
+         （山田様のご判断「AgoraからJIWAには行かせたくない」）。
+       ★見出しを「他にも読まれている記事」にしていない ── ★読まれている数を測っていないため。
+         ★測っていない事実を書かない、という決まりに従った。
+       ★カードは既存の .articles-grid / .article-item を流用。★style.css への追加はゼロ。
+       ★★英語版（single.en.html）はまだ足していない ── 日本語で仕上げてから英語、の順序。 */}}
+  <h2 style="font-family:var(--sans);font-size:15px;font-weight:600;letter-spacing:0.02em;color:var(--black);margin:4rem 0 1.25rem">あわせて読む</h2>
+  <div class="articles-grid" style="margin-top:0">
+    <div class="article-item">
+      <a href="{{ "agora/ai-olympiad-record/" | relURL }}">
+        <img class="article-item-img" src="{{ "img/agora/r1/thumb-r1-article.jpg" | relURL }}" alt="">
+        <div class="article-item-body">
+          <div class="article-pillar" style="text-transform:none">Agora ｜ 第1回</div>
+          <h3 style="margin:0.75rem 0">AI五輪メダリストの開成高校生が、AI人材拡大のため、AIと議論した思考記録</h3>
+          <span class="blog-arrow">記録を読む →</span>
+        </div>
+      </a>
+    </div>
+    <div class="article-item">
+      <a href="{{ "deep-black-box/" | relURL }}">
+        <img class="article-item-img" src="{{ "img/agora/r1/thumb-r1-game.svg" | relURL }}" alt="">
+        <div class="article-item-body">
+          <div class="article-pillar">教材</div>
+          <h3 style="margin:0.75rem 0">Deep Black Box ── AIのブラックボックスを、1問ずつ開けて手で動かす。</h3>
+          <p>全21問 ／ ブラウザで開くだけ</p>
+          <span class="blog-arrow">やってみる →</span>
+        </div>
+      </a>
+    </div>
+  </div>
+
   <a href="{{ "jiwa/" | relURL }}" class="back">← JIWA に戻る</a>
 </article>
 {{ end }}
