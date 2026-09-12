@@ -1,0 +1,1169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<meta name="description" content="The limit of one line - Problem 8 of Deep Black Box. Why a straight boundary cannot fence off just the middle, and why that is a matter of shape rather than tuning.">
+<meta property="og:title" content="Deep Black Box - Problem 8: one line cannot fence off just the middle (Chapter 2)">
+<meta property="og:description" content="The limit of one line - Problem 8.">
+<!-- 🔴🔴🔴🔴 2026-09-10 記録担当：★★★★共有したときの画像（★公開準備セッションの指示）。
+     ★★この2行は【23ページとも入っていませんでした】（★実測0件）。
+     ★★★入れる値は先方が確定させたものです ──
+       roppongivc.com/static/img/agora/r1/og-r1-game.jpg（★59KB。★案A＝白地・エンブレム左）。
+     ★★記事用（og-r1-article.jpg）とは【別のファイル】です。★記事側のものは触っていません。
+     ★値は絶対URLです（★OGP の決まり。★href の絶対パス禁止とは別の話です） -->
+<meta property="og:image" content="https://www.roppongivc.com/en/deep-black-box/og-deep-black-box-en.jpg">
+<meta name="twitter:image" content="https://www.roppongivc.com/en/deep-black-box/og-deep-black-box-en.jpg">
+<!-- 🔴🔴🔴🔴 2026-09-10 21:4x 記録担当：★★★★X（Twitter）で大きい絵にする1行（★公開準備セッションの依頼）。
+     ★★★og:image を入れても、★この1行が無いと【小さいカード】になります。
+     ★記事側は全13ページを summary → summary_large_image にしたとのことです（★先方の実測）。
+     ★★ゲーム23ページは【0件】でした -->
+<meta name="twitter:card" content="summary_large_image">
+<!-- 🔴🔴🔴🔴 2026-09-10 22:3x 記録担当：★★★★ブラウザのタブに出る絵（★公開準備セッションの依頼）。
+     ★★実測 ── ★23ページとも【0件】でした（★タブに絵が出ていませんでした）。
+     ★★★実体はサイト側にあり、★本番で全部 引けます（★新しく作っていません）──
+       /favicon.svg 200・53KB ／ /favicon.ico 200 ／ /favicon-192.png 200・8KB
+     ⚠️★★/apple-touch-icon.png は【404】なので使いません。★favicon-192.png を指しています
+       （★サイト側 baseof.html と同じ扱いです）。
+     ⚠️★★★絶対URLです ── ★このゲームは /deep-black-box/ の下にあるので、
+       ★相対だと /deep-black-box/favicon.svg を探して【外します】。
+       ★「絶対パスを書かない」（★同じ場所の中を指すときの決まり）とは別の話です -->
+<link rel="icon" href="https://www.roppongivc.com/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="https://www.roppongivc.com/favicon.ico" sizes="32x32">
+<link rel="icon" href="https://www.roppongivc.com/favicon-192.png" type="image/png" sizes="192x192">
+<link rel="apple-touch-icon" href="https://www.roppongivc.com/favicon-192.png">
+<title>Deep Black Box - Problem 8: one line cannot fence off just the middle (Chapter 2)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@300;400;600;700&family=Inter:wght@300;400;500;600;700&family=Noto+Serif+JP:wght@300;400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../deep-black-box/common.css">
+<style>
+/* ══════════════════════════════════════════════════════════════════════════
+   🔴 2026-09-02 1問1ページ担当：★この章だけの CSS
+     ★★原本 tsume-01-deep-dialog-v2.html の <style> をそのまま写し、★【戻さないこと】のフォント規則だけ落としました
+     ★落としたもの：.cap{font-size:12.5px;color:var(--gray-500);margin-bottom:.5rem;line-height:1.5}／.lead{font-size:16px;line-height:1.9;color:var(--gray-600);margin:0 0 1.1rem}／h2{font-family:var(--serif);font-size:1.45rem;font-weight:300;line-height:1.4;margin:0 0 1rem}／h3{font-size:16px;font-weight:600;margin:1.4rem 0 .6rem}／.dtab{width:100%;border-collapse:collapse;font-size:12.5px;margin:.9rem 0;  font-variant-numeric:tabular-nums}／.cl .bb{position:relative;min-width:0;padding:.65rem .95rem;font-size:15px;line-height:1.9;   border:1px solid var(--gray-200);border-radius:.85rem;background:var(--white);color:var(--gray-600)}／.cl .bb{font-size:14.5px;padding:.55rem .75rem;line-height:1.8}
+   ★.offpage ── ★★この章の【他の問のカード】を DOM に置いたまま隠す枠。
+     ★理由：ゲーム本体の JS（起動・つまみの bind）を1バイトも触らないため。
+       ★$('…') が null にならないので、原本と同じコードがそのまま動きます
+   ══════════════════════════════════════════════════════════════════════════ */
+.offpage{display:none}
+:root{
+ --bg:#fff; --white:#fff; --black:#000;
+ --gray-100:#f9f9f9; --gray-200:#d9d9d9; --gray-500:#444; --gray-600:#2a2a2a;
+ --accent:#019949;
+ --sans:'Inter',system-ui,sans-serif;
+ --serif:'Source Serif 4','Noto Serif JP',Georgia,serif;
+ --content-w:52.625rem;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--black);font-family:var(--sans);
+ -webkit-font-smoothing:antialiased}
+.wrap{max-width:var(--content-w);margin:0 auto;padding:0 1.5rem 5rem}
+.top{border-bottom:1px solid var(--gray-200);margin-bottom:2.4rem}
+/* 🔴🔴🔴 2026-09-09 A：★★★この上書きを外した ── ★★これが【全部大文字】の正体だった
+     ★★★山田様「トップと他でフォント違うし全部大文字かどうかも違うし」（2026-09-09）
+   ★.top .in に text-transform:uppercase と letter-spacing:.14em が入っており、
+     ★★子の製品名とタグラインまで【大文字＋字間広め】に変えていた。
+   ★実測：★これがある18ページは uppercase ／ 無い5ページ（index・q15〜17・end）は none。
+     → ★★★同じ製品名が【大文字のページと そうでないページ】に分かれていた
+   ★common.css の .top .in（★大文字にしない）を効かせる */
+/* 🔴 2026-09-09 A：★★この上書きを外した ── ★common.css の
+     .top .in .tag（15.5px / #555 / 行間1.75 / サンセリフ）を効かせる。
+   ★★★これが後勝ちしていたので、★上のバーだけ 明朝 12.5px のままだった。
+     → ★山田様「トップと他でフォント違うし全部大文字かどうかも違うし」の原因のひとつ */
+.eyebrow{font-size:13px;font-weight:500;letter-spacing:.16em;text-transform:uppercase;
+ color:var(--gray-500);margin-bottom:.9rem}
+h1{font-family:var(--serif);font-size:2.1rem;font-weight:300;line-height:1.35;margin:0 0 .8rem}
+.lead b{color:var(--black)}
+.meta{font-size:13px;letter-spacing:.1em;color:var(--gray-500);padding-bottom:1.2rem;
+ border-bottom:1px solid var(--gray-200);margin-bottom:1.2rem}
+.steps{display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:2.4rem}
+.steps div{flex:1 1 5rem;padding:.55rem .3rem;text-align:center;font-size:12px;
+ border:1px solid var(--gray-200);color:var(--gray-500);background:var(--white)}
+.steps div.open{border-color:var(--black);color:var(--black)}
+.steps div.done{background:var(--black);border-color:var(--black);color:var(--white)}
+.card{border:1px solid var(--gray-200);padding:2rem;margin-bottom:2rem;background:var(--white)}
+.tagline{font-size:13px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;
+ color:var(--gray-500);margin-bottom:.9rem}
+.figbox{background:var(--gray-100);border:1px solid var(--gray-200);padding:1rem;margin:1.3rem 0}
+/* ★★図・つまみ・判定を1つの枠にまとめる（→00 の §2-2） */
+.panel{background:var(--gray-100);border:1px solid var(--gray-200);padding:1rem;margin:1.3rem 0}
+.panel .ctl{margin:.9rem 0 .2rem}
+.panel .togs{margin-top:.7rem}
+.panel .gauge{margin-top:.9rem}
+.panel .verdict{margin-top:.8rem;background:var(--white)}
+.two{display:flex;gap:1rem;flex-wrap:wrap}
+.two>div{flex:1 1 15rem;min-width:0}
+svg{display:block;width:100%;height:auto}
+
+/* ══════════════════════════════════════════════════════════
+   🔴🔴🔴 2026-08-29 山田様の FB：「スマホサイズだとつまみとグラフが同時に見れないから、
+     グラフを上に固定して下に別のが見えるようにした。PCサイズのが画面大きいとは言え
+     同じように固定しないと同時に見えないものがいっぱいあるんだ。
+     だからPCのほうもスマホと同様の処置をやってくれないか」
+   → ★★01 には .stick が【1つも無かった】。★★00 と同じ処置をどの幅でも入れる
+   ★★実測（貼り付けを入れる前。→検証ツール/00/A_vis_01_*.json）
+     問6  つまみを画面中央 → ゲージ e6 と判定文 j6 が【画面外】
+          ゲージを画面中央 → 図 fig6 と つまみ sl6 が【画面外】
+          ★★390px でも 1280px でも同じ。★図・つまみ・結果が同時に見えていなかった
+     問8  1280px で 散布図 bd8 が【52% しか見えない】
+   ★★上限高さ（max-height）が必要な理由 ── PC は本文幅 842px なので
+     viewBox 560×268 の図は 403px になる。★貼り付けると画面の 45% を占領して
+     ★下のつまみが押し出される。→ 42vh（900px なら 378px）で止める
+   ★★390px では図が 348px 幅しか無く 42vh（353px）に当たらないので、スマホは1px も変わらない
+   ★背景色は必須 ── ★敷かないと下から来た文字が図に【透けて重なる】
+   ★確認済み：.top は固定ヘッダではない ／ .card・.panel・body に overflow は無い
+     （★祖先に overflow があると sticky は無効になる）
+   ══════════════════════════════════════════════════════════ */
+/* 🆕 V2 ★★sticky が貼り付く範囲を【この入れ物の中】に限る。
+   ★position:sticky は親の箱の外へは出られないので、入れ物を抜けたら剥がれる。
+   ★これで 第2幕（機械ボタン・階段・表）を読むとき 動かす絵が上に居座らない。
+   ★overflow は【付けない】── ★祖先に overflow があると sticky そのものが無効になる */
+.stickwrap{position:relative}
+.stick{position:sticky;top:0;z-index:5;background:var(--gray-100);
+       padding-bottom:.35rem;box-shadow:0 6px 8px -6px rgba(0,0,0,.18)}
+/* 🔴🔴🔴🔴 2026-09-10 展開担当：★★★★max-height:42vh を外しました
+   ★★★理由（実測）── ★これが bd8 を潰していました。
+     ★preserveAspectRatio の既定は meet なので 倍率は min(幅比, 高さ比)。
+     ★bd8（viewBox 300×392）は縦長なので、★高さ 42vh（664px で 278.9px）に収めると
+       ★★幅が【213.4px】まで連れて縮み、★13単位が【8.89px】にしかなりませんでした。
+   ★★vh は使いません（★ツールバーの出入りで高さが変わる → The Pudding）。
+   ★★★外すと 幅 330px ＝ 倍率 1.10 → ★13単位が【14.3px】になります（★1.6倍）。 */
+.stick svg{width:100%;height:auto;max-width:100%;margin:0 auto}
+/* 🆕🆕🆕 2026-08-31 01v2：★★問9 は【枠そのものを 貼り付ける】。
+   ★★山田様「つまみの図が同時に見えるための位置固定が今一瞬でとけるから、
+     もっと下の方まで、同時に見せるべきところまでちゃんと固定するようにしてよ」
+   ★★理由：position:sticky は【親の箱の外へ出られない】。
+     ★もとは .stick が .panel の中にあったので、panel の高さぶん（＝すぐ）で剥がれていた
+   → ✅ .panel 自体を sticky にし、その入れ物（#q9wrap）を
+      【説明の図が終わるところまで】広げた。★これで 図を読みながら つまみを押せる
+   ★中身：境目のグラフ（bd9）＋ つまみの中身（net9）＋ ボタン ＋ 判定文 ── 全部 一緒に貼り付く
+   ★1280px は【横並び】／390px は【縦積み】（★横に割ると 文字が 4.1px になって読めない） */
+#q9wrap{position:relative}
+#q9wrap > .panel{position:sticky;top:0;z-index:5;
+  box-shadow:0 8px 10px -8px rgba(0,0,0,.22)}
+#c9 .figrow{display:flex;gap:.5rem;align-items:flex-start;justify-content:center}
+#c9 .figrow > svg{margin:0}
+#c9 .figrow > #bd9{width:36%;height:auto;max-height:38vh}
+#c9 .figrow > #net9{width:62%;height:auto;max-height:38vh}
+/* 🆕🆕🆕 2026-09-01 01v2：★★問10 も【問9 と同じ形】にした ──
+   ★左＝境目のグラフ（bd9b）／右＝3層の●と線（gr10）を横並びにし、枠ごと貼り付ける。
+   ★★山田様「いいものを消すなよ。うまいこと 9、10番に入れろよ」
+   ★問9 の #q9wrap と同じ仕掛け（★position:sticky は 親の箱の外へ出られない） */
+#c9b .figrow{display:flex;gap:.5rem;align-items:flex-start;justify-content:center}
+#c9b .figrow > svg{margin:0}
+#c9b .figrow > #bd9b{width:36%;height:auto;max-height:38vh}
+#c9b .figrow > #gr10{width:62%;height:auto;max-height:38vh}
+#q10wrap{position:relative}
+#q10wrap > .panel{position:sticky;top:0;z-index:5;
+  box-shadow:0 8px 10px -8px rgba(0,0,0,.22)}
+/* 🔴🔴🔴 2026-08-29 A（#25・第5版）② ★★問6 の「ずれ」は fig6 の【中】に埋め込んだ。
+   ★読者テスト「いちばん上のズレがいくつってやつが小さく潰されすぎてほぼ全く見えない」
+   ★★数字だけ大きくする。★@media の `#fig6 text{font-size:17px}` より詳細度が高いので
+     ★両方の幅で この指定が勝つ（★#fig6 + text + .big6 ＞ #fig6 + text）
+   ★★第4版の .stickbot / .grp6 / .sub6 は【外した】（★静止画がつまみより前に来たので不要） */
+#fig6 text.big6,#fig7 text.big6{font-size:26px;font-weight:600;font-family:var(--serif)}
+#fig6 text.lim6,#fig7 text.lim6{font-size:13px}
+/* 🔴 2026-08-29 A（#25）★#ov10 は @media で 17px に上がるので、数字だけ勝たせる */
+#ov10 text.num6{font-size:26px}
+/* 🔴🔴🔴 2026-08-29【訂正・A の自己申告】★★一度 34vh に下げたが【42vh に戻した】。
+   ★下げた理由は「1280px で 01 の問6 の判定文が同時に入らない」という実測だったが、
+     ★★それは【走査の刻みが 40px で粗く、入る位置を飛ばしていた】ための誤判定だった。
+   ★刻みを 12px にして測り直すと、42vh でも 00 の6か所・01 の5か所すべてで
+     ★「図100% ＋ つまみ・結果すべて見えて押せる位置がある」（★両幅）
+   ★★教訓：スクロール位置を刻んで測る検査は、刻みが粗いと【偽の不合格】を出す。
+     ★A はこれで PC の図を不必要に小さくしかけた（→ 規則案㉔ の同型） */
+/* 🔴🔴 2026-08-29：★★棒の図は PC で全幅（842px）に伸ばさない。
+   ★実測：棒だけの図は PC で全幅（842px）に伸びると高さが 300px を超え、枠が膨らむ
+   🔴 2026-08-29 第2版：★#eff6 と #res6fig は【削除した】ので指定から外した
+   ★420px で止めると高さ 168px。★390px では使える幅が 348px なのでスマホは1px も変わらない
+   ★#fig6 は主役なので対象にしない（★.stick 側の max-height で効いている） */
+#stair6{max-width:440px;margin:0 auto}
+.ctl{margin:1.1rem 0 .2rem}
+.ctl label{display:flex;justify-content:space-between;align-items:baseline;font-size:14px;
+ margin-bottom:.35rem;gap:1rem}
+.ctl label span.n{font-weight:600;font-variant-numeric:tabular-nums;white-space:nowrap}
+.togs{display:flex;gap:.6rem;flex-wrap:wrap;margin-top:1.1rem;align-items:center}
+.btn{background:none;border:1px solid var(--gray-200);padding:.6rem 1.15rem;font-size:14px;
+ font-family:var(--sans);color:var(--black);cursor:pointer;transition:all .15s}
+.btn:hover{border-color:var(--black);background:var(--gray-100)}
+.btn.on{background:var(--black);color:var(--white);border-color:var(--black)}
+.btn.go{background:var(--black);color:var(--white);border-color:var(--black)}
+.btn.sm{font-size:13px;padding:.45rem .85rem;color:var(--gray-500)}
+.btn:disabled{opacity:.35;cursor:default}
+.gauge{margin:1.2rem 0 0}
+.gauge .row{display:flex;align-items:baseline;gap:.7rem;margin-bottom:.5rem}
+.gauge .u{font-size:14px;color:var(--gray-500)}
+.gtrack{height:10px;background:#e9e9e9;position:relative;overflow:hidden}
+.gfill{display:block;height:100%;background:#c00;transition:width .12s linear}
+.gfill.ok{background:var(--accent)}
+.gmark{position:absolute;top:-3px;bottom:-3px;width:2px;background:#000}
+.gcap{display:flex;justify-content:space-between;font-size:12px;color:var(--gray-500);
+ margin-top:.35rem}
+.read{font-size:15px;line-height:1.8;margin:.9rem 0 0;font-variant-numeric:tabular-nums}
+.big{font-family:var(--serif);font-size:2rem;font-weight:400;font-variant-numeric:tabular-nums;
+ line-height:1}
+.calc{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13.5px;line-height:2;
+ background:var(--white);border:1px solid var(--gray-200);padding:.9rem 1.1rem;margin:.9rem 0;
+ overflow-x:auto;white-space:pre}
+.verdict{margin-top:1.2rem;padding:.9rem 1.1rem;border:1px solid var(--gray-200);font-size:14px;
+ line-height:1.75;background:var(--gray-100)}
+.verdict.ok{border-color:var(--accent);background:#f2fbf6}
+.verdict.stuck{border-color:#c00;background:#fdf4f4}
+.next{margin-top:1rem;font-size:13px;color:var(--gray-500)}
+.src{border-left:2px solid var(--black);padding:.9rem 0 .9rem 1.1rem;margin:1.4rem 0;
+ font-size:14px;line-height:1.85;color:var(--gray-600)}
+.src .h{font-size:12px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;
+ color:var(--black);margin-bottom:.4rem}
+.src .ref{font-size:13px;color:var(--gray-500);margin-top:.4rem;display:block}
+.box{border:1px solid var(--gray-200);padding:1.1rem 1.3rem;margin:1.3rem 0;background:var(--gray-100)}
+.box .h{font-size:12px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;
+ margin-bottom:.5rem}
+.mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+td.mono{word-break:break-word;line-height:1.7}
+.sc-row{display:flex;align-items:center;gap:.75rem;margin-bottom:.6rem}
+.sc-label{width:5.4rem;font-size:14px;text-align:right;flex-shrink:0}
+.sc-track{flex:1;background:#e9e9e9;height:9px;position:relative}
+.sc-fill{display:block;height:100%;background:var(--black);transition:width .1s linear}
+.sc-fill.hit{background:var(--accent)}
+.sc-pct{width:3.4rem;font-size:14px;font-variant-numeric:tabular-nums}
+details{border-top:1px solid var(--gray-200);padding-top:1rem;margin-top:1.5rem}
+summary{font-size:14px;font-weight:500;cursor:pointer}
+.lg{font-size:14px;line-height:1.9;color:var(--gray-600);margin-top:.9rem}
+.lg table{width:100%;border-collapse:collapse;margin:.8rem 0;font-size:13px}
+.lg th,.lg td{padding:.45rem .6rem;border:1px solid var(--gray-200);text-align:left}
+.lg th{background:var(--gray-100);font-weight:600}
+.dtab th,.dtab td{padding:.35rem .5rem;border:1px solid var(--gray-200);text-align:right}
+.dtab th{background:var(--gray-100);font-weight:600;font-size:11.5px}
+.dtab tr.sum td{background:#f2fbf6;border-top:2px solid var(--black)}
+/* 🔴🔴 2026-08-29 山田様の FB：問6 の式の表が読めない
+   → ★★原因：class="l"（左寄せの意図）に CSS が1行も無く、式が【右寄せ】になっていた。
+     ★3本の式の「点数 ＝」が縦にそろわないので、増えた項がどこか目で追えない */
+.dtab .l{text-align:left}
+.hide{display:none}
+.foot{border-top:1px solid var(--gray-200);margin-top:3rem;padding-top:1.5rem;font-size:13px;
+ color:var(--gray-500);line-height:1.8}
+.arrow{text-align:center;font-size:22px;color:var(--gray-500);margin:.5rem 0}
+/* ══════ 小さい画面では横の余白を削って図に幅を渡す（★00 と同じ） ══════ */
+@media (max-width:430px){
+  /* ★★枠（.panel）を 390×840 の1画面に収めるため、つまみの縦だけ詰める（→ 枠の上限） */
+  .panel .ctl{margin:.55rem 0 .1rem}
+  .panel .ctl label{margin-bottom:.15rem}
+  .wrap{padding-left:.5rem;padding-right:.5rem}
+  .card{padding-left:.75rem;padding-right:.75rem}
+  .figbox,.panel{padding-left:.5rem;padding-right:.5rem}
+  .top .in{padding-left:.5rem;padding-right:.5rem}
+  /* ★★560幅の図だけ文字を 17px に上げる（★根拠は 00 の @media のコメント）
+     ★17 × 0.589 ＝ 10.0px。★300幅の図（倍率1.1）は対象外
+     🔴 2026-08-29：★stair6・bars6 も 560幅なので足した。
+       ★座標は最初から font 17 前提で組んである（→作りの規則⑼）
+     🔴 2026-08-29 第2版：★res6fig と eff6 は【削除した】ので外した
+     🔴 2026-08-29 A（#25・第4版）④：★bars6 を【削除した】ので外した */
+  #fig6 text,#fig7 text,#p7 text,#net9 text,
+  #stair6 text,#st6a text,#st6b text,#st6c text,
+  #ov10 text,#ep11 text{font-size:17px}
+  /* 🔴🔴🔴 2026-08-29 A（#25・第5版）②：★★SVG の font-size は【viewBox の単位】なので、
+     ★390px では 実効が 0.621倍になる（★#24 の「17 × 0.589 ＝ 10.0px」と同じ話）。
+     ★★A の実測：26単位は PC で 32.2px だが 390px では 16.2px しかならなかった
+     → ★390px だけ 42単位（実効 26.1px）に上げる。★これで「潰されて見えない」が消える */
+  #fig6 text.big6{font-size:42px}
+  #fig6 text.lim6{font-size:20px}
+  #fig7 text.big6{font-size:42px}
+  #fig7 text.lim6{font-size:20px}
+  #ov10 text.num6{font-size:30px}
+  /* 🆕 2026-08-30 F：会話（→ .cv）★スマホは顔を小さくして横幅を吹き出しに回す */
+  /* 🔴 2026-09-06：★スマホでアイコンを 38px に縮める指定を【消した】（★記事はスマホでも 46px）。
+     ★★この2行は、同じ <style> の後ろにある .cl .ic{46px} / .cl{gap:.75rem;margin:0 0 .85rem} に
+       ★同じ詳細度で【後勝ちされていて、すでに効いていませんでした】（★実測 ic 46px・gap 12px）。
+     → ★消しても見た目は1pxも動きません。★死んだ規則を残すと次の担当が誤読します */
+  /* 🔴 2026-09-02 1問1ページ担当：★A の【戻さないこと】に反するので外した ── .cl .bb{font-size:14.5px;padding:.55rem .75rem;line-height:1.8} */
+  .cast2{padding:.7rem .75rem}
+  .cast2 .ic{width:46px;height:46px}
+  .cast2 .row{gap:.6rem}
+  /* 🔴 2026-09-07 A：★.cast2 .tx2 の 13px/1.8 を外した ── ★これがスマホで
+     ★★登場人物の紹介が 13px のままだった原因（★common.css の 16.6px を後勝ちで潰していた）。
+     → ★山田様「記事と同じサイズって言っただろ」「行間も記事に合わせろよ」（2026-09-07） */
+  /* 🆕 2026-08-31 01v2：★390px は 横に割ると 文字が読めなくなるので【縦積み】に戻す
+     ★実測：横に割ると bd9 の 13単位が 4.1px になる（★7px未満）
+     ★★枠ごと貼り付けるので、2枚あわせて【画面の半分以内】に収める
+       （★でないと 下の説明が1行も見えない） */
+  #c9 .figrow{flex-direction:column;align-items:center}
+  #c9 .figrow > #bd9{width:auto;max-width:76%;max-height:30vh}
+  #c9 .figrow > #net9{width:100%;max-height:19vh}
+  /* 🆕 2026-09-01 01v2：★問10 も同じ扱い（★横に割ると文字が 7px を割る） */
+  #c9b .figrow{flex-direction:column;align-items:center}
+  #c9b .figrow > #bd9b{width:auto;max-width:76%;max-height:30vh}
+  #c9b .figrow > #gr10{width:100%;max-height:19vh}
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   🆕 2026-08-30 F【対話版】会話の見た目 ── ★00-dialog と同じ CSS（写し）
+   ★★ゲーム本体（つまみ・図・ゲージ・判定・数値）は1行も触っていない。
+     ★この CSS と末尾の IIFE を消せば、原本とまったく同じ挙動に戻る
+   ★色は【図のデータ色と衝突しないもの】だけ使う
+     01 の図が使う色  #019949 ／ #c00 ／ #2f6fb5 ／ #c26100 ／ #0b3d6b ／ #9dc3e6 ／ #9aa3a9
+     → ★学 #2f6fb5（★01 は睡眠の色に #2f6fb5 を使っているが、これは会話の枠の色で
+        図の中には1pxも描かない。★図と会話は場所が完全に分かれている）
+     → ★博士 #b0700c（★#c26100 とは別。★図に使われていない）
+   ★position:sticky を壊さないため、会話は .figbox stick / .panel の【外】にだけ置く
+   ══════════════════════════════════════════════════════════════════════════ */
+.cast2{border:1px solid var(--gray-200);background:var(--gray-100);
+  padding:1rem 1.1rem;margin:0 0 2.4rem}
+.cast2 .row{display:flex;gap:.9rem;align-items:flex-start}
+.cast2 .row+.row{margin-top:.9rem;padding-top:.9rem;border-top:1px solid var(--gray-200)}
+.cast2 .ic{width:54px;height:54px;border-radius:50%;flex-shrink:0;display:block;
+  border:2px solid var(--white);box-shadow:0 0 0 1px var(--gray-200),0 1px 3px rgba(0,0,0,.10)}
+.cast2 .nm2{display:block;font-size:18px;line-height:1.5;font-weight:700;margin-bottom:.2rem}
+.cast2 .rb{font-size:14px;font-weight:400;color:var(--gray-500);margin-left:.45rem}
+.cast2 .tx2{font-size:16.6px;line-height:1.831;color:var(--gray-600)}
+.cast2 .tx2 b{color:var(--black)}
+.cv{margin:1.6rem 0}
+.cl{display:flex;gap:.75rem;align-items:flex-start;margin:0 0 .85rem}
+.cl .ic{width:46px;height:46px;border-radius:50%;flex-shrink:0;display:block;
+  border:2px solid var(--white);box-shadow:0 0 0 1px var(--gray-200),0 1px 3px rgba(0,0,0,.10)}
+.cl .bb b{color:var(--black)}
+.cl .bb:before{content:'';position:absolute;left:-6px;top:15px;width:10px;height:10px;
+  background:inherit;border-left:1px solid;border-bottom:1px solid;border-color:inherit;
+  transform:rotate(45deg)}
+/* 🔴 2026-09-02 A：★★博士＝青／学＝オレンジ に入れ替えた（★アイコンの背景色に合わせた）
+   ★山田様「今フォントとか吹き出しが 博士がオレンジで学が青じゃん。画像はもとの
+     博士青、高校生オレンジでいいから、フォントの方を逆にしてよ」（2026-09-02）
+   ✗✗ 戻さないこと。★★common.css だけ直しても【各ページの style が後勝ちで効かない】 */
+.cl.m .bb{background:#fff7ea;border-color:#efd6a6}
+.cl.d .bb{background:#eef4fa;border-color:#c3d9ee}
+/* 🔴 2026-09-06：★font-size:11.5px を外した ── ★.cl .av .nm と同じ要素に当たり、
+   ★詳細度で負けていて【効いていなかった】（★実測 10.5px）。★話者名の大きさは common.css の
+   ★.cl .av .nm{font-size:14px} が持つ。★この規則は色と margin のためだけに残す */
+.cl .nm{display:block;font-weight:700;letter-spacing:.07em;margin-bottom:.15rem}
+.cl.m .nm{color:#b0700c}   /* 🔴 学 → オレンジ */
+.cl.d .nm{color:#2f6fb5}   /* 🔴 博士 → 青 */
+.keyh{font-size:11.5px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--gray-500);margin:1.6rem 0 .5rem}
+</style>
+</head>
+<body data-split="A2" data-top="q08top" data-talk="q08talk"
+      data-verdict="j8" data-ratio="0.70"
+      data-figs="bd8">
+
+<div class="top"><div class="in">Deep Black Box<span class="tag">Open up the black box of AI one problem at a time, with your own hands. 21 problems in all.</span></div></div>
+<div class="wrap">
+
+<!-- 🔴 2026-09-02 1問1ページ担当：★進み具合の帯（全21問）＋いま何章か -->
+<div class="prog">
+ <div class="steps" id="steps"></div>
+ <div class="cnt" id="prog_cnt"></div>
+</div>
+<div class="chap" id="chap"></div>
+
+<!-- ══════════════════ c8 ══════════════════ -->
+<div class="card" id="c8">
+<div class="tagline">Question 8</div>
+<h2>One straight line cannot fence off just the middle</h2>
+<!-- 🔴🔴🔴 2026-08-29 A（#25）山田様の指示で説明を直した（★DATA・passOf は1文字も触っていない）
+     ✗✗【戻さないこと】「55点以上が合格」── ★事実と合っていない。
+       ★実測：点数55以上は13人、合格は23人で【10人 食い違う】
+         （例 #21 点数37.3点で合格 ／ #14 点数39.1点で合格）
+       ★点数の式と合格の式が別物（★罰の重さがちがい、出席率が入らず、ノイズも無い）
+       ★★「合格＝点数55以上」に直すと 線1本で40人 当たって問8・9 が壊れるので、
+         ★★データは変えず【説明を直した】
+     ✗✗【戻さないこと】「睡眠が少なすぎても多すぎても落ちる」── ★言い過ぎ。
+       ★実測：睡眠9〜11時間は 11人中7人が合格。★寝すぎは落ちていない
+       → ★★【合格に必要な勉強時間】の表に差し替えた（U字） -->
+<!-- 🆕 F：この lead は会話 e8a に移した（★目標の1行だけ残す） -->
+<div id="e8a"></div>
+
+<!-- 🆕🆕 2026-08-30 V2【問8 第3稿】★★渡されるデータを 5人分だけ見せる。
+     ★★山田様「これって列にいろんな情報があって、合否はわからんみたいな感じでしょ。
+       そういうのが この書き方じゃわからんから、なんか5人分とかでいいから、
+       勉強と睡眠時間列で どういう値で、それぞれ合格・不合格みたいな
+       そういうイメージ載せたら 一発でわかるからそれを加えろ」
+     ★選んだ5人（勉強の多い順）── ★★決まりが読み取れないことが 一目で分かる並び
+       勉強 8時間 → 不合格 ／ 勉強 2時間 → 合格 が同じ表に並ぶ
+     ★中身は JS が DATA から入れる（→規則⑹。★埋め込まない） -->
+<div class="box">
+ <!-- 🆕 V2 第4稿 ★★見出しを直した。
+      ✗✗【戻さないこと】「渡されるのは これだけです（40人のうち 5人）」──
+        ★★「40人ぶんは見られないのか」と読めてしまう（→山田様）
+      → ✅ 渡されるのは【この3列だけ】／表に出しているのは【40人のうち5人】と 分けて書く -->
+ <div class="h">These three columns are all you get &mdash; showing 5 of the 40</div>
+ <table class="dtab" id="smp8"></table>
+ <div class="cap" style="text-align:left;margin:.4rem 0 0">
+  <span style="color:var(--gray-500)">The other 35 have <b>the same three columns</b> and nothing more.
+  <b>Nowhere does it say how many hours of study earns a pass.</b></span></div>
+</div>
+
+<div id="e8a2"></div>
+
+<p class="lead"><b>Draw a single straight line and find the one that gets the most of the 40 right.</b></p>
+
+<!-- 🆕🆕🆕 2026-08-30 V2【問8 改稿】★★この箱は【削除した】
+     ✗✗【戻さないこと】箱「たての軸が 問6・7 と変わります」
+       ★★山田様「ここ、字小さくて長くて読まない誰も。すぐ下のグラフに目が行って動かし始める。
+         ここは博士にちゃんと対話の中でわかりやすく説明させてから つまみ出すようにしろ」
+       ★実際 12.5px で4行あり、すぐ下に .stick の散布図が来るので 読まずに触り始める
+     → ✅ 中身（点数を使わない／たての軸が睡眠／緑は0より大きい側／出席率は使わない）は
+        ★ぜんぶ 博士の台詞（会話 e8a）に移した。★つまみより【前】に読ませる
+     ★★あわせて e8a で【重み】を導入した。
+       ★原本では「重み」が読者に見えるのは 問6 の r6（クリア後の隠しブロック）に1回だけで、
+         ★★実質 問8 のつまみラベルが初出になっていた（★対話では0回・00 でも0回） -->
+
+<!-- 🔴🔴🔴 2026-09-09 展開担当：★★★上下2分割の【上の枠】（★図＋つまみ＋ボタン＋ずれ）
+     ★★出所：段A の表（検証ツール/split_2026-09-09/段A_2分割の4つの値.md）
+     ★★★決定1 ── 上に置く図は【1枚】。
+     ★common.css / common.js が持つ部品で動きます（★このページに link も script も足しません） -->
+<div id="q08top">
+<div class="panel">
+ <div class="cap">We split them with <b>one straight line</b>. A circle passed, a cross did not. Everything on the <b>green side is answered &ldquo;pass&rdquo;</b>.
+  <!-- 🆕 V2 ★赤の意味を書いていなかったので足した（★bd8 は元から 外した人を赤で描いている） -->
+  Anyone drawn in <b style="color:#c00">red</b> is someone <b>the line got wrong</b></div>
+ <div class="stick"><svg id="bd8" viewBox="0 0 300 392"></svg></div>
+ <div class="ctl">
+  <label for="w8a"><span>Weight on hours studied<b style="color:#0b3d6b">&nbsp;&nbsp;the line stands up</b></span><span class="n" id="w8av">1.0</span></label>
+  <input type="range" id="w8a" min="-40" max="40" step="1" value="10">
+ </div>
+ <div class="ctl">
+  <label for="w8b"><span>Weight on hours slept<b style="color:#0b3d6b">&nbsp;&nbsp;the line lies down</b></span><span class="n" id="w8bv">1.0</span></label>
+  <input type="range" id="w8b" min="-40" max="40" step="1" value="10">
+ </div>
+ <div class="ctl">
+  <label for="w8c"><span>Number added to everyone<b style="color:#0b3d6b">&nbsp;&nbsp;the line slides across</b></span><span class="n" id="w8cv">−10</span></label>
+  <input type="range" id="w8c" min="-200" max="200" step="1" value="-100">
+ </div>
+ <div class="verdict" id="j8">Move the knobs.</div>
+</div>
+<div class="togs">
+ <button class="btn" id="best8">Set the line that gets the most right</button>
+</div>
+</div><!-- /#q08top -->
+
+<!-- 🆕 V2 ★35人で止まったあと、なぜ止まるのかへ入る -->
+<!-- ★★下の枠 ── ★会話。★独立してスクロールします -->
+<div id="q08talk">
+<div id="e8b"></div>
+
+<!-- ══════════════════════════════════════════════════════════════
+     🆕🆕🆕 2026-08-30 V2【新規】本当の境目の静止画
+     ★★山田様「そうだ。左にふくらんだ弧だ。……まっすぐな線で 弧は描けん。
+       ── これ、言葉じゃなくて そういう正解の図、イメージはこういうのにしたいって
+          やつを 静止のグラフで書いたらいいだろ。じゃないとわからないよ」
+     ★軸は bd8 と同じ（横＝勉強 0〜10／たて＝睡眠 2〜11）。★見比べられるようにそろえた
+     ★破線＝本当の境目（passOf から その場で解く。→規則⑹）
+     ★細い実線＝線1本のいちばん良い線（BEST8）
+     ★赤い印＝その良い線でも外れる5人
+     ★★動かない絵なので 起動時に1回だけ描く
+     ══════════════════════════════════════════════════════════════ -->
+<div class="figbox">
+ <div class="cap" style="text-align:left;margin:0 0 .3rem"><b>This is the shape of the real boundary</b></div>
+ <svg id="tb8" viewBox="0 0 300 250" style="max-width:22rem;margin:0 auto"></svg>
+ <div class="cap" id="tb8c" style="text-align:left;margin:.3rem 0 0"></div>
+</div>
+
+<!-- 🆕🆕 V2 第3稿 ★★箱「合格に必要な勉強時間」（u8）は【削除した】。
+     ★★山田様「ここ意味不明だから消せ」
+     ★同じことは【本当の境目の静止画 tb8】が 絵で見せている（→型3 同じことを2回言わない）
+     ✗✗【戻さないこと】u8 の表と u8c の注記 -->
+
+<!-- 🆕 V2 ★弧だから無理 → 外す5人（赤い✕・左上のかたまり）→ 形が足りない -->
+<div id="e8c"></div>
+
+<!-- 🆕 V2 ★★net8（丸と線の絵）は 01 で ここが初登場。
+     ★★山田様「ここでこれまでに出てこなかったこういうニューラルネットワークっぽいのが
+       出てくるが、いきなりすぎてわからない。なんか導入というか説明というか補足みたいなのを
+       入れないと意味不明だぞ」
+     → ✅ 会話 e8d で導入する。★あわせて「ニューラルネットワーク」「ディープラーニング」を
+        ★01 で初めて 読者に見える形で出す（★原本では 0回。00 の最後で予告だけされていた） -->
+<div id="e8d"></div>
+
+<div class="figbox">
+ <div class="cap" style="text-align:left;margin:0 0 .3rem">The shape of this problem. <b>There is no layer here</b> (3 knobs).
+  <b>The thickness of a line is the size of the weight</b></div>
+ <svg id="net8" viewBox="0 0 560 185"></svg>
+ <div class="cap" id="net8c" style="text-align:left;margin:.2rem 0 0"></div>
+</div>
+
+<!-- 🆕 V2 第4稿 ★★丸と線の絵の話は【図の下】で続ける。
+     ✗✗【戻さないこと】e8d に9往復ぜんぶ入れる ──
+       ★★学が「この下の絵は何？」と言ってから 図までが 9往復も離れていて 見えなかった（→山田様）
+     → ✅ 図の【すぐ上】は2往復だけ。残りは ここ（図の下）で読ませる -->
+<div id="e8e"></div>
+<!-- 🔴🔴🔴 2026-09-10 記録担当（A149_movehide.py）：★★★この枠を【下の枠の中】へ移しました。
+     ★理由：★分割の規則で【上の枠と下の枠のどちらにも属さないものは隠されます】。
+       ★★この枠は「解いたら出てくる枠」なので、外にあると
+         ★★★解いて hide が外れても【分割中は永久に出てきません】。
+     ★山田様「ここで止まる」の正体がこれでした（★2026-09-10。★分割18問中15問で起きていた）。
+     ★中身は1文字も変えていません。★置き場所だけ変えました -->
+<div id="r8" class="hide">
+ <div id="e8z"></div>
+ <div class="keyh">What to take away</div>
+ <!-- 🆕 F：★U字の説明は会話 e8z に寄せた。★数字の出どころだけ残す -->
+ <div class="verdict ok">
+  <b>35 right. That is the ceiling for a single straight line</b> (a figure confirmed by counting all 2,630,961 combinations).
+ </div>
+ <div class="src">
+  <div class="h">Where this pays off</div>
+  You can tell apart <b>&ldquo;the knobs are set badly&rdquo;</b> from <b>&ldquo;the shape is not enough&rdquo;</b>.<br>
+  This one is the second kind. <b>So next we add a layer.</b>
+ </div>
+</div>
+</div><!-- /#q08talk -->
+
+
+</div>
+
+<!-- 🔴 2026-09-02 1問1ページ担当：★戻る／次へ（★どのページでも常に押せる） -->
+<div id="nav"></div>
+
+<div id="foot"></div>
+</div>
+
+
+<script src="common.js"></script>
+<script>
+/* ══════════════════════════════════════════════════════════════════════════
+   🔴 2026-09-02 1問1ページ担当2代目：★★下は原本 tsume-01 の <script> から
+     【この問が使う行だけ】をそのまま写したものです。★1文字も変えていません（★行を落としただけ）
+   ★★IIFE で包んだ理由 ── 原本の const $ / const show / const T が common.js の同名 const と
+     ぶつかって【SyntaxError でページ全体が動かなくなる】ため。★包んだだけで中身は変わりません
+   ★★mark() だけは common.js のものを使います（★帯が5章グループに変わったため。→ 指示⑶）
+   ══════════════════════════════════════════════════════════════════════════ */
+var QBASE = 7;
+drawProg(8); drawChap(8, "");
+drawNav(["q07.html","Problem 7: Put them on one scale"], ["q09.html","Problem 9: Insert one layer"]);
+drawFoot()   /* 🔴 2026-09-02 A：★注記を消した（★山田様。★同じ一文が21回出るのは型3／§2-6 の言い訳）*/;
+
+(function(){
+/* ══════════════════════════════════════════════════════════════
+   詰めKaggle 01 ── 深くするとどうなるか
+   ★★数値は全部コードで出す（→ 00 の §2-9）。手計算や記憶で書かない
+   ★確定した値（/tmp/tk00d/d06〜d09.mjs で総当たり・多出発点で確認）
+     問6  入力1個の限界 10.30（a=6.5 d=21）／2個 7.92（a=6.8 b=2.6 d=3）
+           3個 6.30（a=6.3 b=2.8 c=35 d=−22）  → 目標 8.5 は 1個では届かない
+     問7  伸縮なし・分   どの1歩の大きさでも 2〜4歩で発散
+           伸縮なし・時間 1歩 0.01 で 6.30 まで下がる
+           伸縮あり      時間でも分でも【完全に同じ】。1歩 0.005〜0.3 で 6.30〜6.31
+     問8  合格 23人 / 不合格 17人。★線1本の総当たりの最良 35人（1·勉強＋2·睡眠−13>0）
+           → 目標 38人 は線1本では届かない（不詰）
+     問9  ★★出荷コードを実ブラウザで回して測った（種101・幅3・1歩 0.6）
+           段  切り方      足す道  手前÷出口側   3,000歩の当たり  つまみ
+           なし  −          −       −            30人            3
+           1   ReLU        切      −             39人            13
+           1   シグモイド    切      −             39人            13
+           2   ReLU        切      129.4%        39人            25
+           2   ReLU        入      318.2%        30人            25
+           2   シグモイド    切       20.8%        40人            25
+           2   シグモイド    入      135.4%        40人            25
+           3   ReLU        切      122.1%        23人            37
+           3   ReLU        入      168.1%        39人            37
+           3   シグモイド    切        8.6%        38人            37
+           3   シグモイド    入      169.2%        40人            37
+         🔴🔴 ★★効き方の大きさと【最終の当たり】は直結しない。
+           ★3,000歩も回せば効き方が小さくても収束するし、ReLU は死んだノードで悪化する。
+           → ★★だから「効き方が小さいと学習しない」と断定してはいけない（→ 00 の §2-5）。
+             ★言えるのは「手前の段に届く力が弱くなる」まで。
+           → ★★「深くすれば良い」も否定できる ── 3段は 23人まで落ちる（実測）
+   ══════════════════════════════════════════════════════════════ */
+const $ = id => document.getElementById(id);
+/* 🔴🔴🔴 2026-08-29 A（01）：★★起動中は【クリア判定を効かせない】。
+   ★理由：問7〜11 の図を開いた時点で描くために起動部で up7()〜up11() を呼んだが、
+     ★★問10 の up10() は初期状態でクリア条件を満たしてしまい、
+       ★開いた瞬間に上の帯の「11 覚えただけ」が done になっていた（★A が実測で見つけた）
+   ★★これは A が起動部に up10() を足したことで生んだ副作用である（自己申告）
+   → ★mark() と show() の1か所で止める。★問7〜11 の中身には触らない */
+let BOOT = true;
+const show = id => { if (BOOT) return; const e = $(id); if (e) e.classList.remove('hide'); };
+/* ══════════ データ 40人（★乱数は固定。★毎回同じ数字が出る）══════════ */
+const DATA = (() => {
+  let S = 20260828;
+  const r = () => { S ^= S << 13; S ^= S >>> 17; S ^= S << 5; S |= 0; return (S >>> 0) / 4294967296; };
+  const nrm = () => { let u = 0, v = 0; while (!u) u = r(); while (!v) v = r();
+    return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v); };
+  const a = [];
+  for (let i = 0; i < 40; i++) {
+    const x1 = Math.round(r() * 20) / 2, x2 = 2 + Math.round(r() * 18) / 2;
+    const x3 = Math.round((0.5 + r() * 0.5) * 100) / 100;
+    const y = 6.2 * x1 + (14 - 1.1 * (x2 - 7.5) ** 2) + 22 * x3 + nrm() * 3.0;
+    a.push({ x1, x2, x3, y: Math.max(0, Math.min(100, Math.round(y * 10) / 10)) });
+  }
+  return a;
+})();
+/* 合格（問8・問9）＝ 睡眠の山を強くした点数が 55 以上 */
+const passOf = d => (6.2 * d.x1 + (30 - 2.5 * (d.x2 - 7.5) ** 2) + 20) >= 55 ? 1 : 0;
+DATA.forEach(d => d.t = passOf(d));
+/* ══════════ 共通の絵の部品 ══════════ */
+const T = (x, y, s, o) => { o = o || {};
+  return `<text x="${x}" y="${y}" font-size="${o.fs || 13}" fill="${o.c || '#3f3f3f'}"
+    text-anchor="${o.a || 'start'}" font-family="${o.f || 'Inter'}"${o.b ? ' font-weight="600"' : ''}
+    >${s}</text>`; };
+const NODE = (x, y, r, fill, stroke) =>
+  `<circle cx="${x}" cy="${y}" r="${r}" fill="${fill}" stroke="${stroke || '#fff'}" stroke-width="1.6"/>`;
+/* 重みの線。太さは |w| に比例。緑が＋・赤が− */
+function EDGE(x1, y1, x2, y2, w, scale) {
+  const t = Math.min(7, 0.6 + Math.abs(w) * (scale || 1));
+  const c = w >= 0 ? '#019949' : '#c00';
+  return `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${c}"
+    stroke-width="${t.toFixed(2)}" opacity=".75"/>`;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   問6 ── 入力を増やす（★★2026-08-29 第2版。★判断は【どの列を足すか】）
+   🔴🔴🔴 第2版で変わったこと（★経緯は HTML 側のコメント）
+     ⑴ 出席番号（d.id）を候補の列に足した ── ★問11 で使う列と同じもの
+     ⑵ ★★限界は【最小二乗の厳密解をその場で解く】。★16通りをハードコードしない
+     ⑶ 手で最良に合わせることを合格条件にしない（★1億通り・手がかりなし）
+     ⑷ 削除：mean6（つまみの意味の表）／eq6live（ずれの数式）／res6fig（赤い線の静止画）／
+             rec6（記録表）／eff6（効きの棒）／SLP6・HL6・RES6・EX6・REC6・BEST6・NAME6・LIM6
+   ★★確定値（★A が出荷の DATA で厳密解を解いて確認。→検証ツール/00/A_lsq.mjs。不一致0件）
+     勉強だけ 10.2959 ／ ＋睡眠 7.9197 ／ ＋出席率 6.2968 ／ ＋出席番号 6.2816
+     出席番号だけ 20.4296 ／ 勉強＋出席番号 10.2917 ／ 列なし（平均点）20.6737
+     下がった分  ＋睡眠 2.38 ／ ＋出席率 1.62 ／ ★★＋出席番号 0.02
+     ★単位を変えても限界は同じ（睡眠を分・出席率を0〜100 で 6.296795 完全一致）→ ★単位の話は問7
+   ══════════════════════════════════════════════════════════════ */
+DATA.forEach((d, i) => d.id = i + 1);       /* ★出席番号 1〜40（★点数と無関係な列） */
+
+/* ══════════════════════════════════════════════════════════════
+   問8 ── 線1本では、まん中だけを囲めない
+   ★★線1本の総当たりの最良は 35人（1·勉強 ＋ 2·睡眠 − 13 > 0）。目標 38人 は不詰
+   ══════════════════════════════════════════════════════════════ */
+let rec8 = 0;
+const BEST8 = [1.0, 2.0, -13], LIM8 = 35;   /* ★LIM8 = 線1本の限界（総当たりで実測） */
+let A8 = 1.0, B8 = 1.0, C8 = -10, ok8 = false;
+const XR8 = [0, 10], YR8 = [2, 11];
+function sx8(v, P) { return P.x0 + (v - XR8[0]) / (XR8[1] - XR8[0]) * (P.x1 - P.x0); }
+function sy8(v, P) { return P.y0 - (v - YR8[0]) / (YR8[1] - YR8[0]) * (P.y0 - P.y1); }
+const say8 = d => (A8 * d.x1 + B8 * d.x2 + C8) > 0 ? 1 : 0;
+function cnt8() { return DATA.reduce((s, d) => s + (say8(d) === d.t ? 1 : 0), 0); }
+function bd8() {
+  /* 🔴🔴🔴 2026-08-29 A（#25）★★当たりの数を【図の中】に入れた（→共通要件⑴。.gauge は削除）。
+     ★viewBox の高さを 330 → 380 にして 上に 96単位の帯を空けた。
+     ★★#bd8 は @media の font 引き上げの対象では【ない】ので、単位のまま両幅で同じに見える
+       （★実測：1280 で倍率 0.995・390 で 0.928。★fig6/fig7 の 0.62 とは別物）*/
+  const P = { x0: 42, y0: 320, x1: 288, y1: 126 };
+  let s = '';
+  /* 緑の側を塗る（★格子で塗る。線ではなく面で見せる） */
+  const G = 40;
+  for (let i = 0; i < G; i++) for (let j = 0; j < G; j++) {
+    const x = XR8[0] + (XR8[1] - XR8[0]) * (i + 0.5) / G;
+    const y = YR8[0] + (YR8[1] - YR8[0]) * (j + 0.5) / G;
+    if (A8 * x + B8 * y + C8 > 0) {
+      const x0 = sx8(XR8[0] + (XR8[1] - XR8[0]) * i / G, P);
+      const x1 = sx8(XR8[0] + (XR8[1] - XR8[0]) * (i + 1) / G, P);
+      const y0 = sy8(YR8[0] + (YR8[1] - YR8[0]) * (j + 1) / G, P);
+      const y1 = sy8(YR8[0] + (YR8[1] - YR8[0]) * j / G, P);
+      /* 🔴 隙間があると【格子模様】に見える（PNG で確認）→ 1.5 ぶん重ねる */
+      s += `<rect x="${(x0 - 0.4).toFixed(1)}" y="${(y0 - 0.4).toFixed(1)}" width="${(x1 - x0 + 1.5).toFixed(1)}"
+        height="${(y1 - y0 + 1.5).toFixed(1)}" fill="#019949" opacity=".13"/>`;
+    }
+  }
+  for (let v = 0; v <= 10; v += 2) s += T(sx8(v, P), P.y0 + 18, String(v), { a: 'middle', fs: 13, c: '#6e6e6e' });
+  for (let v = 2; v <= 11; v += 3) s += T(P.x0 - 8, sy8(v, P) + 4, String(v), { a: 'end', fs: 13, c: '#6e6e6e' });
+  DATA.forEach(d => {
+    const x = sx8(d.x1, P), y = sy8(d.x2, P), good = say8(d) === d.t;
+    if (d.t) s += `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="5.5" fill="none"
+      stroke="${good ? '#019949' : '#c00'}" stroke-width="2.2"/>`;
+    else s += `<path d="M${(x - 4.6).toFixed(1)} ${(y - 4.6).toFixed(1)}l9.2 9.2M${(x + 4.6).toFixed(1)}
+      ${(y - 4.6).toFixed(1)}l-9.2 9.2" stroke="${good ? '#3f3f3f' : '#c00'}" stroke-width="2.2"/>`;
+  });
+  s += `<line x1="${P.x0}" y1="${P.y0}" x2="${P.x1}" y2="${P.y0}" stroke="#000"/>`;
+  s += `<line x1="${P.x0}" y1="${P.y1}" x2="${P.x0}" y2="${P.y0}" stroke="#000"/>`;
+  s += T(P.x1, P.y0 + 52, 'hours studied', { a: 'end', fs: 13, f: "'Noto Serif JP',serif" });
+  s += T(P.x0 - 6, 116, 'hours slept', { fs: 12.5, f: "'Noto Serif JP',serif" });
+  /* ★★当たりの数・棒・自分の最良（★.gauge のかわり。★操作中ずっと見える） */
+  {
+    const c = cnt8();
+    if (c > rec8) rec8 = c;
+    const top = c >= LIM8;
+    const w = v => Math.max(0, Math.min(1, v / 40)) * (288 - 150);
+    /* 🔴 2026-08-29 A（#25）★★数字が「自分の最良」の黒い印と 3px 重なった（★A が実測）
+       → ★帯を 96単位から 126単位に広げ、印を 81〜96 に下げた */
+    s += T(288, 24, 'correct out of 40', { a: 'end', fs: 13, c: '#6e6e6e', f: "'Noto Serif JP',serif" });
+    s += `<text id="ok8t" x="288" y="64" text-anchor="end" font-size="30" font-weight="600"
+      font-family="'Source Serif 4',serif" fill="${top ? '#019949' : '#111'}">${c}</text>`;
+    s += `<rect x="150" y="84" width="138" height="9" fill="#e9e9e9"/>`;
+    s += `<rect x="150" y="84" width="${w(c).toFixed(1)}" height="9" fill="${top ? '#019949' : '#c00'}"/>`;
+    s += `<rect x="${(150 + w(rec8)).toFixed(1)}" y="81" width="2" height="15" fill="#111"/>`;
+    s += T(288, 116, 'your best ' + rec8, { a: 'end', fs: 12.5, c: '#6e6e6e', f: "'Noto Serif JP',serif" });
+  }
+  $('bd8').innerHTML = s;
+}
+/* ══════ ★合格に必要な勉強時間（U字）── ★passOf から その場で解く（→規則⑹）══════
+   passOf: 6.2×勉強 ＋（30 − 2.5×(睡眠−7.5)²）＋ 20 ≧ 55
+   → 勉強 ≧ （5 ＋ 2.5×(睡眠−7.5)²）÷ 6.2 */
+const need8 = x2 => (5 + 2.5 * (x2 - 7.5) ** 2) / 6.2;
+/* 🆕 V2 第3稿 ★★u8()（合格に必要な勉強時間の表）は【削除した】。
+   ★need8 は【残してある】── ★本当の境目の静止画 tb8() が使っている */
+/* 🆕🆕 2026-08-30 V2 第3稿【新規】渡されるデータを 5人分だけ見せる ══════════
+   ★★決まりが読み取れないことが 一目で分かる並びを選んだ（★勉強の多い順）
+     #19 勉強 8時間 → 不合格 ／ #3 6時間 → 不合格 ／ #12 2.5時間 → 合格
+     #21 勉強 2時間 → 合格   ／ #33 0.5時間 → 不合格
+   ★★「たくさん勉強したのに落ちた人」と「あまり勉強せずに通った人」が同じ表に並ぶ */
+function smp8() {
+  const idx = [18, 2, 11, 20, 32];
+  let t = `<tr><th>Hours studied</th><th>Hours slept</th><th class="l">Result</th></tr>`;
+  idx.forEach(i => { const d = DATA[i];
+    t += `<tr><td>${d.x1} hrs</td><td>${d.x2} hrs</td>`
+      + `<td class="l"><b style="color:${d.t ? '#019949' : '#c00'}">${d.t ? 'Passed' : 'Failed'}</b></td></tr>`; });
+  $('smp8').innerHTML = t;
+}
+/* 🆕🆕🆕 2026-08-30 V2【新規】本当の境目の静止画 ══════════════════
+   ★軸は bd8 と同じ。★破線＝本当の境目 ／ 細い実線＝線1本の最良 ／ 赤＝その線でも外れる人
+   ★動かないので 起動時に1回だけ描く（→ 起動部） */
+function tb8() {
+  const P = { x0: 42, y0: 206, x1: 288, y1: 30 };
+  const sx = v => P.x0 + (v - XR8[0]) / (XR8[1] - XR8[0]) * (P.x1 - P.x0);
+  const sy = v => P.y0 - (v - YR8[0]) / (YR8[1] - YR8[0]) * (P.y0 - P.y1);
+  let s = '';
+  /* ★本当に合格する側（勉強 ≧ need8(睡眠)）を塗る。★bd8 の緑の塗りと同じ作り */
+  const G = 40;
+  for (let i = 0; i < G; i++) for (let j = 0; j < G; j++) {
+    const x = XR8[0] + (XR8[1] - XR8[0]) * (i + 0.5) / G;
+    const y = YR8[0] + (YR8[1] - YR8[0]) * (j + 0.5) / G;
+    if (x >= need8(y)) {
+      const a = sx(XR8[0] + (XR8[1] - XR8[0]) * i / G);
+      const b = sx(XR8[0] + (XR8[1] - XR8[0]) * (i + 1) / G);
+      const c = sy(YR8[0] + (YR8[1] - YR8[0]) * (j + 1) / G);
+      const e = sy(YR8[0] + (YR8[1] - YR8[0]) * j / G);
+      s += `<rect x="${(a - 0.4).toFixed(1)}" y="${(c - 0.4).toFixed(1)}" width="${(b - a + 1.5).toFixed(1)}"
+        height="${(e - c + 1.5).toFixed(1)}" fill="#019949" opacity=".13"/>`;
+    }
+  }
+  /* ★目盛り */
+  for (let v = 0; v <= 10; v += 2) s += T(sx(v), P.y0 + 18, String(v), { a: 'middle', fs: 13, c: '#6e6e6e' });
+  for (let v = 2; v <= 11; v += 3) s += T(P.x0 - 8, sy(v) + 4, String(v), { a: 'end', fs: 13, c: '#6e6e6e' });
+  /* ★線1本のいちばん良い線（細い実線） */
+  {
+    const yAt = x => (-BEST8[0] * x - BEST8[2]) / BEST8[1];
+    let d = '';                      /* ★枠から出たところは描かない */
+    for (let x = XR8[0]; x <= XR8[1] + 0.001; x += 0.25) {
+      const y = yAt(x);
+      if (y < YR8[0] || y > YR8[1]) continue;
+      d += (d ? 'L' : 'M') + sx(x).toFixed(1) + ' ' + sy(y).toFixed(1);
+    }
+    if (d) s += `<path d="${d}" fill="none" stroke="#111" stroke-width="1.6"/>`;
+  }
+  /* ★本当の境目（太い破線） */
+  {
+    let d = '';
+    for (let y = YR8[0]; y <= YR8[1] + 0.001; y += 0.1) {
+      const x = need8(y);
+      if (x < XR8[0] || x > XR8[1]) continue;
+      d += (d ? 'L' : 'M') + sx(x).toFixed(1) + ' ' + sy(y).toFixed(1);
+    }
+    if (d) s += `<path d="${d}" fill="none" stroke="#019949" stroke-width="3"
+      stroke-dasharray="7 4"/>`;
+  }
+  /* ★40人。★色は【本当の合否】。★線1本の最良でも外れる人だけ 赤 */
+  const sayB = d => (BEST8[0] * d.x1 + BEST8[1] * d.x2 + BEST8[2]) > 0 ? 1 : 0;
+  DATA.forEach(d => {
+    const x = sx(d.x1), y = sy(d.x2), miss = sayB(d) !== d.t;
+    if (d.t) s += `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="5.5" fill="none"
+      stroke="${miss ? '#c00' : '#019949'}" stroke-width="2.2"/>`;
+    else s += `<path d="M${(x - 4.6).toFixed(1)} ${(y - 4.6).toFixed(1)}l9.2 9.2M${(x + 4.6).toFixed(1)}
+      ${(y - 4.6).toFixed(1)}l-9.2 9.2" stroke="${miss ? '#c00' : '#3f3f3f'}" stroke-width="2.2"/>`;
+  });
+  s += `<line x1="${P.x0}" y1="${P.y0}" x2="${P.x1}" y2="${P.y0}" stroke="#000"/>`;
+  s += `<line x1="${P.x0}" y1="${P.y1}" x2="${P.x0}" y2="${P.y0}" stroke="#000"/>`;
+  s += T(P.x1, P.y0 + 46, 'hours studied', { a: 'end', fs: 13, f: "'Noto Serif JP',serif" });
+  s += T(P.x0 - 6, 20, 'hours slept', { fs: 12.5, f: "'Noto Serif JP',serif" });
+  $('tb8').innerHTML = s;
+  /* ★注記は その場で数える（→規則⑹） */
+  const miss = DATA.filter(d => sayB(d) !== d.t).length;
+  $('tb8c').innerHTML =
+    `<b style="color:#019949">╌╌ thick dashed line</b> = <b>the real boundary</b>. Everyone inside the green really does pass.<br>`
+    + `<b>── thin line</b> = <b>the best a single line can do</b> (35 right).<br>`
+    + `<span style="color:var(--gray-500)">The dashed line is <b>an arc with a pinch in the middle</b>. `
+    + `A straight line cannot make that pinch, so `
+    + `<b style="color:#c00">the ${miss} in red</b> (the cluster at the top left) are missed whatever you do.</span>`;
+}
+/* 🆕🆕🆕 2026-08-30 V2 第3稿 ★★net8 を【静止画】に作り替えた ══════════════
+   ★★山田様「これの線が、さっきの重み増やしていったら太くなるみたいな繋がりが
+     わかればいいんじゃない。つまみで変わるようにすると面倒だから、静止画の中で表現しろ。
+     太さを線二つで変えて、この太さが重みで、さっきはこれらをいじってたみたいな。
+     それで合格の確率の緑がどう変わるかも……なんか相応しそうな感じでやって」
+   ✗✗【戻さないこと】つまみ（A8/B8/C8）で太さが変わる形 ── ★動くと つながりが読み取れない
+   ✅ 左右2つ並べて【線の太さだけ】を変え、その下に【緑がどう変わるか】を小さい四角で出す
+     左：勉強を重く見る（a 太い・b 細い）→ 緑の境目が たてに近づく
+     右：睡眠を重く見る（a 細い・b 太い）→ 緑の境目が 横に近づく
+   ★小さい四角は bd8 と同じ向き（横＝勉強 0〜10／たて＝睡眠 2〜11）
+   ★数字は つまみで選べる範囲の中から採った（a・b は ±4.0／足す数は ±20.0） */
+function net8() {
+  /* 🔴🔴 2026-09-09 展開担当：★★文字を【12px 以上】にする（★決定2 の下限）
+     ★実効px ＝ 単位 × 描画幅 ÷ viewBox幅（560）。★描画幅は 390px の画面で 330px。
+     ★★倍率を掛ける形なので【元の大小関係は そのまま】です。
+     ★上限 2.2倍 ── ★これを超えると行が重なります（★A125_svgfit2.js で確かめます）。
+     ⚠️★CSS の指定が無いことを確かめた上で属性を上げています（★A130_raise.py が検査） */
+  const Knet8 = Math.min(2.2, Math.max(1, Math.ceil(12 * 560 / ((($('net8') || {}).getBoundingClientRect ? $('net8').getBoundingClientRect().width : 330) || 330) / 12 * 100) / 100));
+  const PN = [
+    { X: 0,   nm: 'More weight on study', a: 3.0, b: 0.3, c: -20, msg: 'the boundary tilts towards vertical' },
+    { X: 285, nm: 'More weight on sleep', a: 0.3, b: 3.0, c: -20, msg: 'the boundary tilts towards horizontal' }
+  ];
+  let s = '';
+  PN.forEach(p => {
+    const X = p.X;
+    s += T(X + 6, 20, p.nm, { fs: 13.5 * Knet8, b: 1, f: "'Noto Serif JP',serif" });
+    /* 🔴🔴🔴 2026-09-10 展開担当：★★★この行を【SVG の外（HTML）】へ移した
+       ★★出所：規則「文章・数字は SVG の中に入れない」
+       ★★★理由（実測）── ★12.5 → 21.25単位 に上げたら
+         ⒜ 左右の2枚ぶんが【横に30.19単位（17.79px）重なった】
+         ⒝ 右の1枚が【viewBox の右へはみ出した】
+       ★横に2枚 並べて置いてあるので、★大きくすると必ずぶつかります。 */
+    const i1y = 78, i2y = 130, ox = X + 144, oy = 104;
+    s += EDGE(X + 72, i1y, ox, oy, p.a, 1.6);
+    s += EDGE(X + 72, i2y, ox, oy, p.b, 1.6);
+    s += NODE(X + 72, i1y, 8, '#000');
+    s += NODE(X + 72, i2y, 8, '#000');
+    s += NODE(ox, oy, 10, '#019949');
+    /* ★★英語版だけ ●の列を右へ14単位ずらしました ── 'study'/'sleep' は
+       ★anchor end で左へ約52単位 伸びるので、X+46 では viewBox の左へ出て切れます */
+    s += T(X + 60, i1y + 4, 'study', { a: 'end', fs: 12.5 * Knet8, f: "'Noto Serif JP',serif" });
+    s += T(X + 60, i2y + 4, 'sleep', { a: 'end', fs: 12.5 * Knet8, f: "'Noto Serif JP',serif" });
+    /* 🆕 V2 ★★「合格の確率」→「持ち点」に直した（→ A の指摘）。
+       ★★問8 に sigmoid は1件も無く（say8 は しきい値 >0 の判定）、画面は確率を出していない。
+       ★台詞（e8a2・e8e）も「持ち点」でそろえた */
+    s += T(ox, 130, 'points', { a: 'middle', fs: 12 * Knet8, c: '#019949', f: "'Noto Serif JP',serif" });
+    /* ★小さい四角 ── 緑（「合格」と答える側）がどう分かれるか */
+    const M = { x0: X + 188, x1: X + 274, y0: 132, y1: 52 };
+    const mx = v => M.x0 + (v - XR8[0]) / (XR8[1] - XR8[0]) * (M.x1 - M.x0);
+    const my = v => M.y0 - (v - YR8[0]) / (YR8[1] - YR8[0]) * (M.y0 - M.y1);
+    const G = 22;
+    for (let i = 0; i < G; i++) for (let j = 0; j < G; j++) {
+      const x = XR8[0] + (XR8[1] - XR8[0]) * (i + 0.5) / G;
+      const y = YR8[0] + (YR8[1] - YR8[0]) * (j + 0.5) / G;
+      if (p.a * x + p.b * y + p.c > 0) {
+        const a = mx(XR8[0] + (XR8[1] - XR8[0]) * i / G);
+        const b = mx(XR8[0] + (XR8[1] - XR8[0]) * (i + 1) / G);
+        const c = my(YR8[0] + (YR8[1] - YR8[0]) * (j + 1) / G);
+        const e = my(YR8[0] + (YR8[1] - YR8[0]) * j / G);
+        s += `<rect x="${(a - 0.4).toFixed(1)}" y="${(c - 0.4).toFixed(1)}" width="${(b - a + 1.4).toFixed(1)}"
+          height="${(e - c + 1.4).toFixed(1)}" fill="#019949" opacity=".2"/>`;
+      }
+    }
+    s += `<rect x="${M.x0}" y="${M.y1}" width="${M.x1 - M.x0}" height="${M.y0 - M.y1}"
+      fill="none" stroke="#9aa3a9"/>`;
+    /* 🔴🔴🔴 2026-09-10 展開担当：★★★この行も【SVG の外（HTML）】へ移した
+       ★実測：★上げたら「→ 境目が 横に近づく」が viewBox の右へはみ出しました。 */
+  });
+  $('net8').innerHTML = s;
+  $('net8c').innerHTML =
+    /* 🔴 2026-09-10 展開担当：★SVG から移した4つの文（★文言は1文字も変えていません）
+       ★並びは【図の中の位置の順】── ★左の枚 → 右の枚 */
+    PN.map(p => `<b>${p.nm}</b>`
+      + `<span style="color:var(--gray-500)">&nbsp;&nbsp;weight a = ${p.a.toFixed(1)}&nbsp; / &nbsp;weight b = ${p.b.toFixed(1)}`
+      + `&nbsp; <b style="color:#0b3d6b">&rarr; ${p.msg}</b></span>`).join('<br>')
+    + `<br>`
+    + `<b>One line drawn from ● to ● is one knob</b>. <b>The thicker line is the one the AI counts for more.</b> `
+    + `The thickness is what you were moving a moment ago.<br>`
+    + `<span style="color:var(--gray-500)">The small square faces the same way as the scatter plot above `
+    + `(across = hours studied, up = hours slept), and the <b style="color:#019949">green</b> side is where it answers &ldquo;pass&rdquo;. `
+    + `<b>Change the thickness and the green splits differently.</b></span>`;
+}
+/* 🔴 FB で作り直した（2026-08-28）
+   ・目標 38人（不詰）を廃止 → 「線1本でいちばん多く当てられる線を見つける」形
+   ・ゲート2つ（give8・best8 の「あと◯」）を撤去。★残したボタンは 00 と同じ「最良にする」1つ
+   ★確定値：出荷コードで 2,630,961 組を総当たり → 最良 35人（同点 939組）。
+     ★全員に「合格」と答えると 23人。★BEST8 [1.0, 2.0, −13] でも 35人 */
+function up8() {
+  $('w8av').textContent = A8.toFixed(1);
+  $('w8bv').textContent = B8.toFixed(1);
+  $('w8cv').textContent = (C8 >= 0 ? '' : '−') + Math.abs(C8).toFixed(1);
+  bd8();
+  /* 🔴 2026-08-29 A（#25）★★.gauge を削除したので ok8 / g8 / m8 / gc8 の参照も消した。
+     ★当たりの数・棒・自分の最良は bd8() が図の中に描く。★gauge() 関数は問9〜11 が使う */
+  const c = cnt8();
+  const top = c >= LIM8;
+  $('j8').className = 'verdict' + (top ? ' ok' : '');
+  $('j8').innerHTML = top
+    ? `<b>${c} right.</b> <b>One straight line cannot do any better.</b>`
+    /* 🔴 2026-08-29 A（#25）★★390px で2行になったので短くした。★人数は図の中に出ている
+       🆕🆕 V2 ★★「境目は U字。もっと当てられます」を【やめた】。
+         ★★理由⑴ 35人に届く前に【U字というネタを割っていた】（★この問の答えそのもの）
+         ★★理由⑵「U字だから無理」と「もっと当てられる」が同時に来て【矛盾して読める】
+           （★山田様「といいながら、これだと綺麗に区切れなくてムカつく」）
+         → ✅ 届く前は「まだ増やせます」だけ。★U字は 35人に届いてから 会話 e8b で明かす */
+    : `<b>You can still get more.</b>`;
+  if (top && !ok8) pass8();
+}
+function pass8() { ok8 = true; mark(2, 'done'); show('r8'); mark(3, 'open'); }
+$('w8a').oninput = () => { A8 = (+$('w8a').value) / 10; up8(); };
+$('w8b').oninput = () => { B8 = (+$('w8b').value) / 10; up8(); };
+$('w8c').oninput = () => { C8 = (+$('w8c').value) / 10; up8(); };
+$('best8').onclick = () => { A8 = BEST8[0]; B8 = BEST8[1]; C8 = BEST8[2];
+  $('w8a').value = A8 * 10; $('w8b').value = B8 * 10; $('w8c').value = C8 * 10; up8(); };
+
+DATA.forEach((d, i) => d.id = i + 1);
+
+/* ══════ 起動（★この問のぶんだけ。★原本の起動行から他の問の呼び出しを落としました）══════ */
+up8();
+smp8(); tb8(); net8();
+BOOT = false;
+
+/* ══════ 会話（★原本の CV の写し。★この問のぶんだけ）══════ */
+var CV = {
+ "e8a": [
+  [
+   "m",
+   "So what are we predicting this time?"
+  ],
+  [
+   "d",
+   "<b>Whether each student passed.</b> &hellip; Not the score this time."
+  ],
+  [
+   "m",
+   "Not a score, just pass or fail. &hellip; <b>Like Problem 5?</b>"
+  ],
+  [
+   "d",
+   "That is it! <b>That is what &ldquo;classification&rdquo; means.</b> Back then you picked <b>which one</b> of three. This time you pick between <b>two: pass or fail.</b>"
+  ],
+  [
+   "m",
+   "So what counts as a pass?"
+  ],
+  [
+   "d",
+   "&hellip; <b>That is the thing. Nobody tells us.</b> This is all we are handed. Have a look below."
+  ]
+ ],
+ "e8a2": [
+  [
+   "m",
+   "&hellip; Hold on. <b>Eight hours of study and a fail</b>, but <b>two hours and a pass.</b>"
+  ],
+  [
+   "d",
+   "Just so. &hellip; <b>Nowhere does it say how many hours of study earns a pass.</b>"
+  ],
+  [
+   "m",
+   "Then how do we predict it?"
+  ],
+  [
+   "d",
+   "<b>We go after the rule itself, out of the data.</b> &hellip; <b>Kaggle works the same way. You are handed the answers and nothing else.</b>"
+  ],
+  [
+   "d",
+   "Since we are not using scores, <b>I have swapped the upright axis over to hours slept.</b> Across is still <b>hours studied</b>, the same as in Problems 6 and 7."
+  ],
+  [
+   "m",
+   "What about attendance?"
+  ],
+  [
+   "d",
+   "<b>We leave that one out.</b> &hellip; The average attendance came out much the same for those who passed and those who did not."
+  ],
+  [
+   "m",
+   "So what do we predict with?"
+  ],
+  [
+   "d",
+   "The formula has <b>the same shape as in Problem 6</b>. What comes out is not a test score, though. &hellip; Think of it as <b>points</b>.<span class='mono' style='display:block;margin:.3rem 0 .1rem'>points = a &times; studied + b &times; slept + the number added to everyone</span>Each hour of study is worth <b>a</b> points, each hour of sleep <b>b</b> points. Then you add <b>the number added to everyone</b>."
+  ],
+  [
+   "m",
+   "And <b>a</b> and <b>b</b> are the knobs?"
+  ],
+  [
+   "d",
+   "They are. &hellip; <b>These multipliers are called weights. They are the same things you were turning in Problems 6 and 7.</b>"
+  ],
+  [
+   "d",
+   "&hellip; <b>Anyone with high points gets answered &ldquo;pass&rdquo;.</b> The <b>boundary</b> where that switches over is that <b>line</b>. The <b>green side</b> is the side being answered &ldquo;pass&rdquo;."
+  ],
+  [
+   "m",
+   "So everyone inside the green is being answered &ldquo;pass&rdquo;. &hellip; And red is who it got wrong."
+  ],
+  [
+   "d",
+   "Precisely! &hellip; Now <b>have a go.</b> Move <b>one knob at a time</b> to begin with, and watch <b>which way the line moves.</b>"
+  ]
+ ],
+ "e8b": [
+  [
+   "m",
+   "I moved them, and &hellip; <b>the line rotates.</b> Why does it rotate?"
+  ],
+  [
+   "d",
+   "Because <b>which of the two counts for more</b> is changing."
+  ],
+  [
+   "d",
+   "<b>Turn a up and an hour of study gets more expensive.</b> Pass or fail then comes down mostly to <b>how many hours were studied</b>. &hellip; So the line <b>tilts towards vertical</b>."
+  ],
+  [
+   "m",
+   "Ah. <b>An upright line means &ldquo;study this many hours or more and you pass&rdquo;.</b>"
+  ],
+  [
+   "d",
+   "Yes! The other way round, <b>turn b up and an hour of sleep gets more expensive.</b> Pass or fail comes down mostly to hours slept, so the line <b>tilts towards horizontal</b>."
+  ],
+  [
+   "m",
+   "And <b>the number added to everyone</b>?"
+  ],
+  [
+   "d",
+   "That one is <b>the height of the pass mark</b>. Turn it up and everybody gains points, so <b>passing gets easier and the line comes down.</b>"
+  ],
+  [
+   "d",
+   "&hellip; One thing to watch. <b>b changes the height of the line as well as its direction.</b> After you move b, <b>put the height back with the added number.</b>"
+  ],
+  [
+   "m",
+   "Understood. &hellip; I will try to get more of them right."
+  ],
+  [
+   "d",
+   "Good. &hellip; <b>When it stops going up, press [Set the line that gets the most right] above.</b>"
+  ],
+  [
+   "m",
+   "&hellip; Pressed it. <b>35 right. It will not go above that however I try.</b>"
+  ],
+  [
+   "d",
+   "It will not. <b>All 2,630,961 combinations were counted. 35 is the ceiling.</b>"
+  ],
+  [
+   "m",
+   "Why does it stop there?"
+  ],
+  [
+   "d",
+   "<b>Let me show you the real boundary.</b> &hellip; The picture below."
+  ]
+ ],
+ "e8c": [
+  [
+   "m",
+   "&hellip; <b>The dashed line is not straight.</b> It <b>pinches in</b> at the middle."
+  ],
+  [
+   "d",
+   "Right. <b>At around seven and a half hours of sleep, the least amount of study is enough to pass.</b> Move away from there, <b>upwards or downwards</b>, and it takes more study to get through."
+  ],
+  [
+   "m",
+   "So it comes out as <b>an arc bulging to the left</b>."
+  ],
+  [
+   "d",
+   "That is it. &hellip; <b>A straight line cannot make that pinch.</b>"
+  ],
+  [
+   "m",
+   "Five red marks. &hellip; <b>All bunched up in the top left.</b>"
+  ],
+  [
+   "d",
+   "Good eye! <b>Those are the ones who slept plenty and did not study.</b> They really did fail, and yet the line answers &ldquo;pass&rdquo; for them."
+  ],
+  [
+   "m",
+   "Could we not lift the line and cut them off?"
+  ],
+  [
+   "d",
+   "Try lifting it. &hellip; You will cut off <b>the genuine passes, the ones who slept well and studied a normal amount</b>, along with them."
+  ],
+  [
+   "m",
+   "An arc could dodge just that top-left corner &hellip;"
+  ],
+  [
+   "d",
+   "That is it! <b>The knobs are not being set badly. The shape is not enough.</b> &hellip; Same as Problem 3, Adam."
+  ]
+ ],
+ "e8d": [
+  [
+   "m",
+   "By the way, Doc, what is this <b>picture of circles and lines</b>?"
+  ],
+  [
+   "d",
+   "It is <b>another way of writing</b> what we are already doing. &hellip; <b>Just below. Take a look.</b>"
+  ]
+ ],
+ "e8e": [
+  [
+   "m",
+   "Study and sleep go in on the left, and <b>points</b> come out on the right."
+  ],
+  [
+   "d",
+   "Right. &hellip; <b>Each ● is a way in or out for a number. One line drawn from ● to ● is one knob.</b>"
+  ],
+  [
+   "d",
+   "And <b>the thickness of a line is the size of the weight.</b> <b>The thickness is what you were moving just now.</b>"
+  ],
+  [
+   "m",
+   "The thicknesses differ between left and right. &hellip; Ah, <b>the thicker one counts for more.</b> That is why <b>the green splits differently.</b>"
+  ],
+  [
+   "d",
+   "Well spotted! &hellip; <b>This is the picture of AI.</b> You have seen these circles and lines plenty of times."
+  ],
+  [
+   "m",
+   "So this is a <b>neural network</b>?"
+  ],
+  [
+   "d",
+   "It is. &hellip; Though for now there is <b>no column in the middle</b>. So this is <b>the plainest form of one</b>."
+  ],
+  [
+   "d",
+   "Next we <b>add one column of ● in the middle.</b> &hellip; <b>Stacking those columns is what the &ldquo;deep&rdquo; in deep learning refers to.</b> I said as much at the end of Chapter 1."
+  ],
+  [
+   "m",
+   "That <b>stacking layers</b> is what this chapter is about."
+  ],
+  [
+   "d",
+   "You remembered! &hellip; <b>This is where it starts.</b>"
+  ]
+ ],
+ "e8z": [
+  [
+   "m",
+   "If the shape is not enough, what do we do about it?"
+  ],
+  [
+   "d",
+   "<b>We add to it.</b> &hellip; Next we put one <b>layer</b> in the middle."
+  ],
+  [
+   "m",
+   "What happens once a layer goes in?"
+  ],
+  [
+   "d",
+   "<b>The boundary bends.</b> &hellip; The straight line becomes a line with bends."
+  ],
+  [
+   "m",
+   "And once it bends, <b>we can get it close to that arc</b>."
+  ],
+  [
+   "d",
+   "Just so. &hellip; <b>Shall we, Adam?</b>"
+  ]
+ ]
+};
+drawCV(CV);
+})();
+</script>
+</body>
+</html>
