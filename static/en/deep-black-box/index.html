@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<!-- ★★★★2026-09-12 英語版担当：★英語版は【まだトップページだけ】なので noindex です。
+     ★21問と出口ページが揃ったら外します（★山田様のご指示を受けてから）。
+     ★日本語版23ページ（/deep-black-box/）は index,follow のまま。★1バイトも触っていません -->
+<meta name="robots" content="noindex,nofollow">
+<meta name="description" content="A free, browser-based course on how AI actually works. Drag the sliders and watch machine learning, deep learning, LLMs and a real Kaggle dataset in action, across 21 problems. Built at Roppongi Venture Capital's Agora program, out of a question raised by a bronze medallist at the International Olympiad in Artificial Intelligence (IOAI) 2025.">
+<meta property="og:title" content="Deep Black Box - How AI actually works, in 21 hands-on problems">
+<meta property="og:description" content="A free, browser-based course on how AI actually works. Drag the sliders and watch machine learning, deep learning, LLMs and a real Kaggle dataset in action, across 21 problems.">
+<!-- ⚠️★★共有カードの画像は【日本語版と同じもの】を指しています ── ★英語版の画像はまだありません。
+     ★山田様のご判断待ち（★作るとしたら記事側と同じ og-r1-*.jpg の形になります） -->
+<meta property="og:image" content="https://www.roppongivc.com/img/agora/r1/og-r1-game.jpg">
+<meta name="twitter:image" content="https://www.roppongivc.com/img/agora/r1/og-r1-game.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="https://www.roppongivc.com/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="https://www.roppongivc.com/favicon.ico" sizes="32x32">
+<link rel="icon" href="https://www.roppongivc.com/favicon-192.png" type="image/png" sizes="192x192">
+<link rel="apple-touch-icon" href="https://www.roppongivc.com/favicon-192.png">
+<title>Deep Black Box - How AI actually works, in 21 hands-on problems</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@300;400;600;700&family=Inter:wght@300;400;500;600;700&family=Noto+Serif+JP:wght@300;400;600;700&display=swap" rel="stylesheet">
+<!-- ★★★★common.css は【日本語版のものをそのまま使います】── ★CSS に訳す文字が1つも無いので
+     （★url() 参照も0件を実測）、★二重管理を避けて1つのファイルを共有します。
+     ★★日本語版の common.css には1バイトも触っていません -->
+<link rel="stylesheet" href="../../deep-black-box/common.css">
+<style>
+/* ★このページだけの CSS。★日本語版 index.html の <style> をそのまま写しています
+   （★書体・大きさ・色を1つも変えていません） */
+.startbar{display:flex;gap:.9rem;align-items:center;flex-wrap:wrap;margin:1.4rem 0 0}
+.startbar .btn{padding:.85rem 1.9rem;font-size:15px}
+.startbar .note{font-size:16.6px;color:var(--gray-500);line-height:1.831}
+.dtab td.l,.dtab th.l{text-align:left}
+.dtab td.c,.dtab th.c{text-align:center}
+.dtab td.l a{color:var(--black)}
+.pt{margin:1.6rem 0 0}
+.pt:first-child{margin-top:0}
+.pt .n{font-size:13px;font-weight:700;letter-spacing:.14em;color:var(--gray-500)}
+.pt .t{font-size:16.6px;font-weight:700;line-height:1.7;margin:.15rem 0 .35rem}
+.pt p{font-size:16.6px;line-height:1.831;color:var(--gray-600);margin:0 0 .4rem}
+.pt p b{color:var(--black)}
+.cta .btn.ghost{background:#fff;color:var(--black);border:1px solid #cdb377}
+.cta .btn.ghost:hover{background:#fffdf6;opacity:1}
+.cta .btn + .btn{margin-left:.6rem}
+@media (max-width:700px){
+  .cta .btn + .btn{margin-left:0;margin-top:.7rem}
+}
+/* ★★英語版がまだ無いページの見せ方（★リンク切れを作らないため、押せない文字にする） */
+.soon{color:var(--gray-500)}
+.soonnote{font-size:16.6px;line-height:1.831;color:var(--gray-500);margin:.6rem 0 0}
+</style>
+</head>
+<body>
+
+<!-- ★★六本木VCの上のバー。★日本語版トップの実物を写し、★リンク先を英語版のページに替えました
+     （★/en/agora/・/en/edge/・/en/jiwa/・/en/members/ は実測 200）。
+     ★言語の切り替えはサイトの決まりに合わせて【Japanese】です（★baseof.html と同じ言い方） -->
+<style>
+.rvcbar{border-bottom:1px solid #000;background:#fff;position:sticky;top:0;z-index:100}
+.rvcbar-in{max-width:52.625rem;margin:0 auto;padding:0 1.5rem;height:56px;
+  display:flex;align-items:center;justify-content:space-between;gap:1rem;position:relative}
+.rvcbar-logo{flex:0 0 auto;line-height:0}
+.rvcbar-logo img{height:44px;width:auto;display:block}
+.rvcbar-links{display:flex;align-items:center;gap:0 2rem;list-style:none;margin:0;padding:0}
+.rvcbar-links a{font-family:Inter,system-ui,sans-serif;font-size:14px;font-weight:500;
+  color:#000;text-decoration:none}
+.rvcbar-links a:hover{color:#6e6e6e}
+.rvcbar-lang a{padding:.3rem .7rem;border:1px solid #d9d9d9}
+.rvcbar-ham{display:none}
+@media (max-width:768px){
+  .rvcbar-in{padding:0 1.1rem}
+  .rvcbar-logo img{height:38px}
+  .rvcbar-links{display:none;position:absolute;top:100%;left:0;right:0;background:#fff;
+    flex-direction:column;align-items:flex-start;gap:0;padding:1rem 1.1rem;
+    border-bottom:1px solid #d9d9d9;z-index:100}
+  .rvcbar-links.rvcbar-open{display:flex}
+  .rvcbar-links li{padding:.5rem 0}
+  .rvcbar-links a{font-size:16px}
+  .rvcbar-ham{display:flex;flex-direction:column;gap:5px;background:none;border:none;
+    cursor:pointer;padding:.5rem}
+  .rvcbar-ham span{display:block;width:22px;height:2px;background:#000}
+}
+</style>
+<div class="rvcbar">
+  <div class="rvcbar-in">
+    <a href="https://www.roppongivc.com/en/" class="rvcbar-logo">
+      <img src="https://www.roppongivc.com/img/logo-wide.png" alt="Roppongi VC">
+    </a>
+    <ul class="rvcbar-links">
+      <li><a href="https://www.roppongivc.com/en/agora/">Agora</a></li>
+      <li><a href="https://www.roppongivc.com/en/deep-black-box/">AI Lab</a></li>
+      <li><a href="https://www.roppongivc.com/en/edge/">Edge</a></li>
+      <li><a href="https://www.roppongivc.com/en/jiwa/">Media</a></li>
+      <li><a href="https://www.roppongivc.com/en/members/">Members</a></li>
+      <li class="rvcbar-lang"><a href="https://www.roppongivc.com/deep-black-box/">Japanese</a></li>
+    </ul>
+    <button class="rvcbar-ham" aria-label="Menu"
+            onclick="document.querySelector('.rvcbar-links').classList.toggle('rvcbar-open')">
+      <span></span><span></span>
+    </button>
+  </div>
+</div>
+
+<div class="top"><div class="in">Deep Black Box<span class="tag">Open up the black box of AI one problem at a time, with your own hands. 21 problems in all.</span></div></div>
+<div class="wrap">
+
+<!-- ══════════════════ (1) Start ══════════════════ -->
+<div class="cta" id="cta1"></div>
+
+<!-- ⚠️★★★日本語版トップにある写真2枚（図1＝21問の画面／図2＝問1と問2の画面）は
+     ★★【まだ入れていません】── ★どちらも【日本語版の画面を撮った写真】なので、
+       ★英語のページに日本語の画面を出すことになります。
+     ★★★英語版の問題ページができたら、★そのページを撮り直して入れます。★山田様のご判断待ち -->
+
+<!-- ══════════════════ (2) What you will learn ══════════════════ -->
+<div class="card">
+<h2>What you will learn</h2>
+<div id="nest"></div>
+
+<table class="dtab">
+<tr><th class="c">Ch.</th><th class="l">Title</th><th class="l">What is inside</th><th class="c">Problems</th></tr>
+<tr><td class="c">1</td><td class="l"><a href="q01.html">Machine learning</a></td>
+    <td class="l">What does it actually mean for a machine to learn? You work the smallest version of it by hand: nudge numbers until the prediction gets closer to the answer</td>
+    <td class="c">1-5</td></tr>
+<tr><td class="c">2</td><td class="l"><a href="q06.html">Deep learning</a></td>
+    <td class="l">What exactly is deep about deep learning? You stack the layers yourself, and see both what stacking buys you and why stacking alone does not work</td>
+    <td class="c">6-11</td></tr>
+<tr><td class="c">3</td><td class="l"><a href="q12.html">LLMs</a></td>
+    <td class="l">What is ChatGPT doing inside? You run a working language model, watch it pick the next word by probability, and see why the same question can come back answered differently</td>
+    <td class="c">12-14</td></tr>
+<tr><td class="c">4</td><td class="l"><a href="q15.html">How an LLM is built</a></td>
+    <td class="l">Why is AI polite, strong at math, and still confidently wrong? You run the three stages separately: practicing next-word prediction, tuning on choices people made, and training on problems that can be marked right or wrong</td>
+    <td class="c">15-17</td></tr>
+<tr><td class="c">5</td><td class="l"><a href="q18.html">What decides accuracy on real data</a></td>
+    <td class="l">From the records of 891 passengers on the Titanic, you predict who survived using age, sex and cabin class. It is the most widely used beginner task on Kaggle, and the tool here is a decision tree</td>
+    <td class="c">18-21</td></tr>
+</table>
+
+<p class="lead">There are formulas, but you never have to do the arithmetic yourself. Move a slider and the page recalculates on the spot.</p>
+<p class="lead">A thirteen-year-old can get through it. If you have already met derivatives and logarithms, you can push on into why it comes out that way.</p>
+
+<details class="ch"><summary>Chapter 1 &nbsp;Machine learning</summary>
+<ul>
+ <li><b>Function</b> (a rule that turns an input into an output) &mdash; we start from y = ax + b. a and b are the parameters, the knobs you turn</li>
+ <li><b>Error</b> (how far off you are) &mdash; the gap between prediction and answer, collapsed into a single number. Making that number small is the goal</li>
+ <li><b>Gradient descent</b> (walking downhill) &mdash; the height of the hill is the error. You read the slope and move the parameters a little in the direction that lowers it. This loop is all there is to a machine choosing its own parameters</li>
+ <li><b>Learning rate</b> (step size) &mdash; too large, and you stride straight past the bottom; the error keeps growing and you cannot get back</li>
+ <li><b>Limits of the form</b> &mdash; with a straight line there are problems no setting of the parameters can reach. Add parameters so the line can bend, and you get there</li>
+ <li><b>Softmax</b> (turning scores into probabilities) &mdash; adding and subtracting raw scores squeezes the gaps, so we use exponentials to turn them into probabilities that add up to 1. The order from largest to smallest stays the same</li>
+</ul>
+</details>
+
+<details class="ch"><summary>Chapter 2 &nbsp;Deep learning</summary>
+<ul>
+ <li><b>Features</b> (the columns you feed in) &mdash; you go from one column to several. Adding a column that carries no information about the answer does not lower the error</li>
+ <li><b>Normalization</b> (putting columns on the same scale) &mdash; mix height in centimeters with weight in kilograms and one column takes over. The step size is shared by every parameter, so without rescaling, learning breaks</li>
+ <li><b>Limits of a straight line</b> &mdash; some arrangements of points cannot be separated by a single line</li>
+ <li><b>Hidden layer</b> (a stage in between) &mdash; you insert a stage, which gives you more parameters</li>
+ <li><b>Activation function</b> (the bend) &mdash; without a bend, any number of stacked layers collapses into one straight line. So we bend between the stages</li>
+ <li><b>Vanishing gradients</b> (why depth breaks) &mdash; add stages and the error signal stops reaching the early ones, so the early stages stop learning. A path that skips ahead, a residual connection, fixes it</li>
+ <li><b>Overfitting</b> &mdash; fitted too closely to the training data alone (you run into this for real in Chapter 5)</li>
+</ul>
+</details>
+
+<details class="ch"><summary>Chapter 3 &nbsp;LLMs</summary>
+<ul>
+ <li><b>Vocabulary</b> (the exits) &mdash; the choices on the output side. There are some 50,000 candidates for the next word, each with a probability attached</li>
+ <li><b>Probability distribution</b> &mdash; that lineup of 50,000 probabilities. Keep taking the highest one and you get safe, unremarkable phrasing</li>
+ <li><b>Temperature</b> &mdash; the setting for how hard to lean toward the high-probability words. Raise it and low-probability words start turning up. The lineup itself does not change, so when you want to change the lineup, you add conditions to the question</li>
+ <li><b>Self-attention</b> &mdash; the weights that decide which words in the sentence to use as cues. The weights add up to 1, so there is a ceiling on looking hard at several words at once</li>
+ <li><b>Multi-head</b> &mdash; which is why the weights are split into several sets, so that different words can be looked at in parallel</li>
+</ul>
+</details>
+
+<details class="ch"><summary>Chapter 4 &nbsp;How an LLM is built</summary>
+<ul>
+ <li><b>Pre-training</b> &mdash; on a large amount of text, the model practices one thing only: predicting the next word. Grammar and facts arrive as a by-product of that practice</li>
+ <li><b>RLHF</b> (tuning on human preference) &mdash; a good answer cannot be written down as a formula. So people are shown two answers, asked which is better, and that record is used to tune the model. Who does the choosing changes what you get</li>
+ <li><b>RLVR</b> (training on right and wrong) &mdash; only problems a machine can mark, such as math and code. That is why math improves, and why anything without a correct answer, being interesting for instance, is out of reach at this stage</li>
+ <li><b>Why it is wrong with such confidence</b> &mdash; what the training selects for is not what is true, but what is likely to come next</li>
+</ul>
+</details>
+
+<details class="ch"><summary>Chapter 5 &nbsp;What decides accuracy on real data</summary>
+<ul>
+ <li><b>The data</b> &mdash; the records of 891 passengers on the Titanic, the liner that sank in 1912. From age, sex, cabin class and the rest, you predict who survived. It is the most widely used beginner task on Kaggle</li>
+ <li><b>Feature engineering</b> (building the columns you feed in) &mdash; when a person builds a new column, the number of correct predictions goes up. Pulling the title out of a passenger's name, for example</li>
+ <li><b>The training score is not a ruler</b> &mdash; add columns and the score on the training data rises, but that is not ability. Taken far enough, it is memorization</li>
+ <li><b>Decision tree</b> &mdash; a different mechanism from gradient descent. It tries every split point and keeps the best one</li>
+ <li><b>Cross-validation</b> &mdash; measure once and the number wobbles. Split the data, measure several times, and take the average</li>
+ <li>Line up models built in quite different ways and they end up at much the same level. Which tells you there are situations where the input matters more than the model</li>
+</ul>
+</details>
+</div>
+
+<!-- ══════════════════ (3) Product features ══════════════════ -->
+<div class="card">
+<h2>What this is</h2>
+
+<div class="pt">
+ <div class="n">1</div>
+ <div class="t">You read a conversation, then work the same thing yourself</div>
+ <p>Each problem runs as an exchange between a professor and a high-school student.
+  Rather than reading an explanation, you follow a conversation until it clicks.</p>
+ <p>Conversational introductions to AI, visual tools you can play with,
+  and drill sites that pose one problem at a time and mark your answer all exist already.</p>
+ <p>What we could not find was one that did all three. So we built it.</p>
+ <table class="dtab">
+ <tr><th class="l"></th><th class="c">Reads as a conversation</th><th class="c">You work it yourself</th><th class="c">Poses problems and marks them</th></tr>
+ <tr><td class="l">Conversational primers (the Math Girls series, for example)</td><td class="c">Yes</td><td class="c">No</td><td class="c">No</td></tr>
+ <tr><td class="l">Visual explainers (Transformer Explainer, for example)</td><td class="c">No</td><td class="c">Yes</td><td class="c">No</td></tr>
+ <tr><td class="l">Drill sites with automatic marking (Deep-ML, for example)</td><td class="c">No</td><td class="c">Yes</td><td class="c">Yes</td></tr>
+ <tr class="sum"><td class="l"><b>Deep Black Box</b></td><td class="c"><b>Yes</b></td><td class="c"><b>Yes</b></td><td class="c"><b>Yes</b></td></tr>
+ </table>
+</div>
+
+<div class="pt">
+ <div class="n">2</div>
+ <div class="t">In all 21 problems, you are the one moving things</div>
+ <p>Not one problem is read-only. Most of them put knobs in front of you, sliders you drag left and right, and what you are moving is the numbers inside the model itself, its parameters. The problems without sliders switch things with buttons, or ask you to commit to one of three predictions first.</p>
+</div>
+
+<div class="pt">
+ <div class="n">3</div>
+ <div class="t">Every number on the screen was measured</div>
+ <p>AI is hard, so it has to be written plainly; write it too plainly and it stops being accurate. So the mechanisms here are tied to 32 original papers, the ones covered in <a href="https://www.amazon.co.jp/%E5%8E%9F%E8%AB%96%E6%96%87%E3%81%8B%E3%82%89%E8%A7%A3%E3%81%8D%E6%98%8E%E3%81%8B%E3%81%99%E7%94%9F%E6%88%90AI-%E8%8F%8A%E7%94%B0-%E9%81%A5%E5%B9%B3/dp/4297150786" target="_blank" rel="noopener">Generative AI, Read Through the Original Papers</a> by Yohei Kikuta (in Japanese). And wherever something was simplified for this course, the page says so on the spot.</p>
+</div>
+
+<div class="pt">
+ <div class="n">4</div>
+ <div class="t">Nothing to set up</div>
+ <p>No installation, no environment to build. Open it in a browser. It works on a phone.</p>
+</div>
+</div>
+
+<!-- ══════════════════ (4) Why we built it ══════════════════ -->
+<div class="card">
+<h2>Why we built it</h2>
+
+<p class="lead">If you want more people building AI, there has to be a way in to the principles.</p>
+
+<p class="lead">That is how Yuto Yamai came to see it. He took a bronze medal at the International Olympiad in Artificial Intelligence (IOAI) 2025, and he is in his final year at Kaisei High School in Tokyo. He first ran into this field in the winter of his first year of high school, by chance. Less than a year later he had the medal. What had been missing was not ability. It was the chance to find out the field existed.</p>
+
+<p class="lead">How to use AI gets talked about constantly. What is going on inside it rarely gets taught.</p>
+
+<p class="lead">At the first session of <a href="https://www.roppongivc.com/en/agora/" target="_blank" rel="noopener">Agora</a>, run by <a href="https://www.roppongivc.com/en/" target="_blank" rel="noopener">Roppongi Venture Capital</a>, five people spent two hours in discussion with an AI. This came out of that session, built to hand one way in to the students who light up at math and structure.</p>
+
+<p class="lead">Agora is a program where exceptional young people go deep in discussion with AI and produce something that does not exist yet.</p>
+
+<div class="togs" id="agora"></div>
+</div>
+
+<!-- ══════════════════ (5) Start (same block as (1)) ══════════════════ -->
+<div class="cta" id="cta2"></div>
+
+<div id="foot"></div>
+</div>
+
+<script src="common.js"></script>
+<script>
+/* ★★★★英語版の起動。★日本語版 index.html の起動処理を写し、
+   ★★英語版がまだ無いページへのリンクを【押せない文字】に替える処理を足しています */
+
+/* ★★★★英語版ができたページだけ true にする ── ★1ページ作るたびに ここへ1行 足すこと。
+   ★例）問1 の英語版を置いたら  'q01.html': true
+   ★★これが空のあいだ、★章のリンクと［Start］は押せない文字になります（★リンク切れ0件を保つため） */
+var EN_READY = {};
+
+drawCta("cta1");
+drawCta("cta2");
+
+/* ★［Send feedback］を2か所に足す（★日本語版と同じ形）。
+   ⚠️★★リンク先は【日本語のフォーム】です（★英語のフォームはまだありません）。★山田様のご判断待ち */
+(function () {
+  if (typeof SITE === 'undefined' || !SITE.form) return;
+  ['cta1', 'cta2'].forEach(function (id) {
+    var h = document.getElementById(id); if (!h) return;
+    var a = h.querySelector('a.btn'); if (!a) return;
+    var f = document.createElement('a');
+    f.className = 'btn ghost';
+    f.href = SITE.form;
+    f.target = '_blank';
+    f.rel = 'noopener';
+    f.textContent = 'Send feedback';
+    a.parentNode.insertBefore(f, a.nextSibling);
+  });
+})();
+
+drawNest("nest", 0, { head: false, outside: false, table: false });
+drawFoot();
+
+/* ★[ Read the Agora dialogue ]。★URL は SITE.agora（common.js）だけが持つ。
+   ⚠️★★記事は【日本語】なので、★ボタンにそう書いています（★押した人を驚かせないため） */
+(function () {
+  var h = document.getElementById('agora'); if (!h) return;
+  h.innerHTML = SITE.agora
+    ? '<a class="btn" href="' + SITE.agora + '" target="_blank" rel="noopener">'
+      + 'Read the Agora dialogue (in Japanese) &rarr;</a>'
+    : '<span style="font-size:16.6px;color:var(--gray-500);line-height:1.831">'
+      + 'The Agora article is on its way</span>';
+})();
+
+/* ★★★★英語版がまだ無いページへのリンクを【押せない文字】に替える。
+   ★★対象は同じ場所の中を指すリンク（q01.html など）だけ。★外へ出るリンクは触らない。
+   ★★★EN_READY に入っているものは そのままリンクとして残します */
+(function () {
+  var as = document.querySelectorAll('a[href]');
+  var soon = 0;
+  for (var i = 0; i < as.length; i++) {
+    var a = as[i], href = a.getAttribute('href');
+    if (!href || /^(https?:|mailto:|#)/.test(href)) continue;
+    if (EN_READY[href]) continue;
+    var s = document.createElement('span');
+    s.className = 'soon';
+    s.innerHTML = a.innerHTML;
+    a.parentNode.replaceChild(s, a);
+    soon++;
+  }
+  /* ★［Start］は文字を替えて押せなくする（★同じ形のボタンのまま、色だけ薄くなります） */
+  ['cta1', 'cta2'].forEach(function (id) {
+    var h = document.getElementById(id); if (!h) return;
+    var s = h.querySelector('span.soon'); if (!s) return;
+    var b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'btn';
+    b.disabled = true;
+    b.textContent = 'Problems coming soon';
+    s.parentNode.replaceChild(b, s);
+  });
+  /* ★表の下に1行だけ説明を出す（★どこが押せないのかが分かるように） */
+  if (soon > 0) {
+    var t = document.querySelector('.card table.dtab');
+    if (t) {
+      var p = document.createElement('p');
+      p.className = 'soonnote';
+      p.textContent = 'The 21 problems are being translated into English. '
+        + 'Each chapter becomes a link as it goes live.';
+      t.parentNode.insertBefore(p, t.nextSibling);
+    }
+  }
+})();
+</script>
+</body>
+</html>
