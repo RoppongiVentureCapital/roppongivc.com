@@ -780,7 +780,7 @@ The idea that was born did not take shape as it was. The month it took to finish
 
 **1. You read it as a dialogue, and move things yourself as you go**
 
-It proceeds as an exchange between a professor and a second-year high school student. Rather than reading an explanation, you follow a conversation and it comes into focus.
+It proceeds as an exchange between a professor and an 11th grader. Rather than reading an explanation, you follow a conversation and it comes into focus.
 
 Introductions to AI written as dialogue exist. Visualization tools you can touch and move exist. Practice sites that pose one problem at a time and score it exist. **But nothing combined all three. So we built it**.
 
@@ -793,7 +793,7 @@ Introductions to AI written as dialogue exist. Visualization tools you can touch
 | **Deep Black Box** | ○ | ○ | ○ |
 {{< /wide >}}
 
-{{< fig n="10" src="img/agora/r1/shot-q1q2.png" wide="1" >}}Each question opens with an exchange between the professor and the student, and then you move things yourself. In question 1, moving two knobs brings a line closer to the points, and the score for the gap comes back on the spot. In question 2, that gap becomes a landscape and you descend toward the lowest place.{{< /fig >}}
+{{< fig n="10" src="img/agora/r1/shot-q1q2.png" wide="1" >}}Each question opens with an exchange between the professor and the 11th grader, and then you move things yourself. In question 1, moving two knobs brings a line closer to the points, and the score for the gap comes back on the spot. In question 2, that gap becomes a landscape and you descend toward the lowest place.{{< /fig >}}
 
 **2. All 21 questions have you use your hands**
 
