@@ -121,7 +121,7 @@ const R1 = v => +v.toFixed(1);
    ★drawProg() も1文字も触っていません */
 function mark(i, cls) {
   const q = (window.QBASE || 0) + i + 1;
-  const e = document.querySelector('#steps .bar [title^="問' + q + '\u3000"]');
+  const e = document.querySelector('#steps .bar [title^="Problem ' + q + ':"]');
   if (e) e.className = cls;
 }
 /* ★ゲージ。小さいほど良い場合は inv=true */
@@ -191,34 +191,25 @@ const BOX = (x, y, w, h, fill) =>
      （→ A の判断2。★山田様「全部の問を最初から表示する」）
    ══════════════════════════════════════════════════════════════════════════ */
 var QLIST = [
-  'つまみを回す', '坂を下る', '2個では足りない', 'つまみを増やす', '確率に直す',
-  '入力を増やす', '単位をそろえる', '線1本の限界', '層を1つ入れる', '深くすると', '覚えただけ',
-  '温度', 'どの語を見るか', '2つの語を同時に見る',
-  '大量に練習する', '好みで整える', '正誤で伸ばす',
-  '組で決める', 'どこまで分ける', '列を作る', 'どこで止める'
+  'Turn the knobs', 'Walk downhill', 'Two knobs are not enough', 'Add more knobs',
+  'Turn scores into probabilities',
+  'Add more inputs', 'Put them on one scale', 'The limit of one line', 'Insert one layer',
+  'When it gets deeper', 'Just memorized',
+  'Temperature', 'Which words to look at', 'Looking at two words at once',
+  'Practicing at scale', 'Tuning on preference', 'Training on right and wrong',
+  'Deciding by group', 'How far to split', 'Building a column', 'When to stop'
 ];
 /* 🔴 2026-09-02 A：★できているページ。★★章を流すたびに足すこと（→ リンク切れ0件） */
 /* 🔴 2026-09-02 1問1ページ担当：★★全21問が揃ったので全部リンクにしました（★リンク切れ0件） */
 var READY = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21];
 
 var CHAP = [
-  /* 🔴 2026-09-02 A：★s＝帯に出す略称（★t は下の行と章表示に使う正式名）
-     ★理由：★帯の1章の幅は 3/21〜6/21 しかなく、正式名だと文字が切れる（★実測 30〜69px はみ出した） */
-  /* 🔴🔴🔴 2026-09-09 A：★★★章題を【トップページの5つに揃えた】（★山田様の指示 2026-09-09）
-     ★★直す前は t が トップと違っていた ── ★同じ章が2つの名前で呼ばれていた
-       第1章 機械学習の基礎      → 機械学習
-       第3章 LLMは何を見ているか → LLM
-       第4章 どうやって作るか    → LLMはどうやって作られるのか
-       第5章 本物のデータで使う  → 本物のデータでは、何が精度を決めるのか
-     ★★★s（帯の略称）は【短いまま残す】── ★帯の1章分は 390px で 16〜30px しかなく、
-       ★正式名を入れると前任の実測で 30〜69px はみ出した。★ここを長くしないこと */
-  { n: 1, t: '機械学習',           s: '機械学習',     a: 1,  b: 5  },
-  { n: 2, t: '深層学習',           s: '深層学習',     a: 6,  b: 11 },
-  /* 🔴 2026-09-02 1問1ページ担当2代目：★帯の第3章の略称を「注目」→【LLM】にしました
-     （★山田様の指定 21:1x「ここの3章 注目っておかしいだろ。LLM にしろ。全部な。上の目次っぽいところだぞ」） */
-  { n: 3, t: 'LLM',                s: 'LLM',           a: 12, b: 14 },
-  { n: 4, t: 'LLMはどうやって作られるのか',        s: '作り方',       a: 15, b: 17 },
-  { n: 5, t: '本物のデータでは、何が精度を決めるのか', s: '本物のデータ', a: 18, b: 21 }
+  /* ★s＝帯に出す略称。★★英語は横に長いので【短く保つこと】（★帯の1章分は 390px で 16〜30px）*/
+  { n: 1, t: 'Machine learning', s: 'Basics',    a: 1,  b: 5  },
+  { n: 2, t: 'Deep learning',    s: 'Depth',     a: 6,  b: 11 },
+  { n: 3, t: 'LLMs',             s: 'LLM',       a: 12, b: 14 },
+  { n: 4, t: 'How an LLM is built', s: 'Building', a: 15, b: 17 },
+  { n: 5, t: 'What decides accuracy on real data', s: 'Real data', a: 18, b: 21 }
 ];
 function chapOf(q) { for (var i = 0; i < CHAP.length; i++) if (q >= CHAP[i].a && q <= CHAP[i].b) return CHAP[i]; }
 
@@ -242,13 +233,13 @@ function drawProg(q) {
        +   '<div class="bar">';
     for (var i = c.a; i <= c.b; i++) {
       var cls = i < q ? 'done' : (i === q ? 'open' : ''),
-          ttl = '問' + i + '　' + QLIST[i - 1],
+          ttl = 'Problem ' + i + ': ' + QLIST[i - 1],
           ok  = READY.indexOf(i) >= 0 && i !== q,
           tag = ok ? 'a' : 'span',
           hre = ok ? ' href="q' + (i < 10 ? '0' + i : i) + '.html"' : '';
       s += '<' + tag + ' class="' + cls + '"' + hre + ' title="' + ttl + '"></' + tag + '>';
     }
-    s += '</div><div class="lb"><b>第' + c.n + '章</b>'
+    s += '</div><div class="lb"><b>Ch. ' + c.n + '</b>'
        +   '<span class="tt">' + c.s + '</span></div></div>';
   }
   h.innerHTML = s;
@@ -259,8 +250,8 @@ function drawProg(q) {
      ★★★理由⑵ 章題をトップに揃えて長くしたので、★★390px で【3行に折り返して 21px→54px に伸びた】
        （★実測 q15〜q21 の7ページ）。★章名を外すと 21px に戻る。
      ★★章の対応は ⒜ 帯そのもの ⒝ 真下の章の表示 ⒞ 入れ子図の右端の章番号 の3つが持っています */
-  if (cc) cc.innerHTML = '<span><b>問' + q + '</b>　' + QLIST[q - 1] + '</span>'
-    + '<span>第' + ch.n + '章　／　全' + QLIST.length + '問</span>';
+  if (cc) cc.innerHTML = '<span><b>Problem ' + q + '</b>&nbsp; ' + QLIST[q - 1] + '</span>'
+    + '<span>Chapter ' + ch.n + ' / ' + QLIST.length + ' problems</span>';
 }
 
 /* ══════════════════════════════════════════════════════════════════════════
@@ -275,25 +266,25 @@ function drawProg(q) {
        ★次に index を触れるときは、★index 側も この配列から描くようにしてください。
    ══════════════════════════════════════════════════════════════════════════ */
 var CHTAB = [
-  { n: 1, href: 'q01.html', t: '機械学習', d: 'AIが学習するとは、具体的に何をしているのか。数を調整して正解に近づける、その一番小さい形を自分の手で動かします', q: '1〜5' },
-  { n: 2, href: 'q06.html', t: '深層学習', d: '深層学習の「深い」とは、何が深いのか。層を重ねる意味と、重ねただけではうまくいかない理由を、自分で層を足しながら確かめます', q: '6〜11' },
-  { n: 3, href: 'q12.html', t: 'LLM', d: 'ChatGPTは中で何をしているのか。動いているLLMが次に来る語を確率で選ぶしくみと、同じ質問でも答えが変わる理由を、動かして見ます', q: '12〜14' },
-  { n: 4, href: 'q15.html', t: 'LLMはどうやって作られるのか', d: 'なぜAIは丁寧に答え、数学は得意で、それでいて自信を持って間違えるのか。次の語を当てる練習、人が選んだ記録で整える、正誤が付く問題で鍛える、という3段に分けて動かします', q: '15〜17' },
-  { n: 5, href: 'q18.html', t: '本物のデータでは、何が精度を決めるのか', d: 'タイタニック号の乗客891人の記録から、年齢・性別・客室の等級をもとに生死を当てます。Kaggleで最もよく使われる入門課題です。使う道具は決定木です', q: '18〜21' }
+  { n: 1, href: 'q01.html', t: 'Machine learning', d: 'What does it actually mean for a machine to learn? You work the smallest version of it by hand: nudge numbers until the prediction gets closer to the answer', q: '1-5' },
+  { n: 2, href: 'q06.html', t: 'Deep learning', d: 'What exactly is deep about deep learning? You stack the layers yourself, and see both what stacking buys you and why stacking alone does not work', q: '6-11' },
+  { n: 3, href: 'q12.html', t: 'LLMs', d: 'What is ChatGPT doing inside? You run a working language model, watch it pick the next word by probability, and see why the same question can come back answered differently', q: '12-14' },
+  { n: 4, href: 'q15.html', t: 'How an LLM is built', d: 'Why is AI polite, strong at math, and still confidently wrong? You run the three stages separately: practicing next-word prediction, tuning on choices people made, and training on problems that can be marked right or wrong', q: '15-17' },
+  { n: 5, href: 'q18.html', t: 'What decides accuracy on real data', d: 'From the records of 891 passengers on the Titanic, you predict who survived using age, sex and cabin class. It is the most widely used beginner task on Kaggle, and the tool here is a decision tree', q: '18-21' }
 ];
 
 /* ★章ごとの折りたたみ（★見出し ＋ 中の <li> をそのまま） */
 var CHDET = [
-  { n: 1, s: '第1章　機械学習',
-    ul: '<li><b>関数</b>（入力から出力を計算する式）── y = ax + b から始めます。a と b がパラメータ（つまみ）です</li><li><b>誤差</b>（正解とのずれ）── 予測と正解の差を1つの数にまとめたもの。これを小さくするのが目標です</li><li><b>勾配降下法</b>（坂を下る）── 坂の高さは誤差です。傾きを調べて、誤差が減る方向へパラメータを少しずつ動かします。機械が自分でパラメータを決めるのは、この繰り返しです</li><li><b>学習率</b>（歩幅）── 大きすぎると坂を通り過ぎ、誤差が増え続けて戻れなくなります</li><li><b>式の形の限界</b> ── 直線の式では、どうパラメータを動かしても届かない問題があります。パラメータを増やして折れ線にすると届きます</li><li><b>softmax</b>（点数を確率に直す）── 点数のまま足し引きすると差が縮んでしまうので、指数を使って合計が1になる確率に直します。大小の順は変わりません</li>' },
-  { n: 2, s: '第2章　深層学習',
-    ul: '<li><b>特徴量</b>（入力に使う列）── 1個から複数に増やします。関係のない列を足しても誤差は下がりません</li><li><b>正規化</b>（単位をそろえる）── 身長cmと体重kgのように桁が違う列を混ぜると、片方だけが効きすぎます。歩幅は全パラメータで共通なので、揃えないと学習が壊れます</li><li><b>直線の限界</b> ── 1本の直線では分けられない配置があります</li><li><b>中間層</b>（あいだの段）── 段を挟んでパラメータを増やします</li><li><b>活性化関数</b>（折り曲げる）── 折らないと、何段重ねても全体は直線1本と同じになります。だから段のあいだで曲げます</li><li><b>勾配消失</b>（深くすると壊れる）── 段を増やすと、誤差の手がかりが手前の段まで届かなくなり、手前の段が学習しなくなります。飛び越す道（残差接続）で直します</li><li><b>過学習</b> ── 訓練データだけに合わせすぎた状態です（第5章で実際に体験します）</li>' },
-  { n: 3, s: '第3章　LLM',
-    ul: '<li><b>語彙</b>（出口）── 出力側の選択肢のことです。「次に来る語」の候補が5万個あり、それぞれに確率が付きます</li><li><b>確率分布</b> ── 5万個の確率の並び。いちばん高いものを選び続けると、無難な言い回しになります</li><li><b>温度</b> ── その並びの中から、どれだけ確率の高いものに寄せるかの設定です。上げると低い確率の語も出てきます。ただし並び自体は変わらないので、並びを変えたいときは質問に条件を足します</li><li><b>自己注意</b>（注目）── 文中のどの語を手がかりにするかの重みです。重みの合計が1になるので、複数の語を同時に強く見ることには上限があります</li><li><b>マルチヘッド</b> ── だから重みを複数本に分けて、別々の語を見られるようにします</li>' },
-  { n: 4, s: '第4章　LLMはどうやって作られるのか',
-    ul: '<li><b>事前学習</b> ── 大量の文章で「次の語を当てる」練習だけをします。文法や事実は、この練習の副産物として付いてきます</li><li><b>RLHF</b>（人の好みで整える）── 「良い回答」は式に書けません。だから人に2つ見せて良いほうを選んでもらい、その記録を使って調整します。誰に選んでもらったかで結果が変わります</li><li><b>RLVR</b>（正誤で鍛える）── 答え合わせが機械でできる問題（数学・プログラム）だけを使って鍛えます。だから数学は伸び、面白さのような正解のないものはこの段では扱えません</li><li><b>自信を持って間違える理由</b> ── 訓練で選んでいるのは正しいことではなく、次に来そうなことだからです</li>' },
-  { n: 5, s: '第5章　本物のデータでは、何が精度を決めるのか',
-    ul: '<li><b>データ</b> ── タイタニック号（1912年に沈んだ客船）の乗客891人の記録。年齢・性別・客室の等級などから、生き残ったかを当てます。Kaggleで最もよく使われる入門課題です</li><li><b>特徴量エンジニアリング</b>（入力の列を作る）── 人が新しい列を作ると、当たる数が増えます。たとえば名前から敬称を取り出します</li><li><b>訓練の点は物差しにならない</b> ── 列を増やすと訓練データの点は上がりますが、それは実力ではなく、極端には丸暗記です</li><li><b>決定木</b> ── 勾配降下とは別の仕組みです。切れ目を全部試して、いちばん良いものを選びます</li><li><b>交差検証</b> ── 1回だけ測ると数字がぶれます。分けて何回か測り、平均を取ります</li><li>作りの違うモデルを並べると、同じ水準に並びます。モデルより入力が効く場面がある、ということです</li>' }
+  { n: 1, s: 'Chapter 1 &nbsp;Machine learning',
+    ul: '<li><b>Function</b> (a rule that turns an input into an output) &mdash; we start from y = ax + b. a and b are the parameters, the knobs you turn</li><li><b>Error</b> (how far off you are) &mdash; the gap between prediction and answer, collapsed into a single number. Making that number small is the goal</li><li><b>Gradient descent</b> (walking downhill) &mdash; the height of the hill is the error. You read the slope and move the parameters a little in the direction that lowers it. This loop is all there is to a machine choosing its own parameters</li><li><b>Learning rate</b> (step size) &mdash; too large, and you stride straight past the bottom; the error keeps growing and you cannot get back</li><li><b>Limits of the form</b> &mdash; with a straight line there are problems no setting of the parameters can reach. Add parameters so the line can bend, and you get there</li><li><b>Softmax</b> (turning scores into probabilities) &mdash; adding and subtracting raw scores squeezes the gaps, so we use exponentials to turn them into probabilities that add up to 1. The order from largest to smallest stays the same</li>' },
+  { n: 2, s: 'Chapter 2 &nbsp;Deep learning',
+    ul: '<li><b>Features</b> (the columns you feed in) &mdash; you go from one column to several. Adding a column that carries no information about the answer does not lower the error</li><li><b>Normalization</b> (putting columns on the same scale) &mdash; mix height in centimeters with weight in kilograms and one column takes over. The step size is shared by every parameter, so without rescaling, learning breaks</li><li><b>Limits of a straight line</b> &mdash; some arrangements of points cannot be separated by a single line</li><li><b>Hidden layer</b> (a stage in between) &mdash; you insert a stage, which gives you more parameters</li><li><b>Activation function</b> (the bend) &mdash; without a bend, any number of stacked layers collapses into one straight line. So we bend between the stages</li><li><b>Vanishing gradients</b> (why depth breaks) &mdash; add stages and the error signal stops reaching the early ones, so the early stages stop learning. A path that skips ahead, a residual connection, fixes it</li><li><b>Overfitting</b> &mdash; fitted too closely to the training data alone (you run into this for real in Chapter 5)</li>' },
+  { n: 3, s: 'Chapter 3 &nbsp;LLMs',
+    ul: '<li><b>Vocabulary</b> (the exits) &mdash; the choices on the output side. There are some 50,000 candidates for the next word, each with a probability attached</li><li><b>Probability distribution</b> &mdash; that lineup of 50,000 probabilities. Keep taking the highest one and you get safe, unremarkable phrasing</li><li><b>Temperature</b> &mdash; the setting for how hard to lean toward the high-probability words. Raise it and low-probability words start turning up. The lineup itself does not change, so when you want to change the lineup, you add conditions to the question</li><li><b>Self-attention</b> &mdash; the weights that decide which words in the sentence to use as cues. The weights add up to 1, so there is a ceiling on looking hard at several words at once</li><li><b>Multi-head</b> &mdash; which is why the weights are split into several sets, so that different words can be looked at in parallel</li>' },
+  { n: 4, s: 'Chapter 4 &nbsp;How an LLM is built',
+    ul: '<li><b>Pre-training</b> &mdash; on a large amount of text, the model practices one thing only: predicting the next word. Grammar and facts arrive as a by-product of that practice</li><li><b>RLHF</b> (tuning on human preference) &mdash; a good answer cannot be written down as a formula. So people are shown two answers, asked which is better, and that record is used to tune the model. Who does the choosing changes what you get</li><li><b>RLVR</b> (training on right and wrong) &mdash; only problems a machine can mark, such as math and code. That is why math improves, and why anything without a correct answer, being interesting for instance, is out of reach at this stage</li><li><b>Why it is wrong with such confidence</b> &mdash; what the training selects for is not what is true, but what is likely to come next</li>' },
+  { n: 5, s: 'Chapter 5 &nbsp;What decides accuracy on real data',
+    ul: '<li><b>The data</b> &mdash; the records of 891 passengers on the Titanic, the liner that sank in 1912. From age, sex, cabin class and the rest, you predict who survived. It is the most widely used beginner task on Kaggle</li><li><b>Feature engineering</b> (building the columns you feed in) &mdash; when a person builds a new column, the number of correct predictions goes up. Pulling the title out of a passenger&rsquo;s name, for example</li><li><b>The training score is not a ruler</b> &mdash; add columns and the score on the training data rises, but that is not ability. Taken far enough, it is memorization</li><li><b>Decision tree</b> &mdash; a different mechanism from gradient descent. It tries every split point and keeps the best one</li><li><b>Cross-validation</b> &mdash; measure once and the number wobbles. Split the data, measure several times, and take the average</li><li>Line up models built in quite different ways and they end up at much the same level. Which tells you there are situations where the input matters more than the model</li>' }
 ];
 
 /* ★★章の表（★入れ子図の下に置く。★トップページと同じ表）
@@ -301,8 +292,8 @@ var CHDET = [
    ★★★これで「章／章題／中身」がトップと問題ページで【同じ言葉】になりました */
 function drawChapTab(ch) {
   var h = document.getElementById('chaptab'); if (!h) return;
-  var s = '<table class="dtab chtab"><tr><th class="c">章</th><th class="l">章題</th>'
-        + '<th class="l">中身</th><th class="c">問</th></tr>';
+  var s = '<table class="dtab chtab"><tr><th class="c">Ch.</th><th class="l">Title</th>'
+        + '<th class="l">What is inside</th><th class="c">Problems</th></tr>';
   for (var i = 0; i < CHTAB.length; i++) {
     var c = CHTAB[i], on = (c.n === ch);
     s += '<tr' + (on ? ' class="me"' : '') + '><td class="c">' + c.n + '</td>'
@@ -321,7 +312,7 @@ function drawChapDet(ch) {
     /* 🔴 2026-09-09 A：★★見出しに【 で学ぶこと】を足す（★山田様の指示 2026-09-09）
        ★★★「第1章　機械学習 で学ぶこと」── ★全章 同じ形
        ★★トップページの折りたたみは【そのまま】です（★index.html は触っていません） */
-    h.innerHTML = '<details class="ch"><summary>' + CHDET[i].s + ' で学ぶこと</summary><ul>'
+    h.innerHTML = '<details class="ch"><summary>' + CHDET[i].s + ' &mdash; what you will learn</summary><ul>'
                 + CHDET[i].ul + '</ul></details>';
     return;
   }
@@ -331,7 +322,7 @@ function drawChapDet(ch) {
 function drawChap(q, intro) {
   var h = document.getElementById('chap'); if (!h) return;
   var ch = chapOf(q);
-  h.innerHTML = '<b>第' + ch.n + '章　' + ch.t + '</b>（問' + ch.a + '〜' + ch.b + '）'
+  h.innerHTML = '<b>Chapter ' + ch.n + '&nbsp; ' + ch.t + '</b> (problems ' + ch.a + '-' + ch.b + ')'
     + (intro ? '<br>' + intro : '');
 }
 
@@ -588,8 +579,10 @@ function drawNav(prev, next) {
    ⑴ 登場人物と会話
    ★★顔は外部ファイル（★base64 をやめた）── 1ページ 29,926字 × 23ページ の重複が消える
    ══════════════════════════════════════════════════════════════════════════ */
-var IMG = { m: 'assets/av-marky.jpg', d: 'assets/av-doc.jpg' };
-var CNM = { m: '学', d: '博士' };
+/* ★★★★2026-09-12 英語版担当：★顔の絵は【日本語版のものを共有】します（★絵に文字が無いため）。
+   ★英語版の場所には assets/ を置いていません。★相対で日本語版を指しています（★絶対パスは書きません） */
+var IMG = { m: '../../deep-black-box/assets/av-marky.jpg', d: '../../deep-black-box/assets/av-doc.jpg' };
+var CNM = { m: 'Manabu', d: 'Doc' };
 /* 🔴 2026-09-02 1問1ページ担当【申告】★★博士の紹介から「口癖は<b>「やってみろ」</b>。」の
    1文（12字）を消しました。★A が承認済み（2026-09-02）
    ★理由：★§5-39 で博士の命令形を【0件】にしたので、★読者は「やってみろ」を一度も聞きません。
@@ -604,14 +597,16 @@ var CNM = { m: '学', d: '博士' };
      ⑴ 上のほうに来るものは【章の説明の章名】以外 太字にしない
      ⑵ 博士・学の紹介文は 太字にしない */
 var CAST = [
-  ['d', '博士', '',
-   'AIの研究者。元大学教授で、機械学習を教えていた。'
-  + '「説明を読ませるより、つまみを回させたほうが早い」が信条で、大学のやり方と合わずに辞めた。'
-  + 'いまは家の一室でひとり実験している。'],
-  ['m', '深井 学', 'ふかい まなぶ ／ 高校2年',
-   '数学は得意だが、AI は素人。'
-  + '「みんな AI って言うけど、中で何が起きてるのか誰も説明してくれない」が動機。'
-  + '小学生のころから博士の家に出入りしている。納得しないと引かない。']
+  ['d', 'Doc', '',
+   'An AI researcher, and a former university professor who taught machine learning. '
+  + 'He held that it is faster to let people turn the knobs than to make them read explanations, '
+  + 'which did not sit well with how the university worked, so he left. '
+  + 'These days he runs his experiments alone in a room at home.'],
+  ['m', 'Manabu Fukai', 'high school, 11th grade',
+   'Strong at math, a beginner at AI. '
+  + 'What got him started: everyone talks about AI, but nobody explains what is going on inside it. '
+  + 'He has been dropping in at the professor&rsquo;s place since elementary school, '
+  + 'and he does not let a point go until it makes sense.']
 ];
 function drawCast(id) {
   var h = document.getElementById(id || 'cast2'); if (!h) return;
@@ -984,11 +979,11 @@ drawTop();
   var btn = document.createElement('button');
   btn.type = 'button';
   btn.className = 'splitbtn';
-  btn.innerHTML = '▶ 画面を上下に分けて動かす';
+  btn.innerHTML = '▶ Split the screen: figure on top, talk below';
 
   var bar = document.createElement('div');
   bar.className = 'splitbar';
-  bar.innerHTML = '<span class="grip"></span><button type="button" class="closebtn">閉じる</button>';
+  bar.innerHTML = '<span class="grip"></span><button type="button" class="closebtn">Close</button>';
 
   /* ★★図を1つの行にまとめる（★上下に積む。★横に並べない → 2代目の誤り⑸） */
   function makeRow() {

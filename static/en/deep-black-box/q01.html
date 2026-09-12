@@ -1,0 +1,975 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<meta name="description" content="Turn two knobs by hand and watch the error fall - Problem 1 of Deep Black Box, a free hands-on course on how AI actually works.">
+<meta property="og:title" content="Deep Black Box - Problem 1: turn two knobs by hand (Chapter 1)">
+<meta property="og:description" content="Turn two knobs by hand and watch the error fall - Problem 1, Turn the knobs.">
+<!-- 🔴🔴🔴🔴 2026-09-10 記録担当：★★★★共有したときの画像（★公開準備セッションの指示）。
+     ★★この2行は【23ページとも入っていませんでした】（★実測0件）。
+     ★★★入れる値は先方が確定させたものです ──
+       roppongivc.com/static/img/agora/r1/og-r1-game.jpg（★59KB。★案A＝白地・エンブレム左）。
+     ★★記事用（og-r1-article.jpg）とは【別のファイル】です。★記事側のものは触っていません。
+     ★値は絶対URLです（★OGP の決まり。★href の絶対パス禁止とは別の話です） -->
+<meta property="og:image" content="https://www.roppongivc.com/en/deep-black-box/og-deep-black-box-en.jpg">
+<meta name="twitter:image" content="https://www.roppongivc.com/en/deep-black-box/og-deep-black-box-en.jpg">
+<!-- 🔴🔴🔴🔴 2026-09-10 21:4x 記録担当：★★★★X（Twitter）で大きい絵にする1行（★公開準備セッションの依頼）。
+     ★★★og:image を入れても、★この1行が無いと【小さいカード】になります。
+     ★記事側は全13ページを summary → summary_large_image にしたとのことです（★先方の実測）。
+     ★★ゲーム23ページは【0件】でした -->
+<meta name="twitter:card" content="summary_large_image">
+<!-- 🔴🔴🔴🔴 2026-09-10 22:3x 記録担当：★★★★ブラウザのタブに出る絵（★公開準備セッションの依頼）。
+     ★★実測 ── ★23ページとも【0件】でした（★タブに絵が出ていませんでした）。
+     ★★★実体はサイト側にあり、★本番で全部 引けます（★新しく作っていません）──
+       /favicon.svg 200・53KB ／ /favicon.ico 200 ／ /favicon-192.png 200・8KB
+     ⚠️★★/apple-touch-icon.png は【404】なので使いません。★favicon-192.png を指しています
+       （★サイト側 baseof.html と同じ扱いです）。
+     ⚠️★★★絶対URLです ── ★このゲームは /deep-black-box/ の下にあるので、
+       ★相対だと /deep-black-box/favicon.svg を探して【外します】。
+       ★「絶対パスを書かない」（★同じ場所の中を指すときの決まり）とは別の話です -->
+<link rel="icon" href="https://www.roppongivc.com/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="https://www.roppongivc.com/favicon.ico" sizes="32x32">
+<link rel="icon" href="https://www.roppongivc.com/favicon-192.png" type="image/png" sizes="192x192">
+<link rel="apple-touch-icon" href="https://www.roppongivc.com/favicon-192.png">
+<title>Deep Black Box - Problem 1: turn two knobs by hand (Chapter 1)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@300;400;600;700&family=Inter:wght@300;400;500;600;700&family=Noto+Serif+JP:wght@300;400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../deep-black-box/common.css">
+<style>
+/* ══════════════════════════════════════════════════════════════════════════
+   🔴 2026-09-02 1問1ページ担当：★この章だけの CSS
+     ★★原本 tsume-00-function-dialog.html の <style> をそのまま写し、★【戻さないこと】のフォント規則だけ落としました
+     ★落としたもの：.cap{font-size:12.5px;color:var(--gray-500);margin-bottom:.5rem;line-height:1.5}／.lead{font-size:16px;line-height:1.9;color:var(--gray-600);margin:0 0 1.1rem}／h2{font-family:var(--serif);font-size:1.45rem;font-weight:300;line-height:1.4;margin:0 0 1rem}／h3{font-size:16px;font-weight:600;margin:1.4rem 0 .6rem}／.dtab{width:100%;border-collapse:collapse;font-size:12.5px;margin:.9rem 0;  font-variant-numeric:tabular-nums}／.cl .bb{position:relative;min-width:0;padding:.65rem .95rem;font-size:15px;line-height:1.9;   border:1px solid var(--gray-200);border-radius:.85rem;background:var(--white);color:var(--gray-600)}／.cl .bb{font-size:14.5px;padding:.55rem .75rem;line-height:1.8}
+   ★.offpage ── ★★この章の【他の問のカード】を DOM に置いたまま隠す枠。
+     ★理由：ゲーム本体の JS（起動・つまみの bind）を1バイトも触らないため。
+       ★$('…') が null にならないので、原本と同じコードがそのまま動きます
+   ══════════════════════════════════════════════════════════════════════════ */
+.offpage{display:none}
+:root{
+ --bg:#fff; --white:#fff; --black:#000;
+ --gray-100:#f9f9f9; --gray-200:#d9d9d9; --gray-500:#444; --gray-600:#2a2a2a;
+ --accent:#019949;
+ --sans:'Inter',system-ui,sans-serif;
+ --serif:'Source Serif 4','Noto Serif JP',Georgia,serif;
+ --content-w:52.625rem;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--black);font-family:var(--sans);
+ -webkit-font-smoothing:antialiased}
+.wrap{max-width:var(--content-w);margin:0 auto;padding:0 1.5rem 5rem}
+.top{border-bottom:1px solid var(--gray-200);margin-bottom:2.4rem}
+/* 🔴🔴🔴 2026-09-09 A：★★★この上書きを外した ── ★★これが【全部大文字】の正体だった
+     ★★★山田様「トップと他でフォント違うし全部大文字かどうかも違うし」（2026-09-09）
+   ★.top .in に text-transform:uppercase と letter-spacing:.14em が入っており、
+     ★★子の製品名とタグラインまで【大文字＋字間広め】に変えていた。
+   ★実測：★これがある18ページは uppercase ／ 無い5ページ（index・q15〜17・end）は none。
+     → ★★★同じ製品名が【大文字のページと そうでないページ】に分かれていた
+   ★common.css の .top .in（★大文字にしない）を効かせる */
+/* 🔴 2026-09-09 A：★★この上書きを外した ── ★common.css の
+     .top .in .tag（15.5px / #555 / 行間1.75 / サンセリフ）を効かせる。
+   ★★★これが後勝ちしていたので、★上のバーだけ 明朝 12.5px のままだった。
+     → ★山田様「トップと他でフォント違うし全部大文字かどうかも違うし」の原因のひとつ */
+.eyebrow{font-size:13px;font-weight:500;letter-spacing:.16em;text-transform:uppercase;
+ color:var(--gray-500);margin-bottom:.9rem}
+h1{font-family:var(--serif);font-size:2.1rem;font-weight:300;line-height:1.35;margin:0 0 .8rem}
+.lead b{color:var(--black)}
+.meta{font-size:13px;letter-spacing:.1em;color:var(--gray-500);padding-bottom:1.2rem;
+ border-bottom:1px solid var(--gray-200);margin-bottom:1.2rem}
+.steps{display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:2.4rem}
+.steps div{flex:1 1 5rem;padding:.55rem .3rem;text-align:center;font-size:12px;
+ border:1px solid var(--gray-200);color:var(--gray-500);background:var(--white)}
+.steps div.open{border-color:var(--black);color:var(--black)}
+.steps div.done{background:var(--black);border-color:var(--black);color:var(--white)}
+.card{border:1px solid var(--gray-200);padding:2rem;margin-bottom:2rem;background:var(--white)}
+.tagline{font-size:13px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;
+ color:var(--gray-500);margin-bottom:.9rem}
+.figbox{background:var(--gray-100);border:1px solid var(--gray-200);padding:1rem;margin:1.3rem 0}
+/* 🔴 2026-08-29 A（#24）：問2 の2枚は【上限幅】を付ける。
+   ★理由：.two（横並び）を解体したので、PC では図が本文の全幅（842px）まで伸び、
+   ★viewBox 300×250 の比で 高さが 701px になって枠が 941.7px に膨らんだ（実測）。
+   ★420px で止めると PC は元の横並び（各 約413px）とほぼ同じ大きさに戻る。
+   ★390px では使える幅が 348px なので この指定は効かない（＝スマホは1px も変わらない） */
+#p2,#p2m{max-width:420px;display:block;margin:0 auto}
+/* ★★図・つまみ・判定を1つの枠にまとめる。★小さい画面でも両方が同時に見えるようにする */
+.panel{background:var(--gray-100);border:1px solid var(--gray-200);padding:1rem;margin:1.3rem 0}
+.panel .ctl{margin:.9rem 0 .2rem}
+.panel .togs{margin-top:.7rem}
+.panel .gauge{margin-top:.9rem}
+.panel .verdict{margin-top:.8rem;background:var(--white)}
+.two{display:flex;gap:1rem;flex-wrap:wrap}
+.two>div{flex:1 1 15rem;min-width:0}
+svg{display:block;width:100%;height:auto}
+
+/* ══════════════════════════════════════════════════════════
+   🔴🔴🔴 2026-08-29 山田様の FB：「スマホは大丈夫なんだけど、PCサイズのが画面大きいとは言え
+     同じように固定しないと同時に見えないものがいっぱいあるんだ。
+     だからPCのほうもスマホと同様の処置をやってくれないか」
+   → ★★.stick と .stickbot を @media の【外】に出した（＝どの幅でも効く）。
+   ★★これまで @media (max-width:430px) の中だけに書いていたので、PC には1px も効いていなかった。
+   ★★実測（1280×900・貼り付けを入れる前）
+     問1  つまみを画面中央 → 図は 74%（上端 105px 切れる）
+     問4  つまみ群を中央   → 図は 65%（上端 144px 切れる）
+     問4  [1歩ずつ] を中央 → ★★図は【完全に画面外】（上に 490px）
+     ★★スマホでは .stick で見えていたので、PC のほうが悪いという逆転が起きていた
+   ★★上限高さ（max-height）が必要な理由 ── ★PC は本文幅 842px なので
+     viewBox 560×330 の図は【496px】になる。★貼り付けると 900px の画面の 55% を占領し、
+     ★下のつまみが押し出される。→ ★42vh（900px なら 378px）で止める。
+     ★svg は width:100%/height:auto なので、max-height が効くと
+       preserveAspectRatio で中身が縮んで【左右に余白】ができる。★横幅も合わせて縮める
+   ★★390px では図が 348×205px しか無く 42vh（353px）に当たらないので、★スマホは1px も変わらない
+   ★背景色は必須 ── ★敷かないと下から来た文字が図に【透けて重なる】
+   ★確認済み：.top は固定ヘッダではない ／ .card・.panel・body に overflow は無い
+     （★祖先に overflow があると sticky は無効になる）
+   ══════════════════════════════════════════════════════════ */
+.stick{position:sticky;top:0;z-index:5;background:var(--gray-100);
+       padding-bottom:.35rem;box-shadow:0 6px 8px -6px rgba(0,0,0,.18)}
+.stick svg{max-height:42vh;width:auto;max-width:100%;margin:0 auto}
+/* 🔴🔴🔴 2026-08-29【訂正・A の自己申告】★★一度 34vh に下げたが【42vh に戻した】。
+   ★下げた理由は「1280px で 01 の問6 の判定文が同時に入らない」という実測だったが、
+     ★★それは【走査の刻みが 40px で粗く、入る位置を飛ばしていた】ための誤判定だった。
+   ★刻みを 12px にして測り直すと、42vh でも 00 の6か所・01 の5か所すべてで
+     ★「図100% ＋ つまみ・結果すべて見えて押せる位置がある」（★両幅）
+   ★★教訓：スクロール位置を刻んで測る検査は、刻みが粗いと【偽の不合格】を出す。
+     ★A はこれで PC の図を不必要に小さくしかけた（→ 規則案㉔ の同型） */
+.stickbot{position:sticky;bottom:0;z-index:5;background:var(--gray-100);
+          padding-top:.4rem;box-shadow:0 -6px 8px -6px rgba(0,0,0,.18)}
+.ctl{margin:1.1rem 0 .2rem}
+.ctl label{display:flex;justify-content:space-between;align-items:baseline;font-size:14px;
+ margin-bottom:.35rem;gap:1rem}
+.ctl label span.n{font-weight:600;font-variant-numeric:tabular-nums;white-space:nowrap}
+.togs{display:flex;gap:.6rem;flex-wrap:wrap;margin-top:1.1rem;align-items:center}
+.btn{background:none;border:1px solid var(--gray-200);padding:.6rem 1.15rem;font-size:14px;
+ font-family:var(--sans);color:var(--black);cursor:pointer;transition:all .15s}
+.btn:hover{border-color:var(--black);background:var(--gray-100)}
+.btn.on{background:var(--black);color:var(--white);border-color:var(--black)}
+.btn.go{background:var(--black);color:var(--white);border-color:var(--black)}
+.btn.sm{font-size:13px;padding:.45rem .85rem;color:var(--gray-500)}
+.btn:disabled{opacity:.35;cursor:default}
+.gauge{margin:1.2rem 0 0}
+.gauge .row{display:flex;align-items:baseline;gap:.7rem;margin-bottom:.5rem}
+.gauge .u{font-size:14px;color:var(--gray-500)}
+.gtrack{height:10px;background:#e9e9e9;position:relative;overflow:hidden}
+.gfill{display:block;height:100%;background:#c00;transition:width .12s linear}
+.gfill.ok{background:var(--accent)}
+.gmark{position:absolute;top:-3px;bottom:-3px;width:2px;background:#000}
+.gcap{display:flex;justify-content:space-between;font-size:12px;color:var(--gray-500);
+ margin-top:.35rem}
+.read{font-size:15px;line-height:1.8;margin:.9rem 0 0;font-variant-numeric:tabular-nums}
+.big{font-family:var(--serif);font-size:2rem;font-weight:400;font-variant-numeric:tabular-nums;
+ line-height:1}
+.calc{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13.5px;line-height:2;
+ background:var(--white);border:1px solid var(--gray-200);padding:.9rem 1.1rem;margin:.9rem 0;
+ overflow-x:auto;white-space:pre}
+.verdict{margin-top:1.2rem;padding:.9rem 1.1rem;border:1px solid var(--gray-200);font-size:14px;
+ line-height:1.75;background:var(--gray-100)}
+.verdict.ok{border-color:var(--accent);background:#f2fbf6}
+.verdict.stuck{border-color:#c00;background:#fdf4f4}
+.next{margin-top:1rem;font-size:13px;color:var(--gray-500)}
+.src{border-left:2px solid var(--black);padding:.9rem 0 .9rem 1.1rem;margin:1.4rem 0;
+ font-size:14px;line-height:1.85;color:var(--gray-600)}
+.src .h{font-size:12px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;
+ color:var(--black);margin-bottom:.4rem}
+.src q{font-style:normal;color:var(--black)}
+.src .ref{font-size:13px;color:var(--gray-500);margin-top:.4rem;display:block}
+.box{border:1px solid var(--gray-200);padding:1.1rem 1.3rem;margin:1.3rem 0;background:var(--gray-100)}
+.box .h{font-size:12px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;
+ margin-bottom:.5rem}
+.mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+.sc-row{display:flex;align-items:center;gap:.75rem;margin-bottom:.6rem}
+.sc-label{width:3.2rem;font-size:14px;text-align:right;flex-shrink:0}
+.sc-track{flex:1;background:#e9e9e9;height:9px;position:relative}
+.sc-fill{display:block;height:100%;background:var(--black);transition:width .1s linear}
+.sc-fill.hit{background:var(--accent)}
+.sc-pct{width:3.4rem;font-size:14px;font-variant-numeric:tabular-nums}
+.sc-track .goal{position:absolute;top:-3px;bottom:-3px;width:1px;background:#c00}
+details{border-top:1px solid var(--gray-200);padding-top:1rem;margin-top:1.5rem}
+summary{font-size:14px;font-weight:500;cursor:pointer}
+.lg{font-size:14px;line-height:1.9;color:var(--gray-600);margin-top:.9rem}
+.lg table{width:100%;border-collapse:collapse;margin:.8rem 0;font-size:13px}
+.lg th,.lg td{padding:.45rem .6rem;border:1px solid var(--gray-200);text-align:left}
+.lg th{background:var(--gray-100);font-weight:600}
+.dtab th,.dtab td{padding:.35rem .5rem;border:1px solid var(--gray-200);text-align:right}
+.dtab th{background:var(--gray-100);font-weight:600;font-size:11.5px}
+.dtab tr.sum td{background:#f2fbf6;border-top:2px solid var(--black)}
+.mnum{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13px;line-height:1.9;
+ background:var(--white);border:1px solid var(--gray-200);padding:.6rem .8rem;margin-top:.5rem;
+ white-space:pre}
+.hide{display:none}
+.foot{border-top:1px solid var(--gray-200);margin-top:3rem;padding-top:1.5rem;font-size:13px;
+ color:var(--gray-500);line-height:1.8}
+.arrow{text-align:center;font-size:22px;color:var(--gray-500);margin:.5rem 0}
+/* ══════ 🔴🔴 小さい画面では【横の余白を削って図に幅を渡す】 ══════
+   ★★実測（390px・iPhone 相当）：横の余白が 左右合計 144px（wrap 24+24／card 32+32／
+     figbox・panel 16+16）で、viewBox 560 の SVG は【242px】しかもらえない。
+   ★★倍率 0.43 → font-size 11 が【4.8px】になって読めない。
+   ★下の指定で余白を 左右合計 52px にすると SVG は 330px（倍率 0.59・font 11 → 6.5px）。
+   ★★縦の余白は削らない（詰まって読みにくくなる）。★横だけ削る */
+@media (max-width:430px){
+  .wrap{padding-left:.5rem;padding-right:.5rem}
+  .card{padding-left:.75rem;padding-right:.75rem}
+  .figbox,.panel{padding-left:.5rem;padding-right:.5rem}
+  .top .in{padding-left:.5rem;padding-right:.5rem}
+  /* ══════════════════════════════════════════════════════════
+     🔴🔴 390px で SVG の文字だけを大きくする（★2026-08-27 #17。→§5-18）
+     ★★根拠（実測）
+       ・390px では SVG の表示幅が 330px（figbox の中）／348px（figbox の外）
+       ・viewBox 560 の図はここで 0.589倍・0.621倍になる
+         → font 13 が【7.66px】／font 14 が【8.25px】＝読めない
+       ・viewBox 300 の図は 1.1倍なので font 10〜13 のままで 11〜14.3px＝読める
+         → ★★だから【560幅の図だけ】を上げる（p2 / p2b / p2m / p2na / p2nb は対象外）
+     ★★なぜ CSS で上げられるのか（実測）
+       SVG の font-size は【プレゼンテーション属性】なので CSS が勝つ。
+       ★属性 13 のまま computed 17px になることを実ブラウザで確認した（!important 不要）
+       → ★viewBox を作り直さずに済む。★PC 側（@media の外）は 1px も変わらない
+     ★★viewBox 400 に作り直す案を採らなかった理由（実測）
+       1280px では表示幅 694px なので viewBox 400 だと 1.735倍。
+       → ★font 13 が【22.6px】になって PC が壊れる。★倍率は1つしか持てない
+     ★17px にした理由：17 × 0.589 ＝ 10.0px（★7px の禁止線の上に 3px 積む）
+     ══════════════════════════════════════════════════════════ */
+  /* 🔴 2026-08-29 A（#24）：#eFig と #logFig は問5 の作り直しで【消えた図】なので指定も外した
+     （★どちらも HTML に該当する id が無い。★死んだ指定を残すと「まだある図」と誤読される） */
+  #p1 text,#p3 text,#p4 text,#p5 text,#p2d text,#mvFig text,#p2b text{font-size:21px}
+  /* 🔴🔴🔴🔴 2026-09-10 記録担当【★自分の誤りと その始末】──
+     ★会話の中の図1枚（★倍率0.7・11.83px。★12px に 0.17px 足りない）を上げようとして
+       ★★.fg svg text{font-size:18px} と書きました。
+     ★★★これは【広すぎました】── ★.fg の中には
+       ⒜ 入れ子図（dg・24単位・14.91px）⒝ 別の図2枚（24・27単位・13.8/15.52px）も入っており、
+       ★★★元から十分だった3枚を【18単位に下げて 10.35〜11.19px にしてしまいました】。
+     → ★★規則を【取り消しました】。★この1枚は 11.83px のまま残します。
+     ★★★★残す理由 ── ★12px に 0.17px 足りないだけで、★★下げてしまう害の方が大きい。
+       ★狙って上げるには この svg に名前を付ける必要があり、
+       ★JS の文字列（CV の f 行）の中なので【文言と構造を触ることになります】。
+       ★★公開が今日なので、★安全側に倒しました。
+     ⚠️★★★教訓 ──【広いセレクタで上げると、上げる必要のない図を下げる】。
+       ★上げる前と後の両方を測って、★★下がった図が無いことを確かめること。 */
+  /* ══════ 会話（→ .cv）★スマホは顔を小さくして横幅を吹き出しに回す ══════ */
+  /* 🔴 2026-09-06：★スマホでアイコンを 38px に縮める指定を【消した】（★記事はスマホでも 46px）。
+     ★★この2行は、同じ <style> の後ろにある .cl .ic{46px} / .cl{gap:.75rem;margin:0 0 .85rem} に
+       ★同じ詳細度で【後勝ちされていて、すでに効いていませんでした】（★実測 ic 46px・gap 12px）。
+     → ★消しても見た目は1pxも動きません。★死んだ規則を残すと次の担当が誤読します */
+  /* 🔴 2026-09-02 1問1ページ担当：★A の【戻さないこと】に反するので外した ── .cl .bb{font-size:14.5px;padding:.55rem .75rem;line-height:1.8} */
+  .cast2{padding:.7rem .75rem}
+  .cast2 .ic{width:46px;height:46px}
+  .cast2 .row{gap:.6rem}
+  /* 🔴 2026-09-07 A：★.cast2 .tx2 の 13px/1.8 を外した ── ★これがスマホで
+     ★★登場人物の紹介が 13px のままだった原因（★common.css の 16.6px を後勝ちで潰していた）。
+     → ★山田様「記事と同じサイズって言っただろ」「行間も記事に合わせろよ」（2026-09-07） */
+  /* ══════════════════════════════════════════════════════════
+     🔴🔴 2026-08-28 山田様の FB：「ボタン押すと5点とも全部グラフで動くやつめっちゃいい
+       んだけど、画面で距離がありすぎて、スマホだとその押してグラフが連動する動きが
+       見えないと思うのよ」
+     → ★★図を画面の上に【貼り付ける】（position:sticky）。★スクロールしても図が残る
+     ★★根拠（390px の見積り）問4 は 図の高さ 約205px、その下に並ぶものが約700px
+        ＝ [1歩ずつ] は図の下端から約500px 下。★押せる位置では図が画面外だった
+     🔴🔴🔴 2026-08-29：★★.stick / .stickbot の定義は @media の【外】に移した。
+       ★理由は山田様の FB「PCのほうもスマホと同様の処置をやってくれないか」（→上の svg の下）。
+       ★★ここに残していた同じ定義は【消した】（★2か所にあると片方を直したときに食い違う）
+     ✗ 問2 には .stick を入れていない ── ★★地図は .two（flex）の中の【最後の項目】だったので
+       貼り付く余地が無く、つまみ・ボタンは .two の外にあるため効かなかった。
+       ★★2026-08-29 に .two は解体したが、問2 は .stickbot（下に貼る）で解決しているので変えない
+     ══════════════════════════════════════════════════════════ */
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   🆕 2026-08-30【対話版】会話の見た目
+   ★★方針：★解説文を【物語】に置き換える。★つまみを動かすところ以外は 全部 2人のやり取り
+     ⑴ 各問は  開幕（何を・なぜ）→ 操作 → 解説 → 締め（キーメッセージ） の順
+     ⑵ ★折りたたまない。★会話が本文なので、押させたら読まれない
+     ⑶ 顔は【本物の絵】を使う（assets/av-doc.png / av-marky.png を 150px に縮めて base64 で埋め込み）
+        ★ファイル単体で動く（file:// で開いても顔が出る）
+   ★吹き出し ── 学＝青／博士＝琥珀。★角丸と尻尾を付けた（★コミカルさは ここで出す）
+   ══════════════════════════════════════════════════════════════════════════ */
+/* ── 登場人物の紹介（★冒頭に1回だけ）── */
+.cast2{border:1px solid var(--gray-200);background:var(--gray-100);
+  padding:1rem 1.1rem;margin:0 0 2.4rem}
+.cast2 .row{display:flex;gap:.9rem;align-items:flex-start}
+.cast2 .row+.row{margin-top:.9rem;padding-top:.9rem;border-top:1px solid var(--gray-200)}
+.cast2 .ic{width:54px;height:54px;border-radius:50%;flex-shrink:0;display:block;
+  border:2px solid var(--white);box-shadow:0 0 0 1px var(--gray-200),0 1px 3px rgba(0,0,0,.10)}
+.cast2 .nm2{display:block;font-size:18px;line-height:1.5;font-weight:700;margin-bottom:.2rem}
+.cast2 .rb{font-size:14px;font-weight:400;color:var(--gray-500);margin-left:.45rem}
+.cast2 .tx2{font-size:16.6px;line-height:1.831;color:var(--gray-600)}
+.cast2 .tx2 b{color:var(--black)}
+.cv{margin:1.6rem 0}
+.cl{display:flex;gap:.75rem;align-items:flex-start;margin:0 0 .85rem}
+.cl .ic{width:46px;height:46px;border-radius:50%;flex-shrink:0;display:block;
+  border:2px solid var(--white);box-shadow:0 0 0 1px var(--gray-200),0 1px 3px rgba(0,0,0,.10)}
+.cl .bb b{color:var(--black)}
+.cl .bb:before{content:'';position:absolute;left:-6px;top:15px;width:10px;height:10px;
+  background:inherit;border-left:1px solid;border-bottom:1px solid;border-color:inherit;
+  transform:rotate(45deg)}
+/* 🔴 2026-09-02 A：★★博士＝青／学＝オレンジ に入れ替えた（★アイコンの背景色に合わせた）
+   ★山田様「今フォントとか吹き出しが 博士がオレンジで学が青じゃん。画像はもとの
+     博士青、高校生オレンジでいいから、フォントの方を逆にしてよ」（2026-09-02）
+   ✗✗ 戻さないこと。★★common.css だけ直しても【各ページの style が後勝ちで効かない】 */
+.cl.m .bb{background:#fff7ea;border-color:#efd6a6}
+.cl.d .bb{background:#eef4fa;border-color:#c3d9ee}
+/* 🔴 2026-09-06：★font-size:11.5px を外した ── ★.cl .av .nm と同じ要素に当たり、
+   ★詳細度で負けていて【効いていなかった】（★実測 10.5px）。★話者名の大きさは common.css の
+   ★.cl .av .nm{font-size:14px} が持つ。★この規則は色と margin のためだけに残す */
+.cl .nm{display:block;font-weight:700;letter-spacing:.07em;margin-bottom:.15rem}
+.cl.m .nm{color:#b0700c}   /* 🔴 学 → オレンジ */
+.cl.d .nm{color:#2f6fb5}   /* 🔴 博士 → 青 */
+/* ★キーメッセージの帯（★締めの直前に置く。★「ここが今日の1行」と分かるようにする） */
+.keyh{font-size:11.5px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--gray-500);margin:1.6rem 0 .5rem}
+</style>
+</head>
+<!-- 🔴🔴🔴🔴 2026-09-10 記録担当：★★★★問1 は【上下2分割をやめました】（★山田様のご判断）
+     ★★山田様「現状公開版ってグラフだけ固定して下のズレのバーまで固定が続いて
+       あと対話は下に流れていくじゃん、もうこれでいいんじゃない？ 分割無しで」（2026-09-10）
+     ★★★理由（★山田様のご指摘）── ★問1 は【ずれの式が縦長】です。
+       ★「こんな縦長な範囲を二分割の上半分にやったら その中で動きの全体が見えないのよ」
+       ★★つまり 分割しても 上の枠に式が入りきらず、★分割の利点が出ません。
+     ★★元の形（★グラフを貼り付け、ずれのバーまで固定が続き、会話は下へ流れる）で足ります。
+     ⚠️★★★data-split を外すと common.js の分割の処理が【何もしません】（★先頭で戻ります）。
+       ★これで .stick の貼り付きが元どおり効きます。
+     ★★入れ物の div（q01top / q01talk）は【残してあります】── ★消すと会話の位置が変わるためです。
+       ★名前だけ残っていても 何の働きもしません -->
+<body>
+
+<div class="top"><div class="in">Deep Black Box<span class="tag">Open up the black box of AI one problem at a time, with your own hands. 21 problems in all.</span></div></div>
+<div class="wrap">
+
+<!-- 🔴 2026-09-02 1問1ページ担当：★進み具合の帯（全21問）＋いま何章か -->
+<div class="prog">
+ <div class="steps" id="steps"></div>
+ <div class="cnt" id="prog_cnt"></div>
+</div>
+<div class="chap" id="chap"></div>
+<div id="nest"></div>
+
+<!-- 🔴🔴🔴 2026-09-09 A：★★★章の表と、この章の折りたたみ（★山田様の指示 2026-09-09）
+     ★「これの 章／章題／中身 を入れた方がいいんじゃないん。入れ子図の下に。
+       そして折りたたみの詳細を、その折りたたみのまま各章 該当するところに一つずつだけ入れたら」
+     ★★中身は common.js の CHTAB / CHDET（★トップページから機械で写したもの）
+       → ★文言を直すときは index.html を直して A121_chapdesc.py を流し直す -->
+<div id="chaptab"></div>
+<div id="chapdet"></div>
+<div id="cast2"></div>
+
+<!-- ══════════════════ c1 ══════════════════ -->
+<div class="card" id="c1">
+<div class="tagline">Question 1</div>
+<h2>Turn two knobs by hand</h2>
+<div id="d1a"></div>
+<!-- 🔴🔴🔴 2026-09-09 A：★★★見出しと図に【入力】【出力】を入れた（★山田様の指示 2026-09-09）
+     ★★山田様「箱って俺はわからんぞ。箱は箱だ。抽象的すぎる」
+       「左から数を入れると、右から数が出てくる ── 入力、出力って言葉使って欲しいな」
+     ★★★「箱」も「関数」も どちらも抽象語です（→§2-15③）。
+       ★語を別の語に置き換えても解決しないので、★★【何が入って何が出るか】を書きました。
+     ★会話（d1a）の言葉と図のラベルを【同じ言葉】に揃えています -->
+<!-- 🔴🔴🔴 2026-09-09 A：★★★文字の矢印（→）をやめて【SVG の図】にした（★山田様の指示 2026-09-09）
+     ★山田様「ここも AA じゃなくて、お前がさっき作った二つの図みたいにカッコよく書いてくれないか」
+     ★★上の2枚（入力 → ？ → 出力）と【同じ色・同じラベルの形】に揃えています ──
+       入力の枠 #f6fafd/#7ea9d4（青）／ 中の枠 白・黒 2.4px ／ 出力の枠 #fffaf0/#dcae5c（オレンジ）
+     ★★★横並びにしなかった理由 ── ★390px では幅が足りません（★見積り）：
+       「勉強した時間」6em＋式 8.8em＋「テストの点数」6em ＝ 20.8em。
+       ★27単位だと 562単位で、★viewBox 560 に矢印も枠の余白も入りません。→ ★縦積みにしました
+     ★文字は27単位＝実効 15.5px（★本文16.6px に合わせて描画幅から逆算） -->
+<div class="box">
+ <div class="h">What we are about to build</div>
+ <div class="fg"><svg viewBox="0 0 400 280" role="img"
+   aria-label="The input, hours studied, goes through y = a x hours + b and comes out as the output, the test score">
+  <rect x="40" y="4" width="320" height="70" rx="6" fill="#f6fafd" stroke="#7ea9d4" stroke-width="1.6"/>
+  <text x="52" y="26" font-size="17" font-weight="700" font-family="Inter,system-ui,sans-serif" fill="#666">Input</text>
+  <text x="200" y="58" font-size="24" text-anchor="middle" font-family="Inter,system-ui,sans-serif" fill="#1a1a1a">Hours studied</text>
+  <line x1="200" y1="80" x2="200" y2="96" stroke="#9a9a9a" stroke-width="2.2"/>
+  <polygon points="200,106 193,94 207,94" fill="#9a9a9a"/>
+  <rect x="8" y="110" width="384" height="56" rx="6" fill="#fff" stroke="#1a1a1a" stroke-width="2.2"/>
+  <text x="200" y="146" font-size="24" text-anchor="middle" font-family="ui-monospace,SFMono-Regular,Menlo,monospace" fill="#1a1a1a">y = a &#215; hours + b</text>
+  <line x1="200" y1="172" x2="200" y2="188" stroke="#9a9a9a" stroke-width="2.2"/>
+  <polygon points="200,198 193,186 207,186" fill="#9a9a9a"/>
+  <rect x="40" y="202" width="320" height="70" rx="6" fill="#fffaf0" stroke="#dcae5c" stroke-width="1.6"/>
+  <text x="52" y="224" font-size="17" font-weight="700" font-family="Inter,system-ui,sans-serif" fill="#666">Output</text>
+  <text x="200" y="256" font-size="24" text-anchor="middle" font-family="Inter,system-ui,sans-serif" fill="#1a1a1a">Test score</text>
+ </svg></div>
+</div>
+<div id="d1b"></div>
+
+<!-- 🔴🔴 2026-08-28 山田様の FB：「PCで画面が広いから一気に見れるが、スマホだったら
+     つまみとグラフが離れてて見ながら動かせない気がする」
+     → ★★グラフとつまみを【同じ .panel】に入れた（→§2-2 の徹底） -->
+<!-- 🔴🔴🔴 2026-09-09 展開担当：★★★上下2分割の【上の枠】（★図＋つまみ＋ボタン＋ずれ）
+     ★★出所：段A の表（検証ツール/split_2026-09-09/段A_2分割の4つの値.md）
+     ★★★決定1 ── 上に置く図は【1枚】。
+     ★common.css / common.js が持つ部品で動きます（★このページに link も script も足しません） -->
+<div id="q01top">
+<div class="panel">
+ <!-- 🔴 2026-08-28：★問1 も図を上に貼り付ける。★つまみの下に数式（resEq）があるので
+      ★390px では図・つまみ・数式が同時に見えない -->
+ <div class="stick"><svg id="p1" viewBox="0 0 560 330"></svg></div>
+ <div class="cap" style="margin:.2rem 0 .5rem"><b style="color:#c00">Red lines</b>
+  = the <b>vertical gap</b> between each dot and the line. Each length becomes one term in the formula below</div>
+<div class="ctl">
+ <label for="b1"><span>Knob <b>b</b> &nbsp;height of the line (the score at 0 hours)</span><span class="n" id="b1v">0</span></label>
+ <input type="range" id="b1" min="0" max="60" step="1" value="0">
+</div>
+<div class="ctl">
+ <label for="a1"><span>Knob <b>a</b> &nbsp;slope of the line (points gained per hour)</span><span class="n" id="a1v">0.0</span></label>
+ <input type="range" id="a1" min="0" max="150" step="1" value="0">
+</div>
+ <!-- 🆕 対話版：★この1行（a は白い丸を軸に回る／b は線ごと上下）は 下の会話 d2 に移した -->
+
+ <!-- 🔴🔴 2026-08-28 山田様の FB：「ズレってのが何か、図解付きで簡単に教えて欲しい」
+      → ★問1 に足した。★つまみと連動して動く
+      🔴🔴 2026-08-28 #22：★★つまみ b1/a1 が【2組あって id が重複】していた（下の組は死んでいた）。
+      → resFig を p1 と同じ .panel に取り込み、重複した2本を削除した（→§2-2） -->
+
+ <!-- 🔴🔴🔴🔴 2026-09-10 記録担当：★★★★ずれのバーを【式より前】に移しました（★山田様のご指示）
+      ★★山田様「ずれの式とズレのバーだけ順番逆にして欲しい」
+        「これがずれのバーの上にあってすごく邪魔」（2026-09-10）
+      ★★★直す前の並び ── 図 → つまみ →【式（縦長・8行）】→ ずれのバー → 判定
+        ★つまみを動かして いちばん見たいのは【ずれの数字とバー】ですが、
+        ★★そのあいだに8行の式が挟まっていて、★★★つまみとバーが同時に見えませんでした。
+      ★★★直した並び ── 図 → つまみ →【ずれのバー】→ 式 → 判定
+        ★式は「なぜその数になるのか」を見せる補足なので、★バーの後ろで足ります。
+      ★★式は今までどおり つまみと連動して動きます（★中身は1文字も変えていません） -->
+ <div class="gauge">
+  <div class="row"><span class="big" id="e1">–</span><span class="u">points = error
+   (students with a longer <b style="color:#c00">red line</b> count for more)</span></div>
+  <div class="gtrack"><span class="gfill" id="g1" style="width:100%"></span>
+   <span class="gmark" id="m1"></span></div>
+  <div class="gcap"><span>0 (exact)</span><span>goal 3.0 &uarr;</span><span>30</span></div>
+ </div>
+
+ <!-- 🔴🔴 2026-08-28 山田様の FB：「ああいう数式出せばいいじゃん」→ ★★数式そのものを出す -->
+ <div class="calc" id="resEq" style="margin:.6rem 0 0"></div>
+</div>
+
+</div><!-- /#q01top -->
+
+<div class="verdict" id="j1">Turn the two knobs until the red lines get short.
+ <b>It goes faster if you shorten the longest line first.</b></div>
+
+<!-- ★★下の枠 ── ★会話。★独立してスクロールします -->
+<div id="q01talk">
+<div id="d2"></div>
+</div><!-- /#q01talk -->
+
+<div id="r1" class="hide">
+ <div id="d3"></div>
+ <div class="keyh">What to take away</div>
+ <div class="verdict ok">
+  <b>What you just did is what &ldquo;learning&rdquo; means.</b> An AI does the same thing;
+  the only difference is that it has <b>175 billion knobs</b>.
+ </div>
+</div>
+<div class="src">
+ <div class="h">Where this pays off</div>
+ <b>An AI takes one input and returns one output.</b> Inside, it multiplies and adds, and what changes are the numbers on the knobs.
+ <!-- 🔴🔴 2026-09-09 A：★★★出典を【削除しました】（★山田様の指摘 2026-09-09）
+      ★山田様「本当にこの問題に関連する論文がこれ？ 適当じゃない？」
+      ★★Table 2.1 は GPT-3 の【モデルサイズ表】で、支えるのは規模の話です。
+        ★この文（入力1つ・出力1つ・掛け算と足し算）は【規模の話ではありません】。
+      ★★★§2-14 ⑶「原典があるものだけ論文名を書く。無いものは何も書かない」に反していました。
+        ★前任が付けたものを、私が丁寧に整えてしまいました（★自己申告） -->
+</div>
+</div>
+
+<!-- 🔴 2026-09-02 1問1ページ担当：★戻る／次へ（★どのページでも常に押せる） -->
+<!-- ══════════════════════════════════════════════════════════════════════════
+     🔴 2026-09-02 1問1ページ担当2代目【新設・受け皿】★★問4 のつまみ数ボタン k2〜k5
+     ★理由 ── 原本の bind 行 [2,3,4,5].forEach(n=>$('k'+n).onclick=()=>setK(n)); が
+       このページでは $('k2') が null になり、★★TypeError でこの行より後ろが全部 止まっていた
+       （★図が空・会話が出ない状態だった）。★q03 は pass3() の setK(2) でも踏む
+     ★★.offpage（display:none）に置くだけ。★ゲーム本体の JS は1バイトも触っていません
+     ══════════════════════════════════════════════════════════════════════════ -->
+<div class="offpage" aria-hidden="true">
+ <button id="k2" type="button">2</button><button id="k3" type="button">3</button>
+ <button id="k4" type="button">4</button><button id="k5" type="button">5</button>
+</div>
+
+<div id="nav"></div>
+
+<div id="foot"></div>
+</div>
+
+
+<script src="common.js"></script>
+<script>
+/* ══════════════════════════════════════════════════════════════════════════
+   🔴 2026-09-02 1問1ページ担当2代目：★★下は原本 tsume-00 の <script> から
+     【この問が使う行だけ】をそのまま写したものです。★1文字も変えていません（★行を落としただけ）
+   ★★IIFE で包んだ理由 ── 原本の const $ / const show / const T が common.js の同名 const と
+     ぶつかって【SyntaxError でページ全体が動かなくなる】ため。★包んだだけで中身は変わりません
+   ★★mark() だけは common.js のものを使います（★帯が5章グループに変わったため。→ 指示⑶）
+   ══════════════════════════════════════════════════════════════════════════ */
+var QBASE = 0;
+drawProg(1); drawChap(1, "");
+/* 🔴 2026-09-02 1問1ページ担当2代目：★「戻る」を index.html に張り替えました（★もとは null） */
+drawNav(["index.html","Home"], ["q02.html","Problem 2: Walk downhill"]);
+drawNest("nest", 1);
+drawChapTab(1); drawChapDet(1);
+drawCast("cast2");
+drawFoot()   /* 🔴 2026-09-02 A：★注記を消した（★山田様。★同じ一文が21回出るのは型3／§2-6 の言い訳）*/;
+
+(function(){
+/* 🔴 2026-09-02 1問1ページ担当2代目：★★【受け皿】── この問には無い
+     【他の問の関数】を空にしておきます。★これが無いと ReferenceError になります。
+   ★★呼んでいる側（原本の関数）は1文字も変えていません */
+if (typeof s4clear === 'undefined') var s4clear = function(){};
+if (typeof slid4 === 'undefined') var slid4 = function(){};
+if (typeof up2 === 'undefined') var up2 = function(){};
+if (typeof up4 === 'undefined') var up4 = function(){};
+
+/* ══════════════════════════════════════════════════════════════
+   共通
+   ★x 軸は 0 から描く。★y=ax+b は x=0 を軸に回るので、軸が画面外にあると
+     ★「a を動かすと上下にも動く」ように見えてしまう
+   ══════════════════════════════════════════════════════════════ */
+const $=id=>document.getElementById(id);
+const show=id=>$(id).classList.remove('hide');
+const rmseOf=(X,Y,f)=>Math.sqrt(X.reduce((s,x,i)=>s+(f(x)-Y[i])**2,0)/X.length);
+/* ★★画面に出す桁に丸めてから判定する。★でないと「表示 3.00 なのに未達」が起きる
+   ★確認済み：丸めずに判定すると 問4で42件・問5で240件 食い違う（→§2-3 と同じ型） */
+const R2=v=>+v.toFixed(2);
+function gauge(fillId,markId,val,goal,max){
+  const g=$(fillId); g.style.width=Math.min(100,val/max*100)+'%';
+  g.classList.toggle('ok',val<=goal); $(markId).style.left=(goal/max*100)+'%';
+}
+/* 散布図
+   🔴🔴 2026-08-27 #17：390px で font を 17px に上げた（→@media）ので、
+     ★★軸名と目盛りが重なるようになった（＝§2 の「font を上げると型B が生まれる」）。
+     ★実測（390px・font 17）：x軸目盛りと x軸名が【−0.45px】＝重なっていた／
+       y軸目盛り「100」と y軸名「点数」が横に【0.59px】＝くっついて「100点数」に読めた
+     → ⑴ グラフの上端 y1 を 26 → 48 に下げ、★y軸名を【固定の y=20】に置いた
+          （★軸名を y1 基準にすると y1 を下げたとき軸名も下がって元に戻ってしまう）
+       ⑵ x軸名を y0+40 → y0+52 へ
+       ⑶ 下の余白 y0 を H−50 → H−64 へ
+       ⑷ viewBox の高さを 300 → 330 に増やした（★グラフの縦を元と同じだけ確保するため）
+     ★font 17 の行の高さは実測で約 33 viewBox単位（Noto Serif JP の ascent が大きい）。
+       ★これを見込んで隙間を 8 単位以上（390px で 4.6px 以上）取っている */
+function plot(el,X,Y,xr,yr,f,opt){
+  opt=opt||{}; const W=el.viewBox.baseVal.width||560, H=el.viewBox.baseVal.height||330;
+  const P={x0:opt.narrow?42:52, y0:H-64, x1:W-20, y1:48};
+  const sx=v=>P.x0+(v-xr[0])/(xr[1]-xr[0])*(P.x1-P.x0);
+  const sy=v=>P.y0+(v-yr[0])/(yr[1]-yr[0])*(P.y1-P.y0);
+  let s='';
+  for(let v=yr[0];v<=yr[1];v+=opt.ystep||20){
+    s+=`<line x1="${P.x0}" y1="${sy(v)}" x2="${P.x1}" y2="${sy(v)}" stroke="#ececec"/>`;
+    /* 🔴 2026-08-27 #17：x0−7 だと、原点で y軸の「0」と x軸の「0」が横に 0.96px で並び
+       ★390px で「0 0」が1つの数に読めた（＝04 の A-3 と同じ型）。★x0−12 で 3.9px に */
+    s+=`<text x="${P.x0-12}" y="${sy(v)+4}" text-anchor="end" font-size="13" fill="#6e6e6e"
+         font-family="Inter">${v}</text>`;}
+  for(let v=xr[0];v<=xr[1];v+=opt.xstep||1){
+    s+=`<text x="${sx(v)}" y="${P.y0+17}" text-anchor="middle" font-size="13" fill="#6e6e6e"
+         font-family="Inter">${v}</text>`;}
+  s+=`<line x1="${P.x0}" y1="${P.y0}" x2="${P.x1}" y2="${P.y0}" stroke="#000"/>`;
+  s+=`<line x1="${P.x0}" y1="${P.y0}" x2="${P.x0}" y2="${P.y1}" stroke="#000"/>`;
+  /* ★★軸名は目盛りの行（y0+17）から離す。★font 17（390px）の行の高さは約33単位あるので
+     ★y0+40 では重なった（実測 −0.45px）。★y0+52 で隙間 8単位＝390px で 4.6px */
+  s+=`<text x="${P.x1}" y="${P.y0+52}" text-anchor="end" font-size="13" fill="#3f3f3f"
+       font-family="'Noto Serif JP',serif">${opt.xlab||''}</text>`;
+  /* ★★y軸名は【固定の y=20】に置く。★y1 基準にすると y1 を下げても一緒に下がってしまう。
+     ★目盛りのいちばん上（y1+4＝52）との縦の隙間が 8単位＝390px で 4.6px 取れる
+     ★横だけで逃げようとすると「100」と「点数」が 0.59px で並んで1語に読める（実測） */
+  s+=`<text x="${P.x0-6}" y="20" font-size="13" fill="#3f3f3f"
+       font-family="'Noto Serif JP',serif">${opt.ylab||''}</text>`;
+  if(f){
+    let d='';
+    for(let i=0;i<=140;i++){const v=xr[0]+(xr[1]-xr[0])*i/140;
+      const yy=Math.max(yr[0]-200,Math.min(yr[1]+200,f(v)));
+      d+=(i?'L':'M')+sx(v).toFixed(1)+' '+sy(yy).toFixed(1);}
+    s+=`<clipPath id="cp${el.id}"><rect x="${P.x0}" y="${P.y1}" width="${P.x1-P.x0}"
+         height="${P.y0-P.y1}"/></clipPath>`;
+    s+=`<path d="${d}" fill="none" stroke="#019949" stroke-width="2.2"
+         clip-path="url(#cp${el.id})"/>`;
+    X.forEach((x,i)=>{ s+=`<line x1="${sx(x)}" y1="${sy(Y[i])}" x2="${sx(x)}"
+      y2="${sy(Math.max(yr[0]-20,Math.min(yr[1]+20,f(x))))}" stroke="#c00" stroke-width="1.8"
+      opacity=".85" clip-path="url(#cp${el.id})"/>`;});
+    /* ★★b の白丸を【先に】描く。★理由：下の赤い数字が b のラベルを避けられるようにするため */
+    let USED=[];                                /* ★もう文字を置いた場所（避けるため）*/
+    /* ★★PAD＝5単位。★390px では 5×0.5893＝2.9px。★型H（重ならないが読めない）を防ぐ */
+    const PAD=5;
+    if(opt.pivot!=null && xr[0]<=0){
+      const F=17;
+      s+=`<circle cx="${sx(0)}" cy="${sy(opt.pivot)}" r="5.5" fill="#fff" stroke="#019949"
+           stroke-width="2"/>`;
+      const bx=sx(0)+9, by=sy(opt.pivot)-8;
+      s+=`<text x="${bx}" y="${by}" font-size="13" fill="#019949"
+           font-family="Inter">b</text>`;
+      /* ★★余白 PAD を付けて持つ。★0 だと『重ならないが 0.30px で読めない』が出た（実測）*/
+      USED.push({x0:bx-PAD, x1:bx+0.28*F*2+PAD, y0:by-F*0.8-PAD, y1:by+F*0.2+PAD});
+    }
+    /* 🔴🔴 2026-08-28 山田様の FB：「縦のズレを、点数と勉強時間の2軸のグラフの各点に対して、
+         a と b でいじった直線からどれだけズレがあるか、グラフ上での視覚で表して欲しい」
+       → ★★赤い線の【長さ】をこのグラフに出す（★棒グラフ8本は削除した）
+       🔴🔴 置き場所の作り方（★2度 失敗して作り直した。★実測で捕まえた）
+         ✗ 1度目 x+8 に左揃え → 隣の列に食い込んで文字どうしが重なり、緑の線にも −0.44px
+         ✗ 2度目 点の x に中央揃え → 左端が【y軸の目盛り】に食い込み、【b のラベル】とも重なった
+         ✅ 3度目 ⑴ 緑の線は傾いているので、文字の x 区間の中での線の y の上端 lo・下端 hi を出す
+                  ⑵ 点から見て線の反対側に、em ボックス（font 17 で上 0.8em・下 0.2em）＋ 8単位
+                  ⑶ 枠に当たるなら端で寄せる／反対側へ倒す
+                  ⑷ ★★すでに置いた文字（b のラベル・他の数字）に当たるなら【出さない】 */
+    if(opt.resid) X.forEach((x,i)=>{
+      /* ★M＝線から取る余白。★8 だと 390px で 2.82px しか空かなかった（実測）→ 11 にした */
+      const F=17, ASC=F*0.8, DESC=F*0.2, M=11;  /* ★font は @media で 17px に上がる */
+      const yp=sy(Y[i]);
+      const hx=(xr[1]-xr[0])*0.045;             /* 文字の横幅ぶんの x（データ単位）*/
+      let lo=1e9, hi=-1e9;
+      for(let k=-1;k<=1;k++){ const yy=sy(f(x+hx*k)); if(yy<lo)lo=yy; if(yy>hi)hi=yy; }
+      const d=Math.abs(Y[i]-f(x));
+      let up = yp<=lo;                          /* 点が線より上（画面では y が小さい）*/
+      let ty = up ? Math.min(yp,lo)-M-DESC : Math.max(yp,hi)+M+ASC;
+      if(up && ty-ASC < P.y1+2){ up=false; ty=Math.max(yp,hi)+M+ASC; }
+      if(!up && ty+DESC > P.y0-2){ up=true;  ty=Math.min(yp,lo)-M-DESC; }
+      if(ty-ASC < P.y1+2 || ty+DESC > P.y0-2) return;
+      const txt=d.toFixed(1), half=0.28*F*txt.length;
+      let tx=sx(x), an='middle';
+      if(tx-half < P.x0+3){ tx=P.x0+3; an='start'; }
+      else if(tx+half > P.x1-3){ tx=P.x1-3; an='end'; }
+      const bx0 = an==='start'? tx : an==='end'? tx-half*2 : tx-half;
+      const box={x0:bx0-PAD, x1:bx0+half*2+PAD, y0:ty-ASC-PAD, y1:ty+DESC+PAD};
+      if(USED.some(u=>u.x0<box.x1 && box.x0<u.x1 && u.y0<box.y1 && box.y0<u.y1)) return;
+      USED.push(box);
+      s+=`<text x="${tx.toFixed(1)}" y="${ty.toFixed(1)}" text-anchor="${an}"
+           font-size="13" fill="#c00" font-family="Inter" paint-order="stroke"
+           stroke="#fff" stroke-width="3.5"
+           stroke-linejoin="round">${txt}</text>`;});
+  }
+  X.forEach((x,i)=>{ s+=`<circle cx="${sx(x)}" cy="${sy(Y[i])}" r="4.2" fill="#000"/>`;});
+  /* ★折れ目（動かせる節）を出す */
+  if(opt.anchors) opt.anchors.forEach((p,i)=>{
+    s+=`<circle cx="${sx(p[0]).toFixed(1)}" cy="${sy(p[1]).toFixed(1)}" r="6.5" fill="#ff8a2b"
+         stroke="#fff" stroke-width="2"/>`;
+    s+=`<text x="${sx(p[0]).toFixed(1)}" y="${(sy(p[1])-12).toFixed(1)}" text-anchor="middle"
+         font-size="13" fill="#c26100" font-family="Inter">${i+1}</text>`;});
+  el.innerHTML=s;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   問1 ── つまみ2個を手で回す（勉強時間 → 点数）
+   ★最良 a=6.762 / b=32.58（ずれ 1.28）。刻みでは 1.30。目標 3.0 は到達可能
+   ══════════════════════════════════════════════════════════════ */
+const X1=[0,1,2,3,4,5,6,7], Y1=[32,40,45,55,58,68,72,80];
+const XR1=[0,8], YR1=[0,100], GOAL1=3.0,
+      /* 🔴 resid＝赤い線の長さをグラフの中に出す（★問1 だけ） */
+      OPT1={xlab:'Hours studied',ylab:'Score',resid:true};
+let ok1=false;
+/* ══════════════════════════════════════════════════════════════
+   🔴🔴 2026-08-28：「ずれ」とは何かの図（→ 山田様の FB）
+   ★★8人ぶんの縦のずれ → 2乗して足して8で割る → √ → ずれ
+   ★数字は全部その場で計算する。★つまみと同時に動く
+   ══════════════════════════════════════════════════════════════ */
+function resFig(a, b) {
+  /* 🔴🔴 2026-08-28 山田様の FB：「縦のズレを、点数と勉強時間の2軸のグラフの各点に対して、
+       a と b でいじった直線からどれだけズレがあるか、グラフ上での視覚で表して欲しい」
+     → ★★棒グラフ8本を【削除】した（★上の p1 と同じ数字を抽象化して並べただけ＝型3）。
+     → ★★赤い線の長さは p1 の中（点の外側）に出す（→ plot の opt.resid）。
+     → ★★「2乗して足して8で割る」「√ で元の単位に戻す」の言葉も削除した。
+        ★同じことを数式が言っている（→山田様⑻「ああいう数式出せばいいじゃん」）
+     ★この関数の役目は【数式だけ】になった */
+  const d = X1.map((x, i) => a * x + b - Y1[i]);
+  const sq = d.reduce((s, v) => s + v * v, 0) / X1.length;
+  /* 🔴 390px で横に出ないよう 1行を短くし、8項は2行に折る
+     🔴🔴 2026-08-29 A（#24）：★★それでも実測で【中身455px / 枠328px】と 127px 溢れていた。
+       ★E の検査は input[type=range] の既定（.ctl 4px・.gtrack 2px）だけを見ていたので、
+         ★★この 127px は5本の報告のどこにも出ていない（★A が全要素を走査して見つけた）
+       → ★★問5 の式の箱と同じ直し方（1行を短くして段を増やす）にした。★横スクロールは読めない */
+  const sq1 = d.slice(0, 4).map(v => Math.abs(v).toFixed(1) + '²').join(' ＋ ');
+  const sq2 = d.slice(4).map(v => Math.abs(v).toFixed(1) + '²').join(' ＋ ');
+  $('resEq').textContent =
+     `error = \u221a( sum of (line - actual)\u00b2 \u00f7 8 )\n\n`
+   + `sum of (line - actual)\u00b2\n`
+   + `  ＝ ` + sq1 + `\n`
+   + `  ＋ ` + sq2 + `\n`
+   + `  ＝ ` + (sq * 8).toFixed(2) + `\n\n`
+   + `error = \u221a( ` + (sq * 8).toFixed(2) + ` \u00f7 8 )\n`
+   + `      = \u221a ` + sq.toFixed(2) + ` = ` + Math.sqrt(sq).toFixed(2) + ` points`;
+}
+function up1(){
+  const a=(+$('a1').value)/10, b=+$('b1').value;
+  $('a1v').textContent=a.toFixed(1); $('b1v').textContent=b;
+  const f=x=>a*x+b, e=rmseOf(X1,Y1,f);
+  resFig(a, b);
+  plot($('p1'),X1,Y1,XR1,YR1,f,Object.assign({pivot:b},OPT1));
+  $('e1').textContent=e.toFixed(2); gauge('g1','m1',R2(e),GOAL1,30);
+  const ok=R2(e)<=GOAL1;
+  $('j1').className='verdict'+(ok?' ok':'');
+  $('j1').innerHTML = ok ? `Error <b>${e.toFixed(2)}</b>. You are there.`
+    : (e<=6 ? `Error <b>${e.toFixed(2)}</b>. <b>Close.</b> A little more.`
+      : `Error is <b>${e.toFixed(2)}</b> right now. The goal is 3.0 or less.`
+        /* 🆕 対話版：★「まず b、次に a」は 会話 d2 に移した（→ 同じことを2回言わない） */);
+  gate1Label();
+  if(ok&&!ok1) pass1();
+}
+function pass1(){ ok1=true; mark(0,'done'); show('r1'); show('c2'); buildMap(); up2(); }
+/* 🔴 ゲートは onchange で数える（→§5-2d の②） */
+let mv1=0;
+/* 🔴 2026-08-28：答えを入れるボタンを消したのでゲートは不要（★全問が最初から開いている） */
+function gate1Label(){}
+function gate1(){ mv1++; gate1Label(); up1(); }
+['a1','b1'].forEach(i=>{ $(i).oninput=up1; $(i).onchange=gate1; });
+
+/* ══════════════════════════════════════════════════════════════
+   問2 ── ずれの地形を下る（勾配降下）
+   ★★★地形図を描く。★これが無いと「1歩」に意味が出ない
+   ★★中心化していない素の (a,b) 空間で降下させる。★理由：
+     ★スライダーと同じ座標で地形を描くため／★★谷が細長いので実際のジグザグが見える
+   ★★ヘッセ行列の固有値は 36.42 / 0.577（条件数63）→ 発散しない学習率の上限 = 2/36.42 = 0.0549
+     ★確認済み：lr=0.005 は600歩で3.17／0.03 は175歩／0.05 は105歩／0.06 は発散
+   ══════════════════════════════════════════════════════════════ */
+const AR=[0,15], BR=[0,60], GOAL2=1.5, LRMAX=0.0549;
+const mseOf=(a,b)=>X1.reduce((s,x,i)=>s+(a*x+b-Y1[i])**2,0)/X1.length;
+const rm2=(a,b)=>Math.sqrt(mseOf(a,b));
+/* ★★初期値は a=3, b=20 に固定する。★解説の3箇所（∂L/∂b=−51.50・∂L/∂a=−219.75／
+     表の 739.00／赤枠の 44.98 対 50.03）が全部この位置の値なので、ここを変えると
+     ★★解説が実物と食い違い、しかも赤枠の主張が【逆】になる（a=1,b=52 では
+     同時115.45 対 順番110.49 で、順番のほうが良く見えてしまう）
+   ★★差が全部マイナスになるので「① 差が全部マイナス → b を上げる」も正しく発動する */
+let A2=3, B2=20, st2=0, ok2=false, div2=false, path=[[3,20]];
+let MAPBG='';   /* ★地形は変わらないので1回だけ作って使い回す */
+const MP={x0:44,y0:206,x1:288,y1:22};
+const mx_=a=>MP.x0+(a-AR[0])/(AR[1]-AR[0])*(MP.x1-MP.x0);
+const my_=b=>MP.y0-(b-BR[0])/(BR[1]-BR[0])*(MP.y0-MP.y1);
+function buildMap(){
+  if(MAPBG)return;
+  const NA=45, NB=30, w=(MP.x1-MP.x0)/NA, h=(MP.y0-MP.y1)/NB;
+  let lo=1e9, hi=0, V=[];
+  for(let i=0;i<NA;i++){V[i]=[];for(let j=0;j<NB;j++){
+    const e=rm2(AR[0]+(AR[1]-AR[0])*(i+0.5)/NA, BR[0]+(BR[1]-BR[0])*(j+0.5)/NB);
+    V[i][j]=e; if(e<lo)lo=e; if(e>hi)hi=e;}}
+  let s='';
+  for(let i=0;i<NA;i++)for(let j=0;j<NB;j++){
+    /* ★対数で色を割る（谷の外が急なので、線形だと谷が潰れて見えない） */
+    const t=(Math.log(V[i][j])-Math.log(lo))/(Math.log(hi)-Math.log(lo));
+    const R=Math.round(27+t*(245-27)), G=Math.round(42+t*(246-42)), B=Math.round(68+t*(250-68));
+    s+=`<rect x="${(MP.x0+i*w).toFixed(1)}" y="${(MP.y1+(NB-1-j)*h).toFixed(1)}"
+         width="${(w+0.7).toFixed(1)}" height="${(h+0.7).toFixed(1)}"
+         fill="rgb(${R},${G},${B})"/>`;}
+  /* 枠と目盛り */
+  s+=`<rect x="${MP.x0}" y="${MP.y1}" width="${MP.x1-MP.x0}" height="${MP.y0-MP.y1}"
+       fill="none" stroke="#000"/>`;
+  [0,5,10,15].forEach(a=>s+=`<text x="${mx_(a)}" y="${MP.y0+16}" text-anchor="middle"
+    font-size="10.5" fill="#6e6e6e" font-family="Inter">${a}</text>`);
+  /* 🔴 #17：x0−6 だと、原点で y軸の「0」と x軸の「0」が横に 2.95px で並ぶ（→plot() と同じ型）*/
+  [0,20,40,60].forEach(b=>s+=`<text x="${MP.x0-11}" y="${my_(b)+4}" text-anchor="end"
+    font-size="10.5" fill="#6e6e6e" font-family="Inter">${b}</text>`);
+  /* 🔴 ★軸名は目盛りの行（MP.y0+16）から離す。★+32 では 390px で 0.4px 触っていた（実測）
+     ★★これで plot / diffFig / arrows / fig5 と合わせて【型B は5か所すべて対処済み】 */
+  s+=`<text x="${MP.x1}" y="${MP.y0+40}" text-anchor="end" font-size="11.5" fill="#3f3f3f"
+       font-family="'Noto Serif JP',serif">knob a</text>`;
+  /* 🔴 2026-08-27 #17：y軸目盛り「60」と横に 2.2px しか離れていなかった（実測）。
+     ★上へ逃がすと viewBox の上へはみ出す（font 11.5 の ascent は 13.3単位、余白は 22単位）
+     → ★横へ 6単位ずらした（x0−4 → x0+2）。★隙間 8単位＝390px で 8.8px
+     ★ヒートマップは y1（22）から下なので、y=14 のこの行は図に乗らない */
+  s+=`<text x="${MP.x0+2}" y="${MP.y1-8}" font-size="11.5" fill="#3f3f3f"
+       font-family="'Noto Serif JP',serif">knob b</text>`;
+  /* 谷底 */
+  const bx=mx_(6.762), by=my_(32.58);
+  s+=`<path d="M${bx-6} ${by-6}L${bx+6} ${by+6}M${bx+6} ${by-6}L${bx-6} ${by+6}"
+       stroke="#fff" stroke-width="2.4"/>`;
+  MAPBG=s;
+}
+const ANC={2:{K:[2,11],H:[41,74]}, 3:{K:[2,6.5,11],H:[22,81,55]},
+           4:{K:[2,5,8,11],H:[24,59,84,49]},
+           5:{K:[2,4.25,6.5,8.75,11],H:[25,47,78,79,48]}};
+let K4=2, H4=[50,50], ok4=false;
+function setK(n){
+  const old=ANC[K4].K.slice(), oldH=H4.slice();
+  K4=n;
+  /* ★つまみの数を変えたとき、いまの形をなるべく引き継ぐ */
+  const f=x=>{ if(x<=old[0])return oldH[0];
+    if(x>=old[old.length-1])return oldH[oldH.length-1];
+    for(let i=0;i<old.length-1;i++) if(x<=old[i+1]){
+      const t=(x-old[i])/(old[i+1]-old[i]); return oldH[i]+(oldH[i+1]-oldH[i])*t; }
+    return oldH[oldH.length-1]; };
+  H4=ANC[n].K.map(k=>Math.round(f(k)));
+  [2,3,4,5].forEach(m=>$('k'+m).classList.toggle('on',m===n));
+  slid4(); up4();
+  /* ★つまみの数が変わったら、前の数でとった表は意味を失うので消す（→§5-9 の型D） */
+  /* 🔴 2026-08-28 #20：検証が「2→3→4個 に変えてもずれが 19.36 のままで壊れたと思った」と
+     報告した（→7巡目 詰まった箇所）。★正しい挙動（前の形を引き継ぐ）だが画面に説明が無かった */
+  s4clear(`Now using ${n} knobs. <b>The shape carries over</b>, so`
+   +` the error will not change until you set the heights. Press [One step].`);
+}
+[2,3,4,5].forEach(n=>$('k'+n).onclick=()=>setK(n));
+
+/* ══════ 起動（★この問のぶんだけ。★原本の起動行から他の問の呼び出しを落としました）══════ */
+up1();
+gate1Label();
+
+/* ══════ 会話（★原本の CV の写し。★この問のぶんだけ）══════ */
+var CV = {
+ "d1a": [
+  [
+   "m",
+   "Doc, I&rsquo;m here. You said today you&rsquo;d show me what is actually inside AI."
+  ],
+  [
+   "d",
+   "Manabu, good to see you! &hellip; <b>Fukai Manabu</b>. <i>Fukai</i> means deep, <i>manabu</i> means to learn. A fine name. I will keep saying it."
+  ],
+  [
+   "m",
+   "You&rsquo;ve said it. Several times."
+  ],
+  [
+   "d",
+   "Right, to business. Look at this first. On the left an <b>input</b>, on the right an <b>output</b>."
+  ],
+  [
+   "f",
+   "<svg viewBox=\"0 0 560 150\" role=\"img\" aria-label=\"An arrow runs from the input on the left into the middle, and from the middle to the output on the right\"><rect x=\"14\" y=\"46\" width=\"120\" height=\"58\" rx=\"6\" fill=\"#f6fafd\" stroke=\"#7ea9d4\" stroke-width=\"1.8\"/><text x=\"74\" y=\"38\" font-size=\"27\" font-weight=\"700\" text-anchor=\"middle\" font-family=\"Inter,system-ui,sans-serif\" fill=\"#1a1a1a\">Input</text><text x=\"74\" y=\"82\" font-size=\"27\" text-anchor=\"middle\" font-family=\"Inter,system-ui,sans-serif\" fill=\"#444\">1 number</text><line x1=\"140\" y1=\"75\" x2=\"206\" y2=\"75\" stroke=\"#9a9a9a\" stroke-width=\"2.4\"/><polygon points=\"218,75 204,67 204,83\" fill=\"#9a9a9a\"/><rect x=\"224\" y=\"36\" width=\"112\" height=\"78\" rx=\"6\" fill=\"#fff\" stroke=\"#1a1a1a\" stroke-width=\"2.4\"/><text x=\"280\" y=\"84\" font-size=\"40\" font-weight=\"700\" text-anchor=\"middle\" font-family=\"Inter,system-ui,sans-serif\" fill=\"#c0392b\">？</text><line x1=\"342\" y1=\"75\" x2=\"408\" y2=\"75\" stroke=\"#9a9a9a\" stroke-width=\"2.4\"/><polygon points=\"420,75 406,67 406,83\" fill=\"#9a9a9a\"/><rect x=\"426\" y=\"46\" width=\"120\" height=\"58\" rx=\"6\" fill=\"#fffaf0\" stroke=\"#dcae5c\" stroke-width=\"1.8\"/><text x=\"486\" y=\"38\" font-size=\"27\" font-weight=\"700\" text-anchor=\"middle\" font-family=\"Inter,system-ui,sans-serif\" fill=\"#1a1a1a\">Output</text><text x=\"486\" y=\"82\" font-size=\"27\" text-anchor=\"middle\" font-family=\"Inter,system-ui,sans-serif\" fill=\"#444\">1 number</text><text x=\"280\" y=\"138\" font-size=\"24\" text-anchor=\"middle\" font-family=\"Inter,system-ui,sans-serif\" fill=\"#666\">What is inside is what we look at next</text></svg>"
+  ],
+  [
+   "m",
+   "An input and an output?"
+  ],
+  [
+   "d",
+   "Put one number into the input and one number comes out of the output. <b>That is all it does.</b> In math this is called a <b>function</b>."
+  ],
+  [
+   "m",
+   "That&rsquo;s it? I was expecting more."
+  ],
+  [
+   "d",
+   "That is all. &hellip; But Manabu, <b>ChatGPT also has one input and one output.</b>"
+  ],
+  [
+   "m",
+   "Wait, what?"
+  ],
+  [
+   "d",
+   "The input is text. The output is <b>the next word</b>. The shape of the entrance and the exit is exactly the same. That is why we start here."
+  ],
+  [
+   "f",
+   "<svg viewBox=\"0 0 560 118\" role=\"img\" aria-label=\"ChatGPT takes text as its input and gives the next word as its output\"><rect x=\"8\" y=\"34\" width=\"152\" height=\"56\" rx=\"6\" fill=\"#f6fafd\" stroke=\"#7ea9d4\" stroke-width=\"1.8\"/><text x=\"84\" y=\"26\" font-size=\"27\" font-weight=\"700\" text-anchor=\"middle\" font-family=\"Inter,system-ui,sans-serif\" fill=\"#1a1a1a\">Input</text><text x=\"84\" y=\"70\" font-size=\"27\" text-anchor=\"middle\" font-family=\"Inter,system-ui,sans-serif\" fill=\"#444\">text</text><line x1=\"166\" y1=\"62\" x2=\"190\" y2=\"62\" stroke=\"#9a9a9a\" stroke-width=\"2.4\"/><polygon points=\"202,62 188,54 188,70\" fill=\"#9a9a9a\"/><rect x=\"208\" y=\"28\" width=\"84\" height=\"68\" rx=\"6\" fill=\"#fff\" stroke=\"#1a1a1a\" stroke-width=\"2.4\"/><text x=\"250\" y=\"70\" font-size=\"34\" font-weight=\"700\" text-anchor=\"middle\" font-family=\"Inter,system-ui,sans-serif\" fill=\"#c0392b\">？</text><line x1=\"298\" y1=\"62\" x2=\"322\" y2=\"62\" stroke=\"#9a9a9a\" stroke-width=\"2.4\"/><polygon points=\"334,62 320,54 320,70\" fill=\"#9a9a9a\"/><rect x=\"340\" y=\"34\" width=\"212\" height=\"56\" rx=\"6\" fill=\"#fffaf0\" stroke=\"#dcae5c\" stroke-width=\"1.8\"/><text x=\"446\" y=\"26\" font-size=\"27\" font-weight=\"700\" text-anchor=\"middle\" font-family=\"Inter,system-ui,sans-serif\" fill=\"#1a1a1a\">Output</text><text x=\"446\" y=\"70\" font-size=\"27\" text-anchor=\"middle\" font-family=\"Inter,system-ui,sans-serif\" fill=\"#444\">the next word</text></svg>"
+  ],
+  [
+   "m",
+   "So what are today&rsquo;s input and output?"
+  ],
+  [
+   "d",
+   "The input is <b>hours studied</b>. The output is <b>the test score</b>. That is the figure below."
+  ]
+ ],
+ "d1b": [
+  [
+   "d",
+   "We have the records of eight students. And there are only <b>two knobs</b>: <b>a</b> and <b>b</b>."
+  ],
+  [
+   "m",
+   "Only two? And that gets the scores right?"
+  ],
+  [
+   "d",
+   "Turn them and see. And Manabu, remember this: <b>turning those two knobs is what &ldquo;learning&rdquo; is.</b>"
+  ],
+  [
+   "m",
+   "Learning? You mean the AI studies?"
+  ],
+  [
+   "d",
+   "You will see. Turn them first."
+  ]
+ ],
+ "d2": [
+  [
+   "m",
+   "I turned them. But what are these <b>red lines</b>?"
+  ],
+  [
+   "d",
+   "The <b>vertical distance</b> between each dot and the line. Eight students, eight lines. That is how far the prediction missed. We call it the <b>error</b>."
+  ],
+  [
+   "m",
+   "There are eight lines, but the number below is just one."
+  ],
+  [
+   "d",
+   "We collapse them. <b>Square them, add them, divide by eight, take the square root.</b> The formula below does exactly that, every time you move a knob."
+  ],
+  [
+   "m",
+   "Ugh, that&rsquo;s fiddly. Why square them?"
+  ],
+  [
+   "d",
+   "Good question! Some students sit <b>above</b> the line and some <b>below</b>. What happens if you just add those up as they are?"
+  ],
+  [
+   "m",
+   "&hellip; Oh. They cancel out and you get <b>0</b>. Even though every prediction missed!"
+  ],
+  [
+   "d",
+   "Exactly! Square them and they are all positive. Now they can be added."
+  ],
+  [
+   "m",
+   "Couldn&rsquo;t you just take absolute values?"
+  ],
+  [
+   "d",
+   "Sharp. <b>That is a real measure too.</b> Squaring, though, weighs the one student you missed badly more heavily."
+  ],
+  [
+   "m",
+   "So which one is right?"
+  ],
+  [
+   "d",
+   "Both are right. <b>This problem chose squaring</b> &mdash; that is all. How the error is measured is <b>chosen by a person</b>. Remember that."
+  ],
+  [
+   "m",
+   "So there are two knobs. Which one do I turn first?"
+  ],
+  [
+   "d",
+   "They do different jobs. <b>b slides the whole line up and down. a pivots it around the white dot.</b>"
+  ],
+  [
+   "m",
+   "So I can take them one at a time. Set the height with b, then the slope with a."
+  ],
+  [
+   "d",
+   "That&rsquo;s it. And it goes faster if you <b>shorten the longest red line first</b>."
+  ]
+ ],
+ "d3": [
+  [
+   "m",
+   "Got it! The error dropped below 3.0."
+  ],
+  [
+   "d",
+   "<b>Well done, Manabu. What you just did &mdash; that is &ldquo;learning&rdquo;.</b>"
+  ],
+  [
+   "m",
+   "This? I only turned two knobs."
+  ],
+  [
+   "d",
+   "An AI is doing the same thing. <b>The only difference is that it has 175 billion knobs.</b>"
+  ],
+  [
+   "m",
+   "175 billion&hellip; turning those by hand would take years."
+  ],
+  [
+   "d",
+   "That is the next problem. <b>You cannot turn them by hand. So you make the machine turn them.</b>"
+  ]
+ ]
+};
+drawCV(CV);
+})();
+</script>
+</body>
+</html>
