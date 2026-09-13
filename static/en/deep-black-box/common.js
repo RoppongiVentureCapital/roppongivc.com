@@ -448,7 +448,12 @@ function drawRefs() {
       else out.push('Unregistered source: ' + keys[j]);   /* ★★間違いを黙って隠さない */
     }
     var head = e.getAttribute('data-head');
-    e.innerHTML = (head ? head + ' ' : '') + out.join(' ／ ');
+    /* 🔴🔴 2026-09-13 英語版担当3代目：★★全角の ／ を【英語の / に直した】。
+       ★出典を2件 並べたときの区切りです（★data-ref="vaswani2017|kaplan2020" の形）。
+       ★★前任は refs() の側（436行あたり）だけ直しており、★ここが残っていました。
+       ★★★問13 までは data-ref が1件だけだったので【読者に出ていませんでした】。
+         ★問14 に data-ref="vaswani2017|kaplan2020" があり、★ここが初めて出る問です（★実測で発見）。 */
+    e.innerHTML = (head ? head + ' ' : '') + out.join(' / ');
   }
   return es.length;
 }
