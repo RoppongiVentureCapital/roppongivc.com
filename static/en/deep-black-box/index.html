@@ -3,10 +3,20 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<!-- ★★★★2026-09-12 英語版担当：★英語版は【まだトップページだけ】なので noindex です。
-     ★21問と出口ページが揃ったら外します（★山田様のご指示を受けてから）。
-     ★日本語版23ページ（/deep-black-box/）は index,follow のまま。★1バイトも触っていません -->
-<meta name="robots" content="noindex,nofollow">
+<!-- 🔴🔴🔴🔴 2026-09-14 英語版担当5代目：★★★★noindex を外しました（★山田様のご承認）。
+     ★★外した条件はすべて揃いました ── ★23ページ全部 本番200 ／ ★トップの図2枚が英語版 ／
+       ★感想フォームが英語版 ／ ★用語を製品に統一（★problems / Problem N ／ Doc ／ Adam）。
+     ★★★canonical と og:url を入れた理由 ── ★/q13 と /q13.html の【両方が200を返す】ため、
+       ★住所が2つある状態でした（★実測）。★★日本語版23ページは元から canonical を持っています。
+     ★★hreflang は【日英を対にして3行】── ★形は記事側と同じ（ja / en / x-default。★x-default は日本語）。
+     ⚠️★★★日本語版23ページ側の hreflang は【サイト側が入れます】。★私は1バイトも触っていません。
+       ★★片方が noindex のまま hreflang を出すと矛盾するため、★外した連絡を受けてから入れる約束です -->
+<meta name="robots" content="index,follow">
+<link rel="canonical" href="https://www.roppongivc.com/en/deep-black-box/">
+<meta property="og:url" content="https://www.roppongivc.com/en/deep-black-box/">
+<link rel="alternate" hreflang="ja" href="https://www.roppongivc.com/deep-black-box/">
+<link rel="alternate" hreflang="en" href="https://www.roppongivc.com/en/deep-black-box/">
+<link rel="alternate" hreflang="x-default" href="https://www.roppongivc.com/deep-black-box/">
 <meta name="description" content="A free, browser-based course on how AI actually works. Drag the sliders and watch machine learning, deep learning, LLMs and a real Kaggle dataset in action, across 21 problems. Built at Roppongi Venture Capital's Agora program, out of a question raised by a bronze medallist at the International Olympiad in Artificial Intelligence (IOAI) 2025.">
 <meta property="og:title" content="Deep Black Box - How AI actually works, in 21 hands-on problems">
 <meta property="og:description" content="A free, browser-based course on how AI actually works. Drag the sliders and watch machine learning, deep learning, LLMs and a real Kaggle dataset in action, across 21 problems.">
