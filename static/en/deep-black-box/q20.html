@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<meta name="description" content="A column that was never in the table, built by a person - Problem 20 of Deep Black Box. Cut the title out of the name field and 40 boys come into view.">
+<meta property="og:title" content="Deep Black Box - Problem 20: a column built by a person (Chapter 5)">
+<meta property="og:description" content="A column that was never in the table, built by a person - Problem 20 of Deep Black Box. Cut the title out of the name field and 40 boys come into view.">
+<!-- 🔴🔴🔴🔴 2026-09-10 記録担当：★★★★共有したときの画像（★公開準備セッションの指示）。
+     ★★この2行は【23ページとも入っていませんでした】（★実測0件）。
+     ★★★入れる値は先方が確定させたものです ──
+       roppongivc.com/static/img/agora/r1/og-r1-game.jpg（★59KB。★案A＝白地・エンブレム左）。
+     ★★記事用（og-r1-article.jpg）とは【別のファイル】です。★記事側のものは触っていません。
+     ★値は絶対URLです（★OGP の決まり。★href の絶対パス禁止とは別の話です） -->
+<meta property="og:image" content="https://www.roppongivc.com/en/deep-black-box/og-deep-black-box-en.jpg">
+<meta name="twitter:image" content="https://www.roppongivc.com/en/deep-black-box/og-deep-black-box-en.jpg">
+<!-- 🔴🔴🔴🔴 2026-09-10 21:4x 記録担当：★★★★X（Twitter）で大きい絵にする1行（★公開準備セッションの依頼）。
+     ★★★og:image を入れても、★この1行が無いと【小さいカード】になります。
+     ★記事側は全13ページを summary → summary_large_image にしたとのことです（★先方の実測）。
+     ★★ゲーム23ページは【0件】でした -->
+<meta name="twitter:card" content="summary_large_image">
+<!-- 🔴🔴🔴🔴 2026-09-10 22:3x 記録担当：★★★★ブラウザのタブに出る絵（★公開準備セッションの依頼）。
+     ★★実測 ── ★23ページとも【0件】でした（★タブに絵が出ていませんでした）。
+     ★★★実体はサイト側にあり、★本番で全部 引けます（★新しく作っていません）──
+       /favicon.svg 200・53KB ／ /favicon.ico 200 ／ /favicon-192.png 200・8KB
+     ⚠️★★/apple-touch-icon.png は【404】なので使いません。★favicon-192.png を指しています
+       （★サイト側 baseof.html と同じ扱いです）。
+     ⚠️★★★絶対URLです ── ★このゲームは /deep-black-box/ の下にあるので、
+       ★相対だと /deep-black-box/favicon.svg を探して【外します】。
+       ★「絶対パスを書かない」（★同じ場所の中を指すときの決まり）とは別の話です -->
+<link rel="icon" href="https://www.roppongivc.com/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="https://www.roppongivc.com/favicon.ico" sizes="32x32">
+<link rel="icon" href="https://www.roppongivc.com/favicon-192.png" type="image/png" sizes="192x192">
+<link rel="apple-touch-icon" href="https://www.roppongivc.com/favicon-192.png">
+<title>Deep Black Box - Problem 20: a column built by a person (Chapter 5)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@300;400;600;700&family=Inter:wght@300;400;500;600;700&family=Noto+Serif+JP:wght@300;400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../deep-black-box/common.css">
+<style>
+/* ══════════════════════════════════════════════════════════════════════════
+   🔴 2026-09-02 1問1ページ担当：★この章だけの CSS
+     ★★原本 tsume-99-kaggle-dialog.html の <style> をそのまま写し、★【戻さないこと】のフォント規則だけ落としました
+     ★落としたもの：.cap{font-size:12.5px;color:var(--gray-500);margin-bottom:.5rem;line-height:1.5}／.lead{font-size:16px;line-height:1.9;color:var(--gray-600);margin:0 0 1.1rem}／h2{font-family:var(--serif);font-size:1.45rem;font-weight:300;line-height:1.4;margin:0 0 1rem}／h3{font-size:16px;font-weight:600;margin:1.4rem 0 .6rem}／.dtab{width:100%;border-collapse:collapse;font-size:12.5px;margin:.9rem 0;  font-variant-numeric:tabular-nums}／.cl .bb{position:relative;min-width:0;padding:.65rem .95rem;font-size:15px;line-height:1.9;   border:1px solid var(--gray-200);border-radius:.85rem;background:var(--white);color:var(--gray-600)}／.cl .bb{font-size:14.5px;padding:.55rem .75rem;line-height:1.8}
+   ★.offpage ── ★★この章の【他の問のカード】を DOM に置いたまま隠す枠。
+     ★理由：ゲーム本体の JS（起動・つまみの bind）を1バイトも触らないため。
+       ★$('…') が null にならないので、原本と同じコードがそのまま動きます
+   ══════════════════════════════════════════════════════════════════════════ */
+.offpage{display:none}
+
+:root{
+ --bg:#fff; --white:#fff; --black:#000;
+ --gray-100:#f9f9f9; --gray-200:#d9d9d9; --gray-500:#444; --gray-600:#2a2a2a;
+ --accent:#019949;
+ --sans:'Inter',system-ui,sans-serif;
+ --serif:'Source Serif 4','Noto Serif JP',Georgia,serif;
+ --content-w:52.625rem;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--black);font-family:var(--sans);
+ -webkit-font-smoothing:antialiased}
+.wrap{max-width:var(--content-w);margin:0 auto;padding:0 1.5rem 5rem}
+.top{border-bottom:1px solid var(--gray-200);margin-bottom:2.4rem}
+/* 🔴🔴🔴 2026-09-09 A：★★★この上書きを外した ── ★★これが【全部大文字】の正体だった
+     ★★★山田様「トップと他でフォント違うし全部大文字かどうかも違うし」（2026-09-09）
+   ★.top .in に text-transform:uppercase と letter-spacing:.14em が入っており、
+     ★★子の製品名とタグラインまで【大文字＋字間広め】に変えていた。
+   ★実測：★これがある18ページは uppercase ／ 無い5ページ（index・q15〜17・end）は none。
+     → ★★★同じ製品名が【大文字のページと そうでないページ】に分かれていた
+   ★common.css の .top .in（★大文字にしない）を効かせる */
+/* 🔴 2026-09-09 A：★★この上書きを外した ── ★common.css の
+     .top .in .tag（15.5px / #555 / 行間1.75 / サンセリフ）を効かせる。
+   ★★★これが後勝ちしていたので、★上のバーだけ 明朝 12.5px のままだった。
+     → ★山田様「トップと他でフォント違うし全部大文字かどうかも違うし」の原因のひとつ */
+.eyebrow{font-size:13px;font-weight:500;letter-spacing:.16em;text-transform:uppercase;
+ color:var(--gray-500);margin-bottom:.9rem}
+h1{font-family:var(--serif);font-size:2.1rem;font-weight:300;line-height:1.35;margin:0 0 .8rem}
+.lead b{color:var(--black)}
+.meta{font-size:13px;letter-spacing:.1em;color:var(--gray-500);padding-bottom:1.2rem;
+ border-bottom:1px solid var(--gray-200);margin-bottom:1.2rem}
+.steps{display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:2.4rem}
+.steps div{flex:1 1 5rem;padding:.55rem .3rem;text-align:center;font-size:12px;
+ border:1px solid var(--gray-200);color:var(--gray-500);background:var(--white)}
+.steps div.open{border-color:var(--black);color:var(--black)}
+.steps div.done{background:var(--black);border-color:var(--black);color:var(--white)}
+.card{border:1px solid var(--gray-200);padding:2rem;margin-bottom:2rem;background:var(--white)}
+.tagline{font-size:13px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;
+ color:var(--gray-500);margin-bottom:.9rem}
+.figbox{background:var(--gray-100);border:1px solid var(--gray-200);padding:1rem;margin:1.3rem 0}
+/* ★★図・つまみ・判定を1つの枠にまとめる（→§2-2。★離すと却下される） */
+.panel{background:var(--gray-100);border:1px solid var(--gray-200);padding:1rem;margin:1.3rem 0}
+.panel .ctl{margin:.9rem 0 .2rem}
+.panel .togs{margin-top:.7rem}
+.panel .gauge{margin-top:.9rem}
+.panel .verdict{margin-top:.8rem;background:var(--white)}
+svg{display:block;width:100%;height:auto}
+.ctl{margin:1.1rem 0 .2rem}
+.ctl label{display:flex;justify-content:space-between;align-items:baseline;font-size:14px;
+ margin-bottom:.35rem;gap:1rem}
+.ctl label span.n{font-weight:600;font-variant-numeric:tabular-nums;white-space:nowrap}
+.togs{display:flex;gap:.6rem;flex-wrap:wrap;margin-top:1.1rem;align-items:center}
+.btn{background:none;border:1px solid var(--gray-200);padding:.6rem 1.15rem;font-size:14px;
+ font-family:var(--sans);color:var(--black);cursor:pointer;transition:all .15s;
+ text-decoration:none;display:inline-block}
+.btn:hover{border-color:var(--black);background:var(--gray-100)}
+.btn.on{background:var(--black);color:var(--white);border-color:var(--black)}
+.btn.go{background:var(--black);color:var(--white);border-color:var(--black)}
+.btn.sm{font-size:13px;padding:.45rem .85rem;color:var(--gray-500)}
+.gauge{margin:1.2rem 0 0}
+.gauge .row{display:flex;align-items:baseline;gap:.7rem;margin-bottom:.5rem}
+.gauge .u{font-size:14px;color:var(--gray-500)}
+.gtrack{height:10px;background:#e9e9e9;position:relative;overflow:hidden}
+.gfill{display:block;height:100%;background:#c00;transition:width .12s linear}
+.gfill.ok{background:var(--accent)}
+.gmark{position:absolute;top:-3px;bottom:-3px;width:2px;background:#000}
+.gcap{display:flex;justify-content:space-between;font-size:12px;color:var(--gray-500);
+ margin-top:.35rem}
+.big{font-family:var(--serif);font-size:2rem;font-weight:400;font-variant-numeric:tabular-nums;
+ line-height:1}
+.calc{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13.5px;line-height:2;
+ background:var(--white);border:1px solid var(--gray-200);padding:.9rem 1.1rem;margin:.9rem 0;
+ overflow-x:auto;white-space:pre}
+.verdict{margin-top:1.2rem;padding:.9rem 1.1rem;border:1px solid var(--gray-200);font-size:14px;
+ line-height:1.75;background:var(--gray-100)}
+.verdict.ok{border-color:var(--accent);background:#f2fbf6}
+.verdict.stuck{border-color:#c00;background:#fdf4f4}
+.src{border-left:2px solid var(--black);padding:.9rem 0 .9rem 1.1rem;margin:1.4rem 0;
+ font-size:14px;line-height:1.85;color:var(--gray-600)}
+.src .h{font-size:12px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;
+ color:var(--black);margin-bottom:.4rem}
+.box{border:1px solid var(--gray-200);padding:1.1rem 1.3rem;margin:1.3rem 0;background:var(--gray-100)}
+.box .h{font-size:12px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;
+ margin-bottom:.5rem}
+.mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+/* ★★問17 の6行（★組の名前・人数・[生存][死亡]を1行に。→ 作りの規則⑶） */
+.grow{display:flex;align-items:center;gap:.5rem;margin-bottom:.5rem;flex-wrap:wrap}
+.grow .gn{width:9.4rem;font-size:14px;flex-shrink:0;font-variant-numeric:tabular-nums}
+.grow .gb{font-size:13px;padding:.35rem .8rem}
+.grow .gv{font-size:13px;color:var(--gray-500);font-variant-numeric:tabular-nums}
+/* ★★問18 の10行（★表と図を1つにした。★SVG に文章を入れると 390px で重なる） */
+.sc-row{display:flex;align-items:center;gap:.5rem;margin-bottom:.55rem}
+.sc-label{width:8.6rem;font-size:13.5px;text-align:right;flex-shrink:0}
+.sc-track{flex:1;background:#e9e9e9;height:11px;position:relative;min-width:2rem}
+.sc-fill{display:block;height:100%;background:var(--black);transition:width .18s linear}
+.sc-fill.hit{background:var(--accent)}
+.sc-pct{width:4.2rem;font-size:13.5px;font-variant-numeric:tabular-nums;flex-shrink:0}
+details{border-top:1px solid var(--gray-200);padding-top:1rem;margin-top:1.5rem}
+summary{font-size:14px;font-weight:500;cursor:pointer}
+.lg{font-size:14px;line-height:1.9;color:var(--gray-600);margin-top:.9rem}
+.dtab th,.dtab td{padding:.4rem .55rem;border:1px solid var(--gray-200);text-align:right}
+.dtab th{background:var(--gray-100);font-weight:600;font-size:11.5px}
+.dtab td.l,.dtab th.l{text-align:left}
+.dtab tr.bad td{background:#fdf4f4}
+.foot{border-top:1px solid var(--gray-200);margin-top:3rem;padding-top:1.5rem;font-size:13px;
+ color:var(--gray-500);line-height:1.8}
+
+/* ══════ 小さい画面では横の余白を削って図に幅を渡す（★00・01 と同じ） ══════
+   ★560幅の図の文字だけ 17px に上げる。★17 × 0.589 ＝ 10.0px */
+@media (max-width:430px){
+  .wrap{padding-left:.5rem;padding-right:.5rem}
+  /* 🔴 390px で式の右端（「300」）が切れていた。★数式は折り返せないので文字を小さくする */
+  .calc{font-size:12px;padding-left:.7rem;padding-right:.7rem}
+  .card{padding-left:.75rem;padding-right:.75rem}
+  .box,.figbox,.panel{padding-left:.5rem;padding-right:.5rem}
+  .top .in{padding-left:.5rem;padding-right:.5rem}
+  #bd0 text,#fig17 text,#p19a text,#p19b text{font-size:17px}
+  .grow .gn{width:100%}
+  .sc-label{width:7.4rem}
+  /* ══════════════════════════════════════════════════════════
+     🔴 2026-08-29 D（99）：問18 の枠が 390px で 1,028.7px あり、
+       ★実測で【図（fig17）と [6つ全部を…] ボタンが同時に見えていなかった】
+       （fig17 top −173px ＝ 画面外／all17 top 886px ＝ 画面外）
+     → ★図は card 直下に出して【画面の上に貼り付ける】（.stick）
+       ★当たり人数とボタンは【画面の下に貼り付ける】（.stickbot）
+     ★★どちらも 00 と同じ形（→§5-23）。★@media の中だけなので PC は 1px も変わらない
+     ★背景色は必須 ── 敷かないと下から来た文字が透けて重なる
+     ★確認済み：.top は固定ヘッダではない／.card・.panel・body に overflow は無い
+       （★祖先に overflow があると sticky は効かない）
+     ══════════════════════════════════════════════════════════ */
+  .stick{position:sticky;top:0;z-index:5;background:var(--gray-100);
+         padding-bottom:.35rem;box-shadow:0 6px 8px -6px rgba(0,0,0,.18)}
+  .stickbot{position:sticky;bottom:0;z-index:5;background:var(--gray-100);
+            padding-top:.4rem;box-shadow:0 -6px 8px -6px rgba(0,0,0,.18)}
+  /* 🆕 2026-08-30 F：会話（→ .cv）★スマホは顔を小さくして横幅を吹き出しに回す */
+  /* 🔴 2026-09-06：★スマホでアイコンを 38px に縮める指定を【消した】（★記事はスマホでも 46px）。
+     ★★この2行は、同じ <style> の後ろにある .cl .ic{46px} / .cl{gap:.75rem;margin:0 0 .85rem} に
+       ★同じ詳細度で【後勝ちされていて、すでに効いていませんでした】（★実測 ic 46px・gap 12px）。
+     → ★消しても見た目は1pxも動きません。★死んだ規則を残すと次の担当が誤読します */
+  /* 🔴 2026-09-02 1問1ページ担当：★A の【戻さないこと】に反するので外した ── .cl .bb{font-size:14.5px;padding:.55rem .75rem;line-height:1.8} */
+  .cast2{padding:.7rem .75rem}
+  .cast2 .ic{width:46px;height:46px}
+  .cast2 .row{gap:.6rem}
+  /* 🔴 2026-09-07 A：★.cast2 .tx2 の 13px/1.8 を外した ── ★これがスマホで
+     ★★登場人物の紹介が 13px のままだった原因（★common.css の 16.6px を後勝ちで潰していた）。
+     → ★山田様「記事と同じサイズって言っただろ」「行間も記事に合わせろよ」（2026-09-07） */
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   🆕 2026-08-30 F【対話版】会話の見た目 ── ★00/01/02/03-dialog と同じ CSS（写し）
+   ★★ゲーム本体（つまみ・図・ゲージ・判定・数値・hit20・best17）は 1行も触っていない。
+     ★この CSS と末尾の IIFE を消せば、原本とまったく同じ挙動に戻る
+   ★★99 には position:sticky が 4件ある（.stick / .stickbot。★390px の @media の中だけ）。
+     ★会話は .figbox stick / .panel / .stickbot の【外】＝ card 直下にだけ置いた
+     ★overflow は足していない（★祖先に overflow があると sticky が効かなくなる）
+   ★色は図のデータ色と衝突しないもの ── 学 #2f6fb5 ／ 博士 #b0700c
+   ══════════════════════════════════════════════════════════════════════════ */
+.cast2{border:1px solid var(--gray-200);background:var(--gray-100);
+  padding:1rem 1.1rem;margin:0 0 2.4rem}
+.cast2 .row{display:flex;gap:.9rem;align-items:flex-start}
+.cast2 .row+.row{margin-top:.9rem;padding-top:.9rem;border-top:1px solid var(--gray-200)}
+.cast2 .ic{width:54px;height:54px;border-radius:50%;flex-shrink:0;display:block;
+  border:2px solid var(--white);box-shadow:0 0 0 1px var(--gray-200),0 1px 3px rgba(0,0,0,.10)}
+.cast2 .nm2{display:block;font-size:18px;line-height:1.5;font-weight:700;margin-bottom:.2rem}
+.cast2 .rb{font-size:14px;font-weight:400;color:var(--gray-500);margin-left:.45rem}
+.cast2 .tx2{font-size:16.6px;line-height:1.831;color:var(--gray-600)}
+.cast2 .tx2 b{color:var(--black)}
+.cv{margin:1.6rem 0}
+.cl{display:flex;gap:.75rem;align-items:flex-start;margin:0 0 .85rem}
+.cl .ic{width:46px;height:46px;border-radius:50%;flex-shrink:0;display:block;
+  border:2px solid var(--white);box-shadow:0 0 0 1px var(--gray-200),0 1px 3px rgba(0,0,0,.10)}
+.cl .bb b{color:var(--black)}
+.cl .bb:before{content:'';position:absolute;left:-6px;top:15px;width:10px;height:10px;
+  background:inherit;border-left:1px solid;border-bottom:1px solid;border-color:inherit;
+  transform:rotate(45deg)}
+/* 🔴 2026-09-02 A：★★博士＝青／学＝オレンジ に入れ替えた（★アイコンの背景色に合わせた）
+   ★山田様「今フォントとか吹き出しが 博士がオレンジで学が青じゃん。画像はもとの
+     博士青、高校生オレンジでいいから、フォントの方を逆にしてよ」（2026-09-02）
+   ✗✗ 戻さないこと。★★common.css だけ直しても【各ページの style が後勝ちで効かない】 */
+.cl.m .bb{background:#fff7ea;border-color:#efd6a6}
+.cl.d .bb{background:#eef4fa;border-color:#c3d9ee}
+/* 🔴 2026-09-06：★font-size:11.5px を外した ── ★.cl .av .nm と同じ要素に当たり、
+   ★詳細度で負けていて【効いていなかった】（★実測 10.5px）。★話者名の大きさは common.css の
+   ★.cl .av .nm{font-size:14px} が持つ。★この規則は色と margin のためだけに残す */
+.cl .nm{display:block;font-weight:700;letter-spacing:.07em;margin-bottom:.15rem}
+.cl.m .nm{color:#b0700c}   /* 🔴 学 → オレンジ */
+.cl.d .nm{color:#2f6fb5}   /* 🔴 博士 → 青 */
+.keyh{font-size:11.5px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--gray-500);margin:1.6rem 0 .5rem}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   🔴 2026-09-01 99担当：★★99 を作り直した（★山田様「0から考えろ」2026-09-01）
+   ★足したもの ⒜ 2本のゲージ（.g2）⒝ 891人の帯（.band）⒞ 木の絵 ⒟ 表の実物（.rawtab）
+   ★★由来：docs/99 §22-4 の【束2＝2本のゲージ】。★「えっ」があるのは束2だけ
+   ══════════════════════════════════════════════════════════════════════════ */
+/* ⒜ 2本のゲージ ── 練習の点と初見の点を縦に並べる */
+.g2{margin:1rem 0 0}
+.g2 .r{display:flex;align-items:baseline;gap:.6rem;margin-bottom:.3rem}
+.g2 .lb{font-size:12.5px;color:var(--gray-500);width:9.6rem;flex-shrink:0}
+.g2 .nv{font-family:var(--serif);font-size:1.5rem;font-weight:400;
+  font-variant-numeric:tabular-nums;line-height:1}
+.g2 .u{font-size:12.5px;color:var(--gray-500)}
+.g2 .tr{height:9px;background:#e9e9e9;position:relative;overflow:hidden;margin-bottom:.7rem}
+.g2 .fl{display:block;height:100%;transition:width .12s linear}
+.g2 .fl.a{background:#2f6fb5}          /* 練習の点＝青 */
+.g2 .fl.b{background:#c00}             /* 初見の点＝赤 */
+.g2 .fl.b.ok{background:var(--accent)} /* ★頂点に届いたら緑 */
+/* ⒝ 891人の帯（当たり／外れ） */
+.band{height:26px;display:flex;border:1px solid var(--gray-200);overflow:hidden}
+.band .hit{background:var(--accent)}
+.band .mis{background:var(--white)}
+.band .sp{border-left:1px solid var(--gray-200)}
+.bandcap{display:flex;justify-content:space-between;font-size:12px;
+  color:var(--gray-500);margin-top:.3rem}
+/* ⒟ 表の実物（横に広いので横スクロールの枠に入れる） */
+.rawwrap{overflow-x:auto;margin:.9rem 0;border:1px solid var(--gray-200)}
+.rawtab{border-collapse:collapse;font-size:11.5px;white-space:nowrap;
+  font-variant-numeric:tabular-nums}
+.rawtab th,.rawtab td{padding:.35rem .5rem;border-bottom:1px solid var(--gray-200);
+  border-right:1px solid var(--gray-200);text-align:left}
+.rawtab th{background:var(--gray-100);font-weight:600;font-size:10.5px}
+.rawtab td.y{background:#f2fbf6;font-weight:600}
+.rawtab th.y{background:#d9f0e4}
+/* ★予想を先に取る（3択） */
+.pick{display:flex;gap:.5rem;flex-wrap:wrap;margin:.8rem 0}
+.pick .btn{flex:1 1 6rem}
+.pick .btn.sel{background:var(--black);color:var(--white);border-color:var(--black)}
+.locked{opacity:.35;pointer-events:none}
+@media (max-width:430px){
+  .g2 .lb{width:7.2rem;font-size:11.5px}
+  .g2 .nv{font-size:1.3rem}
+  #ln20 text,#tree20 text,#dt20 text,#cv20 text,#bar21 text{font-size:17px}
+  .rawtab{font-size:10.5px}
+}
+</style>
+</head>
+<body>
+
+<div class="top"><div class="in">Deep Black Box<span class="tag">Open up the black box of AI one problem at a time, with your own hands. 21 problems in all.</span></div></div>
+<div class="wrap">
+
+<!-- 🔴 2026-09-02 1問1ページ担当：★進み具合の帯（全21問）＋いま何章か -->
+<div class="prog">
+ <div class="steps" id="steps"></div>
+ <div class="cnt" id="prog_cnt"></div>
+</div>
+<div class="chap" id="chap"></div>
+
+<!-- ══════════════════ c21 ══════════════════ -->
+<div class="card" id="c21">
+<div class="tagline">Question 20</div>
+<h2>A column that was never in the table, built by <b>a person</b></h2>
+<div id="e21a"></div>
+
+<div class="figbox">
+ <svg id="nm21" viewBox="0 0 560 120"></svg>
+ <div class="cap">There is <b>no title column</b> in the table. All there is, is the name as a string of text.
+  <b>We cut the Mr part out and make it a column.</b></div>
+</div>
+
+<!-- 🔴 2026-09-01 99担当：★★表を3択の【前】に出した（山田様の指摘 2026-09-01 15:2x
+     「こういうこと先に言わないと Mr だけ言っても は？なんだよ Mr って？ Master なんか誰も知らねえし。
+       順番が逆だ」） -->
+<h3>Counting the titles across the 891, there were five of them</h3>
+<div id="e21a2"></div>
+<table class="dtab" id="ttab21"></table>
+<p class="cap"><b>Mr</b> = an adult man / <b>Mrs</b> = a married woman / <b>Miss</b> = an unmarried woman /
+ <b>Master</b> = <b>the title used for a boy at the time</b> (it is not used now).<br>
+ <b>Even for the 177 people whose age is blank, the title is there</b> &mdash; and that is what makes the difference.<br>
+ Mlle and Ms were folded into Miss, and Mme into Mrs (<b>how they get folded is a person&rsquo;s decision</b>).
+ The 2 people with a blank port were counted as England.</p>
+<div class="box">
+ <div class="h">This is what makes the difference</div>
+ <p class="lead" style="margin:0"><b>The 40 Masters (boys) have a survival rate of 0.5750.</b>
+ Male all the same, yet <b>more than three times the 0.1567 of Mr</b>.<br>
+ <b>&ldquo;Women and children to the boats first&rdquo;</b> was the order they were evacuated in, and it is still there in this number.</p>
+</div>
+
+<div id="e21c"></div>
+
+<div class="panel" id="p21box">
+ <div class="cap">In Problem 18 you answered <b>died for all 577 male</b>. Of those 577, 109 lived, so <b>you got 577 − 109 = 468 right</b>.<br>
+  Look at the table below. <b>The 40 Masters (boys) alone come out 23 lived to 17 died &mdash; more of them lived</b>.<br>
+  <b>For those 40 alone, we change the answer to survived.</b> The other 537 stay at died.<br>
+  <b>How many do you now get right?</b></div>
+ <!-- 🔴 2026-09-01 99担当：★判断に必要な数を つまみ（ボタン）と同じ枠に入れた
+      （★A_scan で 図とボタンが同時に見えなかった／★打つ前に自分で計算できる形にした） -->
+ <table class="dtab" id="tab21p"></table>
+ <div class="pick" id="p21">
+  <button class="btn" id="p21a">468 (no change)</button>
+  <button class="btn" id="p21b">474</button>
+  <button class="btn" id="p21c">491</button>
+ </div>
+ <div class="verdict" id="j21">Press one of the three.</div>
+</div>
+
+<div id="q21wrap" class="locked">
+<div class="figbox">
+ <svg id="ms21" viewBox="0 0 560 176"></svg>
+ <div class="cap"><b>For the 40 Masters alone, the answer went from died to survived.</b>
+  Where 17 were right, 23 are now right &mdash; <b>+6</b> (468 → 474).<br>
+  <b>Looking at sex alone, these 40 would have stayed buried among the 577 male.</b></div>
+</div>
+<div id="e21b"></div>
+
+<div class="keyh">What to take away</div>
+<div class="verdict ok">
+ <b>A column that was never in the table can be built by a person.</b>
+ Cut out the title, which existed only inside the name string, and
+ <b>the 40 boys that sex alone could not show you</b> come into view.<br>
+ <b>What column to build is decided by you, not by the machine.</b>
+</div>
+</div>
+</div>
+
+<!-- 🔴 2026-09-02 1問1ページ担当：★戻る／次へ（★どのページでも常に押せる） -->
+<div id="nav"></div>
+
+<div id="foot"></div>
+</div>
+
+
+<script src="common.js"></script>
+<script>
+/* ══════════════════════════════════════════════════════════════════════════
+   🔴 2026-09-02 1問1ページ担当2代目：★★下は原本 tsume-99 の <script> から
+     【この問が使う行だけ】をそのまま写したものです。★1文字も変えていません（★行を落としただけ）
+   ★★IIFE で包んだ理由 ── 原本の const $ / const show / const T が common.js の同名 const と
+     ぶつかって【SyntaxError でページ全体が動かなくなる】ため。★包んだだけで中身は変わりません
+   ★★mark() だけは common.js のものを使います（★帯が5章グループに変わったため。→ 指示⑶）
+   ══════════════════════════════════════════════════════════════════════════ */
+var QBASE = 19;
+drawProg(20); drawChap(20, "");
+drawNav(["q19.html","Problem 19: How far to split"], ["q21.html","Problem 21: When to stop"]);
+drawFoot()   /* 🔴 2026-09-02 A：★注記を消した（★山田様。★同じ一文が21回出るのは型3／§2-6 の言い訳）*/;
+
+(function(){
+/* 🔴 2026-09-02 1問1ページ担当2代目：★★【受け皿】── この問には無い
+     【他の問の関数】を空にしておきます。★これが無いと ReferenceError になります。
+   ★★呼んでいる側（原本の関数）は1文字も変えていません */
+if (typeof drawBar === 'undefined') var drawBar = function(){};
+if (typeof drawBd0 === 'undefined') var drawBd0 = function(){};
+if (typeof drawCmp === 'undefined') var drawCmp = function(){};
+if (typeof drawCv === 'undefined') var drawCv = function(){};
+if (typeof drawDt === 'undefined') var drawDt = function(){};
+if (typeof drawGrid18 === 'undefined') var drawGrid18 = function(){};
+if (typeof drawMz2 === 'undefined') var drawMz2 = function(){};
+if (typeof drawMz21 === 'undefined') var drawMz21 = function(){};
+if (typeof drawNa0 === 'undefined') var drawNa0 = function(){};
+if (typeof drawRank21 === 'undefined') var drawRank21 = function(){};
+if (typeof drawRaw === 'undefined') var drawRaw = function(){};
+if (typeof drawSex18 === 'undefined') var drawSex18 = function(){};
+if (typeof rows18 === 'undefined') var rows18 = function(){};
+if (typeof rows18s === 'undefined') var rows18s = function(){};
+if (typeof up18 === 'undefined') var up18 = function(){};
+if (typeof up18s === 'undefined') var up18s = function(){};
+if (typeof up20 === 'undefined') var up20 = function(){};
+
+/* 🔴 2026-09-02 1問1ページ担当2代目：★★ここにあった q18 の起動行（drawProg / drawChap / drawNav）を落としました。
+   ★理由 ── 副作用文として残されていたため、各ページの正しい起動行を innerHTML で【後から上書き】していた。
+   ★起動行はページごとに1回だけ（この <script> の外・上のほう）に書きます */
+
+'use strict';
+const $ = id => document.getElementById(id);
+const SVGNS = 'http://www.w3.org/2000/svg';
+function el(tag, at, txt){
+  const n = document.createElementNS(SVGNS, tag);
+  for (const k in at) n.setAttribute(k, at[k]);
+  if (txt !== undefined) n.textContent = txt;
+  return n;
+}
+function ce(tag, cls, txt){
+  const n = document.createElement(tag);
+  if (cls) n.className = cls;
+  if (txt !== undefined) n.textContent = txt;
+  return n;
+}
+/* ★敬称（人数 / 生存 / 死亡）★寄せる定義 */
+const TIT = [
+  ['Mr','an adult man',517,81],['Mrs','a married woman',126,100],['Miss','an unmarried woman',185,130],
+  ['Master','a boy (the title used then)',40,23],['other','Dr, Rev, Col and so on',23,8]
+];
+/* ══════════════════ 問21 ══════════════════ */
+/* 🔴 2026-09-01 99担当：★★新設。★教科書 p2 3節・4節（氏名から敬称を作る）
+   ★★統括（A）の指定：「特徴量」という語は使わない。★03 問15 の q15who と同じ言い方に揃える */
+/* 🆕🆕🆕 2026-09-10 図修正担当：★★スマホだけ 図の文字を【実効 10px 以上】にする倍率
+   ★★★★門は【画面幅 ≤430px】です（★問18 c5ea44f・問19 116f816 と同じ型。★PC では 1 を返します）。
+   ★算数 ── 実効 ＝ base × K × (描画幅 ÷ viewBoxの幅)。★K ＝ 10 × vb幅 ÷ 描画幅 ÷ base
+     ・390px幅（描画 330）→ nm21 は base 13.5 で K 1.26 ／ ms21 は base 13 で K 1.31
+     ・PC（描画 694）→ max(1,…) で【1】＝ 現物のまま
+   ★★★@media に font-size:17px と書かない理由 ── ★nm21 は【13.5 と 15】を、
+     ★ms21 は【13 と 13.5】を使い分けています。★17px と書くと差が潰れて大小関係が壊れます。 */
+function K20(id, base){
+  if (!window.matchMedia || !matchMedia('(max-width:430px)').matches) return 1;
+  const e = $(id); if (!e || !e.getBoundingClientRect) return 1;
+  const w = e.getBoundingClientRect().width || 330;
+  const vw = (e.viewBox && e.viewBox.baseVal && e.viewBox.baseVal.width) || 560;
+  return Math.min(2.2, Math.max(1, Math.ceil(10 * vw / w / base * 100) / 100));
+}
+function drawNm(){
+  const s = $('nm21'); s.innerHTML = '';
+  const Kn = K20('nm21', 13.5), F = v => Math.round(v * Kn * 100) / 100, 縦 = Kn > 1;
+  /* 🔴🔴 2026-09-10 図修正担当：★★実物を撮って分かった2件（★機械は「はみ出し0・重なり0」でした）
+     ⒜「「敬称が Mr」の列」が【緑の枠から左右に 4.6単位ずつ出て】いた
+        ★★文字が 145単位になるのに 枠は 136単位しかないためです → ★枠を 156単位に広げた
+     ⒝「Braund,」の右端（81.3）と「Mr.」の枠の左端（82）の隙間が【0.7単位】で
+        ★★くっついて見えた → ★Mr. の枠と そのあとを 6単位 右へずらした
+     ★あわせて 矢印と下の枠も 同じだけ動かしています（★指す先は変わりません） */
+  const mx = 縦 ? 110 : 104;          /* Mr. の枠の中心（★矢印もここ） */
+  const bx = 縦 ? 88 : 82;            /* Mr. の枠の左端 */
+  const ox = 縦 ? 140 : 134;          /* Owen Harris の左端 */
+  const cw = 縦 ? 156 : 136;          /* 「敬称が Mr」の列 の枠の幅 */
+  const cx = mx - cw / 2;             /* その枠の左端 */
+  const tx = 縦 ? 196 : 186;          /* 「元の表に…」の左端 */
+  s.appendChild(el('text', {x:0, y:20, 'font-size':F(13.5), fill:'#6e6e6e'},
+    'all the table has is this string'));
+  s.appendChild(el('rect', {x:0, y:32, width:556, height:32, fill:'#fff', stroke:'#d9d9d9'}));
+  s.appendChild(el('text', {x:12, y:53, 'font-size':F(15), fill:'#6e6e6e'}, 'Braund,'));
+  s.appendChild(el('rect', {x:bx, y:36, width:44, height:24, fill:'#f2fbf6', stroke:'#019949'}));
+  s.appendChild(el('text', {x:mx, y:53, 'text-anchor':'middle', 'font-size':F(15),
+    fill:'#019949', 'font-weight':'700'}, 'Mr.'));
+  s.appendChild(el('text', {x:ox, y:53, 'font-size':F(15), fill:'#6e6e6e'}, 'Owen Harris'));
+  s.appendChild(el('line', {x1:mx, y1:64, x2:mx, y2:84, stroke:'#019949'}));
+  s.appendChild(el('polygon', {points:(mx-5)+',80 '+(mx+5)+',80 '+mx+',90', fill:'#019949'}));
+  s.appendChild(el('rect', {x:cx, y:92, width:cw, height:26, fill:'#f2fbf6', stroke:'#019949'}));
+  s.appendChild(el('text', {x:mx, y:110, 'text-anchor':'middle', 'font-size':F(13.5),
+    fill:'#019949'}, 'title = Mr'));
+  s.appendChild(el('text', {x:tx, y:110, 'font-size':F(13.5), fill:'#000'},
+    'not in the table. A person made it'));
+}
+function drawTit(){
+  const t = $('ttab21'); t.innerHTML = '';
+  const hd = ce('tr');
+  ['title','meaning','count','lived','died','rate'].forEach((h, i) => {
+    hd.appendChild(ce('th', i < 2 ? 'l' : '', h));
+  });
+  t.appendChild(hd);
+  TIT.forEach(r => {
+    const tr = ce('tr');
+    const dd = r[2] - r[3];
+    [[r[0],'l'],[r[1],'l'],[r[2],''],[r[3],''],[dd,''],[(r[3]/r[2]).toFixed(4),'']]
+      .forEach(c => tr.appendChild(ce('td', c[1], String(c[0]))));
+    if (r[0] === 'Master') tr.className = 'bad';
+    t.appendChild(tr);
+  });
+}
+/* 🔴 2026-09-01 99担当：Master の40人だけ答えが変わる図（男577人を敬称で3つに割る） */
+const MS21 = [['Mr', 517, 81], ['Master', 40, 23], ['other', 20, 5]];
+function drawMs21(){
+  const s2 = $('ms21'); s2.innerHTML = '';
+  /* 🆕🆕 2026-09-10 図修正担当：★★スマホだけ 実効10px以上に（★問19 age19 と同じ作りの図です）
+     ★★★実測（★1.31倍にしたとき）──
+       ⒜ 上の52字の文が【右へ 32.9単位】はみ出す → ★「→」の前で2行に分ける
+       ⒝「死亡 → 当たり 436」が【右へ 1.7単位】はみ出す → ★帯を詰めて ラベルを内側へ
+       ⒞ 左のラベル「Master 40人 生23 死17」が 187単位になり【帯の始まり150に食い込む】
+          → ★帯を 150→200 へずらした（★左のラベルがいちばん長いのは 187単位）
+       ⒟ ★★★上げる前から出ている重なり1件 ── ★「↓ Master の40人だけ…」（y=42）が
+          ★★【「0.5」（y=50）の下を通っていました】。★★文字を大きくすると もっと重なります。
+          → ★「0.5」と縦線を 8単位 下げ、★「↓…」の文との間を空けた
+     ⚠️★★数字（577／109／468）は【問18 と揃えた数字】なので 1文字も変えていません */
+  const Km = K20('ms21', 13), F = v => Math.round(v * Km * 100) / 100, 縦 = Km > 1;
+  /* 🔴 ★「死亡 → 当たり 436」は 152単位あるので、★帯の右端 ＋16 ＋152 が 560 に収まる
+     ★ように 帯の幅を 200→190、始まりを 200→196 にした（★右の余白 10単位／左は 187単位のラベルの外） */
+  const xl = 縦 ? 196 : 150, xw = 縦 ? 190 : 250, x50 = xl + xw * 0.5;
+  const gap = 縦 ? 16 : 10;      /* 帯と右のラベルの隙間 */
+  const dy = 縦 ? 10 : 0;        /* 「0.5」と縦線と帯ぜんたいの 下げ幅 */
+  if (縦) {
+    s2.appendChild(el('text', {x:0, y:18, 'font-size':F(13.5), fill:'#000'},
+      'male 577  lived 109 died 468  rate 0.1889'));
+    s2.appendChild(el('text', {x:0, y:40, 'font-size':F(13.5), fill:'#000'},
+      '\u2192  all died gives 468 right'));
+  } else {
+  s2.appendChild(el('text', {x:0, y:18, 'font-size':13.5, fill:'#000'},
+    'male 577  lived 109 died 468  rate 0.1889  \u2192  all died gives 468 right'));
+  }
+  s2.appendChild(el('text', {x:0, y:縦 ? 66 : 42, 'font-size':F(13), fill:'#c00'}, '\u2193 change only the 40 Masters to survived'));
+  s2.appendChild(el('line', {x1:x50, y1:52+dy+(縦?24:0), x2:x50, y2:52+dy+(縦?24:0)+MS21.length*26+4,
+    stroke:'#000', 'stroke-width':1.2}));
+  s2.appendChild(el('text', {x:x50, y:縦 ? 84 : 50, 'text-anchor':'middle', 'font-size':F(13), fill:'#000'}, '0.5'));
+  let hit = 0;
+  MS21.forEach(function(g, i){
+    const y = (縦 ? 102 : 68) + i * 26, nn = g[1], a = g[2], d = nn - a, r = a / nn;
+    const c = Math.max(a, d); hit += c;
+    const on = a > d;
+    s2.appendChild(el('text', {x:0, y:(y+4).toFixed(1), 'font-size':F(13.5),
+      fill: on ? '#019949' : '#000'}, g[0] + ' ' + nn + '  ' + a + '/' + d));
+    s2.appendChild(el('line', {x1:xl, y1:y, x2:xl+xw, y2:y, stroke:'#ececec'}));
+    s2.appendChild(el('circle', {cx:(xl+xw*r).toFixed(1), cy:y, r:5,
+      fill: on ? '#019949' : '#3f3f3f'}));
+    s2.appendChild(el('text', {x:(xl+xw+gap).toFixed(1), y:(y+4).toFixed(1), 'font-size':F(13.5),
+      fill: on ? '#019949' : '#3f3f3f'}, (on ? 'survived ' : 'died ') + c));
+  });
+  s2.appendChild(el('text', {x:0, y:縦 ? 196 : 158, 'font-size':F(13.5), fill:'#000'},
+    'total 577 \u2014 right 468 \u2192 ' + hit + ' (+' + (hit - 468) + ')'));
+  if (縦) s2.setAttribute('viewBox', '0 0 560 210');
+}
+/* 🔴 2026-09-01 99担当：3択の枠の中に出す内訳（★打つ前に計算できるようにする） */
+function drawTab21p(){
+  const t = $('tab21p'); t.innerHTML = '';
+  const hd = ce('tr');
+  ['title','count','lived','died','bigger side'].forEach(function(h, i){
+    hd.appendChild(ce('th', i === 0 ? 'l' : '', h));
+  });
+  t.appendChild(hd);
+  MS21.forEach(function(g){
+    const tr = ce('tr'), a = g[2], d = g[1] - a;
+    [[g[0],'l'],[g[1],''],[a,''],[d,''],[(a > d ? 'survived' : 'died'),'']]
+      .forEach(function(c){ tr.appendChild(ce('td', c[1], String(c[0]))); });
+    if (a > d) tr.className = 'bad';
+    t.appendChild(tr);
+  });
+  const tr = ce('tr');
+  [['all 577 male','l'],[577,''],[109,''],[468,''],['died','']]
+    .forEach(function(c){ tr.appendChild(ce('td', c[1], String(c[0]))); });
+  t.appendChild(tr);
+}
+function guess21(k){
+  ['p21a','p21b','p21c'].forEach(function(id, i){ $(id).classList.toggle('sel', i === k); });
+  const j = $('j21');
+  j.className = 'verdict ' + (k === 1 ? 'ok' : 'stuck');
+  j.innerHTML = (k === 1 ? '<b>That is right &mdash; 474.</b>' : '<b>Not so. It is 474.</b>')
+    + '<br>While the 40 Masters were answered died, <b>17</b> of them were right. '
+    + 'Change it to survived and <b>23</b> are right.<br>'
+    + '<b>468 − 17 + 23 = 474.</b> That is <b>+6</b>. '
+    + '(It does not reach 491 &mdash; not all 40 come right; 17 of them are misses.)<br>'
+    + '<b>It went up because one band flipped which way it was answered.</b> '
+    + 'Adding the class in Problem 18 changed nothing because not one group flipped.';
+  $('q21wrap').classList.remove('locked');
+  $('steps').children[2].className = 'done';
+}
+
+/* ══════════════════ 立ち上げ ══════════════════ */
+drawRaw(); drawBd0(); drawNa0();
+drawSex18(); rows18s(); up18s();
+drawGrid18();
+rows18(); up18();
+drawDt(); drawMz21(); drawMz2(); drawRank21(); drawCv();
+up20();
+drawNm(); drawTit(); drawMs21(); drawTab21p();
+$('p21a').onclick = () => guess21(0);
+$('p21b').onclick = () => guess21(1);
+$('p21c').onclick = () => guess21(2);
+drawBar(); drawCmp();
+
+/* ══════ 起動（★この問のぶんだけ。★原本の起動行から他の問の呼び出しを落としました）══════ */
+drawNm(); drawTit(); drawMs21(); drawTab21p();
+
+/* ══════ 会話（★原本の CV の写し。★この問のぶんだけ）══════ */
+var CV = {
+ "e21a": [
+  [
+   "d",
+   "Let me show you one more <b>place where you decide</b>. &hellip; Adam, <b>is there a title column in this table?</b>"
+  ],
+  [
+   "m",
+   "&hellip; There is not. Only <b>the name</b>."
+  ],
+  [
+   "d",
+   "Just so. <b>Braund, Mr. Owen Harris</b> &mdash; we cut the <b>Mr</b> out of that string and make it a column."
+  ],
+  [
+   "m",
+   "Are we allowed to just do that?"
+  ],
+  [
+   "d",
+   "<b>We are. &hellip; Look at the diagram just below.</b> We take only the <b>Mr.</b> part of the name."
+  ]
+ ],
+ "e21a2": [
+  [
+   "d",
+   "I counted all 891. <b>The table just below.</b> There were <b>five titles</b>."
+  ],
+  [
+   "m",
+   "Mr comes to 517 &mdash; the most of them."
+  ]
+ ],
+ "e21c": [
+  [
+   "m",
+   "Mr, Mrs, Miss &hellip; what is <b>Master</b>? I have never heard it."
+  ],
+  [
+   "d",
+   "<b>The title used for a boy at the time.</b> It is not used now. <b>There are 40 of them.</b>"
+  ],
+  [
+   "m",
+   "Rate <b>0.5750</b>. &hellip; <b>Far higher than the 0.1567 for Mr.</b>"
+  ],
+  [
+   "d",
+   "<b>&ldquo;Women and children to the boats first.&rdquo;</b> That is what is left in this number."
+  ],
+  [
+   "m",
+   "So among the male there were <b>people more likely to be saved</b>, mixed in."
+  ],
+  [
+   "d",
+   "<b>That is it.</b> &hellip; In Problem 18 you answered <b>died for all 577 male</b>. 109 lived, so <b>577 − 109 = 468 came right</b>."
+  ],
+  [
+   "m",
+   "Yes. More of the male died, so that is what I chose."
+  ],
+  [
+   "d",
+   "But <b>the 40 Masters alone come out 23 lived to 17 died &mdash; more of them lived</b>."
+  ],
+  [
+   "m",
+   "Ah &hellip; <b>so those 40 alone should be changed to survived</b>."
+  ],
+  [
+   "d",
+   "<b>That is it!</b> The other 537 <b>stay at died</b>. <b>Only the 40 change.</b>"
+  ],
+  [
+   "m",
+   "And that gets more of them right?"
+  ],
+  [
+   "d",
+   "<b>It does. How many?</b> Count it on the table below and <b>answer before you look.</b>"
+  ]
+ ],
+ "e21b": [
+  [
+   "m",
+   "<b>+6.</b> <b>Only the 40 Masters</b> had their answer changed."
+  ],
+  [
+   "d",
+   "Just so. <b>Where 17 were right, 23 are now right.</b>"
+  ],
+  [
+   "m",
+   "Six &hellip; That is not many."
+  ],
+  [
+   "d",
+   "<b>It is not. But looking at sex alone, these 40 stay buried among the 577 male.</b> You would never see them."
+  ],
+  [
+   "m",
+   "&hellip; But there is an age column. <b>You could pick out the children by age.</b>"
+  ],
+  [
+   "d",
+   "<b>Age is blank for 177 people.</b> &hellip; Four of the 40 Masters among them."
+  ],
+  [
+   "m",
+   "Ah. <b>With the title, you know he is a boy even when the age is blank.</b>"
+  ],
+  [
+   "d",
+   "That is it! &hellip; <b>This column was never in the table. I made it. A person made it by hand.</b>"
+  ],
+  [
+   "m",
+   "<b>Folding Mlle into Miss</b> was your decision too."
+  ],
+  [
+   "d",
+   "<b>It was.</b> There is no right answer to it. &hellip; <b>There are still places where a person decides.</b>"
+  ]
+ ]
+};
+drawCV(CV);
+})();
+</script>
+</body>
+</html>
