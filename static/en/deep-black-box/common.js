@@ -362,7 +362,7 @@ var SITE = { ver: 'v1.0', date: '2026-09-10',
                   ★実際に取り出しました（★推測ではありません）。
                 ★★これ1行で【3か所】に効きます ── q05・q21・end の drawForm
                 ★★★入れる前は「感想フォームは準備中です」と灰色で出ていました */
-             form: 'https://docs.google.com/forms/d/e/1FAIpQLScyE3bWc8rh3wcnLLlaxpXOhrwUYjPU-ccS3FfnIZgcoPqkRw/viewform',
+             form: 'https://docs.google.com/forms/d/e/1FAIpQLSfnjLgmYd4DLll1jQa22KyRESHptczJUIraUxrmxwPWasZe-A/viewform',
              /* 🔴🔴🔴🔴 2026-09-10 記録担当【★自分の誤り】── ★記事の URL を
                 【まだ存在しない新URLに先に変えてしまいました】。
                 ★★実測：★/agora/ai-olympiad-record/ は【404】。★/m3v8k1qz6p/ が【200】。
