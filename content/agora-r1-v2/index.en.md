@@ -5,15 +5,16 @@ draft: false
 layout: "agora-article"
 url: "/en/agora/ai-olympiad-record/"
 # ★2026-09-12 英語版を新設（山田様のご承認）。
-#   ★★★完成するまでは【非掲載＋noindex】── list: never で sitemap と RSS に載せず、
-#     noindex: true で検索にも載せない。★仕上がったら list: always にして noindex を外す。
-#     ★これは日本語版が限定公開だったとき（〜2026-09-09）と同じ仕組み。
+#   ★完成するまでは【非掲載＋noindex】にしていた（list: never ＋ noindex: true）。
+# ★2026-09-14 一般公開（山田様のご判断）。★list: always にして noindex の行を消した。
+#   ★条件が揃ったため ── 英語版ゲーム23ページが本番（200）／英語版の図2枚を差し替え／
+#     感想フォームを英語版に差し替え（common.js 365行）／用語を製品側（problems・Doc・Adam）に統一。
+#   ★★noindex を消すと、baseof.html の hreflang が日英を対にして自動で出るようになる。
 #   ★日本語版 index.md は1バイトも触っていない。
 _build:
-  list: never
+  list: always
   render: always
   publishResources: true
-noindex: true
 description: "The ability to solve problems that have a fixed answer is passing to AI. So what does a high school student who has mastered that ability do when the problem has no answer? Hayato Yamai — a bronze medalist at the International Olympiad in Artificial Intelligence (IOAI) 2025 — came in with one theme: he wants to democratize Kaggle. A record of two hours between five people and an AI."
 hero_label: "Agora | Session 1"
 headline: "A Record of Thinking with AI: An AI Olympiad Medalist from Japan's Most Selective High School on Growing More AI Builders"
