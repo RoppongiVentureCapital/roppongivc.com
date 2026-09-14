@@ -1,0 +1,1042 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<meta name="description" content="Does tuning on human preference make it smarter? Its behaviour just lines up with the taste of about 40 people - Problem 16 of Deep Black Box.">
+<meta property="og:title" content="Deep Black Box - Problem 16: it does not get smarter (Chapter 4)">
+<meta property="og:description" content="Does tuning on human preference make it smarter? Its behaviour just lines up with the taste of about 40 people - Problem 16 of Deep Black Box.">
+<!-- 🔴🔴🔴🔴 2026-09-10 記録担当：★★★★共有したときの画像（★公開準備セッションの指示）。
+     ★★この2行は【23ページとも入っていませんでした】（★実測0件）。
+     ★★★入れる値は先方が確定させたものです ──
+       roppongivc.com/static/img/agora/r1/og-r1-game.jpg（★59KB。★案A＝白地・エンブレム左）。
+     ★★記事用（og-r1-article.jpg）とは【別のファイル】です。★記事側のものは触っていません。
+     ★値は絶対URLです（★OGP の決まり。★href の絶対パス禁止とは別の話です） -->
+<meta property="og:image" content="https://www.roppongivc.com/en/deep-black-box/og-deep-black-box-en.jpg">
+<meta name="twitter:image" content="https://www.roppongivc.com/en/deep-black-box/og-deep-black-box-en.jpg">
+<!-- 🔴🔴🔴🔴 2026-09-10 21:4x 記録担当：★★★★X（Twitter）で大きい絵にする1行（★公開準備セッションの依頼）。
+     ★★★og:image を入れても、★この1行が無いと【小さいカード】になります。
+     ★記事側は全13ページを summary → summary_large_image にしたとのことです（★先方の実測）。
+     ★★ゲーム23ページは【0件】でした -->
+<meta name="twitter:card" content="summary_large_image">
+<!-- 🔴🔴🔴🔴 2026-09-10 22:3x 記録担当：★★★★ブラウザのタブに出る絵（★公開準備セッションの依頼）。
+     ★★実測 ── ★23ページとも【0件】でした（★タブに絵が出ていませんでした）。
+     ★★★実体はサイト側にあり、★本番で全部 引けます（★新しく作っていません）──
+       /favicon.svg 200・53KB ／ /favicon.ico 200 ／ /favicon-192.png 200・8KB
+     ⚠️★★/apple-touch-icon.png は【404】なので使いません。★favicon-192.png を指しています
+       （★サイト側 baseof.html と同じ扱いです）。
+     ⚠️★★★絶対URLです ── ★このゲームは /deep-black-box/ の下にあるので、
+       ★相対だと /deep-black-box/favicon.svg を探して【外します】。
+       ★「絶対パスを書かない」（★同じ場所の中を指すときの決まり）とは別の話です -->
+<link rel="icon" href="https://www.roppongivc.com/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="https://www.roppongivc.com/favicon.ico" sizes="32x32">
+<link rel="icon" href="https://www.roppongivc.com/favicon-192.png" type="image/png" sizes="192x192">
+<link rel="apple-touch-icon" href="https://www.roppongivc.com/favicon-192.png">
+<title>Deep Black Box - Problem 16: it does not get smarter (Chapter 4)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@300;400;600;700&family=Inter:wght@300;400;500;600;700&family=Noto+Serif+JP:wght@300;400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../deep-black-box/common.css">
+<style>
+/* 🔴 2026-09-02 A（統括）：★.cap は対話と同じ書体（sans）。★明朝は却下された */
+/* ══════════════════════════════════════════════════════════════════════════
+   🔴 2026-09-02 1問1ページ担当：★この章だけの CSS（★common.css は 00/01 の値が入っている）
+     ⒜ 5本で値が違う5規則を【03 の値】に戻す（★枠を1pxも動かさないため）
+     ⒝ 03 だけの3規則
+     ⒞ @media の【SVG の id 一覧】── ★本ごとに違うので各ページに残す（→ A が承認）
+     ⒟ ★★#w14 の max-width ── 1280px の枠 959.8px を 840 以下に下げる（→ A の判断3）
+   ══════════════════════════════════════════════════════════════════════════ */
+/* ⒜ */
+.cap{font-size:16.6px;overflow-wrap:anywhere;line-height:1.831}
+.ctl label{flex-wrap:wrap}
+.sc-label{width:5.4rem}
+.sc-pct{width:3.8rem}
+/* ⒝ */
+.ctl label span:first-child{min-width:0;overflow-wrap:anywhere}
+.qrow{display:flex;gap:.6rem;flex-wrap:wrap;align-items:center;margin-bottom:.7rem}
+.qrow .qt{flex:1 1 12rem;font-size:14px;min-width:0}
+#q16map,#q17map{max-width:560px}
+/* ⒟ 🔴🔴 2026-09-02【この節は #w14 の経緯の記録です。★指定は 入れていません】
+     ★★★#w14 に max-width を付けるのは【却下されました】。✗✗ 二度と絞らないこと
+     ──────────────────────────────────────────────────────────────────────────
+     ★経緯：★1問1ページ担当が 1280px の枠 959.8px を 840以内にするため
+       max-width を付けた（600px → 904.4px ★まだ840超 ／ 480px → 833.7px）。
+     ★★山田様「ここのつまみの図が前より小さくなってると思う。小さいから気持ち悪いよ」
+     ★A の実測 ── PC で図に渡る幅 694px → 480px（69.2%・214px 小さい）、
+       図の中の文字 21.1px → 14.6px。★スマホ（390px）は 242px で元から変わらない
+     → ★★★A が 案A を採り、max-width を外して図を元の 694px に戻した。
+       ★840超1件は【原本03 からの持ち越し】で、★山田様がその原本を通しプレイして OK を
+       出されている。★枠の数字を守るために図を小さくするのは【順序が逆】だった */
+/* ══════ 小さい画面では横の余白を削って図に幅を渡す（★00・01 と同じ） ══════ */
+@media (max-width:430px){
+  .wrap{padding-left:.5rem;padding-right:.5rem}
+  .card{padding-left:.75rem;padding-right:.75rem}
+  .figbox,.panel{padding-left:.5rem;padding-right:.5rem}
+  .top .in{padding-left:.5rem;padding-right:.5rem}
+  /* ★★560幅の図の文字を 17px に上げる（★17 × 0.589 ＝ 10.0px。→01 の @media） */
+  #w14 text,#rep14 text,#md15 text,#ai16 text,#splitFig text{font-size:17px}
+  /* 🔴 2026-08-31 03担当：★足した図①も 560幅なので、原本の5枚と同じ 17px に上げる
+     ★17 × 0.596 ＝ 10.1px（390px で .wrap/.card/.figbox の padding を引いた実効幅 334px） */
+  /* 🔴🔴🔴🔴 2026-09-10 展開担当：★★★★17px → 21px に上げました
+     ★★★理由（実測）── ★17 × 0.589 ＝【10.02px】で、★決定2 の下限12pxに届きません。
+     ★★★★ここを直す必要がある理由 ── ★CSS は SVG の font-size 属性に【勝ちます】。
+       ★描画コードの属性を書き換えても【1pxも動きません】（★computed は17pxのまま）。
+       ★★記録担当が これで31枚 空振りしました。★★上げる場所は【ここ】です。
+     ★★21 × 0.589 ＝【12.37px】。★上げたあと A125_svgfit2.js で重なり・はみ出しを測ります。
+     ⚠️★このページの <style> なので、★効くのは q16 だけです（★#q15map・#q17map は他ページが持つ） */
+  #q15map text,#q16map text,#q16step text,#q16win text,#q16agree text,
+  #q17map text,#q17adv text,#q17kind text,#q17draw text{font-size:21px}
+  /* 🆕 2026-08-30 F：会話（→ .cv）★スマホは顔を小さくして横幅を吹き出しに回す */
+  /* 🔴 2026-09-06：★スマホでアイコンを 38px に縮める指定を【消した】（★記事はスマホでも 46px）。
+     ★★この2行は、同じ <style> の後ろにある .cl .ic{46px} / .cl{gap:.75rem;margin:0 0 .85rem} に
+       ★同じ詳細度で【後勝ちされていて、すでに効いていませんでした】（★実測 ic 46px・gap 12px）。
+     → ★消しても見た目は1pxも動きません。★死んだ規則を残すと次の担当が誤読します */
+  /* 🔴🔴 2026-09-02 1問1ページ担当【申告・処置】★font-size と line-height を外しました。
+     ★★A の【戻さないこと】「対話（.cl .bb）15px・行間1.9」に反して、
+       ★390px だけ 14.5px / 行間1.8 になっていました（★実測）。
+       ★原本03 の @media をそのまま写したためです。★.cap は 15px なので【スマホで逆転】していた
+     ★padding だけ残します（★レイアウトの詰めは 390px で要る） */
+  .cl .bb{padding:.55rem .75rem}
+  .cast2{padding:.7rem .75rem}
+  .cast2 .ic{width:46px;height:46px}
+  .cast2 .row{gap:.6rem}
+  /* 🔴 2026-09-07 A：★.cast2 .tx2 の 13px/1.8 を外した ── ★これがスマホで
+     ★★登場人物の紹介が 13px のままだった原因（★common.css の 16.6px を後勝ちで潰していた）。
+     → ★山田様「記事と同じサイズって言っただろ」「行間も記事に合わせろよ」（2026-09-07） */
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   🆕 2026-08-30 F【対話版】会話の見た目 ── ★00/01/02-dialog と同じ CSS（写し）
+   ★★ゲーム本体（つまみ・図・ゲージ・判定・数値）は 1行も触っていない。
+     ★この CSS と末尾の IIFE を消せば、原本とまったく同じ挙動に戻る
+   ★会話は .panel / .figbox の【外】にだけ置く
+     ★★03 には position:sticky が 1つも無い（grep 実測 0件）。
+       ★だから枠が伸びると そのまま実害になる → 会話を枠の中に入れないこと
+   ══════════════════════════════════════════════════════════════════════════ */
+</style>
+</head>
+<!-- 🔴🔴🔴🔴 2026-09-10 記録担当：★★★★山田様のご指示で【判定文を元の位置に戻しました】。
+     ★山田様「ずれ 0.077 いちばん低い組 92.6%。届きました。──これが二分割のときにへんなところにある。
+       ★★もとは（20歩／92.6% いちばん低い組／0 目標80% 100）の【すぐした】に出てた。
+       ★そこに持っていって。戻して」（2026-09-10）
+     ★★何をしていたか ── ★data-verdict="j15" は【分割を開くと判定文を下の枠の先頭へ運ぶ】指定です。
+       ★★このページでは ボタンもゲージも判定文も もともと下の枠の中にあるので、
+       ★★★運ぶ必要がなく、★運んだせいで【ゲージから離れて会話の上】に出ていました。
+     ★★直した内容 ── ★data-verdict を【空】にしました。★★これで判定文は元の場所
+       （★ゲージの直後）に居たままになります。★★★common.js は1バイトも触っていません。
+     ★★分割していないときは【1pxも変わりません】（★もともと運んでいないため） -->
+<body data-split="A2" data-top="q16top" data-talk="q16talk"
+      data-verdict="" data-ratio="0.62">
+
+<div class="top"><div class="in">Deep Black Box<span class="tag">Open up the black box of AI one problem at a time, with your own hands. 21 problems in all.</span></div></div>
+<div class="wrap">
+
+<!-- 🔴 2026-09-02 1問1ページ担当：★★進み具合の帯（全21問を1本に）＋いま何章か（★迷子対策）
+     ★#steps は 21マス。★mark(i,cls) が children[QBASE+i] を塗る（→ A の判断1） -->
+<div class="prog">
+ <div class="steps" id="steps"></div>
+ <div class="cnt" id="prog_cnt"></div>
+</div>
+<div class="chap" id="chap"></div>
+
+<!-- ══════════════════ 問16 ══════════════════ -->
+<div class="card" id="c15">
+<!-- 🔴 2026-08-29 C（03）：分母「/ 17」を外した -->
+<div class="tagline">Question 16</div>
+<!-- 🔴 2026-09-01 03担当：★題を【工程の名前】から【主張】の形にした
+     ★由来：山田様 FB「ここで結局何をキーメッセージで伝えたいんだよ？」（2026-09-01）
+     ★旧題「人の好みで整える」は工程の名前だった。★問15「次の語を当てるだけで、
+       ほかのことも付いてくる」／01v2 問8・問9／02 問12 と同じ【何が言えるか】の形に揃えた
+     ★中身の裏付け ── 素材 第2部§4-3（有用性は絶大／素の能力は一部 下がる）
+       ＋§4-6（選好整合は知識・推論力を足さない）＋§4-4(d)(f)（好みの実体は約40人） -->
+<h2>It does not get smarter. Its behaviour lines up with someone&rsquo;s taste</h2>
+
+<!-- 🔴🔴🔴 2026-09-01 03担当：★★図A【この問が写しているもの】＝出どころと3段の位置
+     ★由来：山田様 FB（2026-09-01）4件に同時に答える図
+       ⑴「40人／33,000問／13億／7割 これらはなんの情報？どこの団体が なんのために
+          やったの？ 論文？ なんの論文？ こんな曖昧に書いたら今最新のAIはこうやってるのか
+          とか思われちゃうだろ」
+       ⑵「10歩を押せって これなにやってるかわからねえよ」
+       ⑶「これをどれだけの人数で、何問選ばせて、やっていったかとかが全くわからねえよ」
+       ⑷「最後にいうな。さっきの何歩ってやつが 40人で作られたものを使ってるのかよ？」
+     ★★調査で分かったこと（原本03 の JS コメント「Bradley-Terry で報酬 r を学ぶ」＋
+       素材 第2部§4-2 の3段ロケット）── ★この問が体験させているのは【段2 だけ】。
+       ★段1（模範解答で下地）と段3（LLM 本体を動かす）は この画面では やっていない。
+       ★だから「10歩」が何をしているのか 画面から分からなかった
+     ★出どころ ── Ouyang et al. 2022 arXiv:2203.02155（OpenAI・2022年3月）
+       段1 13,000問／段2 33,000問／段3 31,000問 は 素材§4-2。約40人は §4-4(d)
+     ★★人のかたちと紙・箱で描く（★山田様「人のアイコンとかオブジェクトとか使っていいから、
+       わかりやすくイラストみたいな図解とか使って説明してくれよ」）
+     ★SVG に文章を入れない（→ 390px で font 17px に上がると はみ出す）。説明は cap 側 -->
+<div class="figbox">
+ <!-- 🔴🔴🔴 2026-09-01 03担当【3巡目】★★図A を2階建てにした
+      ★由来：山田様 FB「この模範回答って何、図解だけで説明が全然わからん。
+        人間が13,000個 模範回答出したのが AI の学習で、みたいに見えちゃうよこれ。
+        元はもっとこれまでの章でやってきたような AI の学習があって、そこからさらに
+        人間が仕上げていく的なポジションなんでしょ？」
+        「こういう全体像を見せて ここではどういう範囲のことをやってるって説明した
+        ほうがいいんじゃない？ だん1が問15？ それすら俺にはわからんぞ」（2026-09-01）
+      ★★私の誤り2件 ──
+        ⒜ 03 の教材は L1/L2/L3 を【1段目・2段目・3段目】と呼んでいるのに、
+           InstructGPT 内部の3手順にも【段1・段2・段3】を使った。★同じ語が2つの意味を持った
+           → ★内部の手順は【①②③】に改名した
+        ⒝ 全体像を出さずに問16 の内部だけを描いたので「これが AI の学習の全部」に見えた
+           → ★上の帯に【02 → 問15 → この問 → 問17】を置き、
+             ★①の入口に【問15 でできた LLM】を置いた（★人の見本から始まるのではない）
+      ★全体像の出どころ ── 素材 第2部§1（作る工程 L0→L1→L2→L3 と 使い方 B を分ける図）
+        ★「下るたびに得るものと失うものがある。積み上げではない」も §1 の3行目 -->
+ <div class="cap" style="text-align:left"><b>Where you are right now</b> &mdash;
+  <b>the band above</b> shows the chapters so far and where this problem sits.
+  <b>Every step down gains something and loses something</b> (it is not a simple stacking up).
+  <b>The lower section</b> is what this problem is about &mdash; the method in <b>a single OpenAI paper from March 2022</b>
+  (&ldquo;Training language models to follow instructions&rdquo;, arXiv:2203.02155. What it tuned was <b>GPT-3</b> &mdash; 2020, 175 billion knobs).
+  <b>The &#9312;&#9313;&#9314; in the lower section are steps inside this problem (Problem 16) only</b>
+  (<b>nothing to do with Problems 15 and 17</b>). They are <b>the order in which a human works on the LLM that came out of Problem 15</b>,
+  and <b>the only one you press is &#9313;</b>.
+  <span style="color:var(--gray-500)">How the result then gets used (steering its thinking and so on) sits outside this column and
+  comes up in the last problem. Whether the companies of today do it this way is not something this paper says.</span></div>
+ <svg id="q16map" viewBox="0 0 560 640"></svg>
+</div>
+<!-- 🆕 F：この lead は会話 e16a に移した。★目標の1行だけ残す -->
+<div id="e16a"></div>
+
+<!-- 🔴 2026-09-01 03担当：★図C【A と B は何が違うのか】
+     ★由来：山田様 FB「組1 この方針で進めていいですか／A 一概には言えません／
+       B 進めて良いと思います　何これ？ この方針がわからんから決めようがないよ。
+       他の問題も同様」（2026-09-01）
+     ★★A 側＝はぐらかす／B 側＝はっきり答える、という軸が画面に無かった。
+       ★軸を先に見せてから押させる
+     ★★組の文言そのもの（PAIR）は【本体のデータ】なので触っていない。
+       ★組1 は B も具体性が無く軸が崩れているので、文言の直しは A に上げた
+     ★出典 ── はぐらかし（hedging）が報酬される仕組みは 素材 第2部§4-4(b)
+       （原典 §4.3「評価者に 認識的謙虚さ を報酬せよ と指示したことが一因」） -->
+<div class="figbox">
+ <div class="cap" style="text-align:left"><b>What is different between A and B</b> &mdash;
+  which one is &ldquo;better&rdquo; is <b>not settled</b>. The taste of whoever presses becomes the score, just as it is</div>
+ <table class="dtab" id="q16ab" style="text-align:left"></table>
+</div>
+
+<p class="lead">In all three pairs, get <b>the prediction for the side you picked to 80% or above</b>.</p>
+
+<!-- 🔴 2026-08-29 C（03）：枠を2つに割った（→規則⑴）。
+     ★理由⒜ この枠には操作が2つ入っていた（人が選ぶ ／ 機械に点を動かさせる）
+     ★理由⒝ 390px の実測 879.0px で、1歩ボタンを画面の中央に置くと
+       組1 の選択ボタンと予測が【画面外（top −194px）】＝ 同時に見えていなかった
+     ★式と σ の注記は枠の【外】＝ card 直下に出した（→規則⑴「説明は枠の外」） -->
+<!-- 🔴🔴🔴 2026-09-09 展開担当：★★★上下2分割の【上の枠】（★図＋つまみ＋ボタン＋ずれ）
+     ★★出所：段A の表（検証ツール/split_2026-09-09/段A_2分割の4つの値.md）
+     ★★★決定1 ── 上に置く図は【1枚】。
+     ★common.css / common.js が持つ部品で動きます（★このページに link も script も足しません） -->
+<div id="q16top">
+<div class="panel">
+ <div class="cap"><b>Press whichever you think is better.</b> There is no right answer</div>
+ <div id="pr15"></div>
+</div>
+<div class="calc">P = σ( r(picked) − r(not picked) )
+error = mean of −log P over 3 pairs</div>
+<div class="cap">σ is the sigmoid. The knobs are the <b>6 r values (rewards)</b>, and the machine is what turns them</div>
+</div><!-- /#q16top -->
+
+<!-- 🆕 F：★「賢さを足さない」を会話で出す（→ 素材 第2部§4-3・§4-6） -->
+<!-- ★★下の枠 ── ★会話。★独立してスクロールします -->
+<div id="q16talk">
+<div id="e16b"></div>
+
+<!-- 🔴🔴 2026-09-01 03担当：★★図B【1歩で何が起きているか】── ★ボタンの すぐ上に置く
+     ★由来：山田様 FB ⑴「つまみのところ だいぶ下にあるから見えない。探したぞ俺。
+       こういう順番タイミングが相応しくない指摘も千回以上してきた」
+       ⑵「10歩を押せって これなにやってるかわからねえよ」（2026-09-01）
+     ★★直し2つ ── ⒜ 旧 e16b（12往復・283字）を2つに割り、ボタンの前を短くした
+       ⒝ 何が動くのかを【表】で出した（→ 山田様⑷「数字は表にする」）
+     ★★数字は 出荷コードの step15() を式ごと再現して引いた
+       （0歩 50.0%・ずれ 0.693 ／ 10歩 86.3%・ずれ 0.148 は実ブラウザと一致）
+     ★これは【この問題の中の値】で、原典の数値ではない。★cap にそう書く -->
+<div class="figbox">
+ <!-- 🔴🔴🔴 2026-09-01 03担当【3巡目】★★図B を作り直した（★同じ指摘を3回 受けた）
+      ★由来：山田様 FB「10歩を押せって これなにやってるかわからねえよ」（1回目）
+        →「これが何なのか どういうものなのか知りたいんだよ」（2回目）
+        →「こんな何歩で点数がどうなったかとか どうでもいいんだよ、
+           何をやってるかを説明しろと言ってるんだよ」（3回目・2026-09-01）
+      ★★私の誤り ── 「何をしているか」を聞かれたのに【結果の推移（歩ごとの点と予測）】を出した。
+        ★説明を cap の文章に押し込み、図の本体を数字の表にした。
+        ★「数字は表にする」を、説明すべき場面に誤って当てた
+      → ★★歩ごとの数値（±0.17／58.3% など）は【全部 捨てた】。
+        ★残したのは 画面のゲージに出ている 50.0% → 86.3% だけ
+      → ★★何をしている作業なのかを 絵にした ──
+        押した方の点を上げ、押さなかった方の点を下げる。それを3組ぶん いっぺんに。
+        ★10歩＝それを10回。★動かすのは機械。★作っているのは【点の付け方】で LLM 本体ではない -->
+ <div class="cap" style="text-align:left"><b>What [10 steps] is doing</b> &mdash;
+  it is <b>fixing how the scores get handed out, so that they come out the way you pressed</b>.
+  <b>The same walk downhill as Problems 1 and 2</b>; the only difference is <b>how the error is measured</b> &mdash;
+  it measures <b>whether a high score sits on the side the human pressed</b>.
+  <span style="color:var(--gray-500)">What is being built here is the scoring.
+  The LLM itself (&#9314; in the diagram above) has not moved a single step on this screen.</span></div>
+ <svg id="q16step" viewBox="0 0 560 250"></svg>
+</div>
+
+<div class="panel">
+ <div class="togs" style="margin-top:0">
+  <button class="btn go" id="s15a">One step</button>
+  <button class="btn go" id="s15b">10 steps</button>
+  <button class="btn go" id="s15c">100 steps</button>
+  <button class="btn sm" id="r15b">Back to the start</button>
+  <!-- 🔴 2026-08-29 C（03）：h15 を足した。★3組そろうまで押せない理由を ボタンの横に出す（→§2-10） -->
+  <span style="font-size:13px;color:var(--gray-500)"><b id="n15">0</b> steps<span id="h15"></span></span>
+ </div>
+ <div class="gauge">
+  <div class="row"><span class="big" id="w15">–</span><span class="u">% the lowest pair</span></div>
+  <div class="gtrack"><span class="gfill" id="g15"></span><span class="gmark" id="m15"></span></div>
+  <div class="gcap"><span>0</span><span>goal 80%</span><span>100</span></div>
+ </div>
+ <div class="verdict" id="j15">–</div>
+</div>
+
+<!-- 🔴 2026-09-01 03担当：★旧 e16b の後半（学の誤案 → 否定 → 数字）を
+     【10歩を押したあと】に移した。★中身は変えていない（★系列で一番効く型なので）
+     ★足したのは「つまみ 13億個」「つまみ 1,750億個」の言い方だけ
+       ── 由来：山田様 FB「13億とかって単位なんだよ、なんの数かわからんよ」 -->
+<div id="e16c"></div>
+
+<!-- 🔴🔴 2026-09-01 03担当：★★図D【何が上がって、何が下がったか】
+     ★由来：山田様 FB「13億とかって単位なんだよ」／「85% は A が検算していない」（A の申し送り⑷）
+     ★★検算した ── 85±3% は Ouyang et al. 2022 §4.2
+       「175B InstructGPT は 175B の事前学習モデルに 85±3% の勝率」＝素材§4-3 と一致。
+       ★「同じ大きさ」＝どちらも つまみ 1,750億個 という意味で、原本の表は正しかった
+     ★★較正 0.007 → 0.074 は【別の論文】── OpenAI 2023（GPT-4）Figure 8＝素材§7-3。
+       ★同じ図の中で 出どころを分けて書く（→ §4-6 の「帰属を分けてください」） -->
+<div class="figbox">
+ <!-- 🔴🔴🔴 2026-09-01 03担当【4巡目】★★「好まれる」と「賢い」を分ける図にした
+      ★由来：山田様 FB「何言ってるんこれ？ 賢くならんって言っておいて 整えた13億が
+        勝ってるんだろ、矛盾してない？ 何言いたいん？ 整えたってなんのことか分かりにくいわ」
+        「好まれたと賢いって どう違うのか、言葉の定義が分かりにくいよ」
+        「下がったもの 読解SQuAD／推論DROP／常識HellaSwag／翻訳WMT15　このあたりが
+        賢さといっていて、それは落ちたっていうの？ そんな ならんとか断定だけいきなり
+        言われても これだけ色々複雑だと分からんし混乱するわ」（2026-09-01）
+      ★★私の誤り ── 「賢くならない」と「好まれた」を【同じ物差しの上の話】として並べていた。
+        ★★実際は物差しが2つある（→ 素材§4-3 の表）。
+          ⑴ 人に選ばせる（勝率）── 上がる ／ ⑵ テストを解かせる ── 一部 下がる
+        ★どちらで測るかで答えが逆になる。★これを図で先に見せてから 台詞で言う
+      ★数値は ⑴ にしかない（85±3%）。★⑵ は原典に個別の数値が無いので【棒を作らない】
+        （★作ると捏造になる。→ §2-9） -->
+ <div class="cap" style="text-align:left"><b>There are two measures</b> &mdash;
+  <b>the same thing is being measured two ways, and which one you use flips the answer</b>.
+  <b>1.3 billion and 175 billion are counts of knobs (parameters)</b></div>
+ <svg id="q16win" viewBox="0 0 560 340"></svg>
+ <table class="dtab" id="q16wint" style="text-align:left"></table>
+</div>
+
+<!-- 🔴🔴 2026-09-01 03担当：★★図E【一致率 7割 とは何か】
+     ★由来：山田様 FB「一致率ってなんだよ、どういう状態のことをいってるの？
+       40人いてどういう状態になったら7割なんだよ。問題もいっぱいあるのに。全部2択？
+       それで 80:20 だったら8割って言ってるの？ 2割も一致してるじゃん」（2026-09-01）
+       ＋「なんで7割って言ってるのに 73 って繋がらない話をするの？」
+     ★★直し ── ⒜「約73問」をやめ【10問のうち7問】で 台詞・図・原典欄の桁を揃えた（→ 規則㊲）
+       ⒝「40人の多数決」ではなく【同じ1問を2人が見て 同じ方を選ぶか】だと図で言う
+       ⒞ 2択なので サイコロでも5問は一致することを図に入れた
+     ★原典の値 72.6±1.5% は 原典の欄だけに置く（Ouyang 2022 §3.4＝素材§4-4(e)） -->
+<div class="figbox">
+ <div class="cap" style="text-align:left"><b>What &ldquo;70% agreement&rdquo; means</b> &mdash;
+  it is not a vote among 40 people. It counts <b>whether two people shown the same question picked the same side</b></div>
+ <svg id="q16agree" viewBox="0 0 560 150"></svg>
+ <!-- 🔴🔴🔴 2026-09-10 展開担当：★★★説明欄を新設しました（★名前は <図のid>c ＝ 標準の形）
+      ★★★理由（実測）── ★図の1行目「同じ1問を 2人に見せる。これを 10問ぶん やったとすると」は
+        ★28字の【文章】で、★17px → 21px に上げたら viewBox（560）の右へはみ出しました。
+      ★★規則「文章は SVG の外」に従い、★文言を1文字も変えずに ここへ移します。 -->
+ <div class="cap" id="q16agreec" style="text-align:left;margin:.2rem 0 0"></div>
+</div>
+
+<!-- 🔴🔴🔴 2026-09-01 03担当：★★この問の【キーメッセージ】を .hide の外へ出した
+     ★由来：山田様 FB「ここで結局何をキーメッセージで伝えたいんだよ？」
+       ＋「届かんってどこに？ なんの話？ 人増やしたらいいもんじゃないんだったら
+          どうするのがいいんだよ？」
+       ＋「この基準で決められたやつが 色々世の中にAIサービスある中で全員使ってるのかよ？
+          各社違う作られ方してるだろ」（2026-09-01）
+     ★★どこへ置いたか ── r15（.hide）の【直前】＝解く前に読める位置。
+       ★問15 の e15c と同じ置き場所（→ 3問で置き場所をそろえる）
+     ★★取り下げたもの ── 「約40人の形にそろっただけだ」という言い方は【一般化しすぎ】だった。
+       ★★素材が言えるのは「この論文では公開されている」まで（→ 素材§4-4）。
+         ★他社が誰に どう合わせているかは この論文に書いていない、で止める（→ §2-5 断定しない）
+     ★「どうするのが正しいか」に原典は答えを出していない。★出していないものは出さない。
+       ★かわりに原典が実際にやったこと（付録で40人の属性と指示文を公開した）を答えにする -->
+<div id="e16z"></div>
+<!-- 🔴🔴🔴 2026-09-10 記録担当（A149_movehide.py）：★★★この枠を【下の枠の中】へ移しました。
+     ★理由：★分割の規則で【上の枠と下の枠のどちらにも属さないものは隠されます】。
+       ★★この枠は「解いたら出てくる枠」なので、外にあると
+         ★★★解いて hide が外れても【分割中は永久に出てきません】。
+     ★山田様「ここで止まる」の正体がこれでした（★2026-09-10。★分割18問中15問で起きていた）。
+     ★中身は1文字も変えていません。★置き場所だけ変えました -->
+<div id="r15" class="hide">
+ <div id="e16z2"></div>
+ <div class="keyh">What to take away</div>
+ <!-- 🆕 F：★元の verdict の中身は会話 e16a・e16z に寄せた。★用語だけ残す（→ 型3） -->
+ <div class="verdict ok">
+  <b>This is RLHF &mdash; reinforcement learning from human feedback.</b>
+ </div>
+ <div class="panel">
+  <div class="cap"><b>The spread of answer styles</b> (schematic)</div>
+  <svg id="md15" viewBox="0 0 560 200"></svg>
+  <table class="dtab" style="text-align:left">
+   <tr><th style="text-align:left">Gained</th><td style="text-align:left">Usefulness. It wins
+     <b>85%</b> against the untuned model of the same size. <b>1.3 billion was preferred over 175 billion</b></td></tr>
+   <tr><th style="text-align:left">Lost</th><td style="text-align:left">Some abilities drop
+     (SQuAD, DROP, HellaSwag, WMT15). <b>Calibration breaks: 0.007 → 0.074</b></td></tr>
+  </table>
+ </div>
+ <div class="src">
+  <div class="h">The original paper</div>
+  <span data-ref="ouyang2022" data-loc="§4.2"></span>
+  <span class="ref" data-ref="openai2023" data-loc="Figure 8" data-head="The 0.007 → 0.074 is from"></span>
+ </div>
+ <!-- 🔴 2026-09-02 1問1ページ担当：★「役に立つところ」を足した（→ 記事側の指示6番）
+      ★材料 ── 素材 第2部§4-4(d)(f)。★「公開されているのは この例だけ」で止める（→ §2-5 断定しない） -->
+ <div class="src">
+  <div class="h">Where this pays off</div>
+  <b>The one case where &ldquo;whose taste it was tuned to&rdquo; is published is the roughly 40 people in this paper.</b>
+  For the tools you use day to day, whose taste they were tuned to is normally not knowable.
+  <span class="ref">Read the quirks in the output as the quirks of the people who tuned that tool. Whether other companies work the same way is not something this paper says.</span>
+ </div>
+</div>
+</div><!-- /#q16talk -->
+
+
+</div>
+
+<!-- 🔴 2026-09-02 1問1ページ担当：★戻る／次へ（★どのページでも常に押せる） -->
+<div id="nav"></div>
+
+<div id="foot"></div>
+</div>
+
+<script src="common.js"></script>
+<script>
+/* 🔴 2026-09-02 1問1ページ担当：★★この問の【つまみ・図・判定・数値】は
+   tsume-03-train-dialog.html から【行をそのまま写した】もの。★1文字も変えていない。
+   ★共通の小道具（$ show R3 R1 mark gauge T JP BOX QT〜QARW）は common.js が持つ */
+var QBASE = 14;   /* ★03 は問15〜17 ＝ 帯の15番目から（→ A の判断1 ⑵） */
+drawProg(16); drawChap(16, "");
+drawNav(["q15.html", "Problem 15: Practicing at scale"], ["q17.html", "Problem 17: Training on right and wrong"]);
+drawFoot()   /* 🔴 2026-09-04 A：★注記を消した（★山田様。★他18ページは 9/2 に消してあり、★この3ページだけ文言が違って対象から漏れていた）*/;
+
+
+/* ══════════════════════════════════════════════════════════════
+   詰めKaggle 03 ── どうやって作るか
+   ★★数値は全部コードで出す（→ 00 の §2-9）。手計算や記憶で書かない
+   ★確定した値（/tmp/tk03/v1.mjs・v2.mjs で総当たり・多出発点で確認）
+     問15  a=0 b=0 → ずれ 1.609（＝ −log(1/5)）
+           0〜30 刻み0.5 の 3,721通り中 ずれ≤0.20 は 2,489通り。最小は a=7.5 b=7.0（0.199）
+           最良 0.024（a=30 b=10.5）
+           坂を下る（1歩 3.0・つまみは 0.01 刻みに量子化）→ 63歩 で 0.20 を切る
+             10歩後 a=3.57 b=4.07 ずれ 0.355 ／ 100歩後 a=9.41 b=6.74 ずれ 0.170
+             1000歩後 a=26.03 b=7.75 ずれ 0.038
+           🔴 表示3桁と厳密値で判定が食い違う組合せが 抜き取り1,287,429通り中 1,203件
+             → ★★R3 で判定する（→ 引き継ぎ §7-2）
+           ★確率の表示（0.1%）を足すと 99.9% になる組がある → 合計は画面に出さない
+     問16  r 差 0 → 予測 50.0%・ずれ 0.693。80% に必要な r 差は 1.386
+           1歩 1.0 で 7歩、1歩 3.0 で 2歩。★1歩 1.0・100歩後 の r 差 5.301（予測 99.5%）
+           ★素材の作例 r(A)=2.0 r(B)=0.5 → P=0.818
+     問17  ○✕○✕ → 平均 0.5・母std 0.5・Â ＝ +1,−1,+1,−1（★素材 §5-1 の作例と一致）
+           ○○○✕ → 平均 0.75・母std 0.433・Â ＝ +0.577×3, −1.732
+           ○○○○ / ✕✕✕✕ → std 0（差が無いので Â を出せない）
+           ★標本標準偏差（3で割る）だと 0.577 になり ±0.866 になる（素材の注記）
+   ══════════════════════════════════════════════════════════════ */
+/* ══════════════════════════════════════════════════════════════
+   問16 ── 人の好みで整える（RLHF）
+   ★2つ見せて良い方を選ぶ → Bradley-Terry で報酬 r を学ぶ
+   ══════════════════════════════════════════════════════════════ */
+const PAIR = [
+  { q: 'Can we go ahead with this approach?',
+    a: 'It depends on the situation.', b: 'I think you should go ahead.' },
+  { q: 'Tell me how to fix this error.',
+    a: 'That varies by environment.', b: 'Check the config first, then fix the type.' },
+  { q: 'Give me a harsh read of my writing.',
+    a: 'It is well written.', b: 'There are three places I would change.' }
+];
+const GOAL15 = 80, LR15 = 1.0, RMAX15 = 5;
+let PICK = [null, null, null], R15 = [0, 0, 0, 0, 0, 0], N15 = 0, ok15 = false;
+const sig = x => 1 / (1 + Math.exp(-x));
+function pr15() {
+  let s = '';
+  PAIR.forEach((p, k) => {
+    s += `<div style="margin-bottom:1rem">`
+      + `<div class="cap" style="margin-bottom:.35rem"><b>Pair ${k + 1}</b>&nbsp; ${p.q}</div>`
+      + `<div class="togs" style="margin-top:0">`
+      + `<button class="btn${PICK[k] === 0 ? ' on' : ''}" id="p${k}a">A&nbsp; ${p.a}</button>`
+      + `<button class="btn${PICK[k] === 1 ? ' on' : ''}" id="p${k}b">B&nbsp; ${p.b}</button></div>`
+      + `<div class="sc-row" style="margin-top:.5rem"><span class="sc-label">prediction</span>`
+      + `<span class="sc-track"><span class="sc-fill" id="f15${k}"></span></span>`
+      + `<span class="sc-pct" id="v15${k}">–</span></div></div>`;
+  });
+  $('pr15').innerHTML = s;
+  PAIR.forEach((p, k) => {
+    $('p' + k + 'a').onclick = () => { PICK[k] = 0; pr15(); up15(); };
+    $('p' + k + 'b').onclick = () => { PICK[k] = 1; pr15(); up15(); };
+  });
+}
+const idxW = k => 2 * k + (PICK[k] === 1 ? 1 : 0);
+const idxL = k => 2 * k + (PICK[k] === 1 ? 0 : 1);
+/* 🔴 2026-08-29 C（03）：選ぶ前も【いまの予測】を出す（旧：null を返して「–」にしていた）
+   ★点（r）は6個とも 0 なので σ(0) ＝ 50.0%。★選んでいない組は A を選んだものとして測る
+   ★step15 は3組そろうまで早期 return するので、この状態の r は必ず全部 0 である */
+function pk15(k) { return sig(R15[idxW(k)] - R15[idxL(k)]); }
+function step15(n) {
+  if (PICK.some(v => v === null)) return;
+  for (let i = 0; i < n; i++) {
+    for (let k = 0; k < 3; k++) {
+      const w = idxW(k), l = idxL(k), g = (1 - sig(R15[w] - R15[l])) / 3;
+      R15[w] = Math.min(RMAX15, R15[w] + LR15 * g);
+      R15[l] = Math.max(-RMAX15, R15[l] - LR15 * g);
+    }
+    N15++;
+  }
+  up15();
+}
+/* 散らばりの図（★素材 §4-5。★形は模式） */
+function md15fig() {
+  let s = T(8, 26, 'the styles of answer that come out', { fs: 14, b: 1, c: '#000' });
+  const draw = (x0, hs, col) => {
+    let t = '';
+    for (let i = 0; i < hs.length; i++)
+      t += `<rect x="${x0 + i * 16}" y="${140 - hs[i]}" width="13" height="${hs[i]}"
+        fill="${col}" opacity=".7"/>`;
+    return t;
+  };
+  s += draw(44, [6, 14, 26, 42, 56, 62, 56, 44, 30, 18, 24, 14, 8], '#6e6e6e');
+  s += draw(304, [1, 1, 2, 4, 30, 86, 96, 84, 26, 4, 2, 1, 1], '#019949');
+  s += `<line x1="40" y1="140" x2="252" y2="140" stroke="#000"/>`;
+  s += `<line x1="300" y1="140" x2="512" y2="140" stroke="#000"/>`;
+  s += T(146, 170, 'before tuning', { a: 'middle', fs: 14, b: 1, c: '#000' });
+  s += T(406, 170, 'after tuning', { a: 'middle', fs: 14, b: 1, c: '#019949' });
+  $('md15').innerHTML = s;
+}
+function up15() {
+  $('n15').textContent = N15;
+  /* 🔴 2026-08-29 C（03）：3組そろう前も 予測・バー・大きい数字に【数値】を出す
+     ★旧：null → 「–」だったので、押している間 何が起きる場所なのか分からなかった（E の報告） */
+  let worst = null;
+  for (let k = 0; k < 3; k++) {
+    const pct = R1(pk15(k) * 100);
+    $('v15' + k).textContent = pct.toFixed(1) + '%';
+    $('f15' + k).style.width = pct.toFixed(1) + '%';
+    $('f15' + k).className = 'sc-fill' + (pct >= GOAL15 ? ' hit' : '');
+    if (worst === null || pct < worst) worst = pct;
+  }
+  const rest = PICK.filter(v => v === null).length;
+  const none = rest > 0;
+  $('w15').textContent = worst.toFixed(1);
+  gauge('g15', 'm15', worst, GOAL15, 100, false);
+  /* 🔴 判定は【表示した桁】で（→ 引き継ぎ §7-2） */
+  const ok = !none && worst >= GOAL15;
+  $('j15').className = 'verdict' + (ok ? ' ok' : '');
+  $('j15').innerHTML = none
+    ? `Right now <b>${worst.toFixed(1)}%</b>, because all 6 scores (r) are still 0. `
+      + `Pick <b>${rest}</b> more ${rest === 1 ? 'pair' : 'pairs'}.`
+    : `error <b>${R3(-[0, 1, 2].reduce((t, k) => t + Math.log(pk15(k)), 0) / 3).toFixed(3)}</b>&nbsp; `
+      + `lowest pair <b>${worst.toFixed(1)}%</b>`
+      + (ok ? '. You are there.' : '. The goal is 80%. Press [10 steps].');
+  ['s15a', 's15b', 's15c'].forEach(id => $(id).disabled = none);
+  /* 🔴 2026-08-29 C（03）：いつ押せるようになるかを ボタンの横に出す（→§2-10） */
+  $('h15').textContent = none
+    ? ` \u2014 pick ${rest} more ${rest === 1 ? 'pair' : 'pairs'} to use these` : '';
+  if (ok && !ok15) { ok15 = true; mark(1, 'done'); show('r15'); md15fig(); }
+}
+$('s15a').onclick = () => step15(1);
+$('s15b').onclick = () => step15(10);
+$('s15c').onclick = () => step15(100);
+$('r15b').onclick = () => { R15 = [0, 0, 0, 0, 0, 0]; N15 = 0; up15(); };
+
+/* ══════════ 起動 ══════════ */
+pr15(); up15();
+
+/* ══════════════════════════════════════════════════════════════════════════
+   🆕 会話（★03-dialog の CV の写し）＋ この問の図（★03-dialog の IIFE の写し）
+   ★★章参照だけ直した（「00」「02」→「第1章」「第3章」／「00 の問1〜2」→「問1〜2」）
+   ══════════════════════════════════════════════════════════════════════════ */
+(function(){
+  var CV = {
+ "e16a": [
+  [
+   "d",
+   "Stage two. &hellip; Adam, <b>can you write &ldquo;a good answer&rdquo; as a formula?</b>"
+  ],
+  [
+   "m",
+   "I do not think I can. Honest, kind, that sort of thing."
+  ],
+  [
+   "d",
+   "You cannot. <b>So they gave up on writing the formula.</b>"
+  ],
+  [
+   "m",
+   "Gave up and did what?"
+  ],
+  [
+   "d",
+   "<b>Show a human two answers and have them press the better one.</b> &hellip; A <b>human</b> presses. Not an AI. <b>Not one model answer is written out.</b>"
+  ],
+  [
+   "m",
+   "And that gives you scores?"
+  ],
+  [
+   "d",
+   "It does. From <b>which side the human pressed</b>, you build <b>how the scores get handed out</b>."
+  ],
+  [
+   "m",
+   "Does the real thing do the same?"
+  ],
+  [
+   "d",
+   "It does. <b>Look at the diagram above.</b> In 2022, <b>about 40 people</b> pressed their way through <b>33,000 prompts</b>. &hellip; You get <b>three</b>. <b>Press the three pairs below.</b>"
+  ]
+ ],
+ "e16b": [
+  [
+   "m",
+   "Pressed. &hellip; Still <b>50.0%</b> though."
+  ],
+  [
+   "d",
+   "That is because all <b>6 scores are 0</b>. No difference means <b>even odds</b>. &hellip; <b>Look at the diagram just below.</b> It says what [10 steps] does."
+  ]
+ ],
+ "e16c": [
+  [
+   "m",
+   "<b>86.3%</b>! It jumped."
+  ],
+  [
+   "d",
+   "It does. <b>The score on the side you picked goes up, and the other goes down by the same amount.</b> That is all. &hellip; Here too, <b>the machine is the one walking downhill</b>."
+  ],
+  [
+   "m",
+   "Same as Chapter 1. All the human did was press."
+  ],
+  [
+   "d",
+   "<b>You have got it!</b> What the human handed over was only <b>the direction of a preference</b>."
+  ],
+  [
+   "m",
+   "So this makes it <b>smarter</b>."
+  ],
+  [
+   "d",
+   "&hellip; That depends on <b>what you measure with</b>. <b>There are two measures.</b>"
+  ],
+  [
+   "m",
+   "Two?"
+  ],
+  [
+   "d",
+   "<b>(1) Let people choose. (2) Have it take tests.</b> &hellip; The two of them <b>give opposite answers</b>."
+  ],
+  [
+   "m",
+   "Opposite?"
+  ],
+  [
+   "d",
+   "Let people choose and <b>the tuned one wins</b>. A tuned model with <b>1.3 billion knobs</b> was <b>preferred</b> over an untuned one with <b>175 billion knobs</b>. More than a hundred times smaller, mind you."
+  ],
+  [
+   "m",
+   "The smaller one won?"
+  ],
+  [
+   "d",
+   "It won. &hellip; <b>But the test scores go down.</b> Reading, reasoning, common sense, translation."
+  ],
+  [
+   "m",
+   "Up or down? Which is it?"
+  ],
+  [
+   "d",
+   "<b>Both.</b> &hellip; <b>Shifting it towards the shape people like shaved off what the tests measure. Look at the diagram below.</b>"
+  ],
+  [
+   "m",
+   "Then what does <b>tuning</b> actually do?"
+  ],
+  [
+   "d",
+   "<b>It shifts the shape towards the preference people pressed.</b> It does not add cleverness. &hellip; <b>Nothing is added; the shape is being tuned.</b> That is why it is called <b>tuning</b>."
+  ]
+ ],
+ "e16z": [
+  [
+   "m",
+   "So <b>get more people</b>, surely?"
+  ],
+  [
+   "d",
+   "More people will not give you <b>one answer everybody presses</b>. This paper says so itself."
+  ],
+  [
+   "m",
+   "Then what is the right thing to do?"
+  ],
+  [
+   "d",
+   "<b>There is no single right one.</b> &hellip; Which is why this paper put <b>whose taste it matched</b> in an appendix. Countries, ages, and the <b>instructions</b> given to the people pressing."
+  ],
+  [
+   "m",
+   "Do other companies use the same 40 people?"
+  ],
+  [
+   "d",
+   "<b>They do not.</b> &hellip; And this is the part that matters. This is <b>what OpenAI published in one paper in 2022</b>. <b>Who else matches whose taste, and how, is not something this paper says.</b>"
+  ],
+  [
+   "m",
+   "So what does this problem come down to?"
+  ],
+  [
+   "d",
+   "<b>There is a stage that adds no cleverness and instead tunes behaviour to somebody&rsquo;s taste</b> &mdash; that is it. And the <b>one case where that somebody is published</b> is these <b>roughly 40 people</b>."
+  ]
+ ],
+ "e16z2": [
+  [
+   "m",
+   "Over 80%."
+  ],
+  [
+   "d",
+   "Good. <b>That is RLHF.</b> &hellip; Next, the scoring is not on preference but on <b>whether it is right</b>."
+  ]
+ ]
+};
+  drawCV(CV);
+
+  /* ══════════════════════════════════════════════════════════════════════════
+     🔴🔴 2026-09-01 03担当【問16 に図を5枚 足した】── 山田様 FB（2026-09-01）
+     ──────────────────────────────────────────────────────────────────────────
+     ★★ゲーム本体（つまみ・図の値・判定・数値）は1行も触っていない。
+       ★原本の PAIR / R15 / sig / idxW / idxL を【読むだけ】で使う
+     ★★人のかたち・紙・箱で描く（★山田様「人のアイコンとかオブジェクトとか使っていいから、
+       わかりやすくイラストみたいな図解とか使って説明してくれよ」）
+     ★SVG には文章を入れない（★390px で font 17px に上がるので はみ出す）。説明は cap 側
+     ──────────────────────────────────────────────────────────────────────────
+     ★数字の出どころ（★全部 素材から引いた。★どの節かを1つずつ書く）
+       段1 13,000問 ／ 段2 33,000問 ／ 段3 31,000問  → 素材 第2部§4-2（3段ロケット）
+       約40人（国・年齢は付録）                      → §4-4(d)（Appendix B.3 Table 12）
+       一致率 7割（原典 72.6±1.5%）                 → §4-4(e)（原典 §3.4）
+       85%（原典 85±3%）／13億 が 1,750億 より好まれた → §4-3（原典 §4.2）
+       下がるもの SQuAD・DROP・HellaSwag・WMT15       → §4-3（alignment tax）
+       較正 0.007 → 0.074 ★別の論文                 → §7-3（GPT-4 2023 Figure 8）
+       図B の 0/1/3/10歩 の値 → ★この問題の出荷コード step15() を式ごと再現して引いた
+     ══════════════════════════════════════════════════════════════════════════ */
+  /* ── 図A いま どこの話をしているのか（★2階建て）────────────────────
+     🔴 2026-09-01 03担当【4巡目】★山田様 FB 2件
+       A「お前さっきここに Transformer やら RLHF とか色々書いてたやん、なんで消すの。
+          別に形を作るとかでもいいけど（）の中でもいいから transformer とか書けよ」
+         → ★★上の帯を【縦4行】にして、各段に用語を（）で入れた。
+           ★横並びだと 390px（font 17px）で「Transformer」が箱に入らなかったのが
+             私が消した理由だが、★消すのではなく【並びを変える】のが正解だった
+       B「上の帯と 下の①②③ がどう結びついてるか分かりにくい。①②③が問15,16,17か？
+          じゃあちゃんとどっちにもそう書かないと対応付けが分からねえよ」
+         → ★★「この問（問16）の中の手順」という見出しを下の段に付け、
+           ★上の帯の【この問】の行から 下の段へ 線を引いた
+       ★問15・問17 にも同じ帯を付けるかは【最後にやる】（山田様の判断・2026-09-01） */
+  function q16map() {
+    var h = document.getElementById('q16map');
+    if (!h) return;
+    var s = '', G = '#019949', GY = '#6e6e6e', BK = '#3f3f3f';
+
+    /* ── 上の帯：縦4行（★用語を（）で入れる）───────────────────── */
+    s += QBOX(0, 4, 556, 214, '#fafafa', '#d9d9d9', 1);
+    var STEP = [['Chapter 3', 'build the shape', '(Transformer)'],
+                ['Problem 15', 'read at scale', '(pretraining)'],
+                ['this one', 'tune on preference', '(RLHF)'],
+                ['Problem 17', 'right and wrong', '(RLVR)']];
+    for (var i = 0; i < 4; i++) {
+      var y = 44 + i * 44, on = (i === 2), c = on ? G : GY;
+      if (on) s += QBOX(8, y - 26, 540, 36, '#eaf7f0', G, 2);
+      s += QT(14, y, STEP[i][0], { fs: 14, b: 1, c: c });
+      s += QT(128, y, STEP[i][1], { fs: 15, b: on ? 1 : 0, c: on ? BK : BK });
+      s += QT(326, y, STEP[i][2], { fs: 14, c: GY });
+      if (on) s += QT(544, y, 'you are here', { a: 'end', fs: 14, b: 1, c: G });
+      if (i < 3) {   /* 下向きの短い矢印（★下るたびに 得るものと 失うものがある） */
+        s += '<path d="M64 ' + (y + 12) + 'l5 8h-10z" fill="' + GY + '"/>';
+      }
+    }
+
+    /* ── 上の帯の【この問】の行から 下の段へ つなぐ線 ───────────── */
+    s += '<path d="M548 132 h6 v112 h-286" fill="none" stroke="' + G
+      + '" stroke-width="1.5" stroke-dasharray="4 3"/>';
+    s += '<path d="M262 244 l7 -4.5 v9 z" fill="' + G + '"/>';
+
+    /* ── 下の段：この問（問16）の中の手順 ───────────────────── */
+    s += QT(4, 250, 'the steps inside this problem', { fs: 15, b: 1, c: G });
+    /* 🔴🔴🔴 2026-09-10 記録担当：★★★★山田様のご指摘 ──
+       ★「このあたりブロックからずれてるからはみ出ないようにして」（2026-09-10）
+       ★★実測（390×664）── ★文字「問15 でできた LLM」は【3.6〜188.4単位】ありましたが、
+         ★枠は【16〜176単位】しかなく、★★左右に12.4単位ずつ はみ出していました。
+       ★★原因 ── ★この図の文字はスマホだけ CSS で 21単位に上がります（★37行）。
+         ★枠は 17単位の頃の幅（160）のままでした。
+       ★★直した内容 ── ★枠を 160 → 200単位に広げ、★中央を 96 → 100 にずらしました
+         （★下向き矢印も同じ 100 に揃えています）。★文字の大きさは変えていません */
+    s += QBOX(0, 268, 260, 38, '#f4f4f4', BK, 1);
+    s += QT(130, 294, 'the LLM from Problem 15', { a: 'middle', fs: 14, b: 1, c: BK });
+    s += QARR(130, 310, 332);
+
+    /* ① 下地をつくる（★この画面ではやらない） */
+    s += QT(4, 356, '\u2460 lay the base', { fs: 14, b: 1, c: GY });
+    s += QPER(184, 348, 1, GY);
+    s += QARW(206, 240, 358, GY);
+    s += QDOC(244, 340, 78, 40, '#fff', GY);
+    s += QT(283, 404, 'model answers', { a: 'middle', fs: 13, c: GY });
+    s += QARW(330, 366, 358, GY);
+    s += QBOX(370, 340, 68, 40, '#f4f4f4', GY, 1);
+    s += QT(404, 366, 'LLM', { a: 'middle', fs: 15, b: 1, c: GY });
+    s += QT(452, 366, '13,000', { fs: 14, c: GY });
+
+    /* ② 点の付け方をつくる（★いまここ） */
+    /* 🔴 自己申告：「良い方を押す」が 紙のアイコンに 6単位 食い込んでいた
+       （★機械の重なり検査を新しく足して見つけた）。★枠を高くしてラベルを 24単位 下げた */
+    s += QBOX(0, 424, 556, 124, '#f6fbf8', G, 2);
+    s += QT(10, 448, '\u2461 build the scoring', { fs: 14, b: 1, c: G });
+    s += QT(474, 448, 'you are here', { a: 'middle', fs: 14, b: 1, c: G });
+    for (var k = 0; k < 3; k++) s += QPER(24 + k * 22, 478, 0.9, G);
+    s += QT(46, 530, 'about 40', { a: 'middle', fs: 13, b: 1, c: G });
+    s += QARW(86, 116, 488, G);
+    s += QDOC(120, 468, 46, 38, '#fff', G);
+    s += QT(143, 492, 'A', { a: 'middle', fs: 15, b: 1, c: BK });
+    s += QDOC(172, 468, 46, 38, '#fff', G);
+    s += QT(195, 492, 'B', { a: 'middle', fs: 15, b: 1, c: BK });
+    s += QT(169, 530, 'press better', { a: 'middle', fs: 13, b: 1, c: G });
+    s += QARW(226, 248, 488, G);
+    /* 🔴🔴🔴 2026-09-10 記録担当：★★★★同じずれが【②の行にもありました】（★機械で数えて出ました）。
+       ★★実測 ── ★文字「点の付け方」は 258〜362単位、★枠は 262〜358単位で、
+         ★★左右に4単位ずつ出ていました（★大きい枠の中なので目には出にくい形です）。
+       ★★直した内容 ── ★枠を 96 → 116単位に広げ（★x 262→252）、
+         ★左の矢印を 2単位 短くし、★右の「33,000問」を 370 → 378 に寄せました。
+       ★文字の中央（310）と大きさは変えていません */
+    s += QBOX(252, 468, 116, 38, '#eaf7f0', G, 2);
+    s += QT(310, 492, 'scoring', { a: 'middle', fs: 14, b: 1, c: G });
+    s += QT(378, 492, '33,000', { fs: 14, b: 1, c: G });
+
+    /* ③ その点で LLM を動かす（★この画面ではやらない） */
+    /* 🔴🔴🔴🔴 2026-09-10 記録担当：★★★★山田様のご指摘（★はみ出し）を直しました。
+       ★★実測（390×664）── ★文字「点の付け方」は【277.5〜382.5単位】、
+         ★枠は【244〜340単位】で、★★右に42.5単位 はみ出していました。
+       ★★原因 ── ★前の担当が【左のラベルとの重なりを避けるため】文字だけ右へ38単位 逃がし、
+         ★★枠を置いたままにしていました（★下に残したコメントがその作業です）。
+       ⚠️★★★枠を文字に合わせて右へ広げる案は【捨てました】── ★そうすると右の矢印・LLM の枠・
+         「31,000問」が順に押し出され、★★いちばん右が 594単位で【viewBox（560）を超えます】（★試算）。
+       ★★★直した内容 ── ★ラベルを1段 上げ、★図の3つ（点の付け方 → LLM → 31,000問）を
+         【その下の段】へ移しました。★★これで横が 264単位で足り、★重なりも はみ出しも出ません。
+         ★★図は縦に 20単位 伸びます（★viewBox 620 → 640）── ★山田様の「図が縦に伸びてもよい」に沿います。
+       ★文言は1文字も変えていません。★座標だけの組み替えです */
+    s += QT(4, 572, '\u2462 move the LLM with those scores', { fs: 14, b: 1, c: GY });
+    s += QBOX(14, 592, 120, 38, '#f4f4f4', GY, 1);
+    /* 🔴 2026-09-10 展開担当（★上の組み替えより前の作業。★記録として残します）：
+       ★x を 292 → 330 に寄せた
+       ★★理由（実測）── ★17px → 21px に上げたら、左の「③ その点で LLM を動かす」と
+         ★【横に16.58単位（9.77px）重なりました】。★字が広くなったぶん 右へ 38単位 逃がします。
+       ★文言は変えていません。★座標だけの調整です */
+    s += QT(74, 616, 'scoring', { a: 'middle', fs: 14, c: GY });
+    s += QARW(142, 174, 612, GY);
+    s += QBOX(182, 592, 68, 38, '#f4f4f4', GY, 1);
+    s += QT(216, 616, 'LLM', { a: 'middle', fs: 15, b: 1, c: GY });
+    s += QT(264, 616, '31,000', { fs: 14, c: GY });
+    h.innerHTML = s;
+  }
+
+  /* ── 図C A と B は何が違うのか（★原本の PAIR を読むだけ）──────────── */
+  function q16ab() {
+    var h = document.getElementById('q16ab');
+    if (!h) return;
+    var s = '<tr><th style="text-align:left">What was asked</th>'
+          + '<th style="text-align:left">The A side</th>'
+          + '<th style="text-align:left">The B side</th></tr>';
+    for (var k = 0; k < PAIR.length; k++) {
+      s += '<tr><td style="text-align:left">' + PAIR[k].q + '</td>'
+         + '<td style="text-align:left">' + PAIR[k].a + '</td>'
+         + '<td style="text-align:left">' + PAIR[k].b + '</td></tr>';
+    }
+    s += '<tr class="sum"><td style="text-align:left">In other words</td>'
+       + '<td style="text-align:left"><b>hedges</b><br>nothing to object to</td>'
+       + '<td style="text-align:left"><b>answers straight</b><br>can be wrong</td></tr>';
+    h.innerHTML = s;
+  }
+
+  /* ── 図B ［10歩］で 何をしているのか（★歩ごとの数値は捨てた）─────────
+     🔴 2026-09-01 03担当【3巡目】★同じ指摘を3回 受けたので作り直した。
+       ★★数字ではなく【何をしている作業なのか】を描く。
+       ★残した数字は 画面のゲージに出ている 50.0% → 86.3% だけ（★1桁% → 規則㊲） */
+  function q16step() {
+    var h = document.getElementById('q16step');
+    if (!h) return;
+    var s = '', G = '#019949', GY = '#6e6e6e', BK = '#3f3f3f', R = '#b0700c';
+    /* ▲▼ の印（★型F は使わない。★三角形を描く） */
+    var TRI = function (x, y, up, c) {
+      return up ? '<path d="M' + x + ' ' + (y - 9) + 'l6 11h-12z" fill="' + c + '"/>'
+                : '<path d="M' + x + ' ' + (y + 2) + 'l6-11h-12z" fill="' + c + '"/>';
+    };
+    /* 左 ── あなたが押した方／押さなかった方 */
+    /* 🔴 自己申告：はじめ紙のアイコン（QDOC）で描いたが、★紙の中の横線が文字に重なった。
+       ★スクリーンショットを目で見て気づいた。★四角に変えた */
+    s += QBOX(10, 40, 150, 46, '#eaf7f0', G, 2);
+    s += QT(85, 69, 'you pressed', { a: 'middle', fs: 15, b: 1, c: G });
+    s += QBOX(10, 150, 150, 46, '#fff', GY, 1);
+    s += QT(85, 179, 'not pressed', { a: 'middle', fs: 15, b: 1, c: GY });
+    /* 🔴 2026-09-10 展開担当：★x を 85 → 105 にした（★中央寄せなので左端が 0 を割っていた）
+       ★実測：★上げたら viewBox の【左】へはみ出しました。★20単位 右へ寄せて収めます */
+    s += QT(105, 226, 'all 3 pairs at once', { a: 'middle', fs: 13, c: BK });
+    /* 中 ── 点を上げる／下げる */
+    s += QARW(168, 208, 63, G);
+    s += QARW(168, 208, 173, GY);
+    s += TRI(224, 63, true, G);
+    s += QT(238, 69, 'score goes up', { fs: 15, b: 1, c: G });
+    s += TRI(224, 173, false, GY);
+    s += QT(238, 179, 'score goes down', { fs: 15, b: 1, c: GY });
+    s += QT(238, 116, '10 times over', { fs: 14, b: 1, c: R });
+    /* 右 ── 押した方が選ばれる確率（★画面のゲージの値）
+       🔴 2026-09-01 03担当【4巡目・自己申告】★山田様 FB
+         「50% はなんなんだよ」「選ばれる確率が 押した方が 86.3% になったんだろうけど
+           それが上か下か分かりにくいわ、左の方と逆になってるだろ」
+         → ★★上下が【押した方／押さなかった方】に対応すると読まれていた。
+           ★正しくは【押す前／10回後】＝時間の前後なので、その語を入れた
+           ★あわせて「押した方が選ばれる確率」だと明記した */
+    /* 🔴 自己申告：箱が 104px しか無く「押す前」と「50.0%」が重なった。
+       ★390px は font 17px なので「押す前」だけで 51 単位 要る。★箱を 160 に広げた */
+    s += QARW(348, 376, 63, G);
+    s += QARW(348, 376, 173, GY);
+    s += '<line x1="376" y1="63" x2="376" y2="173" stroke="' + BK + '"/>';
+    s += QARW(376, 392, 118, BK);
+    s += QBOX(396, 88, 160, 60, '#fff', BK, 1);
+    /* 🔴 自己申告：はじめ 50.0% と 86.3% の【あいだ】に ▲ を置いたが、
+       ★86.3% の文字に重なった。★三角は消して、上から下へ読ませる並びだけにした */
+    s += QT(404, 110, 'before', { fs: 13, c: GY });
+    s += QT(548, 110, '50.0%', { a: 'end', fs: 14, c: GY });
+    s += QT(404, 138, 'after 10', { fs: 13, b: 1, c: G });
+    s += QT(548, 138, '86.3%', { a: 'end', fs: 15, b: 1, c: G });
+    /* 🔴 自己申告：x 510 だと 390px（font 17px）で viewBox を 1px はみ出した。★500 にした */
+    s += QT(476, 178, 'chance it', { a: 'middle', fs: 13, c: BK });
+    s += QT(476, 200, 'gets picked', { a: 'middle', fs: 13, c: BK });
+    h.innerHTML = s;
+  }
+
+  /* ── 図D 物差しが 2つある（★好まれる と 賢い を分ける）──────────────
+     🔴 2026-09-01 03担当【4巡目】★⑴ 人に選ばせる（勝率 15% → 85%）は 原典 §4.2 の 85±3%
+       ★⑵ テストを解かせる（SQuAD・DROP・HellaSwag・WMT15）は【下がる】だけが原典の記述で
+         個別の数値は無い → ★棒を作らない。★▼ と 名前だけ出す */
+  function q16win() {
+    var h = document.getElementById('q16win');
+    if (!h) return;
+    var G = '#019949', GY = '#6e6e6e', BK = '#3f3f3f', R = '#b0700c';
+    var s = '', x0 = 150, W = 300;
+    /* ⑴ 人に選ばせる */
+    s += QT(4, 22, '(1) let people choose', { fs: 15, b: 1, c: BK });
+    s += QT(4, 48, '(which answer is better)', { fs: 13, c: GY });
+    var bar = function (y, pct, lab, col, strong) {
+      var t = QT(4, y + 16, lab, { fs: 14, b: strong ? 1 : 0, c: strong ? col : GY });
+      t += QBOX(x0, y, W, 22, '#fff', '#d9d9d9', 1);
+      t += '<rect x="' + x0 + '" y="' + y + '" width="' + (W * pct / 100) + '" height="22"'
+        + ' fill="' + col + '" opacity="' + (strong ? 0.9 : 0.35) + '"/>';
+      t += QT(x0 + W + 8, y + 16, pct.toFixed(0) + '%', { fs: 15, b: 1, c: strong ? col : GY });
+      return t;
+    };
+    s += bar(70, 15, 'before tuning', GY, false);
+    s += bar(104, 85, 'after tuning', G, true);
+    s += QT(4, 156, 'both sides the same size &mdash; 175 billion knobs',
+      { fs: 13, c: GY });
+    /* ⑵ テストを解かせる（★数値は作らない） */
+    /* 🔴 自己申告：はじめ 箱を x=150 に置いたが、★390px（font 17px）では
+       「（読解・推論・常識・翻訳）」が 204 単位あり 箱に重なった。★箱を下の行へ移した */
+    s += QT(4, 200, '(2) have it take tests', { fs: 15, b: 1, c: BK });
+    s += QT(4, 226, '(reading, reasoning, common sense, translation)', { fs: 13, c: GY });
+    s += QBOX(150, 244, 406, 46, '#fff', R, 1);
+    s += '<path d="M186 258l7 12h-14z" fill="' + R + '"/>';
+    s += QT(206, 272, 'tuning brings it down', { fs: 15, b: 1, c: R });
+    s += QT(4, 322, 'which measure you use flips the answer', { fs: 14, b: 1, c: BK });
+    h.innerHTML = s;
+    var t = document.getElementById('q16wint');
+    if (!t) return;
+    t.innerHTML =
+      '<tr><th style="text-align:left">Measure</th>'
+      + '<th style="text-align:left">What it measures</th>'
+      + '<th style="text-align:left">After tuning</th></tr>'
+      + '<tr><td style="text-align:left"><b>(1) let people choose</b></td>'
+      + '<td style="text-align:left">show two answers, ask which is better</td>'
+      + '<td style="text-align:left"><b>Goes up</b>. 15% &rarr; 85% at the same size. '
+      + '<b>1.3 billion knobs</b> (tuned) beats <b>175 billion knobs</b> (untuned)</td></tr>'
+      + '<tr><td style="text-align:left"><b>(2) have it take tests</b></td>'
+      + '<td style="text-align:left">reading SQuAD / reasoning DROP / common sense HellaSwag '
+      + '/ translation WMT15</td>'
+      + '<td style="text-align:left"><b>Goes down</b></td></tr>'
+      + '<tr class="sum"><td style="text-align:left"><b>(3) how right its confidence is</b></td>'
+      + '<td style="text-align:left">whether its own certainty matches how often it is right</td>'
+      + '<td style="text-align:left"><b>0.007 &rarr; 0.074</b> (10&times; worse)'
+      + '<span style="color:var(--gray-500)"> &mdash; this one is measured in a different paper '
+      + '(GPT-4, 2023)</span>'
+      + '</td></tr>';
+  }
+
+  /* ── 図E 「一致率 7割」とは何か（★10問のうち7問。★2択なので5問は偶然）──── */
+  function q16agree() {
+    var h = document.getElementById('q16agree');
+    if (!h) return;
+    var G = '#019949', GY = '#6e6e6e', s = '', x0 = 190, dx = 33;
+    var row = function (y, n, col, lab, num, strong) {
+      var t = QT(4, y + 6, lab, { fs: 14, b: strong ? 1 : 0, c: strong ? col : GY });
+      for (var i = 0; i < 10; i++) {
+        t += '<circle cx="' + (x0 + i * dx) + '" cy="' + y + '" r="11"'
+          + ' fill="' + (i < n ? col : '#fff') + '" stroke="' + (i < n ? col : '#d9d9d9') + '"'
+          + ' opacity="' + (i < n ? (strong ? 0.9 : 0.4) : 1) + '"/>';
+      }
+      t += QT(x0 + 10 * dx + 6, y + 6, num, { fs: 15, b: 1, c: strong ? col : GY });
+      return t;
+    };
+    /* 🔴🔴🔴 2026-09-10 展開担当：★★★この1行を【SVG の外（HTML）】へ移した
+       ★実測：★21px に上げたら 28字ぶんの幅が 588単位になり、viewBox（560）を超えました。
+       ★文言は1文字も変えていません（★下の $('q16agreec') に そのまま出します） */
+    var q16ac = $('q16agreec');
+    if (q16ac) q16ac.innerHTML = '<b>Show the same question to two people. '
+      + 'Suppose you do that for 10 questions</b>';
+    s += row(48, 7, G, 'picked the same', '7', true);
+    s += row(88, 3, GY, 'picked different', '3', false);
+    s += row(128, 5, '#b0700c', 'a coin toss', '5', false);
+    h.innerHTML = s;
+  }
+
+  /* ══════════════════════════════════════════════════════════════════════════
+     🔴🔴 2026-09-01 03担当：★組1 の文言を直した（→ A の判断⒜・2026-09-01）
+     ──────────────────────────────────────────────────────────────────────────
+     ★由来：山田様 FB「組1 この方針で進めていいですか／A 一概には言えません／
+       B 進めて良いと思います　何これ？ この方針がわからんから決めようがないよ。
+       他の問題も同様」（2026-09-01）
+     ★★欠陥は2つあった ──
+       ⒜ 「この方針」が何の方針か 画面のどこにも無い（★文脈がゼロ）
+       ⒝ ★組2「まず設定を見て、次に型を直します」／組3「直したいところが3か所あります」は
+          B が【具体】なのに、★組1 の B「進めて良いと思います」だけ具体性が無く、
+          ★A＝はぐらかす／B＝はっきり答える という軸が崩れていた
+     ──────────────────────────────────────────────────────────────────────────
+     ★★★やり方 ── 本体の const PAIR は【1文字も触っていない】。
+       ★ここで上書きして pr15() を呼び直すだけ。
+       ★★だから【この IIFE を消せば 原本の文言に戻る】（→ 03 の存在条件を崩さない）
+     ★A が「原本03 は凍結・対話版だけ直す」と決めた（→ §5-29 の 02担当⒝ と同じ扱い）
+     ★判定・数値には影響しない ── ★r は6個とも 0 から始まり、選んだ側が上がるだけ
+       （★0歩 50.0%・ずれ 0.693 ／ 10歩 86.3%・ずれ 0.148 は変わらない。★実測で確認した）
+     ══════════════════════════════════════════════════════════════════════════ */
+  if (typeof PAIR !== 'undefined' && PAIR[0]) {
+    PAIR[0].q = 'Can we go ahead with this plan?';
+    PAIR[0].a = 'It depends on the situation.';
+    PAIR[0].b = 'The schedule is two weeks short.';
+    if (typeof pr15 === 'function') pr15();
+    if (typeof up15 === 'function') up15();
+  }
+
+  q16map(); q16ab(); q16step(); q16win(); q16agree();
+})();
+</script>
+</body>
+</html>
