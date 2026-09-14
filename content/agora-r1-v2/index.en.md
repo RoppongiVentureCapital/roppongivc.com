@@ -40,7 +40,7 @@ Two hours later, the five of them and the AI had arrived at a way of posing prob
 
 A month of development later, it was something anyone could try. **Here is what they built**.
 
-{{< cta href="/en/deep-black-box/" label="Start" sub="Open up the black box of AI one question at a time, with your own hands. 21 questions in all." >}}
+{{< cta href="/en/deep-black-box/" label="Start" sub="Open up the black box of AI one problem at a time, with your own hands. 21 problems in all." >}}
 
 The five people in the Agora session that day
 
@@ -780,13 +780,13 @@ Recall what happened. That direction had already collapsed within these two hour
 
 The idea that was born did not take shape as it was. The month it took to finish is covered in the development record (coming soon).
 
-{{< fig n="9" src="img/agora/r1/shot-chapters.png" >}}Sixteen of the 21 questions. In every one, moving a knob (a parameter) or an option changes the numbers and the graph on the spot, and it judges whether you reached the target. It starts from a single straight line and moves on to stacked networks, the probabilities behind choosing words, and real data. (The screens are the Japanese version; the English version of the product is in preparation.){{< /fig >}}
+{{< fig n="9" src="img/agora/r1/shot-chapters.en.png" >}}Sixteen of the 21 problems. In every one, moving a knob (a parameter) or an option changes the numbers and the graph on the spot, and it judges whether you reached the target. It starts from a single straight line and moves on to stacked networks, the probabilities behind choosing words, and real data.{{< /fig >}}
 
 ### What the product is
 
 **1. You read it as a dialogue, and move things yourself as you go**
 
-It proceeds as an exchange between a professor and an 11th grader. Rather than reading an explanation, you follow a conversation and it comes into focus.
+It proceeds as an exchange between Doc and Adam, an 11th grader. Rather than reading an explanation, you follow a conversation and it comes into focus.
 
 Introductions to AI written as dialogue exist. Visualization tools you can touch and move exist. Practice sites that pose one problem at a time and score it exist. **But nothing combined all three. So we built it**.
 
@@ -799,11 +799,11 @@ Introductions to AI written as dialogue exist. Visualization tools you can touch
 | **Deep Black Box** | ○ | ○ | ○ |
 {{< /wide >}}
 
-{{< fig n="10" src="img/agora/r1/shot-q1q2.png" wide="1" >}}Each question opens with an exchange between the professor and the 11th grader, and then you move things yourself. In question 1, moving two knobs brings a line closer to the points, and the score for the gap comes back on the spot. In question 2, that gap becomes a landscape and you descend toward the lowest place.{{< /fig >}}
+{{< fig n="10" src="img/agora/r1/shot-q1q2.en.png" wide="1" >}}Each problem opens with an exchange between Doc and Adam, and then you move things yourself. In Problem 1, moving two knobs brings a line closer to the points, and the score for the gap comes back on the spot. In Problem 2, that gap becomes a landscape and you descend toward the lowest place.{{< /fig >}}
 
-**2. All 21 questions have you use your hands**
+**2. All 21 problems have you use your hands**
 
-There is not a single question you only read. Most have **knobs** (sliders you move left and right) lined up, and what you are moving is the numbers inside the AI itself — the **parameters**. Questions without knobs have you switch things with buttons, or predict the outcome from three options first.
+There is not a single problem you only read. Most have **knobs** (sliders you move left and right) lined up, and what you are moving is the numbers inside the AI itself — the **parameters**. Questions without knobs have you switch things with buttons, or predict the outcome from three options first.
 
 **3. Every number on the screen is a measured value**
 
@@ -816,9 +816,9 @@ No installation, no environment setup. Just open it in a browser. It works on a 
 
 ### Deep Black Box
 
-Open up the black box of AI one question at a time, with your own hands. 21 questions in all.
+Open up the black box of AI one problem at a time, with your own hands. 21 problems in all.
 
-{{< cta href="/en/deep-black-box/" label="Start" sub="Open up the black box of AI one question at a time, with your own hands. 21 questions in all." href2="https://docs.google.com/forms/d/e/1FAIpQLScyE3bWc8rh3wcnLLlaxpXOhrwUYjPU-ccS3FfnIZgcoPqkRw/viewform" label2="Send us your thoughts" >}}
+{{< cta href="/en/deep-black-box/" label="Start" sub="Open up the black box of AI one problem at a time, with your own hands. 21 problems in all." href2="https://docs.google.com/forms/d/e/1FAIpQLScyE3bWc8rh3wcnLLlaxpXOhrwUYjPU-ccS3FfnIZgcoPqkRw/viewform" label2="Send us your thoughts" >}}
 
 ## About this article
 
