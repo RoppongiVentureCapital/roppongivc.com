@@ -1,0 +1,955 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<meta name="description" content="Practicing at scale - Problem 15 of Deep Black Box. The only practice is predicting the next word, and grammar, facts and summarizing come along with it. Turn two knobs and see for yourself.">
+<meta property="og:title" content="Deep Black Box - Problem 15: just predicting the next word (Chapter 4)">
+<meta property="og:description" content="Practicing at scale - Problem 15.">
+<!-- 🔴🔴🔴🔴 2026-09-10 記録担当：★★★★共有したときの画像（★公開準備セッションの指示）。
+     ★★この2行は【23ページとも入っていませんでした】（★実測0件）。
+     ★★★入れる値は先方が確定させたものです ──
+       roppongivc.com/static/img/agora/r1/og-r1-game.jpg（★59KB。★案A＝白地・エンブレム左）。
+     ★★記事用（og-r1-article.jpg）とは【別のファイル】です。★記事側のものは触っていません。
+     ★値は絶対URLです（★OGP の決まり。★href の絶対パス禁止とは別の話です） -->
+<meta property="og:image" content="https://www.roppongivc.com/en/deep-black-box/og-deep-black-box-en.jpg">
+<meta name="twitter:image" content="https://www.roppongivc.com/en/deep-black-box/og-deep-black-box-en.jpg">
+<!-- 🔴🔴🔴🔴 2026-09-10 21:4x 記録担当：★★★★X（Twitter）で大きい絵にする1行（★公開準備セッションの依頼）。
+     ★★★og:image を入れても、★この1行が無いと【小さいカード】になります。
+     ★記事側は全13ページを summary → summary_large_image にしたとのことです（★先方の実測）。
+     ★★ゲーム23ページは【0件】でした -->
+<meta name="twitter:card" content="summary_large_image">
+<!-- 🔴🔴🔴🔴 2026-09-10 22:3x 記録担当：★★★★ブラウザのタブに出る絵（★公開準備セッションの依頼）。
+     ★★実測 ── ★23ページとも【0件】でした（★タブに絵が出ていませんでした）。
+     ★★★実体はサイト側にあり、★本番で全部 引けます（★新しく作っていません）──
+       /favicon.svg 200・53KB ／ /favicon.ico 200 ／ /favicon-192.png 200・8KB
+     ⚠️★★/apple-touch-icon.png は【404】なので使いません。★favicon-192.png を指しています
+       （★サイト側 baseof.html と同じ扱いです）。
+     ⚠️★★★絶対URLです ── ★このゲームは /deep-black-box/ の下にあるので、
+       ★相対だと /deep-black-box/favicon.svg を探して【外します】。
+       ★「絶対パスを書かない」（★同じ場所の中を指すときの決まり）とは別の話です -->
+<link rel="icon" href="https://www.roppongivc.com/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="https://www.roppongivc.com/favicon.ico" sizes="32x32">
+<link rel="icon" href="https://www.roppongivc.com/favicon-192.png" type="image/png" sizes="192x192">
+<link rel="apple-touch-icon" href="https://www.roppongivc.com/favicon-192.png">
+<title>Deep Black Box - Problem 15: just predicting the next word (Chapter 4)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@300;400;600;700&family=Inter:wght@300;400;500;600;700&family=Noto+Serif+JP:wght@300;400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../deep-black-box/common.css">
+<style>
+/* 🔴 2026-09-02 A（統括）：★.cap は対話と同じ書体（sans）。★明朝は却下された */
+/* ══════════════════════════════════════════════════════════════════════════
+   🔴 2026-09-02 1問1ページ担当：★この章だけの CSS（★common.css は 00/01 の値が入っている）
+     ⒜ 5本で値が違う5規則を【03 の値】に戻す（★枠を1pxも動かさないため）
+     ⒝ 03 だけの3規則
+     ⒞ @media の【SVG の id 一覧】── ★本ごとに違うので各ページに残す（→ A が承認）
+     ⒟ ★★#w14 の max-width ── 1280px の枠 959.8px を 840 以下に下げる（→ A の判断3）
+   ══════════════════════════════════════════════════════════════════════════ */
+/* ⒜ */
+.cap{font-size:16.6px;overflow-wrap:anywhere;line-height:1.831}
+.ctl label{flex-wrap:wrap}
+.sc-label{width:5.4rem}
+.sc-pct{width:3.8rem}
+/* ⒝ */
+.ctl label span:first-child{min-width:0;overflow-wrap:anywhere}
+.qrow{display:flex;gap:.6rem;flex-wrap:wrap;align-items:center;margin-bottom:.7rem}
+.qrow .qt{flex:1 1 12rem;font-size:14px;min-width:0}
+#q16map,#q17map{max-width:560px}
+/* ⒟ 🔴🔴 2026-09-02【この節は #w14 の経緯の記録です。★指定は 入れていません】
+     ★★★#w14 に max-width を付けるのは【却下されました】。✗✗ 二度と絞らないこと
+     ──────────────────────────────────────────────────────────────────────────
+     ★経緯：★1問1ページ担当が 1280px の枠 959.8px を 840以内にするため
+       max-width を付けた（600px → 904.4px ★まだ840超 ／ 480px → 833.7px）。
+     ★★山田様「ここのつまみの図が前より小さくなってると思う。小さいから気持ち悪いよ」
+     ★A の実測 ── PC で図に渡る幅 694px → 480px（69.2%・214px 小さい）、
+       図の中の文字 21.1px → 14.6px。★スマホ（390px）は 242px で元から変わらない
+     → ★★★A が 案A を採り、max-width を外して図を元の 694px に戻した。
+       ★840超1件は【原本03 からの持ち越し】で、★山田様がその原本を通しプレイして OK を
+       出されている。★枠の数字を守るために図を小さくするのは【順序が逆】だった */
+/* ══════ 小さい画面では横の余白を削って図に幅を渡す（★00・01 と同じ） ══════ */
+@media (max-width:430px){
+  .wrap{padding-left:.5rem;padding-right:.5rem}
+  .card{padding-left:.75rem;padding-right:.75rem}
+  .figbox,.panel{padding-left:.5rem;padding-right:.5rem}
+  .top .in{padding-left:.5rem;padding-right:.5rem}
+  /* ★★560幅の図の文字を 17px に上げる（★17 × 0.589 ＝ 10.0px。→01 の @media） */
+  #w14 text,#rep14 text,#md15 text,#ai16 text,#splitFig text{font-size:21px}
+  /* 🔴 2026-08-31 03担当：★足した図①も 560幅なので、原本の5枚と同じ 17px に上げる
+     ★17 × 0.596 ＝ 10.1px（390px で .wrap/.card/.figbox の padding を引いた実効幅 334px） */
+  #q15map text,#q16map text,#q16step text,#q16win text,#q16agree text,
+  #q17map text,#q17adv text,#q17kind text,#q17draw text{font-size:21px}
+  /* 🆕 2026-08-30 F：会話（→ .cv）★スマホは顔を小さくして横幅を吹き出しに回す */
+  /* 🔴 2026-09-06：★スマホでアイコンを 38px に縮める指定を【消した】（★記事はスマホでも 46px）。
+     ★★この2行は、同じ <style> の後ろにある .cl .ic{46px} / .cl{gap:.75rem;margin:0 0 .85rem} に
+       ★同じ詳細度で【後勝ちされていて、すでに効いていませんでした】（★実測 ic 46px・gap 12px）。
+     → ★消しても見た目は1pxも動きません。★死んだ規則を残すと次の担当が誤読します */
+  /* 🔴🔴 2026-09-02 1問1ページ担当【申告・処置】★font-size と line-height を外しました。
+     ★★A の【戻さないこと】「対話（.cl .bb）15px・行間1.9」に反して、
+       ★390px だけ 14.5px / 行間1.8 になっていました（★実測）。
+       ★原本03 の @media をそのまま写したためです。★.cap は 15px なので【スマホで逆転】していた
+     ★padding だけ残します（★レイアウトの詰めは 390px で要る） */
+  .cl .bb{padding:.55rem .75rem}
+  .cast2{padding:.7rem .75rem}
+  .cast2 .ic{width:46px;height:46px}
+  .cast2 .row{gap:.6rem}
+  /* 🔴 2026-09-07 A：★.cast2 .tx2 の 13px/1.8 を外した ── ★これがスマホで
+     ★★登場人物の紹介が 13px のままだった原因（★common.css の 16.6px を後勝ちで潰していた）。
+     → ★山田様「記事と同じサイズって言っただろ」「行間も記事に合わせろよ」（2026-09-07） */
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   🆕 2026-08-30 F【対話版】会話の見た目 ── ★00/01/02-dialog と同じ CSS（写し）
+   ★★ゲーム本体（つまみ・図・ゲージ・判定・数値）は 1行も触っていない。
+     ★この CSS と末尾の IIFE を消せば、原本とまったく同じ挙動に戻る
+   ★会話は .panel / .figbox の【外】にだけ置く
+     ★★03 には position:sticky が 1つも無い（grep 実測 0件）。
+       ★だから枠が伸びると そのまま実害になる → 会話を枠の中に入れないこと
+   ══════════════════════════════════════════════════════════════════════════ */
+</style>
+</head>
+<body data-split="A2" data-top="q15top" data-talk="q15talk"
+      data-verdict="j14" data-ratio="0.68"
+      data-figs="w14">
+
+<div class="top"><div class="in">Deep Black Box<span class="tag">Open up the black box of AI one problem at a time, with your own hands. 21 problems in all.</span></div></div>
+<div class="wrap">
+
+<!-- 🔴 2026-09-02 1問1ページ担当：★★進み具合の帯（全21問を1本に）＋いま何章か（★迷子対策）
+     ★#steps は 21マス。★mark(i,cls) が children[QBASE+i] を塗る（→ A の判断1） -->
+<div class="prog">
+ <div class="steps" id="steps"></div>
+ <div class="cnt" id="prog_cnt"></div>
+</div>
+<div class="chap" id="chap"></div>
+
+<!-- 🔴 2026-09-02 1問1ページ担当：★「いま どこの話か」の入れ子図（★02 から common.js へ移した）。
+     ★★出すのは【章の最初のページだけ】（★21ページ全部に出すと邪魔になる） -->
+<div id="nest"></div>
+
+<!-- 🔴🔴🔴 2026-09-09 A：★★★章の表と、この章の折りたたみ（★山田様の指示 2026-09-09）
+     ★「これの 章／章題／中身 を入れた方がいいんじゃないん。入れ子図の下に。
+       そして折りたたみの詳細を、その折りたたみのまま各章 該当するところに一つずつだけ入れたら」
+     ★★中身は common.js の CHTAB / CHDET（★トップページから機械で写したもの）
+       → ★文言を直すときは index.html を直して A121_chapdesc.py を流し直す -->
+<div id="chaptab"></div>
+<div id="chapdet"></div>
+
+<!-- ══════════════════ 問15 ══════════════════ -->
+<div class="card" id="c14">
+<!-- 🔴 2026-08-29 C（03）：分母「/ 17」を外した（→§5-22 共通・§5-23。★このページの問数は
+     上の「全3問」と 15〜17 の帯が既に2か所で伝えているので、分母は3か所目の重複＝型3） -->
+<div class="tagline">Question 15</div>
+<!-- 🔴 2026-08-31 03担当：★見出しを【主張】の形にした
+     ★由来：山田様 FB「問15を読んでも何を学ばせたいのか、何がキーメッセージなのか
+       全くわからなかった」（2026-08-31）
+     ★原本の見出しは「次の語を当てる練習を、大量に」＝【工程の名前】だった。
+       ★01v2 の問8「線1本では、まん中だけを囲めない」／問9「層を1つ入れると、まん中だけを
+         囲める」と同じ【何が言えるか】の形に揃えた
+     ★中身の裏付け ── 素材 第2部§3-1「次の語当てを極限まで上手くやろうとすると、
+       文法・事実・推論・要約までが【圧縮の副産物】として獲得される」 -->
+<h2>Just predicting the next word, and everything else comes along</h2>
+<!-- 🆕 F：この lead は会話 e15a に移した。★目標の1行だけ残す -->
+<!-- 🔴🔴 2026-08-31 03担当（FB 2回目）：★★図① を【会話より前】に移した。
+     ★由来：山田様 FB「これも何もでてきてないのに そんな意味不明な質問いきなり
+       きたら意味不明だろ。背景とかそういうの何も考えないで出す」（2026-08-31）
+     ★★私の誤り ── 学に「東京・大阪・電車・走る・です ってなんなの」と言わせたのに、
+       ★その5語は【まだ画面に出ていなかった】（図① を会話の後に置いていた）。
+       → ★★読者が5語を見てから 学が聞く順に直した -->
+<!-- 🔴 2026-08-31 03担当：★図①【この問がやっていること】── つまみを渡す前に置く
+     ★由来：山田様 FB「東京 大阪 電車 走る です ってなんなの？ それらの5個から
+       次の確率選ぶのってどういうこと？何をやってるのか意味不明なんだけど」（2026-08-31）
+     ★02 の問12 が「次に来る語の確率（6語に縮めています）」と画面に書いているのと同じ形。
+       ★02 は「5万語＝部品の一覧」を figure まで作って引き受けている（→ 02 の e12a）
+     ★★.panel の【外】に置く（★03 は position:sticky が 0件なので枠を伸ばすと実害になる） -->
+<div class="figbox">
+ <!-- 🔴🔴 2026-08-31 03担当（FB 2回目）：★cap が長すぎたので短くした（→ §2-1） -->
+ <div class="cap"><b>What this problem is doing</b> &mdash; the 5 words at the exit are the
+  <b>50,000 pieces</b> from Chapter 3, <b>cut down to 5</b> (we did the cutting).
+  The numbers show up in <b>the bar chart below</b></div>
+ <svg id="q15map" viewBox="0 0 560 250"></svg>
+</div>
+
+<div id="e15a"></div>
+
+<p class="lead">Bring <b>the error down to 0.20 or below</b>.</p>
+
+<!-- 🔴🔴🔴 2026-09-09 展開担当：★★★上下2分割の【上の枠】（★図＋つまみ＋ボタン＋ずれ）
+     ★★出所：段A の表（検証ツール/split_2026-09-09/段A_2分割の4つの値.md）
+     ★★★決定1 ── 上に置く図は【1枚】。
+     ★common.css / common.js が持つ部品で動きます（★このページに link も script も足しません） -->
+<div id="q15top">
+<div class="panel">
+ <div class="cap"><b>&#9312; What comes after &ldquo;The largest ocean on Earth is the&rdquo;?</b>&nbsp; <b>&#9313; What comes after &ldquo;On the track, the train&rdquo;?</b><br>The bars are the probabilities for the 5 words</div>
+ <svg id="w14" viewBox="0 0 560 330"></svg>
+ <div class="calc">score = a × place-like
+      + b × motion-like
+probability = softmax(score)
+error = −log(p of the right word),
+        averaged over the 2 sentences</div>
+ <div class="ctl">
+  <label for="a14"><span><b>a</b>&nbsp; place-like</span><span class="n" id="a14v">0.00</span></label>
+  <input type="range" id="a14" min="0" max="3000" step="1" value="0">
+ </div>
+ <div class="ctl">
+  <label for="b14"><span><b>b</b>&nbsp; motion-like</span><span class="n" id="b14v">0.00</span></label>
+  <input type="range" id="b14" min="0" max="3000" step="1" value="0">
+ </div>
+ <div class="togs">
+  <button class="btn go" id="s14a">One step</button>
+  <button class="btn go" id="s14b">10 steps</button>
+  <button class="btn go" id="s14c">100 steps</button>
+  <button class="btn sm" id="r14b">Back to the start</button>
+  <span style="font-size:13px;color:var(--gray-500)"><b id="n14">0</b> steps</span>
+ </div>
+ <div class="gauge">
+  <div class="row"><span class="big" id="e14">–</span><span class="u">error</span></div>
+  <div class="gtrack"><span class="gfill" id="g14"></span><span class="gmark" id="m14"></span></div>
+  <div class="gcap"><span>0</span><span>goal 0.20</span><span>2.0</span></div>
+ </div>
+ <div class="verdict" id="j14">–</div>
+</div>
+</div><!-- /#q15top -->
+
+<!-- 🔴 2026-08-31 03担当：★図③【いま つまみを回すと 何が起きているか】
+     ★★00 の問5 と同じ形（★山田様「softmax だけは消すな」で 00 に残された唯一の見せ方）。
+       ★点 → 確率 → ずれ を1行ずつ 数字で落とす
+     ★つまみは触っていない ── #e14 の書き換えを MutationObserver で見て追随する
+     ★★数字の作り方は 検証ツール/F_対話版/q15_検算.mjs で全域を照合した
+       ✗「画面の e の値 ÷ 合計」を出す案は【捨てた】── 上の棒グラフの % と
+         7.19% の頻度で食い違う（最大 0.2ポイント。★00 の A が踏んだ型・規則⒃）
+       → 確率は【上の棒グラフの値そのもの】を出す
+       ⑵ ①②の ずれ は【足して2で割ると 画面の ずれ になる】ように いちばん大きい方で
+         端数を吸収する（→ 00 の問5 disp3・02 の wD3 と同じ手）。
+         ★361,201通り（a・b を 0.05 刻み）で食い違い 0件。★ずらす量は最大 0.001 -->
+<!-- 🆕 F：★ずれが「分類の測り方」であることを会話で出す（→ 素材 第1部§3・第2部§3-1） -->
+<!-- ★★下の枠 ── ★会話。★独立してスクロールします -->
+<div id="q15talk">
+<!-- 🔴🔴🔴🔴 2026-09-10 記録担当：★★★★山田様のご指示で【この図を下の枠の中へ移しました】。
+     ★山田様「これが消えてる。下の半分に入れるようにして。
+       ★★『博士、ずれって 第1章と同じ2乗和でしょ。』これの上の位置だよ」（2026-09-10）
+     ★★もとは ここ（上の枠と下の枠のあいだ）にあり、★分割中はどちらの枠にも属さないので
+       ★★★分割を開くと隠れていました。
+     ★★移した先 ── ★下の枠のいちばん上（★e15b＝「博士、ずれって…2乗和でしょ」の直前）。
+       ★★★山田様が指定された位置そのものです。
+     ★★★分割していないときの見え方は【1pxも変わりません】── ★下の枠は この直後にあったので
+       ★並び順が同じです。★文言も数字も1文字も触っていません -->
+<div class="figbox">
+ <div class="cap"><b>What is happening when you turn the knobs</b> &mdash;
+  <b>move a knob and every number here moves</b></div>
+ <div class="calc" id="q15flow">–</div>
+</div>
+
+<div id="e15b"></div>
+
+<!-- 🔴 2026-08-31 03担当：★図②【1.609 が何か】を数字の対応で見せる
+     ★由来：山田様 FB「1.609とか何かわからんし、こういう言葉だけでごにゃごにゃいう
+       やりとりは複雑なやつだと伝わらんって」（2026-08-31）
+     ★★00 の問5 で log は【3回 説明して3回 失敗し、山田様の指示で消された】
+       （→ 00 の問5 のコメント「log と「間違いの量」（→ 03 の担当）」）。
+       ★だから説明文を増やさない。★表とバーだけにする
+     ★バーの物差しは 0〜2.0 ── 画面のゲージ（gcap「0 / 目標 0.20 / 2.0」）と同じにした。
+       ★1.609 のバーが 80.5% で、0歩のときの画面のゲージと同じ長さになる -->
+<div class="figbox">
+ <div class="cap"><b>error = −log (the probability given to the right word)</b> &mdash;
+  the better it guesses, the closer to <b>0</b>; the more it misses, the higher it jumps.
+  <b>The scale is 0 to 2.0, the same as the gauge above</b></div>
+ <div id="q15log"></div>
+</div>
+
+<div id="e15b2"></div>
+
+<div class="panel">
+ <div class="cap">The real thing has <b>12,288 numbers</b> for a single word</div>
+ <table class="dtab" id="vt14" style="text-align:left"></table>
+</div>
+
+<!-- 🔴🔴 2026-08-31 03担当：★★【2】「意味を決めたのは誰か」の図（→ A の指摘【2】）
+     ★由来：山田様「地名らしさ、動きらしさって二つのつまみが、この問 2個／GPT-3 1,750億個って、
+       それって全部 動きらしさとか意味がついてるの？ 人間が設定してないよね？
+       自然になってるんだよね？ しらんけど」
+     ★★答え ── 人間は1つも設定していない。意味も機械が決める。
+       だから どの数字が何を表すのか 誰にも分からない
+     ★★置き場所 ── vt14（この問題の2列）の【直後】。★左の表は作らない（→ 型3。上の vt14 が持つ）
+     ★右の数字は【作例】。★画面にそう書いてある（→ §2-5）
+     ★12,288 の出どころ：Brown et al. 2020 arXiv:2005.14165 Table 2.1 の d_model
+     ★.panel の【外】（★03 は position:sticky が 0件） -->
+<div class="figbox">
+ <div class="cap"><b>Who decided these numbers</b> &mdash; the two columns in <b>the table above</b>
+  (place-like and motion-like) are ones <b>I wrote by hand</b>. The real thing looks like this</div>
+ <table class="dtab" id="q15who" style="text-align:left"></table>
+ <div class="cap" style="text-align:left" id="q15whoc"></div>
+</div>
+
+<div id="e15v"></div>
+
+<!-- 🔴🔴🔴 2026-08-31 03担当：★★【1】【4】この問の【キーメッセージ】を .hide の外へ出した
+     ★由来：A の指摘【1】「前置きと実況に 754字、キーメッセージに 156字。
+       しかもキーメッセージだけが隠れている。題が約束しているものを、
+       クリアするまで読ませないのは筋が通らない」
+     ★★どこへ置いたか ── r14（.hide）の【直前】＝解く前に読める位置。
+       ★理由⒜ 題「次の語を当てるだけで、ほかのことも付いてくる」を最後に回収する位置
+         ⒝ .panel の外なので枠を1pxも伸ばさない ⒞ 操作 → 実況 → 意味の出どころ → payload の順
+     ★★A の指摘【4】── 断定だけでは「なんで？」で止まるので、
+       ★「当てるために必要だから付いた」を【表】で出す（→ 素材 第2部§3-1）
+       ★代償の側（次に来そうなことを選ぶ → 自信のある誤り）も同じ表に入れた（→ §3-6(a)）
+     ★★r14 の中（e15z）は【解けた確認と回数の話】だけに絞った（→ 00〜02 と同じ形） -->
+<div class="figbox">
+ <div class="cap"><b>Why grammar, facts and summarizing come along</b> &mdash;
+  because they are <b>needed</b> in order to predict the next word</div>
+ <table class="dtab" id="q15why" style="text-align:left"></table>
+</div>
+
+<div id="e15c"></div>
+<!-- 🔴🔴🔴 2026-09-10 記録担当（A149_movehide.py）：★★★この枠を【下の枠の中】へ移しました。
+     ★理由：★分割の規則で【上の枠と下の枠のどちらにも属さないものは隠されます】。
+       ★★この枠は「解いたら出てくる枠」なので、外にあると
+         ★★★解いて hide が外れても【分割中は永久に出てきません】。
+     ★山田様「ここで止まる」の正体がこれでした（★2026-09-10。★分割18問中15問で起きていた）。
+     ★中身は1文字も変えていません。★置き場所だけ変えました -->
+<div id="r14" class="hide">
+ <div id="e15z"></div>
+ <div class="keyh">What to take away</div>
+ <!-- 🆕 F：★元の verdict の中身は会話 e15z に寄せた。★用語だけ残す（→ 型3） -->
+ <div class="verdict ok">
+  <b>This is pretraining.</b>
+ </div>
+ <div class="panel">
+  <div class="cap"><b>One batch, and how many of them</b></div>
+  <svg id="rep14" viewBox="0 0 560 170"></svg>
+  <table class="dtab" style="text-align:left">
+   <tr><th style="text-align:left"></th><th>This problem</th><th>GPT-3</th></tr>
+   <!-- 🔴🔴 2026-08-31 03担当：★「つまみ 2個 ↔ 1,750億個」の1行が
+        【人が意味を決めている】という誤解を作っていたので2行に割った（→ A の指摘【3】）
+        ✗「1,750億個が語の数字」とは書かない ── ★語の数字（5万語ぶん）は
+          1,750億のうちの【一部】であって全部ではない -->
+   <tr><td style="text-align:left">Knobs the machine decides</td><td>2 (a and b)</td><td>all 175 billion</td></tr>
+   <tr><td style="text-align:left">Numbers a human wrote by hand</td><td>10 (5 words × 2 columns)</td><td>0</td></tr>
+   <tr><td style="text-align:left">Words it practised on</td><td>2 sentences</td><td>300 billion words</td></tr>
+   <tr><td style="text-align:left">Words at the exit</td><td>5 words</td><td>50,000 words</td></tr>
+   <tr><td style="text-align:left">Repeats</td><td id="n14b">0 times</td><td>93,750 times</td></tr>
+  </table>
+ </div>
+ <div class="src">
+  <div class="h">The original paper</div>
+  <span data-ref="brown2020" data-loc="Table 2.1"></span>
+  <span class="ref">300B ÷ 3.2M = 93,750. <b>On the order of 100,000 times.</b>
+   <!-- 🔴 2026-08-31 03担当：★語の数字の位置づけを1行 足した（→ A の指摘【3】） -->
+   The numbers for the words (12,288 per word × 50,000 words) are <b>inside that 175 billion too</b>.
+   The 12,288 per word is the d_model in Table 2.1.</span>
+ </div>
+ <!-- 🔴 2026-09-02 1問1ページ担当：★「役に立つところ」を足した（★03 は【0件】だった。→ 記事側の指示6番）
+      ★材料は 03 の中にある主張 ── 素材 第2部§3-6(a)「真偽より もっともらしさ を優先する機械。
+        自信のある誤りが原理的に出る」。★00・01・02・99 と同じ形（★.hide の中・原典の下） -->
+ <div class="src">
+  <div class="h">Where this pays off</div>
+  <b>A plausible falsehood is not a bug that gets fixed later on.</b>
+  It comes out of <b>the design itself</b> &mdash; picking the word that is likely to come next.
+  <span class="ref">So build &ldquo;the user checks it&rdquo; into the process. Do not sit and wait for it as a defect that might go away.</span>
+ </div>
+</div>
+</div><!-- /#q15talk -->
+
+
+</div>
+
+<!-- 🔴 2026-09-02 1問1ページ担当：★戻る／次へ（★どのページでも常に押せる） -->
+<div id="nav"></div>
+
+<div id="foot"></div>
+</div>
+
+<script src="common.js"></script>
+<script>
+/* 🔴 2026-09-02 1問1ページ担当：★★この問の【つまみ・図・判定・数値】は
+   tsume-03-train-dialog.html から【行をそのまま写した】もの。★1文字も変えていない。
+   ★共通の小道具（$ show R3 R1 mark gauge T JP BOX QT〜QARW）は common.js が持つ */
+var QBASE = 14;   /* ★03 は問15〜17 ＝ 帯の15番目から（→ A の判断1 ⑵） */
+drawProg(15); drawChap(15, "");
+drawNav(["q14.html", "Problem 14: Looking at two words at once"], ["q16.html", "Problem 16: Tuning on preference"]);
+drawFoot()   /* 🔴 2026-09-04 A：★注記を消した（★山田様。★他18ページは 9/2 に消してあり、★この3ページだけ文言が違って対象から漏れていた）*/;
+drawNest("nest", 4);
+drawChapTab(4); drawChapDet(4);
+
+/* ══════════════════════════════════════════════════════════════
+   詰めKaggle 03 ── どうやって作るか
+   ★★数値は全部コードで出す（→ 00 の §2-9）。手計算や記憶で書かない
+   ★確定した値（/tmp/tk03/v1.mjs・v2.mjs で総当たり・多出発点で確認）
+     問15  a=0 b=0 → ずれ 1.609（＝ −log(1/5)）
+           0〜30 刻み0.5 の 3,721通り中 ずれ≤0.20 は 2,489通り。最小は a=7.5 b=7.0（0.199）
+           最良 0.024（a=30 b=10.5）
+           坂を下る（1歩 3.0・つまみは 0.01 刻みに量子化）→ 63歩 で 0.20 を切る
+             10歩後 a=3.57 b=4.07 ずれ 0.355 ／ 100歩後 a=9.41 b=6.74 ずれ 0.170
+             1000歩後 a=26.03 b=7.75 ずれ 0.038
+           🔴 表示3桁と厳密値で判定が食い違う組合せが 抜き取り1,287,429通り中 1,203件
+             → ★★R3 で判定する（→ 引き継ぎ §7-2）
+           ★確率の表示（0.1%）を足すと 99.9% になる組がある → 合計は画面に出さない
+     問16  r 差 0 → 予測 50.0%・ずれ 0.693。80% に必要な r 差は 1.386
+           1歩 1.0 で 7歩、1歩 3.0 で 2歩。★1歩 1.0・100歩後 の r 差 5.301（予測 99.5%）
+           ★素材の作例 r(A)=2.0 r(B)=0.5 → P=0.818
+     問17  ○✕○✕ → 平均 0.5・母std 0.5・Â ＝ +1,−1,+1,−1（★素材 §5-1 の作例と一致）
+           ○○○✕ → 平均 0.75・母std 0.433・Â ＝ +0.577×3, −1.732
+           ○○○○ / ✕✕✕✕ → std 0（差が無いので Â を出せない）
+           ★標本標準偏差（3で割る）だと 0.577 になり ±0.866 になる（素材の注記）
+   ══════════════════════════════════════════════════════════════ */
+/* ══════════════════════════════════════════════════════════════
+   問15 ── 次の語を当てる（事前学習）
+   ★★00 の問1〜4 と同じ形。つまみ2個を回して ずれ を小さくする
+   ══════════════════════════════════════════════════════════════ */
+/* 5語に付けた2つの数字（★この問題の作例） */
+const VOC = [
+  { w: 'Pacific',  f1: 1.0, f2: 0.0 },
+  { w: 'Atlantic', f1: 0.9, f2: 0.0 },
+  { w: 'train',    f1: 0.3, f2: 0.1 },
+  { w: 'runs',     f1: 0.0, f2: 1.0 },
+  { w: 'Ocean',    f1: 0.1, f2: 0.2 }
+];
+/* 文脈も同じ2つの数字で表す（★＝掛けて足すだけ） */
+const SENT = [
+  { ctx: 'The largest ocean on Earth is the', c1: 1, c2: 0, ans: 0 },
+  { ctx: 'On the track, the train', c1: 0, c2: 1, ans: 3 }
+];
+const GOAL14 = 0.20, LR14 = 3.0, AMAX14 = 30;
+let A14 = 0, B14 = 0, N14 = 0, ok14 = false;
+const Q14 = v => Math.min(AMAX14, Math.max(0, Math.round(v * 100) / 100));
+function prob14(a, b, s) {
+  const z = VOC.map(v => a * s.c1 * v.f1 + b * s.c2 * v.f2);
+  const mx = Math.max.apply(null, z);
+  const e = z.map(x => Math.exp(x - mx));
+  const t = e.reduce((p, q) => p + q, 0);
+  return e.map(x => x / t);
+}
+function loss14(a, b) {
+  let L = 0;
+  for (const s of SENT) L += -Math.log(prob14(a, b, s)[s.ans]);
+  return L / SENT.length;
+}
+function grad14(a, b) {
+  let ga = 0, gb = 0;
+  for (const s of SENT) {
+    const p = prob14(a, b, s);
+    for (let i = 0; i < VOC.length; i++) {
+      const d = p[i] - (i === s.ans ? 1 : 0);
+      ga += d * s.c1 * VOC[i].f1; gb += d * s.c2 * VOC[i].f2;
+    }
+  }
+  return [ga / SENT.length, gb / SENT.length];
+}
+/* 棒グラフ2段。★文章は SVG に入れない（→ 引き継ぎ ⑴）。語名と % だけ */
+function w14fig() {
+  let s = '';
+  SENT.forEach((sn, gi) => {
+    const base = gi === 0 ? 115 : 285;
+    const p = prob14(A14, B14, sn);
+    s += T(12, base, gi === 0 ? '①' : '②', { fs: 15, b: 1, c: '#000' });
+    s += `<line x1="56" y1="${base}" x2="500" y2="${base}" stroke="#000"/>`;
+    for (let i = 0; i < VOC.length; i++) {
+      const x = 60 + i * 90, h = Math.max(1, p[i] * 96), hit = (i === sn.ans);
+      s += `<rect x="${x}" y="${(base - h).toFixed(1)}" width="60" height="${h.toFixed(1)}"
+        fill="${hit ? '#019949' : '#9a9a9a'}" opacity="${hit ? '.9' : '.55'}"/>`;
+      /* 🔴 数字は棒の上に 12単位 離す（★8 では x軸と 2.4px しか空かなかった） */
+      s += T(x + 30, base - h - 12, (p[i] * 100).toFixed(1) + '%',
+        { a: 'middle', fs: 13, c: hit ? '#019949' : '#6e6e6e', b: hit ? 1 : 0 });
+      /* 🔴 語名は base+30（★base+18 では x軸に 1.69px 食い込んだ。★実ブラウザで測った） */
+      s += T(x + 30, base + 30, VOC[i].w,
+        { a: 'middle', fs: 14, c: hit ? '#000' : '#6e6e6e', b: hit ? 1 : 0 });
+    }
+  });
+  $('w14').innerHTML = s;
+}
+function vt14() {
+  let s = '<tr><th style="text-align:left">Word</th><th>place-like</th><th>motion-like</th></tr>';
+  for (const v of VOC)
+    s += `<tr><td style="text-align:left">${v.w}</td><td>${v.f1.toFixed(1)}</td><td>${v.f2.toFixed(1)}</td></tr>`;
+  s += '<tr><th style="text-align:left">context &#9312;</th><td>1.0</td><td>0.0</td></tr>'
+     + '<tr><th style="text-align:left">context &#9313;</th><td>0.0</td><td>1.0</td></tr>';
+  $('vt14').innerHTML = s;
+}
+/* 1回ぶんと回数の図（★短いラベルだけ） */
+function rep14fig() {
+  let s = T(8, 26, 'one batch = 3.2M tokens', { fs: 14, b: 1, c: '#000' });
+  for (let i = 0; i < 9; i++) s += BOX(60 + i * 36, 40, 28, 30, '#e8eef6');
+  s += T(60 + 9 * 36 + 6, 62, '…', { fs: 15 });
+  s += BOX(60 + 11 * 36, 40, 28, 30, '#e8eef6');
+  s += T(8, 104, 'and 93,750 of them (order of 100,000)', { fs: 14, b: 1, c: '#000' });
+  s += T(8, 144, 'one batch is the &ldquo;one step&rdquo; from Problem 2', { fs: 13 });
+  $('rep14').innerHTML = s;
+}
+function up14() {
+  $('a14').value = Math.round(A14 * 100); $('b14').value = Math.round(B14 * 100);
+  $('a14v').textContent = A14.toFixed(2); $('b14v').textContent = B14.toFixed(2);
+  $('n14').textContent = N14;
+  if ($('n14b')) $('n14b').textContent = N14.toLocaleString() + ' times';
+  w14fig();
+  const e = loss14(A14, B14), er = R3(e);
+  $('e14').textContent = er.toFixed(3);
+  gauge('g14', 'm14', e, GOAL14, 2.0, true);
+  /* 🔴 判定は【表示した桁】で（→ 引き継ぎ §7-2） */
+  const ok = er <= GOAL14;
+  $('j14').className = 'verdict' + (ok ? ' ok' : '');
+  const p0 = prob14(A14, B14, SENT[0])[0], p1 = prob14(A14, B14, SENT[1])[3];
+  $('j14').innerHTML = `&#9312; Pacific <b>${(p0 * 100).toFixed(1)}%</b>&nbsp; &#9313; runs <b>${(p1 * 100).toFixed(1)}%</b>`
+    + (ok ? '. You are there.' : '. The goal is an error of 0.20 or below.');
+  if (ok && !ok14) { ok14 = true; mark(0, 'done'); show('r14'); rep14fig(); }
+}
+function step14(n) {
+  for (let i = 0; i < n; i++) {
+    const g = grad14(A14, B14);
+    A14 = Q14(A14 - LR14 * g[0]); B14 = Q14(B14 - LR14 * g[1]);
+    N14++;
+  }
+  up14();
+}
+$('a14').oninput = () => { A14 = +$('a14').value / 100; up14(); };
+$('b14').oninput = () => { B14 = +$('b14').value / 100; up14(); };
+$('s14a').onclick = () => step14(1);
+$('s14b').onclick = () => step14(10);
+$('s14c').onclick = () => step14(100);
+$('r14b').onclick = () => { A14 = 0; B14 = 0; N14 = 0; up14(); };
+
+/* ══════════ 起動 ══════════ */
+vt14(); up14();
+
+/* ══════════════════════════════════════════════════════════════════════════
+   🆕 会話（★03-dialog の CV の写し）＋ この問の図（★03-dialog の IIFE の写し）
+   ★★章参照だけ直した（「00」「02」→「第1章」「第3章」／「00 の問1〜2」→「問1〜2」）
+   ══════════════════════════════════════════════════════════════════════════ */
+(function(){
+  var CV = {
+ "e15a": [
+  [
+   "d",
+   "There are three stages, Adam. In Chapter 3 you got as far as drawing the next word by probability. Today it is <b>how that probability gets made</b>."
+  ],
+  [
+   "m",
+   "The building side?"
+  ],
+  [
+   "d",
+   "That is it. <b>Stage one. You have seen the diagram above.</b>"
+  ],
+  [
+   "m",
+   "I have. Pacific, Atlantic, train, runs, Ocean &mdash; five of them. &hellip; <b>The exit in Chapter 3 had 50,000</b>, did it not. Why five?"
+  ],
+  [
+   "d",
+   "<b>Because 50,000 bars will not fit on a screen.</b> For this problem alone I cut it down to five. <b>I am the one who did the cutting.</b>"
+  ],
+  [
+   "m",
+   "So out of 50,000 bars, <b>we are looking at five</b>."
+  ],
+  [
+   "d",
+   "Just so. &hellip; And <b>what you do is the same as in Chapter 1</b>. Turn the knobs, bring the <b>error</b> down."
+  ],
+  [
+   "m",
+   "The same as Chapter 1? That is how an LLM gets built?"
+  ],
+  [
+   "d",
+   "The same. <b>The one difference is that the exit is now a word.</b> <b>Go on, turn them.</b>"
+  ]
+ ],
+ "e15v": [
+  [
+   "m",
+   "Doc, hold on. <b>Place-like</b>, <b>motion-like</b> &hellip; <b>who decided those?</b>"
+  ],
+  [
+   "d",
+   "<b>In this problem, I did.</b> Two columns for five words &mdash; ten numbers, written by hand."
+  ],
+  [
+   "m",
+   "So in the real thing too, a person decides &ldquo;this column is place-like&rdquo;?"
+  ],
+  [
+   "d",
+   "<b>Nobody decides. Not one of them.</b>"
+  ],
+  [
+   "m",
+   "What?"
+  ],
+  [
+   "d",
+   "<b>The machine settles the meanings too.</b> 12,288 of them for one word. &hellip; <b>What any one column stands for, nobody knows.</b>"
+  ],
+  [
+   "m",
+   "Nobody knows, and it still works?"
+  ],
+  [
+   "d",
+   "It works. <b>They are numbers that settled where they had to for the guesses to come out right.</b> &hellip; <b>Numbers written by hand: zero.</b>"
+  ],
+  [
+   "m",
+   "&hellip; So that is the biggest difference from Chapter 1."
+  ],
+  [
+   "d",
+   "That is it! <b>In Chapter 1 I decided the meanings. In the real thing, no one does.</b>"
+  ]
+ ],
+ "e15b": [
+  [
+   "m",
+   "Doc, the error is the same sum of squares as in Chapter 1, right?"
+  ],
+  [
+   "d",
+   "It is not. &hellip; <b>Do not mix those two up, Adam.</b> Chapter 1 was about guessing <b>a number</b>. That is why we squared the gaps and added them. Today is about guessing <b>which word</b>."
+  ],
+  [
+   "m",
+   "A different problem, so a different way of measuring?"
+  ],
+  [
+   "d",
+   "It changes. <b>error = −log(probability of the right word).</b> Put a high % on the right word and it sits near 0. Miss it, and it shoots up."
+  ],
+  [
+   "m",
+   "&hellip; You say <b>log</b>, but <b>words alone tell me nothing at all</b>."
+  ],
+  [
+   "d",
+   "<b>Fair enough!</b> Then no more words. <b>Look at the numbers.</b> The table below."
+  ]
+ ],
+ "e15b2": [
+  [
+   "m",
+   "&hellip; <b>The 20% row of the table is 1.609</b>."
+  ],
+  [
+   "d",
+   "That is it! <b>Treat the five words equally and every one of them is 20.0%.</b> The error then comes out at <b>1.609</b>. That is the state of <b>having learned nothing yet</b>."
+  ],
+  [
+   "m",
+   "Get it right and it goes towards 0; miss and it shoots up. Just as the table says."
+  ],
+  [
+   "d",
+   "You have got it. <b>Now bring down the error on the gauge above.</b> From [Back to the start], press [10 steps] once."
+  ],
+  [
+   "m",
+   "<b>0.355</b>. Pacific is at <b>54.0%</b>. &hellip; And pressing [100 steps] as well gives <b>0.164</b>. There it is."
+  ],
+  [
+   "d",
+   "It drops under 0.20 at <b>63 steps</b>. &hellip; <b>The machine did the walking down.</b> You only pressed the button."
+  ]
+ ],
+ "e15c": [
+  [
+   "m",
+   "Done. &hellip; But this is <b>nothing but practice at predicting the next word</b>."
+  ],
+  [
+   "d",
+   "Nothing but that. <b>And yet, in trying to get good at it, grammar and facts and summarizing all come along.</b>"
+  ],
+  [
+   "m",
+   "Without being taught?"
+  ],
+  [
+   "d",
+   "Not taught. <b>Look at the table above.</b> &hellip; To get the word after &ldquo;The largest ocean on Earth is the&rdquo;, it <b>has to know</b> that the Pacific is the largest, does it not."
+  ],
+  [
+   "m",
+   "&hellip; Ah. <b>It came along because it was needed to get the guess right.</b>"
+  ],
+  [
+   "d",
+   "<b>That is it!</b> Grammar and summarizing, the same. <b>They came as extras &mdash; a by-product of compression.</b>"
+  ],
+  [
+   "m",
+   "So grinding away at predicting the next word is what makes it clever."
+  ],
+  [
+   "d",
+   "&hellip; <b>There is a price for it.</b> What it picks is not <b>what is true</b>. It is <b>what is likely to come next</b>."
+  ],
+  [
+   "m",
+   "&hellip; <b>Plausible falsehoods</b> come out."
+  ],
+  [
+   "d",
+   "That is it! <b>Confident errors come out as a matter of principle.</b> This is not something to be fixed. It is the very design of this stage."
+  ],
+  [
+   "m",
+   "What it gained, and what it lost."
+  ],
+  [
+   "d",
+   "<b>That is stage one.</b> &hellip; Every stage down the line has this. <b>It is not a simple stacking up.</b> Next comes <b>what people prefer</b>."
+  ]
+ ],
+ "e15z": [
+  [
+   "m",
+   "Under 0.20."
+  ],
+  [
+   "d",
+   "Good. <b>Do that with the real number of words and the real number of knobs, and that is pretraining.</b> <b>Look at the table below.</b>"
+  ]
+ ]
+};
+  drawCV(CV);
+
+  /* ── 図① この問がやっていること ─────────────────────────────
+     ★SVG に文章を入れない（→ 引き継ぎ ⑴）。★短い語句と語名だけ。説明は cap 側 */
+  function q15map() {
+    var h = document.getElementById('q15map');
+    if (!h) return;
+    var s = '';
+    /* 段1 文脈 */
+    s += QT(8, 26, 'context', { fs: 13, c: '#6e6e6e' });
+    s += QBOX(100, 8, 360, 34, '#e8eef6');
+    s += QT(280, 31, 'The largest ocean on Earth is the', { a: 'middle', fs: 15, b: 1, c: '#000' });
+    s += QARR(280, 42, 62);
+    /* 🔴 2026-08-31 03担当【自己申告】★はじめ「5語ぜんぶに 点 を付ける（つまみ a・b）」と
+       書いたが、★390px で @media が font を 17px に上げるため viewBox を 46.7単位
+       （実 27.8px）はみ出した。★★SVG のラベルは最短にして、説明は cap 側へ移した
+       （→ 引き継ぎ ⑴「文章は SVG に入れない」） */
+    s += QT(292, 58, 'give each a score', { fs: 13 });
+    /* 段2 5語 */
+    for (var i = 0; i < VOC.length; i++) {
+      var x = 8 + i * 110, hit = (i === 0);
+      s += QBOX(x, 68, 102, 34, hit ? '#eaf7f0' : '#fff', hit ? '#019949' : '#000', hit ? 2 : 1);
+      s += QT(x + 51, 91, VOC[i].w, { a: 'middle', fs: 15, b: hit ? 1 : 0,
+        c: hit ? '#019949' : '#3f3f3f' });
+    }
+    s += QT(8, 118, 'the 5 words at the exit', { fs: 12, c: '#6e6e6e' });
+    s += QARR(280, 122, 142);
+    s += QT(292, 138, 'turn into probabilities', { fs: 13 });
+    /* 段3 確率（★値は入れない。上の棒グラフが持っている） */
+    for (var k = 0; k < VOC.length; k++) {
+      var x2 = 8 + k * 110, hit2 = (k === 0);
+      s += QBOX(x2, 148, 102, 34, '#f4f4f4', hit2 ? '#019949' : '#000', hit2 ? 2 : 1);
+      s += QT(x2 + 51, 171, '%', { a: 'middle', fs: 15, b: hit2 ? 1 : 0,
+        c: hit2 ? '#019949' : '#6e6e6e' });
+    }
+    /* 🔴 2026-08-31 03担当【自己申告】★はじめ「上の棒グラフ」と書いたが【誤り】だった。
+       ★図① は棒グラフ（.panel）より【前】に置いてあるので、棒グラフは この図の【下】にある。
+       ★★スクリーンショットを目で見て気づいた（→ §5-28 01v2 の失敗⑷
+         「画面の説明が実測と食い違っていた」と同じ型） */
+    s += QT(8, 198, 'the bar chart below', { fs: 12, c: '#6e6e6e' });
+    s += QARR(280, 202, 222);
+    /* 段4 正解 */
+    /* 🔴🔴🔴 2026-09-10 記録担当：★★★★山田様のご指摘 ──
+       ★「これ、ブロックみたいなところからはみ出てるからはみ出ないように調整して、
+         ★スペースにはだいぶ余裕あるはずだ」（2026-09-10）
+       ★★原因 ── ★この文字は 55行の CSS【#q15map text{font-size:21px}】が効くので
+         ★★21単位です（★QT の fs:14 は CSS に負けます）。★全角14字ぶんで【約300単位】。
+         ★★★枠は 260単位しかなかったので、★左右に約20単位ずつ はみ出していました。
+       ★★直した内容 ── ★枠の幅だけ 260 → 340 に広げました（★x 150→110。★中央280は同じ）。
+         ★★viewBox は 560単位で、★段2・段3 が 8〜558 を使っています。
+           ★★★110〜450 なので【まだ余っています】。★文字も高さも1単位も変えていません */
+    s += QBOX(110, 222, 340, 26, '#eaf7f0', '#019949', 2);
+    s += QT(280, 240, 'look only at the % for Pacific', { a: 'middle', fs: 14, b: 1,
+      c: '#019949' });
+    h.innerHTML = s;
+  }
+
+  /* ── 図② ずれ ＝ −log(確率) の対応 ──────────────────────────
+     ★物差しは 0〜2.0（画面のゲージ gcap「0 / 目標 0.20 / 2.0」と同じ） */
+  function q15log() {
+    var h = document.getElementById('q15log');
+    if (!h) return;
+    var ROW = [[1.0, ''], [0.5, ''], [0.2, 'the value when all 5 are equal'], [0.1, '']];
+    var s = '';
+    for (var i = 0; i < ROW.length; i++) {
+      var p = ROW[i][0], L = -Math.log(p), w = Math.min(100, L / 2.0 * 100);
+      var mark = (p === 0.2);
+      s += '<div class="sc-row">'
+        + '<span class="sc-label">' + (p * 100).toFixed(0) + '%</span>'
+        + '<span class="sc-track"><span class="sc-fill'
+        /* 🔴 2026-08-31 03担当【自己申告】★はじめ 100% の行に .hit（緑）を付けたが、
+           ★その行はバーの長さが 0 なので【色が1pxも見えない】＝無意味だった。
+           ★あわせて 緑は「達成」の色なので、ずれの大きさを示すバーには向かない。★外した */
+        + '" style="width:' + w.toFixed(1) + '%"></span></span>'
+        + '<span class="sc-pct"' + (mark ? ' style="font-weight:700"' : '') + '>'
+        + L.toFixed(3) + '</span></div>';
+    }
+    s += '<table class="dtab" style="text-align:left">'
+      + '<tr><th style="text-align:left">probability given to the right word</th><th>error</th>'
+      + '<th style="text-align:left"></th></tr>';
+    var NOTE = { '1': 'right every time', '0.5': 'fifty-fifty', '0.2': 'all 5 words equal (= 0 steps)',
+                 '0.1': 'off the gauge (0 to 2.0)' };
+    for (var j = 0; j < ROW.length; j++) {
+      var q = ROW[j][0], L2 = -Math.log(q), on = (q === 0.2);
+      s += '<tr' + (on ? ' class="sum"' : '') + '>'
+        + '<td style="text-align:left">' + (q * 100).toFixed(0) + '%</td>'
+        + '<td>' + (on ? '<b>' + L2.toFixed(3) + '</b>' : L2.toFixed(3)) + '</td>'
+        + '<td style="text-align:left">' + NOTE[String(q)] + '</td></tr>';
+    }
+    s += '</table>'
+      + '<div class="cap" style="text-align:left;margin:.2rem 0 0">'
+      /* 🔴 2026-08-31 03担当【自己申告】★ここに ★ を書いて型F を2件 出した。
+         ★★01v2 が踏んだ失敗⑵（図を生成する JS の文字列も型F の検査対象）と同じ穴。
+         ★文は変えずに印だけ落とした（→ 配布文 §4⑸） */
+      + 'With <b>5</b> words, treating them equally always gives <b>1.609</b>'
+      + ' (the −log of <b>1 ÷ 5 = 0.2</b>).'
+      + '<span style="color:var(--gray-500)"> Cutting the exit down to 5 words was this problem&rsquo;s doing,'
+      + ' so this 1.609 is a number this problem set as well.</span></div>';
+    h.innerHTML = s;
+  }
+
+  /* ── 図③ つまみを回すと動く「点 → 確率 → ずれ」──────────────
+     ★★①②の ずれ は、足して2で割ると 画面の ずれ になるよう端数を吸収する */
+  function q15disp() {
+    var L = [], i;
+    for (i = 0; i < SENT.length; i++) L.push(-Math.log(prob14(A14, B14, SENT[i])[SENT[i].ans]));
+    var avg = +((L[0] + L[1]) / 2).toFixed(3);        /* ★画面の e14 と同じ計算 */
+    var l = [+L[0].toFixed(3), +L[1].toFixed(3)];
+    var need = +(avg * 2).toFixed(3), sum = +(l[0] + l[1]).toFixed(3);
+    if (sum !== need) {                               /* ★いちばん大きい方で吸収 */
+      var big = l[0] >= l[1] ? 0 : 1;
+      l[big] = +(need - l[1 - big]).toFixed(3);
+    }
+    return { l: l, avg: avg };
+  }
+  function q15flow() {
+    var h = document.getElementById('q15flow');
+    if (!h) return;
+    var pad = function (s, n) { s = String(s); while (s.length < n) s = ' ' + s; return s; };
+    var w4 = function (s) { s = String(s); while (s.length < 8) s += ' '; return s; };
+    var D = q15disp();
+    var s = 'now  a = ' + A14.toFixed(2) + ' / b = ' + B14.toFixed(2) + '\n\n';
+    /* ① 全語を出す */
+    var s0 = SENT[0], p0 = prob14(A14, B14, s0);
+    var z0 = VOC.map(function (v) { return A14 * s0.c1 * v.f1 + B14 * s0.c2 * v.f2; });
+    var mx0 = Math.max.apply(null, z0);
+    /* 🔴🔴 2026-08-31 03担当【自己申告】★0歩（a＝0.00）だと 5語の点が全部 0.00 で同じになり、
+       ★「←最大」が【5つ全部】に付いていた。★スクリーンショットを目で見て気づいた。
+       → ★同じ点が2つ以上あるときは「←最大」を出さない。★かわりに1行で「全部同じ」と言う */
+    var tie0 = z0.filter(function (v) { return v === mx0; }).length > 1;
+    s += '\u2460 "' + s0.ctx.replace('ocean on Earth', 'ocean \u2026') + '"\n';
+    s += '  <- place-like only\n';
+    s += '  score = a × place-like\n';
+    for (var i = 0; i < VOC.length; i++) {
+      s += '  ' + w4(VOC[i].w) + ' ' + pad(A14.toFixed(2), 5) + ' × ' + VOC[i].f1.toFixed(1)
+        + ' = ' + pad(z0[i].toFixed(2), 5)
+        + (z0[i] === mx0 && !tie0 ? ' <-max' : '') + '\n';
+    }
+    if (tie0) s += '  \u2193 all 5 tie = all get the same %\n';
+    s += '  \u2193 to probabilities (chart above)\n';
+    s += '  the answer "' + VOC[s0.ans].w + '" gets ' + (p0[s0.ans] * 100).toFixed(1) + '%\n';
+    s += '  error = −log(that) = ' + D.l[0].toFixed(3) + '\n\n';
+    /* ② 正解だけ（★同じことを2回 書かない → 型3） */
+    var s1 = SENT[1], p1 = prob14(A14, B14, s1);
+    s += '\u2461 "' + s1.ctx + '"\n';
+    s += '  <- motion-like only, again\n';
+    s += '  the answer "' + VOC[s1.ans].w + '" gets ' + (p1[s1.ans] * 100).toFixed(1) + '%\n';
+    s += '  error = ' + D.l[1].toFixed(3) + '\n\n';
+    /* 🔴 2026-08-31 03担当【自己申告】★ここにも ★ を書いて型F を出した。★印だけ落とした */
+    s += 'the average of these two errors is\n';
+    s += 'the error on the gauge above: ' + D.avg.toFixed(3);
+    h.textContent = s;
+  }
+
+  /* ── 起動と追随 ─────────────────────────────────────────
+     ★つまみ・ボタンの on□□□ を書き換えない。★#e14 の書き換えを見て追随する */
+
+  /* ══════════════════════════════════════════════════════════════════════════
+     🔴🔴 2026-08-31 03担当：A の指摘【2】【4】の図
+     ──────────────────────────────────────────────────────────────────────────
+     ★q15who ── 語の数字を決めたのは誰か
+       ★左（この問題の2列）は【上の vt14 が持っている】ので作らない（→ 型3）
+       ★右の数字は【作例】。★画面にそう書く（→ §2-5）。★列の名は「？」＝誰も知らない
+       ★12,288 は Brown et al. 2020 Table 2.1 の d_model
+     ★q15why ── なぜ文法も事実も要約も付いてくるのか
+       ★「当てるために必要だから」を1行ずつ。★代償（次に来そうなことを選ぶ）も同じ表に入れる
+       → 素材 第2部§3-1 ／ §3-6(a)
+     ══════════════════════════════════════════════════════════════════════════ */
+  function q15who() {
+    var h = document.getElementById('q15who');
+    if (!h) return;
+    /* ★作例の数字（★意味は無い。★「どの列が何かは誰も知らない」を見せるためのもの） */
+    var EX = [['Pacific',  ['0.83', '−0.12', '0.44']],
+              ['Atlantic', ['0.79', '−0.09', '0.51']],
+              ['runs',     ['−0.22', '0.63', '−0.08']]];
+    var s = '<tr><th style="text-align:left">Word</th>'
+          + '<th>?</th><th>?</th><th>?</th><th>&hellip;</th><th>?</th></tr>';
+    for (var i = 0; i < EX.length; i++) {
+      s += '<tr><td style="text-align:left">' + EX[i][0] + '</td>'
+         + EX[i][1].map(function (v) { return '<td>' + v + '</td>'; }).join('')
+         + '<td>&hellip;</td><td>&hellip;</td></tr>';
+    }
+    s += '<tr class="sum"><td style="text-align:left">Number of columns</td>'
+       + '<td colspan="5"><b>12,288 columns</b> (for one word)</td></tr>';
+    h.innerHTML = s;
+    var c = document.getElementById('q15whoc');
+    if (c) c.innerHTML =
+      '<b>The columns have no names.</b> What any one column stands for is '
+      + '<b>not known even to the people who built it</b>. The numbers still settle where they have to '
+      + 'for the guesses to come out right.'
+      + '<span style="color:var(--gray-500)"> The numbers above are <b>made up</b>'
+      + ' (not real values). The 12,288 for one word is the '
+      /* 🔴🔴🔴 2026-09-10 記録担当：★★★★山田様のご指示 ──
+         ★「これの書き方、前にも似たようなやつで直したよな、同じような感じで直して」（2026-09-10）
+         ★★問13・問14 と同じ【共通の形】に揃えました ── ★common.js の REF から出します。
+           ★形 ── 著者 年「題」（通称）arXiv:番号（★リンク付き）該当箇所。
+           ★以前は「Brown et al. 2020 arXiv:2005.14165 Table 2.1」で、★★題も通称もリンクも
+             ありませんでした（★common.js 386行が【いちばん悪い形】として名指ししている書き方）。
+         ⚠️★★ここは JS が後から書き込む場所なので、★data-ref（span）では【描画されません】
+           （★common.js の drawRefs は読み込み時に1回しか走らないため）。
+           ★★★同じ common.js の ref() を直接 呼んでいます。★出る文字は同じです。
+         ★★どの表を見たかは【1文字も変えていません】（★Table 2.1 のまま） */
+      + 'd_model in ' + ref('brown2020', 'Table 2.1') + '.</span>';
+  }
+
+  function q15why() {
+    var h = document.getElementById('q15why');
+    if (!h) return;
+    var ROW = [
+      ['Predict the word after &ldquo;The largest ocean on Earth is the&rdquo;',
+       'knowing that the Pacific is the largest', 'facts'],
+      ['Predict the word after &ldquo;&hellip; on Earth is the Pacific&rdquo;',
+       'being able to pick &ldquo;Ocean&rdquo; over &ldquo;.&rdquo;', 'grammar'],
+      ['Predict the word after &ldquo;in short&rdquo; in a long passage',
+       'being able to pick out where the point is', 'summarizing']
+    ];
+    var s = '<tr><th style="text-align:left">To predict the next word</th>'
+          + '<th style="text-align:left">What it takes</th>'
+          + '<th style="text-align:left">So this comes along</th></tr>';
+    for (var i = 0; i < ROW.length; i++) {
+      s += '<tr><td style="text-align:left">' + ROW[i][0] + '</td>'
+         + '<td style="text-align:left">' + ROW[i][1] + '</td>'
+         + '<td style="text-align:left"><b>' + ROW[i][2] + '</b></td></tr>';
+    }
+    s += '<tr class="sum"><td style="text-align:left">But what it picks is</td>'
+       + '<td style="text-align:left">not what is true, but'
+       + '<br><b>what is likely to come next</b></td>'
+       + '<td style="text-align:left"><b>confident errors</b></td></tr>';
+    h.innerHTML = s;
+  }
+
+  q15who(); q15why();
+  q15map(); q15log(); q15flow();
+  (function () {
+    var e14 = document.getElementById('e14');
+    if (!e14 || typeof MutationObserver === 'undefined') return;
+    new MutationObserver(function () { q15flow(); })
+      .observe(e14, { childList: true, characterData: true, subtree: true });
+  })();
+})();
+</script>
+</body>
+</html>
