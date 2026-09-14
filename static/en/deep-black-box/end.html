@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<meta name="description" content="All 21 problems are done. From here on, it is Kaggle.">
+<meta property="og:title" content="Deep Black Box - this much is the groundwork (in closing)">
+<meta property="og:description" content="All 21 problems are done. From here on, it is Kaggle.">
+<!-- 🔴🔴🔴🔴 2026-09-10 記録担当：★★★★共有したときの画像（★公開準備セッションの指示）。
+     ★★この2行は【23ページとも入っていませんでした】（★実測0件）。
+     ★★★入れる値は先方が確定させたものです ──
+       roppongivc.com/static/img/agora/r1/og-r1-game.jpg（★59KB。★案A＝白地・エンブレム左）。
+     ★★記事用（og-r1-article.jpg）とは【別のファイル】です。★記事側のものは触っていません。
+     ★値は絶対URLです（★OGP の決まり。★href の絶対パス禁止とは別の話です） -->
+<meta property="og:image" content="https://www.roppongivc.com/en/deep-black-box/og-deep-black-box-en.jpg">
+<meta name="twitter:image" content="https://www.roppongivc.com/en/deep-black-box/og-deep-black-box-en.jpg">
+<!-- 🔴🔴🔴🔴 2026-09-10 21:4x 記録担当：★★★★X（Twitter）で大きい絵にする1行（★公開準備セッションの依頼）。
+     ★★★og:image を入れても、★この1行が無いと【小さいカード】になります。
+     ★記事側は全13ページを summary → summary_large_image にしたとのことです（★先方の実測）。
+     ★★ゲーム23ページは【0件】でした -->
+<meta name="twitter:card" content="summary_large_image">
+<!-- 🔴🔴🔴🔴 2026-09-10 22:3x 記録担当：★★★★ブラウザのタブに出る絵（★公開準備セッションの依頼）。
+     ★★実測 ── ★23ページとも【0件】でした（★タブに絵が出ていませんでした）。
+     ★★★実体はサイト側にあり、★本番で全部 引けます（★新しく作っていません）──
+       /favicon.svg 200・53KB ／ /favicon.ico 200 ／ /favicon-192.png 200・8KB
+     ⚠️★★/apple-touch-icon.png は【404】なので使いません。★favicon-192.png を指しています
+       （★サイト側 baseof.html と同じ扱いです）。
+     ⚠️★★★絶対URLです ── ★このゲームは /deep-black-box/ の下にあるので、
+       ★相対だと /deep-black-box/favicon.svg を探して【外します】。
+       ★「絶対パスを書かない」（★同じ場所の中を指すときの決まり）とは別の話です -->
+<link rel="icon" href="https://www.roppongivc.com/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="https://www.roppongivc.com/favicon.ico" sizes="32x32">
+<link rel="icon" href="https://www.roppongivc.com/favicon-192.png" type="image/png" sizes="192x192">
+<link rel="apple-touch-icon" href="https://www.roppongivc.com/favicon-192.png">
+<title>Deep Black Box - this much is the groundwork (in closing)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@300;400;600;700&family=Inter:wght@300;400;500;600;700&family=Noto+Serif+JP:wght@300;400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../deep-black-box/common.css">
+<style>
+/* ══════════════════════════════════════════════════════════════════════════
+   🔴 2026-09-02 1問1ページ担当2代目【新設】── end.html だけの CSS
+   ★材料は確定分だけ ── ⑴ 00 の d19（学の台詞）／⑵ 分かっていない、の1行／
+     ⑶ 99 の締めのリンク（Kaggle）
+   ★書体・サイズは common.css のまま（★§5-40 ⑹）／★図解なし（→ A の指示）
+   ══════════════════════════════════════════════════════════════════════════ */
+.key{border:1px solid var(--black);padding:1.2rem 1.3rem;margin:1.4rem 0 0;background:var(--white)}
+.key .kt{font-size:11.5px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--gray-500);margin:0 0 .5rem}
+.key p{font-size:16.6px;line-height:1.831;margin:0}
+.key p b{color:var(--black)}
+.key p+p{margin-top:.6rem}
+</style>
+</head>
+<body>
+
+<div class="top"><div class="in">Deep Black Box<span class="tag">Open up the black box of AI one problem at a time, with your own hands. 21 problems in all.</span></div></div>
+<div class="wrap">
+
+<!-- ══════════════════ 締め ══════════════════ -->
+<div class="card">
+<div class="tagline">In closing</div>
+<h2>This much is the groundwork</h2>
+<p class="lead">That is all 21 problems. <b>From here on, it is your turn to do the work.</b></p>
+
+<!-- 🔴 材料⑴：★00 の d19（学の台詞）を置く。
+     ★話者名は吹き出しの【外】（common.js の drawCV がそう描きます。→ §5-40 ⑹）
+     🔴🔴🔴🔴 2026-09-10 記録担当：★★★★山田様のご指示で【この台詞も方針に合わせました】。
+       ★山田様「学のセリフも今決めた方針に合わせて変えろよ」（2026-09-10）
+     ★★★もとは【問5（第1章の締め）の台詞と1文字も同じ】でした（★q05.html 846行）。
+       ★★第1章の終わりに「今日やったの、全部これだね」と言うのは正しいのですが、
+       ★★★出口で同じ台詞を使うと【第2〜4章でやったことまで「これだけ」に入って】しまいます。
+     ★★直した2つ ── ✗「全部これだね」→ ○「この組み合わせだね」（★断定を外す）
+       ／ ★「折り曲げて」を1語 足す（★問6〜7 の山場。→ 下の本文と同じ方針）
+     ⚠️★★★問5 側（q05.html）は【1バイトも触っていません】── ★第1章の締めとしては
+       いまの言い方が正しく、★★山田様に伺っていない範囲だからです -->
+<div id="e_end"></div>
+
+<!-- 🔴 材料⑵ -->
+<div class="key">
+ <div class="kt">What you take away today</div>
+<!-- 🔴🔴🔴🔴 2026-09-10 記録担当：★★★★山田様のご指摘 ──
+     ★「ここ、これだけとか断定系だろ、ダメだろ。★★あと言ってることも妥当か微妙やん」（2026-09-10）
+     ★★★直した2つ ──
+     ⑴ ✗「やっていたのはこれだけです」→ ○「この5つの組み合わせです」
+       ★★理由 ── ★★★教材自身の内容と食い違っていました。
+         ★問6〜7 の山場は【層を重ねただけでは足りない。折り曲げが要る】で、
+         ★★これは「掛けて、足して」では表せません。★第3章の「差を広げる（e の何乗）」も同じです。
+       → ★★「折り曲げて」を1語 足し、★「これだけ」を「この5つの組み合わせ」にしました。
+     ⑵ ✗「なぜそれが賢く働くのかは、作った人たちにも分かっていません」
+        → ○「なぜ大きくするほど 賢くなるのかは、作った人たちにも説明が付いていません」
+       ★★理由 ── ★★★原典より【広く言い過ぎていました】。
+         ★原典（Kaplan et al. 2020, arXiv:2001.08361 Appendix C）が言っているのは
+         ★★「提案したスケーリング則のいずれについても確固たる理論的理解を持っていない。
+           モデルサイズと計算量に関する関係は特に謎」── ★著者自身の言葉です。
+         ★★★つまり分かっていないのは【大きくするほど よくなるのはなぜか】で、
+           ★「賢く働く理由」全般ではありません。
+       ★★出どころ ── 原論文解説/99_原典照合ログ.md の「25 Scaling Laws」項5（★全文取得して照合済み）。
+       ★★★「よくなる」を「賢くなる」にしたのは【山田様のご指示】です（2026-09-10）。
+     ⚠️★★問16 の題「賢くはならない」とは食い違いません ── ★あちらは【作り方（人の好みで整える）では
+       賢さは足されない】という話で、★こちらは【規模を大きくすると賢くなる、その理由が不明】という話です -->
+ <p><b>Multiply, add, bend, measure how far off you are, walk downhill.</b>
+  From Chapter 1 to Chapter 4, what you worked with your own hands was <b>a combination of these five</b>.
+  And in Chapter 5 you saw that those tools <b>do not work on everything</b>.</p>
+ <p><b>Why it gets smarter the more parameters you give it is something the people who built it cannot account for either.</b></p>
+</div>
+</div>
+
+<!-- ══════════════════ ここから先 ══════════════════ -->
+<div class="card">
+<h2>From here on, it is Kaggle</h2>
+<p class="lead">The table of 891 people you used in Problems 18-21 is <b>published on a site called Kaggle</b>.
+ You put answers to the 418 people in the scoring set, send them, and they get marked. It is a place where people all over the world are working at the same time
+ on <b>problems whose answer is not settled yet</b>.</p>
+<!-- 🔴 材料⑶：★99 の締めのリンクをそのまま使う -->
+<div class="togs">
+ <a class="btn go" href="https://www.kaggle.com/competitions/titanic" target="_blank" rel="noopener">
+  To the Titanic competition on Kaggle &rarr;</a>
+ <a class="btn" href="https://www.kaggle.com/code/alexisbcook/titanic-tutorial" target="_blank" rel="noopener">
+  To Kaggle&rsquo;s own tutorial page &rarr;</a>
+</div>
+<p class="cap" style="text-align:left">All the numbers are measured from public data (the Titanic set on Kaggle).
+ Problems 18-21 were counted on the 891 training passengers. The unseen score is the average of five rounds, with the 891 split into five parts.</p>
+</div>
+
+<!-- ══════════════════ もう一度 ══════════════════ -->
+<div class="card">
+<h2>Once more</h2>
+<!-- 🔴 2026-09-02 1問1ページ担当2代目：★「どこから始めても構いません。」を外しました
+     （★index から同じ1行を消したのに合わせています。→ 山田様の指定 17:5x） -->
+<p class="lead" style="margin:0 0 .6rem">Go back through any chapter you want to see again.</p>
+<div class="togs">
+ <a class="btn" href="index.html">Home</a>
+<!-- 🔴🔴🔴🔴 2026-09-10 記録担当：★★★★山田様のご指示 ──
+     ★「ここの下の5章が 今のトップページで定義してるタイトルと合ってないから合わせて」（2026-09-10）
+     ★★★合わせ先は【common.js の CHTAB】です（★277行）。★トップページの折りたたみ（CHDET）も
+       同じ文字で、★★この出口ページだけが【独自の言い方】になっていました。
+     ★★直した4つ（★第2章だけ元から一致していました）──
+       ✗「機械学習の基礎」→ ○「機械学習」
+       ✗「LLMは何を見ているか」→ ○「LLM」
+       ✗「どうやって作るか」→ ○「LLMはどうやって作られるのか」
+       ✗「本物のデータで使う」→ ○「本物のデータでは、何が精度を決めるのか」
+     ★行き先（href）は1文字も変えていません -->
+ <a class="btn" href="q01.html">Chapter 1 &nbsp;Machine learning</a>
+ <a class="btn" href="q06.html">Chapter 2 &nbsp;Deep learning</a>
+ <a class="btn" href="q12.html">Chapter 3 &nbsp;LLMs</a>
+ <a class="btn" href="q15.html">Chapter 4 &nbsp;How an LLM is built</a>
+ <a class="btn" href="q18.html">Chapter 5 &nbsp;What decides accuracy on real data</a>
+</div>
+</div>
+
+<div id="form"></div>
+
+<!-- 🔴 2026-09-02 1問1ページ担当2代目：★戻る（★次は無い） -->
+<div id="nav"></div>
+
+<div id="foot"></div>
+</div>
+
+<script src="common.js"></script>
+<script>
+/* 🔴 2026-09-02 1問1ページ担当2代目【新設】── end の起動（★1回だけ） */
+drawNav(["q21.html", "Problem 21: When to stop"], null);
+drawForm("form");
+/* 🔴 2026-09-02 1問1ページ担当2代目：★フッタの注記「数字は実測値です。…」を外しました
+   （★山田様の指定 17:5x）。★このページには測った数字も作例もありません */
+drawFoot();
+
+/* ★★材料⑴ ── tsume-00-function-dialog.html の学の台詞を1文字も変えずに写しました */
+drawCV({
+ "e_end": [
+  [
+   "m",
+   "&hellip; Doc. So today comes down to this combination, does it not. <b>Multiply, add, bend, measure how far off you are, walk downhill.</b>"
+  ]
+ ]
+});
+</script>
+</body>
+</html>
