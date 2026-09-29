@@ -1,11 +1,9 @@
-{{/* 2026-09-29 SNS（LinkedIn・X）のリンクのカードに画像を出す。thumbnail と同じ名前の軽いJPEG（static/img/jiwa/og/、幅1200px）を og:image にする。
+{{/* 2026-09-29 SNS（LinkedIn・X）のリンクのカードに画像を出す。thumbnail と同じ名前の軽いJPEG（static/img/jiwa/og/、幅1200px・高さ630px＝Agoraの画像と同じ比率）を og:image にする。
      ★もとは og:image が無く、カードが文字だけになっていた。 */}}
 {{ define "head" }}
 {{ with .Params.thumbnail }}
 {{ $og := printf "img/jiwa/og/%s" (replace (path.Base .) ".png" ".jpg") }}
 <meta property="og:image" content="{{ $og | absURL }}">
-<meta property="og:image:width" content="1200">
-<meta property="og:image:height" content="686">
 <meta property="twitter:image" content="{{ $og | absURL }}">
 {{ end }}
 {{ end }}
