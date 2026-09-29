@@ -2,7 +2,7 @@
 title: "How Far Has AI Gotten on Unsolved Math Problems? What 120 Records Show About the Last Two Years"
 date: 2026-09-29
 draft: false
-description: "We checked 120 announcements of AI contributions to unsolved math problems against primary sources. About half are confirmed, correctness is now checked mostly by machines, and professional mathematicians stand behind the big results."
+description: "Has AI created new ways of thinking, as great mathematicians have? A 23-year-old without advanced math training used AI to solve a problem open for nearly 60 years. So who recognized its value? We analyzed 120 claims that AI \"solved\" or \"proved\" a problem."
 pillars: ["Deep Tech Decoded"]
 tags: ["AI", "Mathematics", "Data"]
 hero_style: "background:linear-gradient(135deg,#0a1628 0%,#1a2744 40%,#0d3655 100%)"

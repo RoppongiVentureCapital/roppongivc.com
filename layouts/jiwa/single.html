@@ -1,6 +1,13 @@
 {{/* 2026-09-29 SNS（LinkedIn・X）のリンクのカードに画像を出す。thumbnail と同じ名前の軽いJPEG（static/img/jiwa/og/、幅1200px・高さ630px＝Agoraの画像と同じ比率）を og:image にする。
      ★もとは og:image が無く、カードが文字だけになっていた。 */}}
 {{ define "head" }}
+{{/* 2026-09-29 SEO：正式なURL（UTM付きURLを別ページと見なさせない）と、記事の構造化データ（Google向けの見出し・公開日・画像・発行者） */}}
+<link rel="canonical" href="{{ .Permalink }}">
+{{ $img := "" }}{{ with .Params.thumbnail }}{{ $img = printf "img/jiwa/og/%s" (replace (path.Base .) ".png" ".jpg") | absURL }}{{ end }}
+{{ $org := dict "@type" "Organization" "name" .Site.Title "url" ("/" | absLangURL) "logo" (dict "@type" "ImageObject" "url" ("favicon-192.png" | absURL)) }}
+{{ $ld := dict "@context" "https://schema.org" "@type" "Article" "headline" .Title "description" .Description "datePublished" (.Date.Format "2006-01-02") "dateModified" (.Lastmod.Format "2006-01-02") "inLanguage" .Language.Lang "mainEntityOfPage" .Permalink "author" $org "publisher" $org }}
+{{ with $img }}{{ $ld = merge $ld (dict "image" (slice .)) }}{{ end }}
+<script type="application/ld+json">{{ $ld | jsonify | safeJS }}</script>
 {{ with .Params.thumbnail }}
 {{ $og := printf "img/jiwa/og/%s" (replace (path.Base .) ".png" ".jpg") }}
 <meta property="og:image" content="{{ $og | absURL }}">
@@ -56,7 +63,7 @@
     {{ if not $isMath }}{{ with site.GetPage "jiwa/ai-math-frontier-2026.md" }}
     <div class="article-item">
       <a href="{{ .RelPermalink }}">
-        {{ with .Params.thumbnail }}<img class="article-item-img" src="{{ . | relURL }}" alt="">{{ end }}
+        {{ $cp := . }}{{ with .Params.thumbnail }}<img class="article-item-img" src="{{ . | relURL }}" alt="{{ $cp.Title }}">{{ end }}
         <div class="article-item-body">
           <div class="article-pillar">JIWA</div>
           <h3 style="margin:0.75rem 0">{{ .Title }}</h3>
@@ -67,7 +74,7 @@
     {{ end }}{{ end }}
     <div class="article-item">
       <a href="{{ "agora/ai-olympiad-record/" | relURL }}">
-        <img class="article-item-img" src="{{ "img/agora/r1/thumb-r1-article.jpg" | relURL }}" alt="">
+        <img class="article-item-img" src="{{ "img/agora/r1/thumb-r1-article.jpg" | relURL }}" altalt="Agora 第1回の思考記録">
         <div class="article-item-body">
           <div class="article-pillar" style="text-transform:none">Agora ｜ 第1回</div>
           <h3 style="margin:0.75rem 0">AI五輪メダリストの開成高校生が、AI人材拡大のため、AIと議論した思考記録</h3>
@@ -77,7 +84,7 @@
     </div>
     <div class="article-item">
       <a href="{{ "deep-black-box/" | relURL }}">
-        <img class="article-item-img" src="{{ "img/agora/r1/thumb-r1-game.svg" | relURL }}" alt="">
+        <img class="article-item-img" src="{{ "img/agora/r1/thumb-r1-game.svg" | relURL }}" altalt="Deep Black Box">
         <div class="article-item-body">
           <div class="article-pillar">教材</div>
           <h3 style="margin:0.75rem 0">Deep Black Box ── AIのブラックボックスを、1問ずつ開けて手で動かす。</h3>
@@ -89,7 +96,7 @@
     {{ if $isMath }}{{ with site.GetPage "jiwa/science-olympiad-medalists-career.md" }}
     <div class="article-item">
       <a href="{{ .RelPermalink }}">
-        {{ with .Params.thumbnail }}<img class="article-item-img" src="{{ . | relURL }}" alt="">{{ end }}
+        {{ $cp := . }}{{ with .Params.thumbnail }}<img class="article-item-img" src="{{ . | relURL }}" alt="{{ $cp.Title }}">{{ end }}
         <div class="article-item-body">
           <div class="article-pillar">JIWA</div>
           <h3 style="margin:0.75rem 0">{{ .Title }}</h3>
