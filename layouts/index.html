@@ -153,10 +153,10 @@
 {{/* Challenge ── ★2026-09-10 に Members の下へ移した（もとは プログラム と Members の間）。
      ★消さずに下げる。消すとトップからの内部リンクが無くなって検索の評価が落ちる。 */}}
 <!-- JIWA -->
-{{/* 2026-09-29 山田様の指示：時系列ではなく、読まれている3記事を固定で出す（AI×数学・世界のお金・科学五輪）。
+{{/* 2026-09-29 山田様の指示：時系列ではなく、読まれている3記事を固定で出す（AI×数学・科学五輪・世界のお金の順）。
      ★ホルムズは外した（PVが少ないため）。記事が見つからない言語ではその記事だけ飛ばす。 */}}
 {{ $articles := slice }}
-{{ range slice "jiwa/ai-math-frontier-2026" "jiwa/global-money-map-2026" "jiwa/science-olympiad-medalists-career" }}{{ with site.GetPage . }}{{ $articles = $articles | append . }}{{ end }}{{ end }}
+{{ range slice "jiwa/ai-math-frontier-2026" "jiwa/science-olympiad-medalists-career" "jiwa/global-money-map-2026" }}{{ with site.GetPage . }}{{ $articles = $articles | append . }}{{ end }}{{ end }}
 {{ if $articles }}
 <section class="home-latest">
   <div class="home-latest-header">
