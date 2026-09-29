@@ -32,8 +32,25 @@
        ★★★向きは【JIWA → Agora の一方通行】── ★Agora記事からJIWAへは足さない
          （山田様のご判断「AgoraからJIWAには行かせたくない」）。
        ⚠️★ゲームのカードは /en/deep-black-box/ を指す ── ★英語版ゲームは作成中。 */}}
+  {{/* You may also like (2026-09-29, same rule as the Japanese single.html):
+       AI x math article -> Agora, DBB, Olympiad / all other JIWA articles -> AI x math, Agora, DBB */}}
+  {{ $isMath := eq .File.Path "jiwa/ai-math-frontier-2026.en.md" }}
   <h2 style="font-family:var(--sans);font-size:15px;font-weight:600;letter-spacing:0.02em;color:var(--black);margin:4rem 0 1.25rem">You may also like</h2>
   <div class="articles-grid" style="margin-top:0">
+    {{ if not $isMath }}
+    {{ with site.GetPage "jiwa/ai-math-frontier-2026" }}
+    <div class="article-item">
+      <a href="{{ .RelPermalink }}">
+        {{ with .Params.thumbnail }}<img class="article-item-img" src="{{ . | relURL }}" alt="">{{ end }}
+        <div class="article-item-body">
+          <div class="article-pillar">JIWA</div>
+          <h3 style="margin:0.75rem 0">{{ .Title }}</h3>
+          <span class="blog-arrow">Read the article →</span>
+        </div>
+      </a>
+    </div>
+    {{ end }}
+    {{ end }}
     <div class="article-item">
       <a href="/en/agora/ai-olympiad-record/">
         <img class="article-item-img" src="{{ "img/agora/r1/thumb-r1-article.jpg" | relURL }}" alt="">
@@ -55,6 +72,20 @@
         </div>
       </a>
     </div>
+    {{ if $isMath }}
+    {{ with site.GetPage "jiwa/science-olympiad-medalists-career" }}
+    <div class="article-item">
+      <a href="{{ .RelPermalink }}">
+        {{ with .Params.thumbnail }}<img class="article-item-img" src="{{ . | relURL }}" alt="">{{ end }}
+        <div class="article-item-body">
+          <div class="article-pillar">JIWA</div>
+          <h3 style="margin:0.75rem 0">{{ .Title }}</h3>
+          <span class="blog-arrow">Read the article →</span>
+        </div>
+      </a>
+    </div>
+    {{ end }}
+    {{ end }}
   </div>
 
   <a href="{{ "en/jiwa/" | relURL }}" class="back">&larr; Back to JIWA</a>

@@ -37,8 +37,24 @@
          ★測っていない事実を書かない、という決まりに従った。
        ★カードは既存の .articles-grid / .article-item を流用。★style.css への追加はゼロ。
        ★★英語版（single.en.html）はまだ足していない ── 日本語で仕上げてから英語、の順序。 */}}
+  {{/* あわせて読む（2026-09-29 山田様の指示）
+       AI×数学の記事＝Agora・DBB・科学五輪／その他のJIWA記事（科学五輪を含む）＝AI×数学・Agora・DBB */}}
+  {{ $p := .File.Path }}
+  {{ $isMath := eq $p "jiwa/ai-math-frontier-2026.md" }}
   <h2 style="font-family:var(--sans);font-size:15px;font-weight:600;letter-spacing:0.02em;color:var(--black);margin:4rem 0 1.25rem">あわせて読む</h2>
   <div class="articles-grid" style="margin-top:0">
+    {{ if not $isMath }}{{ with site.GetPage "jiwa/ai-math-frontier-2026.md" }}
+    <div class="article-item">
+      <a href="{{ .RelPermalink }}">
+        {{ with .Params.thumbnail }}<img class="article-item-img" src="{{ . | relURL }}" alt="">{{ end }}
+        <div class="article-item-body">
+          <div class="article-pillar">JIWA</div>
+          <h3 style="margin:0.75rem 0">{{ .Title }}</h3>
+          <span class="blog-arrow">記事を読む →</span>
+        </div>
+      </a>
+    </div>
+    {{ end }}{{ end }}
     <div class="article-item">
       <a href="{{ "agora/ai-olympiad-record/" | relURL }}">
         <img class="article-item-img" src="{{ "img/agora/r1/thumb-r1-article.jpg" | relURL }}" alt="">
@@ -60,6 +76,18 @@
         </div>
       </a>
     </div>
+    {{ if $isMath }}{{ with site.GetPage "jiwa/science-olympiad-medalists-career.md" }}
+    <div class="article-item">
+      <a href="{{ .RelPermalink }}">
+        {{ with .Params.thumbnail }}<img class="article-item-img" src="{{ . | relURL }}" alt="">{{ end }}
+        <div class="article-item-body">
+          <div class="article-pillar">JIWA</div>
+          <h3 style="margin:0.75rem 0">{{ .Title }}</h3>
+          <span class="blog-arrow">記事を読む →</span>
+        </div>
+      </a>
+    </div>
+    {{ end }}{{ end }}
   </div>
 
   <a href="{{ "jiwa/" | relURL }}" class="back">← JIWA に戻る</a>
