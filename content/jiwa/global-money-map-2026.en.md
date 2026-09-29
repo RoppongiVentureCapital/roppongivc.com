@@ -54,7 +54,7 @@ Say you deposit $10,000 at a bank. The bank keeps $1,000 in reserve and lends $9
 
 Only $10,000 of base money existed, yet total deposits grow: $10,000 + $9,000 + $8,100 … This is credit creation. Every time a bank lends, the money supply expands. The "seed money" of M0 that central banks create gets multiplied many times over through bank lending, becoming M2.
 
-![Nested structure of money](/img/money-supply-chart-en.png)
+<picture><source media="(max-width: 600px)" srcset="/img/money-supply-chart-en_m.png"><img src="/img/money-supply-chart-en.png" alt="Nested structure of money" loading="lazy"></picture>
 
 The ≈$9T of base money created by central banks has been multiplied roughly 16× through the banking system into ≈$144T.
 
@@ -68,7 +68,7 @@ As the Bank of England officially explained in 2014, **banks create deposits the
 
 ## Lens B: Real Assets — The Value of Physical Things ≈$540T
 
-![Breakdown of real assets](/img/real-assets-chart-en.png)
+<picture><source media="(max-width: 600px)" srcset="/img/real-assets-chart-en_m.png"><img src="/img/real-assets-chart-en.png" alt="Breakdown of real assets" loading="lazy"></picture>
 
 ### Real Estate: ≈$393T — The World's Largest Asset Class
 
@@ -107,7 +107,7 @@ Gold hit an all-time high of $5,589/oz in January 2026 — more than 2.5× its �
 
 Financial assets aren't physical things — they're rights. A stock is an ownership claim on a company. A bond is a right to repayment.
 
-![Breakdown of financial assets](/img/financial-assets-chart-en.png)
+<picture><source media="(max-width: 600px)" srcset="/img/financial-assets-chart-en_m.png"><img src="/img/financial-assets-chart-en.png" alt="Breakdown of financial assets" loading="lazy"></picture>
 
 ### Equities (Public Markets): ≈$120–150T
 
@@ -147,7 +147,7 @@ According to the IIF (Institute of International Finance), total global debt hit
 
 ### By Sector
 
-![Global debt by sector](/img/debt-chart-en.png)
+<picture><source media="(max-width: 600px)" srcset="/img/debt-chart-en_m.png"><img src="/img/debt-chart-en.png" alt="Global debt by sector" loading="lazy"></picture>
 
 ### By Form
 
@@ -216,7 +216,7 @@ The vast majority of global financial assets are held by these institutional inv
 
 The chart below lines up every category from Lenses A through F. The horizontal scale is uniform, so you can compare sizes across categories. Again, these are different measurements of the same economy — they cannot be added together.
 
-![All asset classes at a glance (A–F)](/img/all-categories-chart-en.png)
+<picture><source media="(max-width: 600px)" srcset="/img/all-categories-chart-en_m.png"><img src="/img/all-categories-chart-en.png" alt="All asset classes at a glance (A–F)" loading="lazy"></picture>
 
 ---
 

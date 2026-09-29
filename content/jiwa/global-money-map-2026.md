@@ -54,7 +54,7 @@ M0が一番小さく、M1、M2と大きくなる。M0⊂M1⊂M2の入れ子構�
 
 最初の100万円しかなかったのに、預金残高は100万円＋90万円＋81万円…と増えていく。これが信用創造だ。銀行が「貸す」たびに、世の中の預金（＝お金）が増える。中央銀行が作ったM0という「種銭」が、銀行の貸出を通じて何倍にも膨張し、M2になる。
 
-![お金の入れ子構造](/img/money-supply-chart.png)
+<picture><source media="(max-width: 600px)" srcset="/img/money-supply-chart_m.png"><img src="/img/money-supply-chart.png" alt="お金の入れ子構造" loading="lazy"></picture>
 
 中央銀行が作った約1,350兆円の「種銭」が、銀行システムを通じて約16倍の約2京1,600兆円に膨張している。
 
@@ -68,7 +68,7 @@ M0が一番小さく、M1、M2と大きくなる。M0⊂M1⊂M2の入れ子構�
 
 ## 切り口B：実物資産 — 物理的に存在するモノの価値 約8京1,000兆円
 
-![実物資産の内訳](/img/real-assets-chart.png)
+<picture><source media="(max-width: 600px)" srcset="/img/real-assets-chart_m.png"><img src="/img/real-assets-chart.png" alt="実物資産の内訳" loading="lazy"></picture>
 
 ### 不動産：約5京9,000兆円 — 世界最大の資産クラス
 
@@ -107,7 +107,7 @@ McKinseyの推計では世界の実物資産合計が約7京5,000兆円で、不
 
 金融資産は「モノ」ではなく「権利」。株式は企業の所有権、債券は返済を受ける権利。
 
-![金融資産の内訳](/img/financial-assets-chart.png)
+<picture><source media="(max-width: 600px)" srcset="/img/financial-assets-chart_m.png"><img src="/img/financial-assets-chart.png" alt="金融資産の内訳" loading="lazy"></picture>
 
 ### 株式（上場企業）：約1京8,000〜2京2,500兆円
 
@@ -147,7 +147,7 @@ IIF（国際金融協会）によると、2025年末の世界の債務総額は�
 
 ### セクター別
 
-![世界の債務 セクター別](/img/debt-chart.png)
+<picture><source media="(max-width: 600px)" srcset="/img/debt-chart_m.png"><img src="/img/debt-chart.png" alt="世界の債務 セクター別" loading="lazy"></picture>
 
 ### 形態別
 
@@ -217,7 +217,7 @@ AUM（Assets Under Management）とは、運用会社が顧客から預かって
 
 切り口A〜Fの順に、それぞれの合計と内訳をグラフで並べる。横軸のスケールは全て統一してあるので、カテゴリをまたいで大小を比較できる。繰り返しになるが、これらは別の角度から測った数字であり、足し算はできない。
 
-![全資産クラスの規模一覧（A〜F）](/img/all-categories-chart.png)
+<picture><source media="(max-width: 600px)" srcset="/img/all-categories-chart_m.png"><img src="/img/all-categories-chart.png" alt="全資産クラスの規模一覧（A〜F）" loading="lazy"></picture>
 
 ---
 

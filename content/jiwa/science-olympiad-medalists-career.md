@@ -83,7 +83,7 @@ IMO金メダリストのキャリアについては、Neeloy Banerjeeによる70
 
 IMO金メダリストの進学先は、MITが他を大きく引き離して1位。ハーバード、北京大学、ケンブリッジが続く。
 
-![IMO金メダリストの進学先大学](/img/imo_university_ranking.png)
+<picture><source media="(max-width: 600px)" srcset="/img/imo_university_ranking_m.png"><img src="/img/imo_university_ranking.png" alt="IMO金メダリストの進学先大学" loading="lazy"></picture>
 
 国ごとのパターンも興味深い。中国のメダリストの多くは北京大学に入学するが、その後MITに編入するケースが一定数見られる。ロシアのメダリストはモスクワ大学やMIPTなど国内に留まる傾向が強い。日本やロシアは、メダリストが国内の大学に進学する割合が特に高い国として挙げられている。
 
@@ -95,7 +95,7 @@ xquantの調査によると、IMO金メダリストの73%がPhDを取得して�
 
 背景として、テック企業（特にGoogle）とクオンツ金融（Citadel、Jane Street等）の報酬上昇がある。xquantのデータでは、2010年以降に金メダルを取った世代で、PhDを経ずに直接クオンツ金融に就職するケースが増えている。アカデミアの割合が減り、クオンツ金融の割合が増えるという構造的な変化が見える。
 
-![IMO金メダリストのPhD取得率 — 世代別推移](/img/imo_phd_rate_trend.png)
+<picture><source media="(max-width: 600px)" srcset="/img/imo_phd_rate_trend_m.png"><img src="/img/imo_phd_rate_trend.png" alt="IMO金メダリストのPhD取得率 — 世代別推移" loading="lazy"></picture>
 
 ### キャリアの内訳 — 世代で変わる
 
@@ -110,13 +110,13 @@ xquantの調査によると、IMO金メダリストの73%がPhDを取得して�
 
 しかし世代が新しくなるほど、アカデミアの割合は下がり、クオンツ金融の割合が上がっている。
 
-![IMO金メダリストのキャリア内訳 — 世代別の変化](/img/imo_career_by_era.png)
+<picture><source media="(max-width: 600px)" srcset="/img/imo_career_by_era_m.png"><img src="/img/imo_career_by_era.png" alt="IMO金メダリストのキャリア内訳 — 世代別の変化" loading="lazy"></picture>
 
 <small style="color:#999;font-size:12px">出典: xquant Substack (Neeloy Banerjee, 2024) — 700人超の追跡データ</small>
 
 **Googleは「テック企業のMIT」**と表現されるほど、IMO金メダリストの就職先として突出している。金メダリストに限ると、Citadelが Microsoftを上回り、Google に次ぐ2位に入る。
 
-![IMO金メダリストの就職先 — テック・金融企業](/img/imo_company_ranking.png)
+<picture><source media="(max-width: 600px)" srcset="/img/imo_company_ranking_m.png"><img src="/img/imo_company_ranking.png" alt="IMO金メダリストの就職先 — テック・金融企業" loading="lazy"></picture>
 
 注目すべきは、**スタートアップを創業した人物がほとんど見えない**ことだ。xquantの分析ではキャリアの分類が「アカデミア」「テック」「クオンツ金融」「その他」の4つで、起業家は独立したカテゴリとして存在しない。
 
@@ -203,7 +203,7 @@ IBOメダリストについては、同様のインタビュー記事すら確�
 
 AIが「与えられた問題を解く力」で人間のトップ層に追いついた。では、人間のメダリストの価値はどこにあるのか。
 
-![AIのIMOスコア推移](/img/ai_imo_timeline.png)
+<picture><source media="(max-width: 600px)" srcset="/img/ai_imo_timeline_m.png"><img src="/img/ai_imo_timeline.png" alt="AIのIMOスコア推移" loading="lazy"></picture>
 
 <small style="color:#999;font-size:12px">出典: Google DeepMind公式発表、OpenAI公式発表（2025年7月）</small>
 

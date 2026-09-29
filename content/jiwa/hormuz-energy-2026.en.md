@@ -43,7 +43,7 @@ To understand Japan's energy, you need to distinguish two numbers: **primary ene
 
 Oil is the single largest energy source at 35% of primary energy. Yet most of it never goes to power generation. It is refined into gasoline, diesel, naphtha, and kerosene — used for everything *except* electricity. This is the starting point for the entire discussion.
 
-![Japan's Primary Energy Supply](/img/01_primary_energy_en.png)
+<picture><source media="(max-width: 600px)" srcset="/img/01_primary_energy_en_m.png"><img src="/img/01_primary_energy_en.png" alt="Japan's Primary Energy Supply" loading="lazy"></picture>
 
 <small style="color:#999;font-size:12px">Source: Agency for Natural Resources and Energy, FY2024 preliminary ([nippon.com](https://www.nippon.com/en/japan-data/h02718/))</small>
 
@@ -53,7 +53,7 @@ Oil is the single largest energy source at 35% of primary energy. Yet most of it
 
 Japan's average electricity demand is approximately 100 GW (annual generation of 900-1,000 TWh). Looking at the electricity mix, oil's presence is negligible.
 
-![Japan's Electricity Generation Mix](/img/02_electricity_mix_en.png)
+<picture><source media="(max-width: 600px)" srcset="/img/02_electricity_mix_en_m.png"><img src="/img/02_electricity_mix_en.png" alt="Japan's Electricity Generation Mix" loading="lazy"></picture>
 
 **LNG (natural gas) at 35% and coal at 30%.** These two alone account for 65% of power generation. Oil is just 3%, used only for remote island power plants and emergency backup.
 
@@ -75,11 +75,11 @@ Coal is "cheap but slow," running 24/7 as baseload. LNG is "expensive but fast,"
 
 So what is Japan doing with the approximately 175 million kL (approximately 3 million barrels/day) of oil it consumes each year?
 
-![Petroleum Product Sales by Type](/img/03_petroleum_products_en.png)
+<picture><source media="(max-width: 600px)" srcset="/img/03_petroleum_products_en_m.png"><img src="/img/03_petroleum_products_en.png" alt="Petroleum Product Sales by Type" loading="lazy"></picture>
 
 Gasoline leads (44.8 million kL), followed by naphtha (38 million kL) and diesel (33 million kL). Aggregating by sector reveals oil's true role.
 
-![Oil Consumption by Sector](/img/04_oil_by_sector_en.png)
+<picture><source media="(max-width: 600px)" srcset="/img/04_oil_by_sector_en_m.png"><img src="/img/04_oil_by_sector_en.png" alt="Oil Consumption by Sector" loading="lazy"></picture>
 
 | Sector | Share | What Stops If Supply Is Cut |
 |---|---|---|
@@ -114,7 +114,7 @@ Kerosene heaters are a lifeline in Hokkaido, Tohoku, and Hokuriku during winter.
 
 80% of Japan's energy comes from fossil fuels (oil + coal + LNG). But from a Hormuz risk perspective, the three are in completely different situations.
 
-![Fossil Fuel Import Sources Compared](/img/05_import_sources_en.png)
+<picture><source media="(max-width: 600px)" srcset="/img/05_import_sources_en_m.png"><img src="/img/05_import_sources_en.png" alt="Fossil Fuel Import Sources Compared" loading="lazy"></picture>
 
 | | Oil | LNG | Coal |
 |---|---|---|---|
@@ -147,7 +147,7 @@ Japan consumes approximately 170 million tons of coal annually — 65% for power
 
 ### Problem 1: Japan's Renewable Share Is Still Low
 
-![Renewables International Comparison](/img/06_renewables_comparison_en.png)
+<picture><source media="(max-width: 600px)" srcset="/img/06_renewables_comparison_en_m.png"><img src="/img/06_renewables_comparison_en.png" alt="Renewables International Comparison" loading="lazy"></picture>
 
 Japan's renewable share is approximately 27% — the lowest level in the G7. Germany (59%) and the UK (47%) are far ahead.
 
@@ -169,7 +169,7 @@ Replacing gasoline cars with EVs can electrify part of transportation. But elect
 
 Mapping how primary energy is ultimately converted into end uses reveals the full picture of Japan's energy structure.
 
-![Energy Flow](/img/07_energy_flow_en.png)
+<picture><source media="(max-width: 600px)" srcset="/img/07_energy_flow_en_m.png"><img src="/img/07_energy_flow_en.png" alt="Energy Flow" loading="lazy"></picture>
 
 Key takeaways from this diagram:
 
@@ -184,7 +184,7 @@ Key takeaways from this diagram:
 
 Integrating the analysis so far, here is a sector-by-sector risk map for a Hormuz Strait blockade.
 
-![Hormuz Strait Risk Map](/img/08_hormuz_risk_map_en.png)
+<picture><source media="(max-width: 600px)" srcset="/img/08_hormuz_risk_map_en_m.png"><img src="/img/08_hormuz_risk_map_en.png" alt="Hormuz Strait Risk Map" loading="lazy"></picture>
 
 The horizontal axis shows supply dependency via the Strait of Hormuz; the vertical axis shows economic impact (oil consumption share). **The further to the upper right, the greater the impact of a blockade.**
 

@@ -225,3 +225,6 @@ img{max-width:100%;height:auto;display:block}
 .curriculum-hw{margin-top:0.75rem;font-size:14px;color:var(--black);font-style:italic}
 .apply-btn{display:inline-block;margin-top:2rem;padding:0.8rem 2rem;background:var(--black);color:var(--white);font-family:var(--sans);font-size:15px;font-weight:500;letter-spacing:0.05em;transition:opacity 0.15s}
 .apply-btn:hover{opacity:0.7}
+
+/* 2026-09-28 スマホ（幅600px以下）では記事の表を横スクロールにする。PCは変えない */
+@media(max-width:600px){.blog-single .content table{display:block;overflow-x:auto}}

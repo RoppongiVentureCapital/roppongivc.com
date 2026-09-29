@@ -43,7 +43,7 @@ hero_label: "Energy Security"
 
 石油は一次エネルギーの35%を占める最大のエネルギー源だ。しかし、その大部分は発電には回されない。ガソリン・軽油・ナフサ・灯油に精製されて、「電気以外」の用途に使われる。ここが全ての議論の出発点になる。
 
-![日本の一次エネルギー供給構成](/img/01_primary_energy.png)
+<picture><source media="(max-width: 600px)" srcset="/img/01_primary_energy_m.png"><img src="/img/01_primary_energy.png" alt="日本の一次エネルギー供給構成" loading="lazy"></picture>
 
 <small style="color:#999;font-size:12px">出典: 資源エネルギー庁 FY2024速報値 ([nippon.com](https://www.nippon.com/en/japan-data/h02718/))</small>
 
@@ -53,7 +53,7 @@ hero_label: "Energy Security"
 
 日本の平均電力需要は約100GW（年間発電量約900〜1,000TWh）。この電力を賄っている電源構成を見ると、石油の存在感は極めて薄い。
 
-![日本の電源構成](/img/02_electricity_mix.png)
+<picture><source media="(max-width: 600px)" srcset="/img/02_electricity_mix_m.png"><img src="/img/02_electricity_mix.png" alt="日本の電源構成" loading="lazy"></picture>
 
 **LNG（天然ガス）が35%、石炭が30%。** この2つで発電の65%を占める。石油はわずか3%で、離島の発電所や緊急バックアップ用にしか使われていない。
 
@@ -75,11 +75,11 @@ hero_label: "Energy Security"
 
 では、日本が年間約1.75億kL（約300万バレル/日）も消費している石油は、一体何に使われているのか。
 
-![石油製品別 国内販売量](/img/03_petroleum_products.png)
+<picture><source media="(max-width: 600px)" srcset="/img/03_petroleum_products_m.png"><img src="/img/03_petroleum_products.png" alt="石油製品別 国内販売量" loading="lazy"></picture>
 
 最大はガソリン（4,480万kL）、次がナフサ（3,800万kL）、軽油（3,300万kL）と続く。これをセクター別に集約すると、石油の本当の姿が見えてくる。
 
-![石油の用途セクター別](/img/04_oil_by_sector.png)
+<picture><source media="(max-width: 600px)" srcset="/img/04_oil_by_sector_m.png"><img src="/img/04_oil_by_sector.png" alt="石油の用途セクター別" loading="lazy"></picture>
 
 | セクター | 消費シェア | 止まったら何が起きるか |
 |---|---|---|
@@ -114,7 +114,7 @@ hero_label: "Energy Security"
 
 日本のエネルギーの80%は化石燃料（石油＋石炭＋LNG）だ。しかし、ホルムズ海峡リスクの観点では、この3つは全く状況が異なる。
 
-![化石燃料の輸入元比較](/img/05_import_sources.png)
+<picture><source media="(max-width: 600px)" srcset="/img/05_import_sources_m.png"><img src="/img/05_import_sources.png" alt="化石燃料の輸入元比較" loading="lazy"></picture>
 
 | | 石油 | LNG | 石炭 |
 |---|---|---|---|
@@ -147,7 +147,7 @@ LNG（液化天然ガス）は天然ガスを-162℃まで冷やして液体に�
 
 ### 問題1：日本の再エネ比率はまだ低い
 
-![再エネ国際比較](/img/06_renewables_comparison.png)
+<picture><source media="(max-width: 600px)" srcset="/img/06_renewables_comparison_m.png"><img src="/img/06_renewables_comparison.png" alt="再エネ国際比較" loading="lazy"></picture>
 
 日本の再エネ比率は約27%で、G7最低レベル。ドイツ（59%）やイギリス（47%）に大きく水をあけられている。
 
@@ -169,7 +169,7 @@ LNG（液化天然ガス）は天然ガスを-162℃まで冷やして液体に�
 
 一次エネルギーが最終的にどの用途に変換されるかを一枚の図にすると、日本のエネルギー構造の全体像が見える。
 
-![エネルギーフロー](/img/07_energy_flow.png)
+<picture><source media="(max-width: 600px)" srcset="/img/07_energy_flow_m.png"><img src="/img/07_energy_flow.png" alt="エネルギーフロー" loading="lazy"></picture>
 
 この図から読み取れる重要なポイント：
 
@@ -184,7 +184,7 @@ LNG（液化天然ガス）は天然ガスを-162℃まで冷やして液体に�
 
 ここまでの分析を統合して、ホルムズ海峡封鎖時のセクター別影響度をマッピングする。
 
-![ホルムズ海峡リスクマップ](/img/08_hormuz_risk_map.png)
+<picture><source media="(max-width: 600px)" srcset="/img/08_hormuz_risk_map_m.png"><img src="/img/08_hormuz_risk_map.png" alt="ホルムズ海峡リスクマップ" loading="lazy"></picture>
 
 横軸がホルムズ海峡経由の供給依存度、縦軸が経済的インパクト（石油消費シェア）。**右上にあるほど封鎖時の影響が大きい。**
 
