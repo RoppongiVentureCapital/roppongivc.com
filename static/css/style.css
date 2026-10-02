@@ -228,3 +228,5 @@ img{max-width:100%;height:auto;display:block}
 
 /* 2026-09-28 スマホ（幅600px以下）では記事の表を横スクロールにする。PCは変えない */
 @media(max-width:600px){.blog-single .content table{display:block;overflow-x:auto}}
+/* 2026-10-02 スマホ（幅600px以下）ではJIWAの記事の左右の余白を40px→24px（Agoraの記事・メニューと同じ1.5rem）にして、本文と図を広く見せる。.blog-single はJIWAの記事（日英）だけが使う。PCは変えない */
+@media(max-width:600px){.blog-single{padding-left:1.5rem;padding-right:1.5rem}}
